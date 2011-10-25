@@ -822,7 +822,6 @@ main (int argc, char *argv[])
   EmpathyApp *app;
   gint retval;
 
-  g_thread_init (NULL);
   g_type_init ();
 
 #ifdef HAVE_LIBCHAMPLAIN

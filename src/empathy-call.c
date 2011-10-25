@@ -186,9 +186,6 @@ main (int argc,
   gint retval;
   GtkSettings *gtk_settings;
 
-  /* Init */
-  g_thread_init (NULL);
-
 #ifdef GDK_WINDOWING_X11
   /* We can't call clutter_gst_init() before gtk_clutter_init(), so no choice
    * but to intiialise X11 threading ourself */

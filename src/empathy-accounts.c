@@ -222,7 +222,6 @@ main (int argc, char *argv[])
   GObjectClass *app_class;
   gint retval;
 
-  g_thread_init (NULL);
   empathy_init ();
 
   gtk_init (&argc, &argv);

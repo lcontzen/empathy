@@ -103,9 +103,6 @@ main (int argc,
   gint retval;
   EmpathyIndividualManager *individual_mgr;
 
-  /* Init */
-  g_thread_init (NULL);
-
   optcontext = g_option_context_new (N_("- Empathy Chat Client"));
   g_option_context_add_group (optcontext, gtk_get_option_group (TRUE));
   g_option_context_add_main_entries (optcontext, options, GETTEXT_PACKAGE);

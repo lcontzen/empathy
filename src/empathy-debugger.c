@@ -101,7 +101,6 @@ main (int argc,
   GtkApplication *app;
   gint retval;
 
-  g_thread_init (NULL);
   gtk_init (&argc, &argv);
   empathy_gtk_init ();
 

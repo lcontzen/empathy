@@ -283,8 +283,6 @@ main (int argc,
   TpSimpleClientFactory *tp_factory;
   TpDBusDaemon *dbus;
 
-  g_thread_init (NULL);
-
   context = g_option_context_new (N_(" - Empathy authentication client"));
   g_option_context_add_group (context, gtk_get_option_group (TRUE));
   g_option_context_set_translation_domain (context, GETTEXT_PACKAGE);
