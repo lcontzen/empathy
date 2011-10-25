@@ -65,7 +65,7 @@ struct _EmpathyGstAudioSinkPrivate
   gboolean echo_cancel;
   gdouble volume;
   gint volume_idle_id;
-  GStaticMutex volume_mutex;
+  GMutex volume_mutex;
 };
 
 #define EMPATHY_GST_AUDIO_SINK_GET_PRIVATE(o) \
@@ -77,7 +77,7 @@ empathy_audio_sink_init (EmpathyGstAudioSink *self)
 {
   self->priv = EMPATHY_GST_AUDIO_SINK_GET_PRIVATE (self);
   self->priv->echo_cancel = TRUE;
-  g_static_mutex_init (&self->priv->volume_mutex);
+  g_mutex_init (&self->priv->volume_mutex);
 }
 
 static GstPad * empathy_audio_sink_request_new_pad (GstElement *self,
@@ -95,9 +95,9 @@ empathy_audio_sink_set_property (GObject *object,
   switch (property_id)
     {
       case PROP_VOLUME:
-        g_static_mutex_lock (&self->priv->volume_mutex);
+        g_mutex_lock (&self->priv->volume_mutex);
         self->priv->volume = g_value_get_double (value);
-        g_static_mutex_unlock (&self->priv->volume_mutex);
+        g_mutex_unlock (&self->priv->volume_mutex);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -129,7 +129,7 @@ empathy_audio_sink_dispose (GObject *object)
     g_source_remove (priv->volume_idle_id);
   priv->volume_idle_id = 0;
 
-  g_static_mutex_free (&self->priv->volume_mutex);
+  g_mutex_clear (&self->priv->volume_mutex);
 
   /* release any references held by the object here */
   if (G_OBJECT_CLASS (empathy_audio_sink_parent_class)->dispose)
@@ -236,9 +236,9 @@ empathy_audio_sink_volume_idle_updated (gpointer user_data)
 {
   EmpathyGstAudioSink *self = EMPATHY_GST_AUDIO_SINK (user_data);
 
-  g_static_mutex_lock (&self->priv->volume_mutex);
+  g_mutex_lock (&self->priv->volume_mutex);
   self->priv->volume_idle_id = 0;
-  g_static_mutex_unlock (&self->priv->volume_mutex);
+  g_mutex_unlock (&self->priv->volume_mutex);
 
   g_object_notify (G_OBJECT (self), "volume");
 
@@ -253,7 +253,7 @@ empathy_audio_sink_volume_updated (GObject *object,
   EmpathyGstAudioSink *self = EMPATHY_GST_AUDIO_SINK (user_data);
   gdouble volume;
 
-  g_static_mutex_lock (&self->priv->volume_mutex);
+  g_mutex_lock (&self->priv->volume_mutex);
 
   g_object_get (object, "volume", &volume, NULL);
   if (self->priv->volume == volume)
@@ -265,7 +265,7 @@ empathy_audio_sink_volume_updated (GObject *object,
       empathy_audio_sink_volume_idle_updated, self);
 
 out:
-  g_static_mutex_unlock (&self->priv->volume_mutex);
+  g_mutex_unlock (&self->priv->volume_mutex);
 }
 
 static gboolean
@@ -274,9 +274,9 @@ empathy_audio_sink_volume_idle_setup (gpointer user_data)
   EmpathyGstAudioSink *self = EMPATHY_GST_AUDIO_SINK (user_data);
   gdouble volume;
 
-  g_static_mutex_lock (&self->priv->volume_mutex);
+  g_mutex_lock (&self->priv->volume_mutex);
   self->priv->volume_idle_id = 0;
-  g_static_mutex_unlock (&self->priv->volume_mutex);
+  g_mutex_unlock (&self->priv->volume_mutex);
 
   /* We can't do a bidirection bind as the ::notify comes from another
    * thread, for other bits of empathy it's most simpler if it comes from
@@ -329,11 +329,11 @@ empathy_audio_sink_request_new_pad (GstElement *element,
 
   if (GST_IS_STREAM_VOLUME (self->priv->sink))
     {
-      g_static_mutex_lock (&self->priv->volume_mutex);
+      g_mutex_lock (&self->priv->volume_mutex);
       if (self->priv->volume_idle_id == 0)
         self->priv->volume_idle_id = g_idle_add (
           empathy_audio_sink_volume_idle_setup, self);
-      g_static_mutex_unlock (&self->priv->volume_mutex);
+      g_mutex_unlock (&self->priv->volume_mutex);
     }
   else
     {

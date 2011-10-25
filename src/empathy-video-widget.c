@@ -78,7 +78,7 @@ struct _EmpathyVideoWidgetPriv
   gboolean flip_video;
   guintptr xid;
 
-  GMutex *lock;
+  GMutex lock;
 };
 
 #define GET_PRIV(o)     (G_TYPE_INSTANCE_GET_PRIVATE ((o), \
@@ -90,7 +90,7 @@ empathy_video_widget_init (EmpathyVideoWidget *obj)
   EmpathyVideoWidgetPriv *priv = GET_PRIV (obj);
   GdkRGBA black;
 
-  priv->lock = g_mutex_new ();
+  g_mutex_init (&priv->lock);
 
   priv->notifier = fs_element_added_notifier_new ();
   g_signal_connect (priv->notifier, "element-added",
@@ -367,7 +367,7 @@ empathy_video_widget_finalize (GObject *object)
   EmpathyVideoWidgetPriv *priv = GET_PRIV (self);
 
   /* free any data held directly by the object here */
-  g_mutex_free (priv->lock);
+  g_mutex_clear (&priv->lock);
 
   G_OBJECT_CLASS (empathy_video_widget_parent_class)->finalize (object);
 }
@@ -400,9 +400,9 @@ empathy_video_widget_element_set_sink_properties (EmpathyVideoWidget *self)
 {
   EmpathyVideoWidgetPriv *priv = GET_PRIV (self);
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
   empathy_video_widget_element_set_sink_properties_unlocked (self);
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 }
 
 static void
@@ -412,7 +412,7 @@ empathy_video_widget_element_added_cb (FsElementAddedNotifier *notifier,
   EmpathyVideoWidgetPriv *priv = GET_PRIV (self);
 
   /* We assume the overlay is the sink */
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
   if (priv->overlay == NULL && GST_IS_X_OVERLAY (element))
     {
       priv->overlay = element;
@@ -421,7 +421,7 @@ empathy_video_widget_element_added_cb (FsElementAddedNotifier *notifier,
       empathy_video_widget_element_set_sink_properties_unlocked (self);
       gst_x_overlay_expose (GST_X_OVERLAY (priv->overlay));
     }
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 }
 
 static void

@@ -242,7 +242,7 @@ struct _EmpathyCallWindowPriv
   GTimer *timer;
   guint timer_id;
 
-  GMutex *lock;
+  GMutex lock;
   gboolean call_started;
   gboolean sending_video;
   CameraState camera_state;
@@ -1638,7 +1638,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
   g_signal_connect (priv->camera_monitor, "removed",
       G_CALLBACK (empathy_call_window_camera_removed_cb), self);
 
-  priv->lock = g_mutex_new ();
+  g_mutex_init (&priv->lock);
 
   gtk_container_add (GTK_CONTAINER (self), top_vbox);
 
@@ -2371,7 +2371,7 @@ empathy_call_window_finalize (GObject *object)
   disconnect_video_output_motion_handler (self);
 
   /* free any data held directly by the object here */
-  g_mutex_free (priv->lock);
+  g_mutex_clear (&priv->lock);
 
   g_timer_destroy (priv->timer);
 
@@ -2544,7 +2544,7 @@ empathy_call_window_disconnected (EmpathyCallWindow *self,
 
   if (could_reset_pipeline)
     {
-      g_mutex_lock (priv->lock);
+      g_mutex_lock (&priv->lock);
 
       g_timer_stop (priv->timer);
 
@@ -2552,7 +2552,7 @@ empathy_call_window_disconnected (EmpathyCallWindow *self,
         g_source_remove (priv->timer_id);
       priv->timer_id = 0;
 
-      g_mutex_unlock (priv->lock);
+      g_mutex_unlock (&priv->lock);
 
       if (!restart)
         /* We are about to destroy the window, no need to update it or create
@@ -3202,12 +3202,12 @@ empathy_call_window_state_changed_cb (EmpathyCallHandler *handler,
 
   g_object_unref (call);
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
 
   priv->timer_id = g_timeout_add_seconds (1,
     empathy_call_window_update_timer, self);
 
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   empathy_call_window_update_timer (self);
 
@@ -3281,7 +3281,7 @@ empathy_call_window_src_added_cb (EmpathyCallHandler *handler,
 
   GstPad *pad;
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
 
   g_object_get (content, "media-type", &media_type, NULL);
 
@@ -3348,7 +3348,7 @@ empathy_call_window_src_added_cb (EmpathyCallHandler *handler,
     }
 
 
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   return TRUE;
 }

@@ -77,7 +77,7 @@ struct _EmpathyGstAudioSrcPrivate
   /* the mixer track on src we follow and adjust */
   GstMixerTrack *track;
 
-  GMutex *lock;
+  GMutex lock;
   guint level_idle_id;
   guint volume_idle_id;
 };
@@ -93,7 +93,7 @@ struct _EmpathyGstAudioSrcPrivate
 static void
 empathy_audio_set_hw_mute (EmpathyGstAudioSrc *self, gboolean mute)
 {
-  g_mutex_lock (self->priv->lock);
+  g_mutex_lock (&self->priv->lock);
   /* If there is no mixer available ignore the setting */
   if (self->priv->track == NULL)
     goto out;
@@ -101,7 +101,7 @@ empathy_audio_set_hw_mute (EmpathyGstAudioSrc *self, gboolean mute)
   gst_mixer_set_mute (GST_MIXER (self->priv->src), self->priv->track, mute);
 
 out:
-  g_mutex_unlock (self->priv->lock);
+  g_mutex_unlock (&self->priv->lock);
   self->priv->mute = mute;
 }
 
@@ -110,13 +110,13 @@ empathy_audio_src_get_hw_mute (EmpathyGstAudioSrc *self)
 {
   gboolean result = self->priv->mute;
 
-  g_mutex_lock (self->priv->lock);
+  g_mutex_lock (&self->priv->lock);
   if (self->priv->track == NULL)
     goto out;
 
   result = GST_MIXER_TRACK_HAS_FLAG (self->priv->track, GST_MIXER_TRACK_MUTE);
 out:
-  g_mutex_unlock (self->priv->lock);
+  g_mutex_unlock (&self->priv->lock);
 
   return result;
 }
@@ -128,7 +128,7 @@ empathy_audio_src_set_hw_volume (EmpathyGstAudioSrc *self,
   gint volumes[MAX_MIC_CHANNELS];
   int i;
 
-  g_mutex_lock (self->priv->lock);
+  g_mutex_lock (&self->priv->lock);
   /* If there is no mixer available ignore the setting */
   if (self->priv->track == NULL)
     goto out;
@@ -140,7 +140,7 @@ empathy_audio_src_set_hw_volume (EmpathyGstAudioSrc *self,
     self->priv->track, volumes);
 
 out:
-   g_mutex_unlock (self->priv->lock);
+   g_mutex_unlock (&self->priv->lock);
 
   self->priv->volume = volume;
 }
@@ -151,7 +151,7 @@ empathy_audio_src_get_hw_volume (EmpathyGstAudioSrc *self)
   gint volumes[MAX_MIC_CHANNELS];
   gdouble result = self->priv->volume;
 
-  g_mutex_lock (self->priv->lock);
+  g_mutex_lock (&self->priv->lock);
   if (self->priv->track == NULL)
     goto out;
 
@@ -160,7 +160,7 @@ empathy_audio_src_get_hw_volume (EmpathyGstAudioSrc *self)
   result = volumes[0]/(gdouble)self->priv->track->max_volume;
 
 out:
-  g_mutex_unlock (self->priv->lock);
+  g_mutex_unlock (&self->priv->lock);
 
   return result;
 }
@@ -347,7 +347,8 @@ empathy_audio_src_init (EmpathyGstAudioSrc *obj)
 
   obj->priv = priv;
   priv->peak_level = -G_MAXDOUBLE;
-  priv->lock = g_mutex_new ();
+  g_mutex_init (&priv->lock);
+
   priv->volume = 1.0;
 
   priv->src = create_src ();
@@ -439,14 +440,14 @@ empathy_audio_src_get_property (GObject *object,
         g_value_set_boolean (value, priv->mute);
         break;
       case PROP_PEAK_LEVEL:
-        g_mutex_lock (priv->lock);
+        g_mutex_lock (&priv->lock);
         g_value_set_double (value, priv->peak_level);
-        g_mutex_unlock (priv->lock);
+        g_mutex_unlock (&priv->lock);
         break;
       case PROP_RMS_LEVEL:
-        g_mutex_lock (priv->lock);
+        g_mutex_lock (&priv->lock);
         g_value_set_double (value, priv->rms_level);
-        g_mutex_unlock (priv->lock);
+        g_mutex_unlock (&priv->lock);
         break;
       case PROP_MICROPHONE:
         g_value_set_uint (value, priv->source_idx);
@@ -552,7 +553,7 @@ empathy_audio_src_finalize (GObject *object)
   EmpathyGstAudioSrcPrivate *priv = EMPATHY_GST_AUDIO_SRC_GET_PRIVATE (self);
 
   /* free any data held directly by the object here */
-  g_mutex_free (priv->lock);
+  g_mutex_clear (&priv->lock);
 
   G_OBJECT_CLASS (empathy_audio_src_parent_class)->finalize (object);
 }
@@ -563,13 +564,13 @@ empathy_audio_src_levels_updated (gpointer user_data)
   EmpathyGstAudioSrc *self = EMPATHY_GST_AUDIO_SRC (user_data);
   EmpathyGstAudioSrcPrivate *priv = EMPATHY_GST_AUDIO_SRC_GET_PRIVATE (self);
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
 
   g_signal_emit (self, signals[PEAK_LEVEL_CHANGED], 0, priv->peak_level);
   g_signal_emit (self, signals[RMS_LEVEL_CHANGED], 0, priv->rms_level);
   priv->level_idle_id = 0;
 
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   return FALSE;
 }
@@ -582,9 +583,9 @@ empathy_audio_src_volume_changed (gpointer user_data)
   gdouble volume;
   gboolean mute;
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
   priv->volume_idle_id = 0;
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   volume = empathy_audio_src_get_hw_volume (self);
 
@@ -652,7 +653,7 @@ empathy_audio_src_handle_message (GstBin *bin, GstMessage *message)
           rms = MAX (db, rms);
         }
 
-      g_mutex_lock (priv->lock);
+      g_mutex_lock (&priv->lock);
 
       priv->peak_level = peak;
       priv->rms_level = rms;
@@ -660,7 +661,7 @@ empathy_audio_src_handle_message (GstBin *bin, GstMessage *message)
         priv->level_idle_id = g_idle_add (
           empathy_audio_src_levels_updated, self);
 
-      g_mutex_unlock (priv->lock);
+      g_mutex_unlock (&priv->lock);
     }
   else if (GST_MESSAGE_TYPE (message) == GST_MESSAGE_ELEMENT &&
         GST_MESSAGE_SRC (message) == GST_OBJECT (priv->src))
@@ -677,13 +678,13 @@ empathy_audio_src_handle_message (GstBin *bin, GstMessage *message)
           GST_MIXER_MESSAGE_MUTE_TOGGLED)
         gst_mixer_message_parse_mute_toggled (message, &track, NULL);
 
-      g_mutex_lock (priv->lock);
+      g_mutex_lock (&priv->lock);
 
       if (track != NULL && track == priv->track && priv->volume_idle_id == 0)
         priv->volume_idle_id = g_idle_add (
             empathy_audio_src_volume_changed, self);
 
-      g_mutex_unlock (priv->lock);
+      g_mutex_unlock (&priv->lock);
     }
   else if  (GST_MESSAGE_TYPE (message) == GST_MESSAGE_STATE_CHANGED &&
       GST_MESSAGE_SRC (message) == GST_OBJECT (priv->src))
@@ -699,18 +700,18 @@ empathy_audio_src_handle_message (GstBin *bin, GstMessage *message)
        * Empathy. We want to pick up the level pulseaudio saved */
       if (old == GST_STATE_NULL && new == GST_STATE_READY)
         {
-          g_mutex_lock (priv->lock);
+          g_mutex_lock (&priv->lock);
           priv->track = empathy_audio_src_get_track (priv->src);
           if (priv->track != NULL)
             priv->volume_idle_id = g_idle_add (
               empathy_audio_src_volume_changed, self);
-          g_mutex_unlock (priv->lock);
+          g_mutex_unlock (&priv->lock);
         }
       else if (old == GST_STATE_READY && new == GST_STATE_NULL)
         {
-          g_mutex_lock (priv->lock);
+          g_mutex_lock (&priv->lock);
           priv->track = NULL;
-          g_mutex_unlock (priv->lock);
+          g_mutex_unlock (&priv->lock);
         }
     }
 

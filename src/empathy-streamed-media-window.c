@@ -201,7 +201,7 @@ struct _EmpathyStreamedMediaWindowPriv
   GtkWidget *video_brightness;
   GtkWidget *video_gamma;
 
-  GMutex *lock;
+  GMutex lock;
   gboolean call_started;
   gboolean sending_video;
   CameraState camera_state;
@@ -1035,7 +1035,7 @@ empathy_streamed_media_window_init (EmpathyStreamedMediaWindow *self)
 
   gtk_action_set_sensitive (priv->menu_fullscreen, FALSE);
 
-  priv->lock = g_mutex_new ();
+  g_mutex_init (&priv->lock);
 
   gtk_container_add (GTK_CONTAINER (self), top_vbox);
 
@@ -1727,7 +1727,7 @@ empathy_streamed_media_window_finalize (GObject *object)
   disconnect_video_output_motion_handler (self);
 
   /* free any data held directly by the object here */
-  g_mutex_free (priv->lock);
+  g_mutex_clear (&priv->lock);
 
   g_timer_destroy (priv->timer);
 
@@ -1870,7 +1870,7 @@ empathy_streamed_media_window_disconnected (EmpathyStreamedMediaWindow *self,
 
   if (could_reset_pipeline)
     {
-      g_mutex_lock (priv->lock);
+      g_mutex_lock (&priv->lock);
 
       g_timer_stop (priv->timer);
 
@@ -1878,7 +1878,7 @@ empathy_streamed_media_window_disconnected (EmpathyStreamedMediaWindow *self,
         g_source_remove (priv->timer_id);
       priv->timer_id = 0;
 
-      g_mutex_unlock (priv->lock);
+      g_mutex_unlock (&priv->lock);
 
       if (!restart)
         /* We are about to destroy the window, no need to update it or create
@@ -2375,12 +2375,12 @@ empathy_streamed_media_window_connected (gpointer user_data)
 
   g_object_unref (call);
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
 
   priv->timer_id = g_timeout_add_seconds (1,
     empathy_streamed_media_window_update_timer, self);
 
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   empathy_streamed_media_window_update_timer (self);
 
@@ -2401,7 +2401,7 @@ empathy_streamed_media_window_src_added_cb (EmpathyStreamedMediaHandler *handler
 
   GstPad *pad;
 
-  g_mutex_lock (priv->lock);
+  g_mutex_lock (&priv->lock);
 
   if (priv->call_state != CONNECTED)
     {
@@ -2467,7 +2467,7 @@ empathy_streamed_media_window_src_added_cb (EmpathyStreamedMediaHandler *handler
     }
 
 
-  g_mutex_unlock (priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   return TRUE;
 }
