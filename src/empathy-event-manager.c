@@ -576,7 +576,6 @@ event_manager_chat_message_received_cb (EmpathyTpChat *tp_chat,
   EmpathyMessage *message,
   EventManagerApproval *approval)
 {
-  GtkWidget       *window;
   EmpathyContact  *sender;
   const gchar     *header;
   const gchar     *msg;
@@ -604,12 +603,8 @@ event_manager_chat_message_received_cb (EmpathyTpChat *tp_chat,
         EMPATHY_EVENT_TYPE_CHAT, EMPATHY_IMAGE_NEW_MESSAGE, header, msg,
         approval, event_text_channel_process_func, NULL);
 
-  window = empathy_roster_window_dup ();
-
-  empathy_sound_manager_play (priv->sound_mgr, window,
+  empathy_sound_manager_play (priv->sound_mgr, NULL,
       EMPATHY_SOUND_CONVERSATION_NEW);
-
-  g_object_unref (window);
 }
 
 static void
@@ -753,7 +748,6 @@ event_room_channel_process_func (EventPriv *event)
 static void
 display_invite_room_dialog (EventManagerApproval *approval)
 {
-  GtkWidget *window = empathy_roster_window_dup ();
   const gchar *invite_msg;
   gchar *msg;
   TpContact *self_contact;
@@ -780,11 +774,10 @@ display_invite_room_dialog (EventManagerApproval *approval)
       EMPATHY_IMAGE_GROUP_MESSAGE, msg, invite_msg, approval,
       event_room_channel_process_func, NULL);
 
-  empathy_sound_manager_play (priv->sound_mgr, window,
+  empathy_sound_manager_play (priv->sound_mgr, NULL,
       EMPATHY_SOUND_CONVERSATION_NEW);
 
   g_free (msg);
-  g_object_unref (window);
 }
 
 static void
@@ -898,7 +891,6 @@ approve_call_channel (EmpathyEventManager *self,
 {
   TpChannel *channel = TP_CHANNEL (call);
   EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
-  GtkWidget *window;
   gchar *header;
   gboolean video;
 
@@ -917,8 +909,6 @@ approve_call_channel (EmpathyEventManager *self,
   approval->handler = g_signal_connect (call, "state-changed",
     G_CALLBACK (event_manager_call_state_changed_cb), approval);
 
-  window = empathy_roster_window_dup ();
-
   g_object_get (G_OBJECT (call), "initial-video", &video, NULL);
 
   header = g_strdup_printf (
@@ -935,10 +925,8 @@ approve_call_channel (EmpathyEventManager *self,
 
   priv->ringing++;
   if (priv->ringing == 1)
-    empathy_sound_manager_start_playing (priv->sound_mgr, window,
+    empathy_sound_manager_start_playing (priv->sound_mgr, NULL,
         EMPATHY_SOUND_PHONE_INCOMING, MS_BETWEEN_RING);
-
-  g_object_unref (window);
 }
 
 static void
@@ -949,15 +937,12 @@ approve_ft_channel (EmpathyEventManager *self,
 {
   TpChannel *channel = TP_CHANNEL (ft);
   EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
-  GtkWidget *window;
   gchar *header;
 
   approval->handler_instance = g_object_ref (ft);
   approval_set_target_contact (approval, channel);
 
   tp_add_dispatch_operation_context_accept (context);
-
-  window = empathy_roster_window_dup ();
 
   header = g_strdup_printf (_("Incoming file transfer from %s"),
       empathy_contact_get_alias (approval->contact));
@@ -968,11 +953,10 @@ approve_ft_channel (EmpathyEventManager *self,
       approval, event_channel_process_func, NULL);
 
   /* FIXME better sound for incoming file transfers ?*/
-  empathy_sound_manager_play (priv->sound_mgr, window,
+  empathy_sound_manager_play (priv->sound_mgr, NULL,
       EMPATHY_SOUND_CONVERSATION_NEW);
 
   g_free (header);
-  g_object_unref (window);
 }
 
 static void
@@ -1156,7 +1140,6 @@ event_manager_presence_changed_cb (EmpathyContact *contact,
   EmpathyEventManagerPriv *priv = GET_PRIV (manager);
   TpAccount *account;
   EmpathyPresenceManager *presence_mgr;
-  GtkWidget *window = empathy_roster_window_dup ();
 
   account = empathy_contact_get_account (contact);
   presence_mgr = empathy_presence_manager_dup_singleton ();
@@ -1172,7 +1155,7 @@ event_manager_presence_changed_cb (EmpathyContact *contact,
           TP_CONNECTION_PRESENCE_TYPE_OFFLINE) <= 0)
         {
           /* someone is logging off */
-          empathy_sound_manager_play (priv->sound_mgr, window,
+          empathy_sound_manager_play (priv->sound_mgr, NULL,
               EMPATHY_SOUND_CONTACT_DISCONNECTED);
 
           if (g_settings_get_boolean (priv->gsettings_notif,
@@ -1193,7 +1176,7 @@ event_manager_presence_changed_cb (EmpathyContact *contact,
             TP_CONNECTION_PRESENCE_TYPE_OFFLINE) > 0)
         {
           /* someone is logging in */
-          empathy_sound_manager_play (priv->sound_mgr, window,
+          empathy_sound_manager_play (priv->sound_mgr, NULL,
               EMPATHY_SOUND_CONTACT_CONNECTED);
 
           if (g_settings_get_boolean (priv->gsettings_notif,
@@ -1210,7 +1193,6 @@ event_manager_presence_changed_cb (EmpathyContact *contact,
 
 out:
   g_object_unref (presence_mgr);
-  g_object_unref (window);
 }
 
 static GObject *
