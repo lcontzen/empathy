@@ -350,7 +350,7 @@ empathy_app_command_line (GApplication *app,
       self->activated = TRUE;
 
       /* Setting up UI */
-      self->window = empathy_roster_window_dup ();
+      self->window = empathy_roster_window_new (GTK_APPLICATION (app));
 
       gtk_application_add_window (GTK_APPLICATION (app),
           GTK_WINDOW (self->window));

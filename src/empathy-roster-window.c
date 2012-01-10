@@ -100,7 +100,7 @@ enum
   PROP_SHELL_RUNNING
 };
 
-G_DEFINE_TYPE (EmpathyRosterWindow, empathy_roster_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (EmpathyRosterWindow, empathy_roster_window, GTK_TYPE_APPLICATION_WINDOW)
 
 struct _EmpathyRosterWindowPriv {
   EmpathyIndividualStore *individual_store;
@@ -2748,7 +2748,9 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 }
 
 GtkWidget *
-empathy_roster_window_dup (void)
+empathy_roster_window_new (GtkApplication *app)
 {
-  return g_object_new (EMPATHY_TYPE_ROSTER_WINDOW, NULL);
+  return g_object_new (EMPATHY_TYPE_ROSTER_WINDOW,
+      "application", app,
+      NULL);
 }

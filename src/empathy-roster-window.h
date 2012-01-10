@@ -41,18 +41,18 @@ typedef struct _EmpathyRosterWindowPriv EmpathyRosterWindowPriv;
 
 struct _EmpathyRosterWindow
 {
-  GtkWindow parent;
+  GtkApplicationWindow parent;
   EmpathyRosterWindowPriv *priv;
 };
 
 struct _EmpathyRosterWindowClass
 {
-  GtkWindowClass parent_class;
+  GtkApplicationWindowClass parent_class;
 };
 
 GType empathy_roster_window_get_type (void);
 
-GtkWidget *empathy_roster_window_dup (void);
+GtkWidget * empathy_roster_window_new (GtkApplication *app);
 
 void empathy_roster_window_show_preferences (EmpathyRosterWindow *self,
     const gchar *tab);
