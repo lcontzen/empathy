@@ -141,14 +141,13 @@ struct _EmpathyRosterWindowPriv {
 
   GtkUIManager *ui_manager;
   GtkAction *view_history;
-  GtkAction *room_join_favorites;
-  GtkWidget *room_menu;
-  GtkWidget *room_separator;
+  GMenu *rooms_section;
+  GMenu *balance_section;
+  GAction *view_credit_action;
   GtkWidget *edit_context;
   GtkWidget *edit_context_separator;
 
   GtkActionGroup *balance_action_group;
-  GtkAction *view_balance_show_in_roster;
   GtkWidget *balance_vbox;
 
   guint size_timeout_id;
@@ -167,6 +166,9 @@ struct _EmpathyRosterWindowPriv {
   GList *actions_connected;
 
   gboolean shell_running;
+
+  /* GAction => GMenuItem */
+  GHashTable *topup_menu_items;
 };
 
 static void
@@ -1013,7 +1015,7 @@ static void
 roster_window_update_status (EmpathyRosterWindow *self)
 {
   gboolean connected, connecting;
-  GList *l, *children;
+  GList *l;
 
   connected = empathy_account_manager_get_accounts_connected (&connecting);
 
@@ -1031,29 +1033,24 @@ roster_window_update_status (EmpathyRosterWindow *self)
 
   /* Update widgets sensibility */
   for (l = self->priv->actions_connected; l; l = l->next)
-    gtk_action_set_sensitive (l->data, connected);
-
-  /* Update favourite rooms sensitivity */
-  children = gtk_container_get_children (GTK_CONTAINER (self->priv->room_menu));
-  for (l = children; l != NULL; l = l->next)
-    {
-      if (g_object_get_data (G_OBJECT (l->data), "is_favorite") != NULL)
-        gtk_widget_set_sensitive (GTK_WIDGET (l->data), connected);
-    }
-
-  g_list_free (children);
+    g_simple_action_set_enabled (l->data, connected);
 }
 
 static char *
-roster_window_account_to_action_name (TpAccount *account)
+account_to_topup_action_name (TpAccount *account,
+    gboolean prefix)
 {
   char *r;
+  gchar *result;
 
   /* action names can't have '/' in them, replace it with '.' */
   r = g_strdup (tp_account_get_path_suffix (account));
   r = g_strdelimit (r, "/", '.');
 
-  return r;
+  result = g_strconcat (prefix ? "win." : "", "topup-", r, NULL);
+  g_free (r);
+
+  return result;
 }
 
 static void
@@ -1076,18 +1073,37 @@ roster_window_balance_activate_cb (GtkAction *action,
 }
 
 static void
-roster_window_balance_update_balance (GtkAction *action,
-    TpConnection *conn)
+roster_window_balance_update_balance (EmpathyRosterWindow *self,
+    TpAccount *account)
 {
-  TpAccount *account = tp_connection_get_account (conn);
+  TpConnection *conn;
+  GAction *action;
+  GMenuItem *item;
   GtkWidget *label;
   int amount = 0;
   guint scale = G_MAXINT32;
   const gchar *currency = "";
-  char *money, *str;
+  char *money;
+  gchar *name;
+
+  g_print ("111111111\n");
+  conn = tp_account_get_connection (account);
+  if (conn == NULL)
+    return;
+  g_print ("2222222222\n");
+
+  name = account_to_topup_action_name (account, FALSE);
+
+  action = g_action_map_lookup_action (G_ACTION_MAP (self), name);
+  g_free (name);
+
+  if (action == NULL)
+    return;
+  g_print ("333333333\n");
 
   if (!tp_connection_get_balance (conn, &amount, &scale, &currency))
     return;
+  g_print ("44444444444\n");
 
   if (amount == 0 &&
       scale == G_MAXINT32 &&
@@ -1104,13 +1120,21 @@ roster_window_balance_update_balance (GtkAction *action,
       g_free (tmp);
     }
 
-  /* Translators: this string will be something like:
-   * Top up My Account ($1.23)..." */
-  str = g_strdup_printf (_("Top up %s (%s)..."),
-    tp_account_get_display_name (account), money);
+  item = g_hash_table_lookup (self->priv->topup_menu_items, action);
+  g_print ("5555555 %p\n", item);
+  if (item != NULL)
+    {
+      gchar *str;
 
-  gtk_action_set_label (action, str);
-  g_free (str);
+      /* Translators: this string will be something like:
+       * Top up My Account ($1.23)..." */
+      str = g_strdup_printf (_("Top up %s (%s)..."),
+        tp_account_get_display_name (account), money);
+
+      g_print ("SET %s\n", str);
+      g_menu_item_set_label (item, str);
+      g_free (str);
+    }
 
   /* update the money label in the roster */
   label = g_object_get_data (G_OBJECT (action), "money-label");
@@ -1124,82 +1148,65 @@ roster_window_balance_changed_cb (TpConnection *conn,
     guint balance,
     guint scale,
     const gchar *currency,
-    GtkAction *action)
+    EmpathyRosterWindow *self)
 {
-  roster_window_balance_update_balance (action, conn);
+  TpAccount *account;
+
+  account = tp_connection_get_account (conn);
+  if (account == NULL)
+    return;
+
+  roster_window_balance_update_balance (self, account);
 }
 
-static GtkAction *
+static GAction *
 roster_window_setup_balance_create_action (EmpathyRosterWindow *self,
     TpAccount *account)
 {
-  GtkAction *action;
-  char *name, *ui;
-  guint merge_id;
-  GError *error = NULL;
-
-  /* create the action group if required */
-  if (self->priv->balance_action_group == NULL)
-    {
-      self->priv->balance_action_group =
-        gtk_action_group_new ("balance-action-group");
-
-      gtk_ui_manager_insert_action_group (self->priv->ui_manager,
-        self->priv->balance_action_group, -1);
-    }
+  GAction *action;
+  gchar *name;
+  GMenuItem *item;
 
   /* create the action */
-  name = roster_window_account_to_action_name (account);
-  action = gtk_action_new (name,
-      tp_account_get_display_name (account),
-      _("Top up account credit"), NULL);
+  name = account_to_topup_action_name (account, FALSE);
 
+  action = (GAction *) g_simple_action_new (name, NULL);
+
+  g_action_map_add_action (G_ACTION_MAP (self), action);
+  g_free (name);
+
+  /* Add to the menu */
+  name = account_to_topup_action_name (account, TRUE);
+
+  item = g_menu_item_new (_("Top up account credit"), name);
+  g_print ("CREATE %p\n", item);
+
+  g_menu_append_item (self->priv->balance_section, item);
+  g_menu_item_set_label (item, "mushroom");
+
+  /* Pass ownership of action to the hash table */
+  g_hash_table_insert (self->priv->topup_menu_items,
+      action, g_object_ref (item));
+
+  if (0) {
   g_object_bind_property (account, "icon-name", action, "icon-name",
       G_BINDING_SYNC_CREATE);
 
   g_signal_connect (action, "activate",
       G_CALLBACK (roster_window_balance_activate_cb), self);
-
-  gtk_action_group_add_action (self->priv->balance_action_group, action);
-  g_object_unref (action);
-
-  ui = g_strdup_printf (
-      "<ui>"
-      " <menubar name='menubar'>"
-      "  <menu action='view'>"
-      "   <placeholder name='view_balance_placeholder'>"
-      "    <menuitem action='%s'/>"
-      "   </placeholder>"
-      "  </menu>"
-      " </menubar>"
-      "</ui>",
-      name);
-
-  merge_id = gtk_ui_manager_add_ui_from_string (self->priv->ui_manager,
-      ui, -1, &error);
-
-  if (error != NULL)
-    {
-      DEBUG ("Failed to add balance UI for %s: %s",
-        tp_account_get_display_name (account),
-        error->message);
-      g_error_free (error);
-    }
-
-  g_object_set_data (G_OBJECT (action),
-      "merge-id", GUINT_TO_POINTER (merge_id));
+  }
 
   g_free (name);
-  g_free (ui);
 
   return action;
 }
 
 static GtkWidget *
 roster_window_setup_balance_create_widget (EmpathyRosterWindow *self,
-    GtkAction *action,
+    GAction *action,
     TpAccount *account)
 {
+#if 0
   GtkWidget *hbox, *image, *label, *button;
 
   hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
@@ -1237,6 +1244,40 @@ roster_window_setup_balance_create_widget (EmpathyRosterWindow *self,
       (GWeakNotify) gtk_widget_destroy, hbox);
 
   return hbox;
+#endif
+  return NULL;
+}
+
+#define ACTION_SHOW_CREDIT_BALANCE "show-credit-balance"
+
+static void
+add_view_credit_balance_item (EmpathyRosterWindow *self)
+{
+  GMenuItem *item;
+
+  if (self->priv->view_credit_action != NULL)
+    return;
+
+  self->priv->view_credit_action = (GAction *) g_simple_action_new (
+      ACTION_SHOW_CREDIT_BALANCE, NULL);
+
+  /* TODO: connect sig */
+  /* bind view_balance_show_in_roster */
+  /*
+  g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
+      self->priv->view_balance_show_in_roster, "active",
+      G_SETTINGS_BIND_DEFAULT);
+  g_object_bind_property (self->priv->view_balance_show_in_roster, "active",
+      self->priv->balance_vbox, "visible",
+      G_BINDING_SYNC_CREATE);
+      */
+
+  g_action_map_add_action (G_ACTION_MAP (self), self->priv->view_credit_action);
+
+  item = g_menu_item_new (_("Credit Balance"),
+      "win." ACTION_SHOW_CREDIT_BALANCE);
+
+  g_menu_append_item (self->priv->balance_section, item);
 }
 
 static void
@@ -1244,7 +1285,7 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
     TpAccount *account)
 {
   TpConnection *conn = tp_account_get_connection (account);
-  GtkAction *action;
+  GAction *action;
   const gchar *uri;
 
   if (conn == NULL)
@@ -1256,13 +1297,13 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
   DEBUG ("Setting up balance for acct: %s",
       tp_account_get_display_name (account));
 
+  add_view_credit_balance_item (self);
+
   /* create the action */
   action = roster_window_setup_balance_create_action (self, account);
 
   if (action == NULL)
     return;
-
-  gtk_action_set_visible (self->priv->view_balance_show_in_roster, TRUE);
 
   /* create the display widget */
   roster_window_setup_balance_create_widget (self, action, account);
@@ -1274,22 +1315,55 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
       g_strdup (uri), g_free);
   gtk_action_set_sensitive (GTK_ACTION (action), !tp_str_empty (uri));
 
-  roster_window_balance_update_balance (GTK_ACTION (action), conn);
+  roster_window_balance_update_balance (self, account);
 
   g_signal_connect (conn, "balance-changed",
-      G_CALLBACK (roster_window_balance_changed_cb), action);
+      G_CALLBACK (roster_window_balance_changed_cb), self);
+}
+
+static void
+remove_view_credit_balance_item (EmpathyRosterWindow *self)
+{
+  gint i;
+
+  if (self->priv->view_credit_action == NULL)
+    return;
+
+  for (i = 0; i < g_menu_model_get_n_items (
+        G_MENU_MODEL (self->priv->balance_section)); i++)
+    {
+      const gchar *action;
+
+      if (g_menu_model_get_item_attribute (
+            G_MENU_MODEL (self->priv->balance_section), i,
+            G_MENU_ATTRIBUTE_ACTION, "s", &action))
+        {
+          if (!tp_strdiff (action, "win." ACTION_SHOW_CREDIT_BALANCE))
+            {
+              g_menu_remove (self->priv->balance_section, i);
+              break;
+            }
+        }
+    }
+
+  g_action_map_remove_action (G_ACTION_MAP (self),
+      g_action_get_name (self->priv->view_credit_action));
+
+  g_clear_object (&self->priv->view_credit_action);
 }
 
 static void
 roster_window_remove_balance_action (EmpathyRosterWindow *self,
     TpAccount *account)
 {
+  /* Remove the "Credit Balance" entry if we just removed the last account
+   * supporting balance and so that's the last entry in the section. */
+  if (g_menu_model_get_n_items (G_MENU_MODEL (self->priv->balance_section)) <= 1)
+    remove_view_credit_balance_item (self);
+#if 0
   GtkAction *action;
   char *name;
   GList *a;
-
-  if (self->priv->balance_action_group == NULL)
-    return;
 
   name = roster_window_account_to_action_name (account);
 
@@ -1320,6 +1394,7 @@ roster_window_remove_balance_action (EmpathyRosterWindow *self,
       g_list_length (a) > 0);
 
   g_list_free (a);
+#endif
 }
 
 static void
@@ -1427,6 +1502,11 @@ empathy_roster_window_finalize (GObject *window)
   g_object_unref (self->priv->gsettings_contacts);
   g_object_unref (self->priv->individual_manager);
 
+  g_object_unref (self->priv->rooms_section);
+  g_object_unref (self->priv->balance_section);
+  g_clear_object (&self->priv->view_credit_action);
+  g_hash_table_unref (self->priv->topup_menu_items);
+
   G_OBJECT_CLASS (empathy_roster_window_parent_class)->finalize (window);
 }
 
@@ -1444,72 +1524,111 @@ roster_window_key_press_event_cb  (GtkWidget *window,
 }
 
 static void
-roster_window_chat_quit_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_chat_quit_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   gtk_widget_destroy (GTK_WIDGET (self));
 }
 
 static void
-roster_window_view_history_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_view_history_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_log_window_show (NULL, NULL, FALSE, GTK_WINDOW (self));
 }
 
 static void
-roster_window_chat_new_message_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_chat_new_message_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_new_message_dialog_show (GTK_WINDOW (self));
 }
 
 static void
-roster_window_chat_new_call_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_chat_new_call_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_new_call_dialog_show (GTK_WINDOW (self));
 }
 
 static void
-roster_window_chat_add_contact_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_chat_add_contact_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_new_individual_dialog_show (GTK_WINDOW (self));
 }
 
 static void
-roster_window_chat_search_contacts_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_chat_search_contacts_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
-  GtkWidget *dialog = empathy_contact_search_dialog_new (
+  EmpathyRosterWindow *self = user_data;
+  GtkWidget *dialog;
+
+  dialog = empathy_contact_search_dialog_new (
       GTK_WINDOW (self));
 
   gtk_widget_show (dialog);
 }
 
 static void
-roster_window_view_show_ft_manager (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_view_show_ft_manager (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
   empathy_ft_manager_show ();
 }
 
 static void
-roster_window_view_show_offline_cb (GtkToggleAction   *action,
-    EmpathyRosterWindow *self)
+activate_toggle (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  GVariant *state;
+
+  state = g_action_get_state (G_ACTION (action));
+  g_action_change_state (G_ACTION (action),
+      g_variant_new_boolean (!g_variant_get_boolean (state)));
+  g_variant_unref (state);
+}
+
+static void
+roster_window_view_show_offline_cb (GSimpleAction *action,
+    GVariant *state,
+    gpointer user_data)
+{
+  EmpathyRosterWindow *self = user_data;
   gboolean current;
 
-  current = gtk_toggle_action_get_active (action);
+  current = g_variant_get_boolean (state);
+
   g_settings_set_boolean (self->priv->gsettings_ui,
       EMPATHY_PREFS_UI_SHOW_OFFLINE,
       current);
 
   empathy_individual_view_set_show_offline (self->priv->individual_view,
       current);
+
+  g_simple_action_set_state (action, state);
 }
 
+#if 0
 static void
 roster_window_notify_sort_contact_cb (GSettings         *gsettings,
     const gchar *key,
@@ -1543,7 +1662,9 @@ roster_window_notify_sort_contact_cb (GSettings         *gsettings,
     g_free (str);
   }
 }
+#endif
 
+#if 0
 static void
 roster_window_view_sort_contacts_cb (GtkRadioAction *action,
     GtkRadioAction *current,
@@ -1590,12 +1711,14 @@ roster_window_view_show_protocols_cb (GtkToggleAction *action,
   empathy_individual_store_set_show_protocols (self->priv->individual_store,
       value);
 }
+#endif
 
 /* Matches GtkRadioAction values set in empathy-roster-window.ui */
 #define CONTACT_LIST_NORMAL_SIZE_WITH_AVATARS   0
 #define CONTACT_LIST_NORMAL_SIZE      1
 #define CONTACT_LIST_COMPACT_SIZE     2
 
+#if 0
 static void
 roster_window_view_contacts_list_size_cb (GtkRadioAction *action,
     GtkRadioAction *current,
@@ -1660,17 +1783,22 @@ roster_window_notify_contact_list_size_cb (GSettings *gsettings,
      which updates the contacts list */
   gtk_radio_action_set_current_value (self->priv->normal_with_avatars, value);
 }
+#endif
 
 static void
-roster_window_edit_search_contacts_cb (GtkCheckMenuItem  *item,
-    EmpathyRosterWindow *self)
+roster_window_edit_search_contacts_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_individual_view_start_search (self->priv->individual_view);
 }
 
 static void
-roster_window_view_show_map_cb (GtkCheckMenuItem  *item,
-    EmpathyRosterWindow *self)
+roster_window_view_show_map_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
 #ifdef HAVE_LIBCHAMPLAIN
   empathy_map_view_show ();
@@ -1798,41 +1926,55 @@ roster_window_favorite_chatroom_join (EmpathyChatroom *chatroom)
 }
 
 static void
-roster_window_favorite_chatroom_menu_activate_cb (GtkMenuItem *menu_item,
+roster_window_favorite_chatroom_menu_activate_cb (GAction *action,
+    GVariant *parameter,
     EmpathyChatroom *chatroom)
 {
   roster_window_favorite_chatroom_join (chatroom);
+}
+
+static gchar *
+dup_join_action_name (EmpathyChatroom *chatroom,
+    gboolean prefix)
+{
+  return g_strconcat (prefix ? "win." : "", "join-",
+      empathy_chatroom_get_name (chatroom), NULL);
 }
 
 static void
 roster_window_favorite_chatroom_menu_add (EmpathyRosterWindow *self,
     EmpathyChatroom *chatroom)
 {
-  GtkWidget *menu_item;
+  GMenuItem *item;
   const gchar *name, *account_name;
-  gchar *label;
-
-  if (g_object_get_data (G_OBJECT (chatroom), "menu_item"))
-    return;
+  gchar *label, *action_name;
+  GAction *action;
 
   name = empathy_chatroom_get_name (chatroom);
   account_name = tp_account_get_display_name (
       empathy_chatroom_get_account (chatroom));
-  label = g_strdup_printf ("%s (%s)", name, account_name);
-  menu_item = gtk_menu_item_new_with_label (label);
-  g_free (label);
-  g_object_set_data (G_OBJECT (menu_item), "is_favorite",
-      GUINT_TO_POINTER (TRUE));
 
-  g_object_set_data (G_OBJECT (chatroom), "menu_item", menu_item);
-  g_signal_connect (menu_item, "activate",
+  label = g_strdup_printf ("%s (%s)", name, account_name);
+  action_name = dup_join_action_name (chatroom, FALSE);
+
+  action = (GAction *) g_simple_action_new (action_name, NULL);
+  g_free (action_name);
+
+  g_signal_connect (action, "activate",
       G_CALLBACK (roster_window_favorite_chatroom_menu_activate_cb),
       chatroom);
 
-  gtk_menu_shell_insert (GTK_MENU_SHELL (self->priv->room_menu),
-      menu_item, 4);
+  g_action_map_add_action (G_ACTION_MAP (self), action);
 
-  gtk_widget_show (menu_item);
+  action_name = dup_join_action_name (chatroom, TRUE);
+
+  item = g_menu_item_new (label, action_name);
+  g_menu_item_set_attribute (item, "room-name", "s", name);
+  g_menu_append_item (self->priv->rooms_section, item);
+
+  g_free (label);
+  g_free (action_name);
+  g_object_unref (action);
 }
 
 static void
@@ -1841,8 +1983,6 @@ roster_window_favorite_chatroom_menu_added_cb (EmpathyChatroomManager *manager,
     EmpathyRosterWindow *self)
 {
   roster_window_favorite_chatroom_menu_add (self, chatroom);
-  gtk_widget_show (self->priv->room_separator);
-  gtk_action_set_sensitive (self->priv->room_join_favorites, TRUE);
 }
 
 static void
@@ -1851,21 +1991,32 @@ roster_window_favorite_chatroom_menu_removed_cb (
     EmpathyChatroom *chatroom,
     EmpathyRosterWindow *self)
 {
-  GtkWidget *menu_item;
   GList *chatrooms;
+  gchar *act;
+  gint i;
 
-  menu_item = g_object_get_data (G_OBJECT (chatroom), "menu_item");
-  g_object_set_data (G_OBJECT (chatroom), "menu_item", NULL);
-  gtk_widget_destroy (menu_item);
+  act = dup_join_action_name (chatroom, TRUE);
 
-  chatrooms = empathy_chatroom_manager_get_chatrooms (self->priv->chatroom_manager,
-      NULL);
-  if (chatrooms)
-    gtk_widget_show (self->priv->room_separator);
-  else
-    gtk_widget_hide (self->priv->room_separator);
+  g_action_map_remove_action (G_ACTION_MAP (self), act);
 
-  gtk_action_set_sensitive (self->priv->room_join_favorites, chatrooms != NULL);
+  for (i = 0; i < g_menu_model_get_n_items (
+        G_MENU_MODEL (self->priv->rooms_section)); i++)
+    {
+      const gchar *name;
+
+      if (g_menu_model_get_item_attribute (
+            G_MENU_MODEL (self->priv->rooms_section), i, "room-name",
+            "s", &name)
+          && !tp_strdiff (name, empathy_chatroom_get_name (chatroom)))
+        {
+          g_menu_remove (self->priv->rooms_section, i);
+          break;
+        }
+    }
+
+  chatrooms = empathy_chatroom_manager_get_chatrooms (
+      self->priv->chatroom_manager, NULL);
+
   g_list_free (chatrooms);
 }
 
@@ -1873,24 +2024,14 @@ static void
 roster_window_favorite_chatroom_menu_setup (EmpathyRosterWindow *self)
 {
   GList *chatrooms, *l;
-  GtkWidget *room;
 
   self->priv->chatroom_manager = empathy_chatroom_manager_dup_singleton (NULL);
+
   chatrooms = empathy_chatroom_manager_get_chatrooms (
     self->priv->chatroom_manager, NULL);
-  room = gtk_ui_manager_get_widget (self->priv->ui_manager,
-    "/menubar/room");
-  self->priv->room_menu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (room));
-  self->priv->room_separator = gtk_ui_manager_get_widget (self->priv->ui_manager,
-    "/menubar/room/room_separator");
 
   for (l = chatrooms; l; l = l->next)
     roster_window_favorite_chatroom_menu_add (self, l->data);
-
-  if (!chatrooms)
-    gtk_widget_hide (self->priv->room_separator);
-
-  gtk_action_set_sensitive (self->priv->room_join_favorites, chatrooms != NULL);
 
   g_signal_connect (self->priv->chatroom_manager, "chatroom-added",
       G_CALLBACK (roster_window_favorite_chatroom_menu_added_cb),
@@ -1904,16 +2045,21 @@ roster_window_favorite_chatroom_menu_setup (EmpathyRosterWindow *self)
 }
 
 static void
-roster_window_room_join_new_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_room_join_new_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_new_chatroom_dialog_show (GTK_WINDOW (self));
 }
 
 static void
-roster_window_room_join_favorites_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_room_join_favorites_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
   GList *chatrooms, *l;
 
   chatrooms = empathy_chatroom_manager_get_chatrooms (self->priv->chatroom_manager,
@@ -1926,12 +2072,16 @@ roster_window_room_join_favorites_cb (GtkAction *action,
 }
 
 static void
-roster_window_room_manage_favorites_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_room_manage_favorites_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_chatrooms_window_show (GTK_WINDOW (self));
 }
 
+#if 0
 static void
 roster_window_edit_cb (GtkAction *action,
     EmpathyRosterWindow *self)
@@ -1981,19 +2131,23 @@ roster_window_edit_cb (GtkAction *action,
 
   return;
 }
+#endif
 
 static void
-roster_window_edit_accounts_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_edit_accounts_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
   empathy_accounts_dialog_show_application (gdk_screen_get_default (),
       NULL, FALSE, FALSE);
 }
 
 static void
-roster_window_edit_blocked_contacts_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_edit_blocked_contacts_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
   GtkWidget *dialog;
 
   dialog = empathy_contact_blocking_dialog_new (GTK_WINDOW (self));
@@ -2027,30 +2181,40 @@ empathy_roster_window_show_preferences (EmpathyRosterWindow *self,
 }
 
 static void
-roster_window_edit_preferences_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_edit_preferences_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_roster_window_show_preferences (self, NULL);
 }
 
 static void
-roster_window_help_about_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_help_about_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_about_dialog_new (GTK_WINDOW (self));
 }
 
 static void
-roster_window_help_debug_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_help_debug_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
   empathy_launch_program (BIN_DIR, "empathy-debugger", NULL);
 }
 
 static void
-roster_window_help_contents_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
+roster_window_help_contents_cb (GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data)
 {
+  EmpathyRosterWindow *self = user_data;
+
   empathy_url_show (GTK_WIDGET (self), "help:empathy");
 }
 
@@ -2227,6 +2391,7 @@ roster_window_account_validity_changed_cb (TpAccountManager  *manager,
   set_notebook_page (self);
 }
 
+#if 0
 static void
 roster_window_notify_show_offline_cb (GSettings *gsettings,
     const gchar *key,
@@ -2235,13 +2400,12 @@ roster_window_notify_show_offline_cb (GSettings *gsettings,
   gtk_toggle_action_set_active (toggle_action,
       g_settings_get_boolean (gsettings, key));
 }
+#endif
 
 static void
 roster_window_connection_items_setup (EmpathyRosterWindow *self,
     GtkBuilder *gui)
 {
-  GList *list;
-  GObject *action;
   guint i;
   const gchar *actions_connected[] = {
       "room_join_new",
@@ -2254,13 +2418,16 @@ roster_window_connection_items_setup (EmpathyRosterWindow *self,
       "edit_search_contacts"
   };
 
-  for (i = 0, list = NULL; i < G_N_ELEMENTS (actions_connected); i++)
+  for (i = 0; i < G_N_ELEMENTS (actions_connected); i++)
     {
-      action = gtk_builder_get_object (gui, actions_connected[i]);
-      list = g_list_prepend (list, action);
-    }
+      GAction *action;
 
-  self->priv->actions_connected = list;
+      action = g_action_map_lookup_action (G_ACTION_MAP (self),
+          actions_connected[i]);
+
+      self->priv->actions_connected = g_list_prepend (
+          self->priv->actions_connected, action);
+    }
 }
 
 static void
@@ -2351,6 +2518,102 @@ empathy_roster_window_constructor (GType type,
   return window;
 }
 
+static GActionEntry menubar_entries[] = {
+  { "chat_new_message", roster_window_chat_new_message_cb, NULL, NULL, NULL },
+  { "chat_new_call", roster_window_chat_new_call_cb, NULL, NULL, NULL },
+  { "chat_add_contact", roster_window_chat_add_contact_cb, NULL, NULL, NULL },
+  { "chat_search_contacts", roster_window_chat_search_contacts_cb, NULL, NULL, NULL },
+  { "chat_quit", roster_window_chat_quit_cb, NULL, NULL, NULL },
+
+  { "edit_accounts", roster_window_edit_accounts_cb, NULL, NULL, NULL },
+  { "edit_search_contacts", roster_window_edit_search_contacts_cb, NULL, NULL, NULL },
+  { "edit_blocked_contacts", roster_window_edit_blocked_contacts_cb, NULL, NULL, NULL },
+  { "edit_preferences", roster_window_edit_preferences_cb, NULL, NULL, NULL },
+
+  { "view_show_offline", activate_toggle, NULL, "false", roster_window_view_show_offline_cb },
+  /* TODO */
+  { "view_history", roster_window_view_history_cb, NULL, NULL, NULL },
+  { "view_show_ft_manager", roster_window_view_show_ft_manager, NULL, NULL, NULL },
+  { "view_show_map", roster_window_view_show_map_cb, NULL, NULL, NULL },
+
+  { "room_join_new", roster_window_room_join_new_cb, NULL, NULL, NULL },
+  { "room_join_favorites", roster_window_room_join_favorites_cb, NULL, NULL, NULL },
+  { "room_manage_favorites", roster_window_room_manage_favorites_cb, NULL, NULL, NULL },
+
+  { "help_contents", roster_window_help_contents_cb, NULL, NULL, NULL },
+  { "help_debug", roster_window_help_debug_cb, NULL, NULL, NULL },
+  { "help_about", roster_window_help_about_cb, NULL, NULL, NULL },
+};
+
+static void
+empathy_roster_window_constructed (GObject *object)
+{
+  EmpathyRosterWindow *self = EMPATHY_ROSTER_WINDOW (object);
+  gchar *filename;
+  GtkBuilder *builder;
+  GtkApplication *app;
+  GMenu *menubar;
+  /* TODO: <cassidy> desrt, yeah. So I should basically move all my menu code
+   * from gtkappwin to gtkapp, just deal with it in the app itself and stop
+   * caring about the appwin ? */
+
+  G_OBJECT_CLASS (empathy_roster_window_parent_class)->constructed (object);
+
+  app = gtk_window_get_application (GTK_WINDOW (self));
+  g_return_if_fail (app != NULL);
+
+  g_action_map_add_action_entries (G_ACTION_MAP (self),
+      menubar_entries, G_N_ELEMENTS (menubar_entries), self);
+
+  filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
+  builder = empathy_builder_get_file (filename,
+      /*
+      "ui_manager", &self->priv->ui_manager,
+      "view_show_offline", &show_offline_widget,
+      "view_show_protocols", &self->priv->show_protocols,
+      "view_sort_by_name", &self->priv->sort_by_name,
+      "view_sort_by_status", &self->priv->sort_by_status,
+      "view_normal_size_with_avatars", &self->priv->normal_with_avatars,
+      "view_normal_size", &self->priv->normal_size,
+      "view_compact_size", &self->priv->compact_size,
+      "view_history", &self->priv->view_history,
+      "menubar", &menubar,
+      */
+      NULL);
+  g_free (filename);
+
+  menubar = G_MENU (gtk_builder_get_object (builder, "menubar"));
+
+  gtk_application_set_menubar (app, G_MENU_MODEL(menubar));
+
+  /* Disable map if built without champlain */
+#ifndef HAVE_LIBCHAMPLAIN
+    {
+      GAction *view_show_map;
+
+      view_show_map = g_action_map_lookup_action (G_ACTION_MAP (self),
+          "view_show_map");
+      g_simple_action_set_enabled (G_SIMPLE_ACTION (view_show_map), FALSE);
+    }
+#endif
+
+  /* Set up connection related actions. */
+  roster_window_connection_items_setup (self, NULL);
+
+  /* Add rooms to the menu */
+  self->priv->rooms_section = G_MENU (gtk_builder_get_object (builder,
+        "rooms"));
+  g_object_ref (self->priv->rooms_section);
+
+  self->priv->balance_section = G_MENU (gtk_builder_get_object (builder,
+        "balance"));
+  g_object_ref (self->priv->balance_section);
+
+  roster_window_favorite_chatroom_menu_setup (self);
+
+  g_object_unref (builder);
+}
+
 static void
 empathy_roster_window_set_property (GObject *object,
     guint property_id,
@@ -2397,6 +2660,7 @@ empathy_roster_window_class_init (EmpathyRosterWindowClass *klass)
 
   object_class->finalize = empathy_roster_window_finalize;
   object_class->constructor = empathy_roster_window_constructor;
+  object_class->constructed = empathy_roster_window_constructed;
 
   object_class->set_property = empathy_roster_window_set_property;
   object_class->get_property = empathy_roster_window_get_property;
@@ -2437,16 +2701,14 @@ contacts_loaded_cb (EmpathyIndividualManager *manager,
 static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
-  GtkBuilder *gui, *gui_mgr;
+  GtkBuilder *gui;
   GtkWidget *sw;
-  GtkToggleAction *show_offline_widget;
-  GtkAction *show_map_widget;
+  //GtkToggleAction *show_offline_widget;
   GtkToolItem *item;
-  gboolean show_offline;
+  //gboolean show_offline;
   gchar *filename;
   GtkTreeModel *model;
   GtkWidget *search_vbox;
-  GtkWidget *menubar;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
@@ -2481,73 +2743,14 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       NULL);
   g_free (filename);
 
-  /* Set UI manager */
-  filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
-  gui_mgr = empathy_builder_get_file (filename,
-      "ui_manager", &self->priv->ui_manager,
-      "view_show_offline", &show_offline_widget,
-      "view_show_protocols", &self->priv->show_protocols,
-      "view_sort_by_name", &self->priv->sort_by_name,
-      "view_sort_by_status", &self->priv->sort_by_status,
-      "view_normal_size_with_avatars", &self->priv->normal_with_avatars,
-      "view_normal_size", &self->priv->normal_size,
-      "view_compact_size", &self->priv->compact_size,
-      "view_history", &self->priv->view_history,
-      "view_show_map", &show_map_widget,
-      "room_join_favorites", &self->priv->room_join_favorites,
-      "view_balance_show_in_roster", &self->priv->view_balance_show_in_roster,
-      "menubar", &menubar,
-      NULL);
-  g_free (filename);
-
-  /* The UI manager is living in its own .ui file as Glade doesn't support
-   * those. The GtkMenubar has to be in this file as well to we manually add
-   * it to the first position of the vbox. */
-  gtk_box_pack_start (GTK_BOX (self->priv->main_vbox), menubar, FALSE, FALSE, 0);
-  gtk_box_reorder_child (GTK_BOX (self->priv->main_vbox), menubar, 0);
-
   gtk_container_add (GTK_CONTAINER (self), self->priv->main_vbox);
   gtk_widget_show (self->priv->main_vbox);
 
   g_signal_connect (self, "key-press-event",
       G_CALLBACK (roster_window_key_press_event_cb), NULL);
 
-  empathy_builder_connect (gui_mgr, self,
-      "chat_quit", "activate", roster_window_chat_quit_cb,
-      "chat_new_message", "activate", roster_window_chat_new_message_cb,
-      "chat_new_call", "activate", roster_window_chat_new_call_cb,
-      "view_history", "activate", roster_window_view_history_cb,
-      "room_join_new", "activate", roster_window_room_join_new_cb,
-      "room_join_favorites", "activate", roster_window_room_join_favorites_cb,
-      "room_manage_favorites", "activate", roster_window_room_manage_favorites_cb,
-      "chat_add_contact", "activate", roster_window_chat_add_contact_cb,
-      "chat_search_contacts", "activate", roster_window_chat_search_contacts_cb,
-      "view_show_ft_manager", "activate", roster_window_view_show_ft_manager,
-      "view_show_offline", "toggled", roster_window_view_show_offline_cb,
-      "view_show_protocols", "toggled", roster_window_view_show_protocols_cb,
-      "view_sort_by_name", "changed", roster_window_view_sort_contacts_cb,
-      "view_normal_size_with_avatars", "changed", roster_window_view_contacts_list_size_cb,
-      "view_show_map", "activate", roster_window_view_show_map_cb,
-      "edit", "activate", roster_window_edit_cb,
-      "edit_accounts", "activate", roster_window_edit_accounts_cb,
-      "edit_blocked_contacts", "activate", roster_window_edit_blocked_contacts_cb,
-      "edit_preferences", "activate", roster_window_edit_preferences_cb,
-      "edit_search_contacts", "activate", roster_window_edit_search_contacts_cb,
-      "help_about", "activate", roster_window_help_about_cb,
-      "help_debug", "activate", roster_window_help_debug_cb,
-      "help_contents", "activate", roster_window_help_contents_cb,
-      NULL);
-
-  /* Set up connection related widgets. */
-  roster_window_connection_items_setup (self, gui_mgr);
-
-  g_object_ref (self->priv->ui_manager);
+  //g_object_ref (self->priv->ui_manager);
   g_object_unref (gui);
-  g_object_unref (gui_mgr);
-
-#ifndef HAVE_LIBCHAMPLAIN
-  gtk_action_set_visible (show_map_widget, FALSE);
-#endif
 
   self->priv->account_manager = tp_account_manager_dup ();
 
@@ -2562,9 +2765,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   self->priv->status_changed_handlers = g_hash_table_new_full (g_direct_hash,
       g_direct_equal, NULL, NULL);
 
-  /* Set up menu */
-  roster_window_favorite_chatroom_menu_setup (self);
+  self->priv->topup_menu_items = g_hash_table_new_full (NULL, NULL,
+      g_object_unref, g_object_unref);
 
+  /*
   self->priv->edit_context = gtk_ui_manager_get_widget (self->priv->ui_manager,
       "/menubar/edit/edit_context");
   self->priv->edit_context_separator = gtk_ui_manager_get_widget (
@@ -2572,6 +2776,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       "/menubar/edit/edit_context_separator");
   gtk_widget_hide (self->priv->edit_context);
   gtk_widget_hide (self->priv->edit_context_separator);
+      */
 
   /* Set up contact list. */
   empathy_status_presets_get_all ();
@@ -2678,17 +2883,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   /* Set window size. */
   empathy_geometry_bind (GTK_WINDOW (self), GEOMETRY_NAME);
 
-  /* bind view_balance_show_in_roster */
-  g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
-      self->priv->view_balance_show_in_roster, "active",
-      G_SETTINGS_BIND_DEFAULT);
-  g_object_bind_property (self->priv->view_balance_show_in_roster, "active",
-      self->priv->balance_vbox, "visible",
-      G_BINDING_SYNC_CREATE);
-
-  g_settings_bind (self->priv->gsettings_ui, "show-groups",
-      self->priv->individual_store, "show-groups", G_SETTINGS_BIND_DEFAULT);
-
   /* Enable event handling */
   self->priv->call_observer = empathy_call_observer_dup_singleton ();
   self->priv->event_manager = empathy_event_manager_dup_singleton ();
@@ -2705,6 +2899,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (roster_window_account_disabled_cb), self);
 
   /* Show offline ? */
+  /*
   show_offline = g_settings_get_boolean (self->priv->gsettings_ui,
       EMPATHY_PREFS_UI_SHOW_OFFLINE);
 
@@ -2713,24 +2908,30 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (roster_window_notify_show_offline_cb), show_offline_widget);
 
   gtk_toggle_action_set_active (show_offline_widget, show_offline);
+      */
 
   /* Show protocol ? */
+  /*
   g_signal_connect (self->priv->gsettings_ui,
       "changed::" EMPATHY_PREFS_UI_SHOW_PROTOCOLS,
       G_CALLBACK (roster_window_notify_show_protocols_cb), self);
 
   roster_window_notify_show_protocols_cb (self->priv->gsettings_ui,
       EMPATHY_PREFS_UI_SHOW_PROTOCOLS, self);
+      */
 
   /* Sort by name / by status ? */
+  /*
   g_signal_connect (self->priv->gsettings_contacts,
       "changed::" EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
       G_CALLBACK (roster_window_notify_sort_contact_cb), self);
 
   roster_window_notify_sort_contact_cb (self->priv->gsettings_contacts,
       EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM, self);
+      */
 
   /* Contacts list size */
+  /*
   g_signal_connect (self->priv->gsettings_ui,
       "changed::" EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST,
       G_CALLBACK (roster_window_notify_contact_list_size_cb), self);
@@ -2739,9 +2940,12 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       "changed::" EMPATHY_PREFS_UI_SHOW_AVATARS,
       G_CALLBACK (roster_window_notify_contact_list_size_cb),
       self);
+      */
 
+  /*
   roster_window_notify_contact_list_size_cb (self->priv->gsettings_ui,
       EMPATHY_PREFS_UI_SHOW_AVATARS, self);
+      */
 
   g_signal_connect (self->priv->button_account_settings, "clicked",
       G_CALLBACK (button_account_settings_clicked_cb), self);
