@@ -24,7 +24,7 @@ LDADD =								\
 	$(EMPATHY_LIBS)						\
 	$(NULL)
 
-TEST_PROGS =                                     \
+TESTS =                                     \
      empathy-irc-server-test                     \
      empathy-irc-network-test                    \
      empathy-irc-network-manager-test            \
@@ -61,8 +61,6 @@ empathy_parser_test_SOURCES = empathy-parser-test.c \
 empathy_live_search_test_SOURCES = empathy-live-search-test.c \
      test-helper.c test-helper.h
 
-check_PROGRAMS = $(TEST_PROGS)
-
 TESTS_ENVIRONMENT = EMPATHY_SRCDIR=@abs_top_srcdir@ \
 		    MC_PROFILE_DIR=@abs_top_srcdir@/tests \
 		    MC_MANAGER_DIR=@abs_top_srcdir@/tests
@@ -71,10 +69,10 @@ test-report: test-report.xml
 	gtester-report $(top_builddir)/tests/$@.xml > \
 	  $(top_builddir)/tests/$@.html
 
-test-report.xml: ${TEST_PROGS} test
+test-report.xml: ${TESTS} test
 
-test: ${TEST_PROGS}
-	gtester -o test-report.xml -k --verbose ${TEST_PROGS}
+test: ${TESTS}
+	gtester -o test-report.xml -k --verbose ${TESTS}
 
 test-%: empathy-%-test
 	gtester -o $@-report.xml -k --verbose $<
