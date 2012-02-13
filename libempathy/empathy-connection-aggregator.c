@@ -288,3 +288,44 @@ empathy_connection_aggregator_dup_all_contacts (
 
   return result;
 }
+
+static void
+rename_group_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  GError *error = NULL;
+
+  if (!tp_connection_rename_group_finish (TP_CONNECTION (source), result,
+        &error))
+    {
+      DEBUG ("Failed to rename group on %s: %s",
+          tp_proxy_get_object_path (source), error->message);
+      g_error_free (error);
+    }
+}
+
+void
+empathy_connection_aggregator_rename_group (EmpathyConnectionAggregator *self,
+    const gchar *old_name,
+    const gchar *new_name)
+{
+  GList *l;
+
+  for (l = self->priv->conns; l != NULL; l = g_list_next (l))
+    {
+      TpConnection *conn = l->data;
+      const gchar * const *groups;
+
+      groups = tp_connection_get_contact_groups (conn);
+
+      if (!tp_strv_contains (groups, old_name))
+        continue;
+
+      DEBUG ("Rename group '%s' to '%s' on %s", old_name, new_name,
+          tp_proxy_get_object_path (conn));
+
+      tp_connection_rename_group_async (conn, old_name, new_name,
+          rename_group_cb, NULL);
+    }
+}

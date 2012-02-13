@@ -67,6 +67,11 @@ GList * empathy_connection_aggregator_get_all_groups (
 GPtrArray * empathy_connection_aggregator_dup_all_contacts (
     EmpathyConnectionAggregator *self);
 
+void empathy_connection_aggregator_rename_group (
+    EmpathyConnectionAggregator *self,
+    const gchar *old_name,
+    const gchar *new_name);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_CONNECTION_AGGREGATOR_H__*/
