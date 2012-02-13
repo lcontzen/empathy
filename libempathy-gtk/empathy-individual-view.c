@@ -38,6 +38,7 @@
 #include <folks/folks.h>
 #include <folks/folks-telepathy.h>
 
+#include <libempathy/empathy-connection-aggregator.h>
 #include <libempathy/empathy-individual-manager.h>
 #include <libempathy/empathy-contact-groups.h>
 #include <libempathy/empathy-request-util.h>
@@ -90,6 +91,8 @@ typedef struct
 
   GtkTreeModelFilterVisibleFunc custom_filter;
   gpointer custom_filter_data;
+
+  GtkCellRenderer *text_renderer;
 } EmpathyIndividualViewPriv;
 
 typedef struct
@@ -1811,10 +1814,57 @@ individual_view_filter_visible_func (GtkTreeModel *model,
   return FALSE;
 }
 
+static gchar * empathy_individual_view_dup_selected_group (
+    EmpathyIndividualView *view,
+    gboolean *is_fake_group);
+
+static void
+text_edited_cb (GtkCellRendererText *cellrenderertext,
+    gchar *path,
+    gchar *new_name,
+    EmpathyIndividualView *self)
+{
+  EmpathyIndividualViewPriv *priv = GET_PRIV (self);
+  gchar *old_name;
+
+  g_object_set (priv->text_renderer, "editable", FALSE, NULL);
+
+  if (tp_str_empty (new_name))
+    return;
+
+  old_name = empathy_individual_view_dup_selected_group (self, NULL);
+  g_return_if_fail (old_name != NULL);
+
+  if (tp_strdiff (old_name, new_name))
+    {
+      EmpathyConnectionAggregator *aggregator;
+
+      DEBUG ("rename group '%s' to '%s'", old_name, new_name);
+
+      aggregator = empathy_connection_aggregator_dup_singleton ();
+
+      empathy_connection_aggregator_rename_group (aggregator, old_name,
+          new_name);
+      g_object_unref (aggregator);
+    }
+
+  g_free (old_name);
+}
+
+static void
+text_renderer_editing_cancelled_cb (GtkCellRenderer *renderer,
+    EmpathyIndividualView *self)
+{
+  EmpathyIndividualViewPriv *priv = GET_PRIV (self);
+
+  g_object_set (priv->text_renderer, "editable", FALSE, NULL);
+}
+
 static void
 individual_view_constructed (GObject *object)
 {
   EmpathyIndividualView *view = EMPATHY_INDIVIDUAL_VIEW (object);
+  EmpathyIndividualViewPriv *priv = GET_PRIV (view);
   GtkCellRenderer *cell;
   GtkTreeViewColumn *col;
   guint i;
@@ -1856,25 +1906,30 @@ individual_view_constructed (GObject *object)
       NULL);
 
   /* Name */
-  cell = empathy_cell_renderer_text_new ();
-  gtk_tree_view_column_pack_start (col, cell, TRUE);
-  gtk_tree_view_column_set_cell_data_func (col, cell,
+  priv->text_renderer = empathy_cell_renderer_text_new ();
+  gtk_tree_view_column_pack_start (col, priv->text_renderer, TRUE);
+  gtk_tree_view_column_set_cell_data_func (col, priv->text_renderer,
       (GtkTreeCellDataFunc) individual_view_text_cell_data_func, view, NULL);
 
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "name", EMPATHY_INDIVIDUAL_STORE_COL_NAME);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "text", EMPATHY_INDIVIDUAL_STORE_COL_NAME);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "presence-type", EMPATHY_INDIVIDUAL_STORE_COL_PRESENCE_TYPE);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "status", EMPATHY_INDIVIDUAL_STORE_COL_STATUS);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "is_group", EMPATHY_INDIVIDUAL_STORE_COL_IS_GROUP);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "compact", EMPATHY_INDIVIDUAL_STORE_COL_COMPACT);
-  gtk_tree_view_column_add_attribute (col, cell,
+  gtk_tree_view_column_add_attribute (col, priv->text_renderer,
       "client-types", EMPATHY_INDIVIDUAL_STORE_COL_CLIENT_TYPES);
+
+  g_signal_connect (priv->text_renderer, "editing-canceled",
+      G_CALLBACK (text_renderer_editing_cancelled_cb), view);
+  g_signal_connect (priv->text_renderer, "edited",
+      G_CALLBACK (text_edited_cb), view);
 
   /* Audio Call Icon */
   cell = empathy_cell_renderer_activatable_new ();
@@ -2354,6 +2409,31 @@ individual_view_group_remove_activate_cb (GtkMenuItem *menuitem,
   g_free (group);
 }
 
+static void
+individual_view_group_rename_activate_cb (GtkMenuItem *menuitem,
+    EmpathyIndividualView *self)
+{
+  EmpathyIndividualViewPriv *priv = GET_PRIV (self);
+  GtkTreePath *path;
+  GtkTreeIter iter;
+  GtkTreeSelection *selection;
+  GtkTreeModel *model;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+  if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+    return;
+  path = gtk_tree_model_get_path (model, &iter);
+
+  g_object_set (G_OBJECT (priv->text_renderer), "editable", TRUE, NULL);
+
+  gtk_tree_view_set_enable_search (GTK_TREE_VIEW (self), FALSE);
+  gtk_widget_grab_focus (GTK_WIDGET (self));
+  gtk_tree_view_set_cursor (GTK_TREE_VIEW (self), path,
+      gtk_tree_view_get_column (GTK_TREE_VIEW (self), 0), TRUE);
+
+  gtk_tree_path_free (path);
+}
+
 GtkWidget *
 empathy_individual_view_get_group_menu (EmpathyIndividualView *view)
 {
@@ -2380,17 +2460,14 @@ empathy_individual_view_get_group_menu (EmpathyIndividualView *view)
 
   menu = gtk_menu_new ();
 
-  /* TODO: implement
-     if (priv->view_features &
-     EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_RENAME) {
-     item = gtk_menu_item_new_with_mnemonic (_("Re_name"));
-     gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
-     gtk_widget_show (item);
-     g_signal_connect (item, "activate",
-     G_CALLBACK (individual_view_group_rename_activate_cb),
-     view);
+  if (priv->view_features & EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_RENAME)
+    {
+       item = gtk_menu_item_new_with_mnemonic (_("Re_name"));
+       gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+       gtk_widget_show (item);
+       g_signal_connect (item, "activate",
+           G_CALLBACK (individual_view_group_rename_activate_cb), view);
      }
-   */
 
   if (priv->view_features & EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_REMOVE)
     {
