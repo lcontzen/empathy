@@ -93,9 +93,5 @@ void empathy_individual_manager_set_blocked (EmpathyIndividualManager *self,
 gboolean empathy_individual_manager_get_contacts_loaded (
     EmpathyIndividualManager *self);
 
-FolksIndividual * empathy_individual_manager_lookup_by_contact (
-    EmpathyIndividualManager *self,
-    TpContact *contact);
-
 G_END_DECLS
 #endif /* __EMPATHY_INDIVIDUAL_MANAGER_H__ */
