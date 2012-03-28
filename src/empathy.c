@@ -52,7 +52,6 @@
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-chatroom-manager.h>
 #include <libempathy/empathy-account-settings.h>
-#include <libempathy/empathy-connectivity.h>
 #include <libempathy/empathy-connection-managers.h>
 #include <libempathy/empathy-request-util.h>
 #include <libempathy/empathy-ft-factory.h>
@@ -119,7 +118,6 @@ struct _EmpathyApp
   EmpathyChatroomManager *chatroom_manager;
   EmpathyFTFactory  *ft_factory;
   EmpathyPresenceManager *presence_mgr;
-  EmpathyConnectivity *connectivity;
   GSettings *gsettings;
   EmpathyNotificationsApprover *notifications_approver;
   EmpathyConnectionAggregator *conn_aggregator;
@@ -157,7 +155,6 @@ empathy_app_dispose (GObject *object)
 #endif
 
   tp_clear_object (&self->presence_mgr);
-  tp_clear_object (&self->connectivity);
   tp_clear_object (&self->icon);
   tp_clear_object (&self->account_manager);
   tp_clear_object (&self->log_manager);
@@ -522,17 +519,6 @@ empathy_app_init (EmpathyApp *self)
 }
 
 static void
-use_conn_notify_cb (GSettings *gsettings,
-    const gchar *key,
-    gpointer     user_data)
-{
-  EmpathyConnectivity *connectivity = user_data;
-
-  empathy_connectivity_set_use_conn (connectivity,
-      g_settings_get_boolean (gsettings, key));
-}
-
-static void
 migrate_config_to_xdg_dir (void)
 {
   gchar *xdg_dir, *old_dir, *xdg_filename, *old_filename;
@@ -772,14 +758,6 @@ empathy_app_constructed (GObject *object)
   self->presence_mgr = empathy_presence_manager_dup_singleton ();
 
   self->gsettings = g_settings_new (EMPATHY_PREFS_SCHEMA);
-
-  /* Setting up Connectivity */
-  self->connectivity = empathy_connectivity_dup_singleton ();
-  use_conn_notify_cb (self->gsettings, EMPATHY_PREFS_USE_CONN,
-      self->connectivity);
-  g_signal_connect (self->gsettings,
-      "changed::" EMPATHY_PREFS_USE_CONN,
-      G_CALLBACK (use_conn_notify_cb), self->connectivity);
 
   /* account management */
   self->account_manager = tp_account_manager_dup ();
