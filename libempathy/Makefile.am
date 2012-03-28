@@ -34,7 +34,6 @@ libempathy_headers =				\
 	empathy-chatroom.h			\
 	empathy-client-factory.h \
 	empathy-connection-managers.h		\
-	empathy-connectivity.h			\
 	empathy-connection-aggregator.h		\
 	empathy-contact-groups.h		\
 	empathy-contact-list.h			\
@@ -76,7 +75,6 @@ libempathy_handwritten_source =				\
 	empathy-chatroom.c				\
 	empathy-client-factory.c \
 	empathy-connection-managers.c			\
-	empathy-connectivity.c				\
 	empathy-connection-aggregator.c		\
 	empathy-contact-groups.c			\
 	empathy-contact-list.c				\
