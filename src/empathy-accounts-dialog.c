@@ -40,7 +40,6 @@
 
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-connection-managers.h>
-#include <libempathy/empathy-connectivity.h>
 #include <libempathy/empathy-pkg-kit.h>
 #include <libempathy/empathy-tp-contact-factory.h>
 
@@ -134,7 +133,7 @@ typedef struct {
 
   TpAccountManager *account_manager;
   EmpathyConnectionManagers *cms;
-  EmpathyConnectivity *connectivity;
+  GNetworkMonitor *connectivity;
 
   GtkWindow *parent_window;
   TpAccount *initial_selection;
@@ -464,7 +463,7 @@ accounts_dialog_update_status_infobar (EmpathyAccountsDialog *dialog,
                 g_free (message);
               }
 
-            if (!empathy_connectivity_is_online (priv->connectivity))
+            if (!g_network_monitor_get_network_available (priv->connectivity))
                accounts_dialog_status_infobar_set_message (dialog,
                     _("Offline — No Network Connection"));
 
@@ -2566,6 +2565,12 @@ do_dispose (GObject *obj)
       priv->connecting_id = 0;
     }
 
+  if (priv->connectivity)
+    {
+      g_object_unref (priv->connectivity);
+      priv->connectivity = NULL;
+    }
+
   if (priv->account_manager != NULL)
     {
       g_object_unref (priv->account_manager);
@@ -2576,12 +2581,6 @@ do_dispose (GObject *obj)
     {
       g_object_unref (priv->cms);
       priv->cms = NULL;
-    }
-
-  if (priv->connectivity)
-    {
-      g_object_unref (priv->connectivity);
-      priv->connectivity = NULL;
     }
 
   if (priv->initial_selection != NULL)
@@ -2651,7 +2650,8 @@ do_constructed (GObject *object)
   tp_proxy_prepare_async (priv->account_manager, NULL,
       accounts_dialog_manager_ready_cb, dialog);
 
-  priv->connectivity = empathy_connectivity_dup_singleton ();
+  priv->connectivity = g_network_monitor_get_default ();
+  g_object_ref (priv->connectivity);
 }
 
 static void
