@@ -1211,17 +1211,24 @@ empathy_create_individual_from_tp_contact (TpContact *contact)
 FolksIndividual *
 empathy_ensure_individual_from_tp_contact (TpContact *contact)
 {
-  EmpathyIndividualManager *mgr;
+  TpfPersona *persona;
   FolksIndividual *individual;
 
-  mgr = empathy_individual_manager_dup_singleton ();
-  individual = empathy_individual_manager_lookup_by_contact (mgr, contact);
+  persona = tpf_persona_dup_for_contact (contact);
+  if (persona == NULL)
+    {
+      DEBUG ("Failed to get a persona for %s",
+          tp_contact_get_identifier (contact));
+      return NULL;
+    }
+
+  individual = folks_persona_get_individual (FOLKS_PERSONA (persona));
 
   if (individual != NULL)
     g_object_ref (individual);
   else
-    individual = empathy_create_individual_from_tp_contact (contact);
+    individual = create_individual_from_persona (FOLKS_PERSONA (persona));
 
-  g_object_unref (mgr);
+  g_object_unref (persona);
   return individual;
 }
