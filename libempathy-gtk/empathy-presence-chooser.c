@@ -36,7 +36,6 @@
 #include <telepathy-glib/account-manager.h>
 #include <telepathy-glib/util.h>
 
-#include <libempathy/empathy-connectivity.h>
 #include <libempathy/empathy-presence-manager.h>
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-status-presets.h>
@@ -97,7 +96,7 @@ typedef enum  {
 
 typedef struct {
 	EmpathyPresenceManager *presence_mgr;
-	EmpathyConnectivity *connectivity;
+	GNetworkMonitor *connectivity;
 
 	gboolean     editing_status;
 	int          block_set_editing;
@@ -775,7 +774,7 @@ update_sensitivity_am_prepared_cb (GObject *source_object,
 
 	g_list_free (accounts);
 
-	if (!empathy_connectivity_is_online (priv->connectivity))
+	if (!g_network_monitor_get_network_available (priv->connectivity))
 		sensitive = FALSE;
 
 	gtk_widget_set_sensitive (GTK_WIDGET (chooser), sensitive);
@@ -813,7 +812,7 @@ presence_chooser_account_manager_account_changed_cb (
 }
 
 static void
-presence_chooser_connectivity_state_change (EmpathyConnectivity *connectivity,
+presence_chooser_network_change (GNetworkMonitor *connectivity,
 					    gboolean new_online,
 					    EmpathyPresenceChooser *chooser)
 {
@@ -956,10 +955,12 @@ presence_chooser_constructed (GObject *object)
 	status_tooltip = gtk_entry_get_text (GTK_ENTRY (entry));
 	gtk_widget_set_tooltip_text (GTK_WIDGET (chooser), status_tooltip);
 
-	priv->connectivity = empathy_connectivity_dup_singleton ();
+	priv->connectivity = g_network_monitor_get_default ();
+	g_object_ref (priv->connectivity);
+
 	tp_g_signal_connect_object (priv->connectivity,
-		"state-change",
-		G_CALLBACK (presence_chooser_connectivity_state_change),
+		"network-changed",
+		G_CALLBACK (presence_chooser_network_change),
 		chooser, 0);
 
 	presence_chooser_update_sensitivity (chooser);
