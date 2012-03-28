@@ -1167,10 +1167,28 @@ empathy_sasl_channel_supports_mechanism (TpChannel *channel,
   return tp_strv_contains (available_mechanisms, mechanism);
 }
 
+static FolksIndividual *
+create_individual_from_persona (FolksPersona *persona)
+{
+  GeeSet *personas;
+  FolksIndividual *individual;
+
+  personas = GEE_SET (
+      gee_hash_set_new (FOLKS_TYPE_PERSONA, g_object_ref, g_object_unref,
+      g_direct_hash, g_direct_equal));
+
+  gee_collection_add (GEE_COLLECTION (personas), persona);
+
+  individual = folks_individual_new (personas);
+
+  g_clear_object (&personas);
+
+  return individual;
+}
+
 FolksIndividual *
 empathy_create_individual_from_tp_contact (TpContact *contact)
 {
-  GeeSet *personas;
   TpfPersona *persona;
   FolksIndividual *individual;
 
@@ -1182,17 +1200,9 @@ empathy_create_individual_from_tp_contact (TpContact *contact)
       return NULL;
     }
 
-  personas = GEE_SET (
-      gee_hash_set_new (FOLKS_TYPE_PERSONA, g_object_ref, g_object_unref,
-      g_direct_hash, g_direct_equal));
+  individual = create_individual_from_persona (FOLKS_PERSONA (persona));
 
-  gee_collection_add (GEE_COLLECTION (personas), persona);
-
-  individual = folks_individual_new (personas);
-
-  g_clear_object (&persona);
-  g_clear_object (&personas);
-
+  g_object_unref (persona);
   return individual;
 }
 
