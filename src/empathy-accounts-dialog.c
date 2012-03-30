@@ -1733,6 +1733,30 @@ accounts_dialog_treeview_enabled_cb (GtkMenuItem *item,
   enable_and_connect_account (account, !enabled);
 }
 
+static void
+accounts_dialog_treeview_rename_cb (GtkMenuItem *item,
+    EmpathyAccountsDialog *self)
+{
+  EmpathyAccountsDialogPriv *priv = GET_PRIV (self);
+  GtkTreePath *path;
+  GtkTreeIter iter;
+  GtkTreeSelection *selection;
+  GtkTreeModel *model;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->treeview));
+  if (!gtk_tree_selection_get_selected (selection, &model, &iter))
+    return;
+  path = gtk_tree_model_get_path (model, &iter);
+
+  g_object_set (G_OBJECT (priv->name_renderer), "editable", TRUE, NULL);
+
+  gtk_widget_grab_focus (GTK_WIDGET (priv->treeview));
+  gtk_tree_view_set_cursor (GTK_TREE_VIEW (priv->treeview), path,
+      gtk_tree_view_get_column (GTK_TREE_VIEW (priv->treeview), 0), TRUE);
+
+  gtk_tree_path_free (path);
+}
+
 static gboolean
 accounts_dialog_treeview_button_press_event_cb (GtkTreeView *view,
     GdkEventButton *event,
@@ -1787,6 +1811,15 @@ accounts_dialog_treeview_button_press_event_cb (GtkTreeView *view,
     {
       gtk_widget_set_sensitive (item, FALSE);
     }
+
+  gtk_widget_show (item);
+
+  /* Menu item: Rename */
+  item = gtk_menu_item_new_with_mnemonic (_("Rename"));
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+  tp_g_signal_connect_object (item, "activate",
+      G_CALLBACK (accounts_dialog_treeview_rename_cb), dialog, 0);
 
   gtk_widget_show (item);
 
