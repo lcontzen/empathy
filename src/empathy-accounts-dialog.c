@@ -1742,8 +1742,7 @@ accounts_dialog_treeview_button_press_event_cb (GtkTreeView *view,
   GtkTreePath *path = NULL;
   GtkTreeIter iter;
   GtkWidget *menu;
-  GtkWidget *item_enable, *item_disable;
-  GtkWidget *image_enable, *image_disable;
+  GtkWidget *item;
 
   /* ignore multiple clicks */
   if (event->type != GDK_BUTTON_PRESS)
@@ -1766,49 +1765,28 @@ accounts_dialog_treeview_button_press_event_cb (GtkTreeView *view,
   /* Create the menu */
   menu = empathy_context_menu_new (GTK_WIDGET (view));
 
-  /* Get images for menu items */
-  image_enable = gtk_image_new_from_icon_name (empathy_icon_name_for_presence (
-        tp_account_manager_get_most_available_presence (
-          priv->account_manager, NULL, NULL)),
-      GTK_ICON_SIZE_MENU);
-  image_disable = gtk_image_new_from_icon_name (
-      empathy_icon_name_for_presence (TP_CONNECTION_PRESENCE_TYPE_OFFLINE),
-      GTK_ICON_SIZE_MENU);
+  /* Menu item: to enabled/disable the account */
+  item = gtk_check_menu_item_new_with_mnemonic (_("_Enabled"));
 
-  /* Menu items: to enabled/disable the account */
-  item_enable = gtk_image_menu_item_new_with_mnemonic (_("_Enable"));
-  item_disable = gtk_image_menu_item_new_with_mnemonic (_("_Disable"));
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_enable),
-      image_enable);
-  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_disable),
-      image_disable);
-
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item_enable);
-  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item_disable);
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
 
   if (account_can_be_enabled (account))
     {
-      if (tp_account_is_enabled (account))
-        {
-          tp_g_signal_connect_object (item_disable, "activate",
-              G_CALLBACK (accounts_dialog_treeview_enabled_cb), account, 0);
-          gtk_widget_set_sensitive (item_enable, FALSE);
-        }
-      else
-        {
-          tp_g_signal_connect_object (item_enable, "activate",
-              G_CALLBACK (accounts_dialog_treeview_enabled_cb), account, 0);
-          gtk_widget_set_sensitive (item_disable, FALSE);
-        }
+      gboolean active;
+
+      active = tp_account_is_enabled (account);
+      gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item),
+          active);
+
+      tp_g_signal_connect_object (item, "activate",
+          G_CALLBACK (accounts_dialog_treeview_enabled_cb), account, 0);
     }
   else
     {
-      gtk_widget_set_sensitive (item_enable, FALSE);
-      gtk_widget_set_sensitive (item_disable, FALSE);
+      gtk_widget_set_sensitive (item, FALSE);
     }
 
-  gtk_widget_show (item_enable);
-  gtk_widget_show (item_disable);
+  gtk_widget_show (item);
 
   /* FIXME: Add here presence items, to be able to set per-account presence */
 
