@@ -97,6 +97,7 @@ typedef struct {
   GtkWidget *enabled_switch;
 
   GtkWidget *treeview;
+  GtkCellRenderer *name_renderer;
 
   GtkWidget *button_add;
   GtkWidget *button_remove;
@@ -1443,21 +1444,22 @@ accounts_dialog_model_add_columns (EmpathyAccountsDialog *dialog)
       NULL);
 
   /* Name renderer */
-  cell = gtk_cell_renderer_text_new ();
-  g_object_set (cell,
+  priv->name_renderer = gtk_cell_renderer_text_new ();
+  g_object_set (priv->name_renderer,
       "ellipsize", PANGO_ELLIPSIZE_END,
       "width-chars", 25,
       "editable", TRUE,
       NULL);
-  gtk_tree_view_column_pack_start (column, cell, TRUE);
-  gtk_tree_view_column_add_attribute (column, cell, "text", COL_NAME);
-  g_signal_connect (cell, "edited",
+  gtk_tree_view_column_pack_start (column, priv->name_renderer, TRUE);
+  gtk_tree_view_column_add_attribute (column, priv->name_renderer,
+      "text", COL_NAME);
+  g_signal_connect (priv->name_renderer, "edited",
       G_CALLBACK (accounts_dialog_name_edited_cb),
       dialog);
-  g_signal_connect (cell, "editing-started",
+  g_signal_connect (priv->name_renderer, "editing-started",
       G_CALLBACK (accounts_dialog_name_editing_started_cb),
       dialog);
-  g_object_set (cell, "ypad", 4, NULL);
+  g_object_set (priv->name_renderer, "ypad", 4, NULL);
 
 #ifdef HAVE_MEEGO
   /* Delete column */
