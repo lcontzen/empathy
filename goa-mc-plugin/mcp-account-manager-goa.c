@@ -452,7 +452,7 @@ account_is_in_goa (const McpAccountStorage *self,
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
 
-  return (g_hash_table_lookup (priv->accounts, acct) != NULL);
+  return (g_hash_table_lookup (priv->accounts, account) != NULL);
 }
 
 static gboolean
