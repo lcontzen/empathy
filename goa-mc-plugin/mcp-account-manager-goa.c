@@ -355,10 +355,10 @@ static void
 get_enabled (const McpAccountStorage *self,
     const McpAccountManager *am,
     const gchar *acc,
-    GoaObject *object)
+    GoaAccount *account)
 {
   mcp_account_manager_set_value (am, acc, "Enabled",
-      goa_object_peek_chat (object) != NULL ? "true" : "false");
+      goa_account_get_chat_disabled (account) == FALSE ? "true" : "false");
 }
 
 
@@ -418,11 +418,11 @@ mcp_account_manager_goa_get (const McpAccountStorage *self,
       g_strfreev (keys);
 
       /* Enabled */
-      get_enabled (self, am, acc, object);
+      get_enabled (self, am, acc, account);
     }
   else if (!tp_strdiff (key, "Enabled"))
     {
-      get_enabled (self, am, acc, object);
+      get_enabled (self, am, acc, account);
     }
   else
     {
@@ -467,18 +467,33 @@ mcp_account_manager_goa_set (const McpAccountStorage *self,
   if (!account_is_in_goa (self, account))
     return FALSE;
 
-  /* No need to save Enabled, it's up to the GOA configuration if the account
-   * is configured or not. */
-  if (!tp_strdiff (key, "Enabled"))
-    return TRUE;
-
   DEBUG ("%s: (%s, %s, %s)", G_STRFUNC, account, key, val);
+
+  if (!tp_strdiff (key, "Enabled"))
+    {
+      GoaObject *object;
+      GoaAccount *acc;
+
+      object = g_hash_table_lookup (priv->accounts, account);
+
+      if (object == NULL)
+        return FALSE;
+
+      acc = goa_object_peek_account (object);
+
+      if (acc == NULL)
+        return FALSE;
+
+      goa_account_set_chat_disabled (acc, tp_strdiff (val, "true"));
+      goto out;
+    }
 
   if (val != NULL)
     g_key_file_set_value (priv->store, account, key, val);
   else
     g_key_file_remove_key (priv->store, account, key, NULL);
 
+ out:
   /* Pretend we save everything so MC won't save this in accounts.cfg */
   return TRUE;
 }
@@ -561,8 +576,7 @@ mcp_account_manager_goa_get_restrictions (const McpAccountStorage *self,
     const gchar *account)
 {
   return TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_PARAMETERS |
-         TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_SERVICE |
-         TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_ENABLED;
+         TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_SERVICE;
 }
 
 
