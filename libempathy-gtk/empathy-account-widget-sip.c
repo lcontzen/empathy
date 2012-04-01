@@ -174,6 +174,8 @@ empathy_account_widget_sip_build (EmpathyAccountWidget *self,
           "checkbutton_discover-binding", "discover-binding",
           "spinbutton_keepalive-interval", "keepalive-interval",
           "checkbutton_ignore-tls-errors", "ignore-tls-errors",
+          "entry_local-ip-address", "local-ip-address",
+          "spinbutton_local-port", "local-port",
           NULL);
 
       account_widget_sip_discover_stun_toggled_cb (

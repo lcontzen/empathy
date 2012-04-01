@@ -16,6 +16,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment4">
+    <property name="upper">65535</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkVBox" id="vbox_sip_settings">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -203,6 +208,16 @@
                             <property name="top_attach">8</property>
                             <property name="width">3</property>
                           </packing>
+                        </child>
+                        <child>
+                         <object class="GtkEntry" id="entry_local-ip-address">
+                           <property name="visible">True</property>
+                           <property name="can_focus">True</property>
+                         </object>
+                         <packing>
+                           <property name="left_attach">1</property>
+                           <property name="top_attach">14</property>
+                         </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="label_nat_traversal">
@@ -513,6 +528,50 @@
                           <packing>
                             <property name="left_attach">3</property>
                             <property name="top_attach">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkAlignment" id="alignment16">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="left_padding">12</property>
+                            <child>
+                              <object class="GtkLabel" id="label_local-ip-address">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Local IP Address:</property>
+                                <property name="mnemonic_widget">entry_local-ip-address</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">14</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label_local-port">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Port:</property>
+                            <property name="mnemonic_widget">spinbutton_local-port</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">14</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinButton" id="spinbutton_local-port">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="adjustment">adjustment4</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">3</property>
+                            <property name="top_attach">14</property>
                           </packing>
                         </child>
                       </object>
