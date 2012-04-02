@@ -1,5 +1,6 @@
 AM_CPPFLAGS = \
-        $(GOA_CFLAGS)
+        $(GOA_CFLAGS) \
+        $(ERROR_CFLAGS)
 
 pluginsdir = $(MISSION_CONTROL_PLUGINS_DIR)
 plugins_LTLIBRARIES = \
