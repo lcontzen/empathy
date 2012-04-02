@@ -378,8 +378,16 @@ presence_chooser_set_status_editing (EmpathyPresenceChooser *self,
 
 	entry = gtk_bin_get_child (GTK_BIN (self));
 	if (editing) {
+		gchar *tooltip_text;
+		gchar *status;
+
 		priv->editing_status = TRUE;
 
+		get_state_and_status (self, &status);
+		tooltip_text = g_strdup_printf ("<b>Current message: %s</b>\n"
+		    "<small><i>Press Enter to set the new message or Esc to cancel.</i></small>",
+		    status);
+		gtk_widget_set_tooltip_markup (entry, tooltip_text);
 		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
 					       GTK_ENTRY_ICON_SECONDARY,
 					       GTK_STOCK_OK);
@@ -389,6 +397,8 @@ presence_chooser_set_status_editing (EmpathyPresenceChooser *self,
 		gtk_entry_set_icon_sensitive (GTK_ENTRY (entry),
 					      GTK_ENTRY_ICON_PRIMARY,
 					      FALSE);
+		g_free (status);
+		g_free (tooltip_text);
 	} else {
 		GtkWidget *window;
 
