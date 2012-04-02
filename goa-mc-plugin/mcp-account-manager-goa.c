@@ -255,8 +255,6 @@ load_store (McpAccountManagerGoa *self)
 static void
 mcp_account_manager_goa_init (McpAccountManagerGoa *self)
 {
-  gchar *path;
-
   DEBUG ("GOA MC plugin initialised");
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -307,7 +305,6 @@ _goa_client_new_cb (GObject *obj,
     gpointer user_data)
 {
   McpAccountManagerGoa *self = user_data;
-  GoaClient *client;
   GList *accounts, *ptr;
   GError *error = NULL;
 
@@ -466,7 +463,6 @@ mcp_account_manager_goa_set (const McpAccountStorage *self,
     const gchar *val)
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
-  GError *error = NULL;
 
   if (!account_is_in_goa (self, account))
     return FALSE;
