@@ -17,7 +17,7 @@
 # text	文字
 # audio	音声
 # video	ビデオ、映像
-# identifier	名称
+# identifier	識別子
 # status	在席状況
 # People Nearby	(訳さない)
 # geolocation	位置情報
@@ -26,8 +26,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: empathy master\n"
-"POT-Creation-Date: 2012-03-24 22:41+0000\n"
-"PO-Revision-Date: 2012-03-25 11:00+0900\n"
+"POT-Creation-Date: 2012-04-02 03:34+0000\n"
+"PO-Revision-Date: 2012-04-02 12:49+0900\n"
 "Last-Translator: Mako N <mako@pasero.net>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -256,9 +256,9 @@ msgid ""
 msgstr ""
 "IRC はオープンなシステムであり、様々な IRC ネットワークが存在します。それぞれ"
 "のネットワークは切り離されており、それぞれにユーザーがいて、談話室がありま"
-"す。<app>Empathy</app> は、<gui>ネットワーク</gui> ドロップダウンリストに主な"
-"人気のあるネットワークの一覧を表示します。ネットワークを追加することができま"
-"す。以下の <link xref=\"#networks\"/> を参照してください。"
+"す。<app>Empathy</app> は、<gui>ネットワーク</gui>ドロップダウンリストに主な"
+"人気のあるネットワークの一覧を表示します。ネットワークを追加できます。以下の "
+"<link xref=\"#networks\"/> を参照してください。"
 
 #: C/account-irc.page:53(item/title)
 msgid "<gui>Nickname</gui>"
@@ -351,8 +351,7 @@ msgid ""
 "networks and remove them from the list."
 msgstr ""
 "<app>Empathy</app> は、主な IRC ネットワークの一覧を持っています。それ以外の"
-"ネットワークを追加することができます。一覧にあるネットワークの変更や削除もで"
-"きます。"
+"ネットワークを追加できます。一覧にあるネットワークの変更や削除もできます。"
 
 #: C/account-irc.page:104(item/p)
 msgid ""
@@ -419,8 +418,8 @@ msgid ""
 "for English and some other Western languages is ISO-8859-1."
 msgstr ""
 "デフォルトでは、<app>Empathy</app> は UTF-8 を使います。UTF-8 は世界中の言語"
-"の大部分を扱うことのできる文字エンコーディングです。英語およびその他の西欧言"
-"語に共通の別の文字エンコーディングは ISO-8859-1 です。"
+"の大部分を扱える文字エンコーディングです。英語およびその他の西欧言語に共通の"
+"別の文字エンコーディングは ISO-8859-1 です。"
 
 #: C/account-irc.page:141(item/title)
 msgid "<gui>Servers</gui>"
@@ -436,7 +435,7 @@ msgstr ""
 "ひとつの IRC ネットワークに接続可能なサーバーが数多くあることがあります。ある"
 "ネットワークのひとつのサーバーに接続すれば、そのネットワークのほかのすべての"
 "サーバーのすべてのユーザーと交流できます。このネットワークで使用するサーバー"
-"を、<gui>追加</gui> と <gui>削除</gui> ボタンで、追加・削除できます。"
+"を、<gui>追加</gui>と<gui>削除</gui>ボタンで、追加・削除できます。"
 
 #: C/account-irc.page:147(item/p)
 msgid ""
@@ -444,9 +443,9 @@ msgid ""
 "<gui>Port</gui> to edit it. Alternatively, use the left and right arrow keys "
 "to focus the field, and press the space bar to begin editing."
 msgstr ""
-"サーバーを指定して、<gui>サーバー</gui> や <gui>ポート</gui> の下の項をクリッ"
-"クして編集します。別の方法として、左右の矢印キーで項を指し、スペースバーを押"
-"して編集を始めます。"
+"サーバーを指定して、<gui>サーバー</gui>や<gui>ポート</gui>の下の項をクリック"
+"して編集します。別の方法として、左右の矢印キーで項を指し、スペースバーを押し"
+"て編集を始めます。"
 
 #: C/account-irc.page:151(item/p)
 msgid ""
@@ -475,9 +474,9 @@ msgid ""
 "adding an account, see <link xref=\"add-account\"/>."
 msgstr ""
 "ほとんどの Jabber アカウントは、ログイン ID とパスワードだけが必要です。いく"
-"つかのアカウントやネットワークの種類では、<gui>詳細</gui> セクションに追加情"
-"報を入力する必要があります。通常、以下の詳細情報は必要ありません。一般的なア"
-"カウントの追加の説明は、<link xref=\"add-account\"/> を参照してください。"
+"つかのアカウントやネットワークの種類では、<gui>詳細</gui>セクションに追加情報"
+"を入力する必要があります。通常、以下の詳細情報は必要ありません。一般的なアカ"
+"ウントの追加の説明は、<link xref=\"add-account\"/> を参照してください。"
 
 #: C/account-jabber.page:39(note/p)
 msgid ""
@@ -505,7 +504,7 @@ msgid ""
 msgstr ""
 "可能な限り、<app>Empathy</app> と Jabber サーバーの通信は暗号化されます。暗号"
 "化通信ができない場合、メッセージは暗号化されずに送られます。<gui>暗号化が必要"
-"</gui> を指定すると、暗号化ができない場合には <app>Empathy</app> と Jabber "
+"</gui>を指定すると、暗号化ができない場合には <app>Empathy</app> と Jabber "
 "サーバーとの通信を行いません。"
 
 #: C/account-jabber.page:52(item/p)
@@ -517,8 +516,7 @@ msgid ""
 msgstr ""
 "Jabber サーバーのなかには、有効でない証明書や不明の認証局の証明書を使って暗号"
 "化するものがあります。そのサーバーを信頼して接続するには、<gui>SSL の証明書に"
-"関連するエラーは無視</gui> を指定し、有効でない証明書で暗号化通信を行うことが"
-"できます。"
+"関連するエラーは無視</gui>を指定し、有効でない証明書で暗号化通信を行えます。"
 
 #: C/account-jabber.page:59(item/title)
 msgid "<gui>Resource</gui>"
@@ -536,9 +534,9 @@ msgid ""
 "<input>Telepathy</input> as the resource."
 msgstr ""
 "複数のアプリケーション (たとえば、別のコンピューター) を使って、ひとつのアカ"
-"ウントに同時に接続する場合、それぞれを区別するためにリソースを設定することが"
-"できます。デフォルトで、<app>Empathy</app> はリソースとして "
-"<input>Telepathy</input> を使います。"
+"ウントに同時に接続する場合、それぞれを区別するためにリソースを設定できます。"
+"デフォルトで、<app>Empathy</app> はリソースとして <input>Telepathy</input> を"
+"使います。"
 
 #: C/account-jabber.page:65(item/p)
 msgid ""
@@ -578,7 +576,7 @@ msgid ""
 "The <gui>Accounts</gui> window allows you to add, modify, and delete "
 "accounts."
 msgstr ""
-"<gui>アカウント</gui> ウィンドウで、アカウントを追加、変更、削除できます。"
+"<gui>アカウント</gui>ウィンドウで、アカウントを追加、変更、削除できます。"
 
 #: C/accounts-window.page:43(section/title)
 msgid "Account Details"
@@ -609,9 +607,9 @@ msgid ""
 "account. For more details, see <link xref=\"create-account\"/>."
 msgstr ""
 "<app>Empathy</app> でさまざまな相手先と連絡を取るために、<app>Empathy</app> "
-"がサポートするインスタントメッセージのアカウントを追加することができます。い"
-"くつかのアカウント発行元では、この段階で新規アカウントの作成もできます。詳し"
-"くは<link xref=\"create-account\"/>を参照してください。"
+"がサポートするインスタントメッセージのアカウントを追加できます。いくつかのア"
+"カウント発行元では、この段階で新規アカウントの作成もできます。詳しくは<link "
+"xref=\"create-account\"/>を参照してください。"
 
 #: C/add-account.page:49(item/p) C/disable-account.page:49(item/p)
 #: C/irc-nick-password.page:50(item/p) C/remove-account.page:43(item/p)
@@ -619,8 +617,8 @@ msgid ""
 "From the <gui>Contact List</gui> window, choose <guiseq><gui>Edit</gui> "
 "<gui>Accounts</gui></guiseq>, or press <key>F4</key>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、<guiseq><gui>編集</gui> <gui>アカウン"
-"ト</gui></guiseq> を選ぶか、<key>F4</key> を押します。"
+"<gui>相手先の一覧</gui>ウィンドウから、<guiseq><gui>編集</gui><gui>アカウント"
+"</gui></guiseq>を選ぶか、<key>F4</key> を押します。"
 
 #: C/add-account.page:53(item/p)
 msgid "Click <gui style=\"button\">+</gui>."
@@ -632,8 +630,8 @@ msgid ""
 "From the <gui>Protocol</gui> drop-down list, select the type of account you "
 "wish to add."
 msgstr ""
-"<gui>プロトコル</gui> ドロップダウンリストから、追加するアカウントの種類を選"
-"びます。"
+"<gui>プロトコル</gui>ドロップダウンリストから、追加するアカウントの種類を選び"
+"ます。"
 
 #: C/add-account.page:62(item/p)
 msgid ""
@@ -661,7 +659,7 @@ msgstr ""
 #: C/add-account.page:74(item/p) C/import-account.page:61(item/p)
 #: C/irc-nick-password.page:63(item/p)
 msgid "Click <gui style=\"button\">Apply</gui>."
-msgstr "<gui style=\"button\">適用</gui> をクリックします。"
+msgstr "<gui style=\"button\">適用</gui>をクリックします。"
 
 #: C/add-account.page:81(note/p)
 msgid ""
@@ -670,8 +668,8 @@ msgid ""
 "name or press the space bar. Edit the account name and press <key>Enter</"
 "key> when you’re finished."
 msgstr ""
-"<gui>アカウント</gui> ウィンドウで、アカウントを識別するための名前を変更する"
-"には、左側の一覧でアカウントを選び、名前をクリックするかスペースバーを押しま"
+"<gui>アカウント</gui>ウィンドウで、アカウントを識別するための名前を変更するに"
+"は、左側の一覧でアカウントを選び、名前をクリックするかスペースバーを押しま"
 "す。アカウント名を編集し、終わったら <key>Enter</key> を押します。"
 
 #: C/add-contact.page:9(info/desc)
@@ -701,27 +699,27 @@ msgid ""
 "use to connect to your contact. Your contact will need to be using the same "
 "service as the account you select."
 msgstr ""
-"<gui>アカウント</gui> ドロップダウンリストから、相手先に接続したいアカウント"
-"を指定します。相手先は、そのアカウントと同じサービスを利用していることが必要"
-"です。"
+"<gui>アカウント</gui>ドロップダウンリストから、相手先に接続したいアカウントを"
+"指定します。相手先は、そのアカウントと同じサービスを利用していることが必要で"
+"す。"
 
 #: C/add-contact.page:45(item/p)
 msgid ""
 "In the <gui>Identifier</gui> field, enter your contact’s login ID, username, "
 "screen name, or other appropriate identifier for the service type."
 msgstr ""
-"<gui>名称</gui> 欄に、相手先のログイン ID、ユーザー名、スクリーン名など、サー"
-"ビスの種類に応じた適切な名称を入力します。"
+"<gui>識別子</gui>欄に、相手先のログイン ID、ユーザー名、スクリーン名など、"
+"サービスの種類に応じた適切な識別子を入力します。"
 
 #: C/add-contact.page:49(item/p)
 msgid ""
 "In the <gui>Alias</gui> field, type your contact’s name as you would like it "
 "to appear in your contact list."
-msgstr "<gui>別名</gui> 欄に、相手先の一覧に表示させたい名前を入力します。"
+msgstr "<gui>別名</gui>欄に、相手先の一覧に表示させたい名前を入力します。"
 
 #: C/add-contact.page:53(item/p)
 msgid "Click <gui>Add</gui> to add the person to your list of contacts."
-msgstr "<gui>追加</gui> をクリックして、相手先の一覧にその人を追加します。"
+msgstr "<gui>追加</gui>をクリックして、相手先の一覧にその人を追加します。"
 
 #: C/add-contact.page:61(note/p)
 msgid ""
@@ -777,10 +775,10 @@ msgid ""
 "next to the name of the contact you wish to call and choose <gui style="
 "\"menuitem\">Audio Call</gui>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、通話したい相手先の名前の横にある"
+"<gui>相手先の一覧</gui>ウィンドウから、通話したい相手先の名前の横にある"
 "<media type=\"image\" mime=\"image/png\" src=\"figures/camera-web.png"
 "\">video call</media> アイコンをクリックし、<gui style=\"menuitem\">音声通話"
-"</gui> を選びます。"
+"</gui>を選びます。"
 
 #: C/audio-call.page:42(item/p) C/video-call.page:44(item/p)
 msgid ""
@@ -789,7 +787,7 @@ msgid ""
 "conversation time."
 msgstr ""
 "新しいウィンドウが開きます。接続が確立すると、ウィンドウの最下部に<gui>オンラ"
-"イン</gui> と表示され、その脇に会話時間も表示されます。"
+"イン</gui>と表示され、その脇に会話時間も表示されます。"
 
 #: C/audio-call.page:48(item/p) C/video-call.page:49(item/p)
 msgid "To end the conversation, click on <gui style=\"button\">Hang up</gui>."
@@ -802,7 +800,7 @@ msgid ""
 "style=\"menu\">Video</gui> <gui style=\"menuitem\">Video On</gui></guiseq>."
 msgstr ""
 "音声会話をビデオ会話に切り替えるには、<guiseq><gui style=\"menu\">ビデオ</"
-"gui> <gui style=\"menuitem\">ビデオ入</gui></guiseq>を選びます。"
+"gui><gui style=\"menuitem\">ビデオ入</gui></guiseq>を選びます。"
 
 #: C/audio-call.page:63(section/title)
 msgid "Start an audio conversation with a meta-contact"
@@ -812,15 +810,15 @@ msgstr "メタ相手先との音声会話の開始"
 #: C/video-call.page:64(item/p)
 msgid ""
 "From the <gui>Contact List</gui> window, right-click on the meta-contact."
-msgstr "<gui>相手先の一覧</gui> ウィンドウから、メタ相手先を右クリックします。"
+msgstr "<gui>相手先の一覧</gui>ウィンドウから、メタ相手先を右クリックします。"
 
 #: C/audio-call.page:71(item/p)
 msgid ""
 "Select the contact you want to have the conversation, and from the menu "
 "select <gui style=\"menuitem\">Audio Call</gui>."
 msgstr ""
-"会話したい相手先を選び、メニューから <gui style=\"menuitem\">音声会話</gui> "
-"を指定します。"
+"会話したい相手先を選び、メニューから <gui style=\"menuitem\">音声会話</gui>を"
+"指定します。"
 
 #: C/audio-call.page:78(note/p) C/send-message.page:65(note/p)
 #: C/video-call.page:76(note/p)
@@ -830,7 +828,7 @@ msgid ""
 "second: a small pop-up message will appear showing the number of the "
 "contacts that form the meta-contact."
 msgstr ""
-"<em>メタ相手先</em>かどうかを調べるには、<gui>相手先の一覧</gui> ウィンドウの"
+"<em>メタ相手先</em>かどうかを調べるには、<gui>相手先の一覧</gui>ウィンドウの"
 "相手先の上にマウスを移動し、数秒間その上に止めます。小さなポップアップ・メッ"
 "セージが現れ、メタ相手先に含まれる相手先の数が表示されます。"
 
@@ -1064,8 +1062,8 @@ msgstr ""
 msgid ""
 "Click on the drop-down list at the top of the <gui>Contact List</gui> window."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウの最上部のドロップダウンリストをクリックし"
-"ます。"
+"<gui>相手先の一覧</gui>ウィンドウの最上部のドロップダウンリストをクリックしま"
+"す。"
 
 #: C/change-status.page:51(item/p)
 msgid "Select a status from the list."
@@ -1110,7 +1108,7 @@ msgstr ""
 "ジング・アプリケーションで接続する前にアカウント配布元でアカウントを作成して"
 "おく必要があります。アカウント配布元によっては、<app>Empathy</app> を使って、"
 "<link xref=\"add-account\">アカウントの追加</link> と同じ手順で、新しいアカウ"
-"ントを登録することができます。"
+"ントを登録できます。"
 
 #: C/create-account.page:42(page/p)
 msgid ""
@@ -1152,8 +1150,8 @@ msgid ""
 "regardless of their account provider."
 msgstr ""
 "Jabber はオープンなインスタントメッセージング・システムです。電子メールのよう"
-"に、アカウント配布元を選ぶことができ、その配布元に関係なく、すべての Jabber "
-"ユーザーと交流できます。"
+"にアカウント配布元を選べ、その配布元に関係なく、すべての Jabber ユーザーと交"
+"流できます。"
 
 #: C/create-account.page:66(section/p)
 msgid ""
@@ -1300,9 +1298,9 @@ msgid ""
 "times, but you still want to use <app>Empathy</app> for other accounts."
 msgstr ""
 "アカウントを完全に削除することなく、<app>Empathy</app> がログインしないよう、"
-"アカウントを無効化することができます。あるアカウントは無効化しておき、望むと"
-"きだけ有効化したい、しかし <app>Empathy</app> で別のアカウントを使い続けたい"
-"という場合です。"
+"アカウントを無効化できます。あるアカウントは無効化しておき、望むときだけ有効"
+"化したい、しかし <app>Empathy</app> で別のアカウントを使い続けたいという場合"
+"です。"
 
 #: C/disable-account.page:53(item/p)
 msgid ""
@@ -1365,7 +1363,7 @@ msgstr "お気に入りの談話室の追加"
 
 #: C/favorite-rooms.page:66(item/p) C/send-file.page:40(item/p)
 msgid "From the <gui>Contact List</gui> window, perform one of the following:"
-msgstr "<gui>相手先の一覧</gui> ウィンドウから、次のいずれかを実行します:"
+msgstr "<gui>相手先の一覧</gui>ウィンドウから、次のいずれかを実行します:"
 
 #: C/favorite-rooms.page:71(item/p)
 msgid "Press <key>F5</key>."
@@ -1376,8 +1374,8 @@ msgid ""
 "Choose <guiseq><gui>Room</gui><gui>Join Favorites</gui></guiseq>, to join "
 "all your favorite rooms."
 msgstr ""
-"<guiseq><gui>談話室</gui><gui>お気に入りに追加</gui></guiseq> を選び、お気に"
-"入りの談話室を追加します。"
+"<guiseq><gui>談話室</gui><gui>お気に入りに追加</gui></guiseq>を選び、お気に入"
+"りの談話室を追加します。"
 
 #: C/favorite-rooms.page:82(item/p)
 msgid "Choose <gui>Room</gui>, and select the favorite room you want to join."
@@ -1400,22 +1398,22 @@ msgid ""
 "From the <gui>Contact List</gui> window, choose <guiseq><gui>Room</"
 "gui><gui>Manage Favorites</gui></guiseq>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、<guiseq><gui>談話室</gui><gui>お気に"
-"入りの管理</gui></guiseq> を選びます。"
+"<gui>相手先の一覧</gui>ウィンドウから、<guiseq><gui>談話室</gui><gui>お気に入"
+"りの管理</gui></guiseq>を選びます。"
 
 #: C/favorite-rooms.page:107(item/p)
 msgid ""
 "From the <gui>Account</gui> drop-down list, select the account you want to "
 "manage the favorite rooms of."
 msgstr ""
-"<gui>アカウント</gui> ドロップダウンリストから、お気に入りの談話室の管理を行"
-"いたいアカウントを選びます。"
+"<gui>アカウント</gui>ドロップダウンリストから、お気に入りの談話室の管理を行い"
+"たいアカウントを選びます。"
 
 #: C/favorite-rooms.page:111(item/p)
 msgid "Select <gui>All</gui> to see all you favorite rooms."
 msgstr ""
-"<gui>すべてのアカウント</gui> を選ぶと、すべてのお気に入りの談話室を見ること"
-"ができます。"
+"<gui>すべてのアカウント</gui>を選ぶと、すべてのお気に入りの談話室を見ることが"
+"できます。"
 
 #: C/favorite-rooms.page:116(item/p)
 msgid "Select the favorite room you want to manage:"
@@ -1426,17 +1424,17 @@ msgid ""
 "Select the <gui>Auto-Connect</gui> check-box in order to automatically join "
 "that room when you connect to your account."
 msgstr ""
-"<gui>自動サインイン</gui> チェックボックスは、アカウントに接続したときに自動"
-"的に参加する場合に選びます。"
+"<gui>自動サインイン</gui>チェックボックスは、アカウントに接続したときに自動的"
+"に参加する場合に選びます。"
 
 #: C/favorite-rooms.page:127(item/p)
 msgid "Click on <gui>Remove</gui> to remove the room from your favorites."
 msgstr ""
-"<gui>削除</gui> をクリックすると、お気に入りからその談話室を削除します。"
+"<gui>削除</gui>をクリックすると、お気に入りからその談話室を削除します。"
 
 #: C/favorite-rooms.page:134(item/p)
 msgid "When done, click <gui>Close</gui>."
-msgstr "終わったら、<gui>閉じる</gui> をクリックします。"
+msgstr "終わったら、<gui>閉じる</gui>をクリックします。"
 
 #: C/geolocation.page:8(info/desc)
 msgid "Use and understand geolocation in <app>Empathy</app>."
@@ -1649,12 +1647,12 @@ msgstr "<guiseq><gui>編集</gui><gui>設定</gui></guiseq> を選びます。"
 
 #: C/geolocation-turn.page:42(item/p)
 msgid "Select the <gui>Location</gui> tab."
-msgstr "<gui>場所</gui> タブを指定します。"
+msgstr "<gui>場所</gui>タブを指定します。"
 
 #: C/geolocation-turn.page:47(item/p)
 msgid ""
 "Select <gui>Publish location to my contacts</gui> to activate geolocation."
-msgstr "<gui>相手先に場所を公開する</gui> を指定し、位置情報を有効化します。"
+msgstr "<gui>相手先に場所を公開する</gui>を指定し、位置情報を有効化します。"
 
 #: C/geolocation-turn.page:50(item/p)
 msgid "To deactivate geolocation, deselect it."
@@ -1665,7 +1663,7 @@ msgid ""
 "To increase the accuracy of your position, deselect <gui>Reduce location "
 "accuracy</gui>."
 msgstr ""
-"自分の場所の精度を上げるには、<gui>場所の精度を下げる</gui> の指定を解除しま"
+"自分の場所の精度を上げるには、<gui>場所の精度を下げる</gui>の指定を解除しま"
 "す。"
 
 #: C/geolocation-turn.page:61(item/p)
@@ -1675,7 +1673,7 @@ msgid ""
 "section."
 msgstr ""
 "GPS のような外部デバイスを持っているか、より精確な位置を通知したい場合、<gui>"
-"場所のソース</gui> で適切なオプションを指定します。"
+"場所のソース</gui>で適切なオプションを指定します。"
 
 #: C/geolocation-what-is.page:9(info/desc)
 msgid "Understanding geolocation."
@@ -1757,23 +1755,23 @@ msgid ""
 "From the <gui>Contact List</gui> window, choose <guiseq><gui>Room</"
 "gui><gui>Join</gui></guiseq>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、<guiseq><gui>談話室</gui><gui>参加</"
-"gui></guiseq> を選びます。"
+"<gui>相手先の一覧</gui>ウィンドウから、<guiseq><gui>談話室</gui><gui>参加</"
+"gui></guiseq>を選びます。"
 
 #: C/group-conversations.page:63(item/p)
 msgid ""
 "From the <gui>Account</gui> drop-down list, select the account you want to "
 "use for the group conversation."
 msgstr ""
-"<gui>アカウント</gui> ドロップダウンリストから、グループ会話に用いるアカウン"
-"トを指定します。"
+"<gui>アカウント</gui>ドロップダウンリストから、グループ会話に用いるアカウント"
+"を指定します。"
 
 #: C/group-conversations.page:69(item/p)
 msgid ""
 "In the <gui>Server</gui> text box, type the name of server in which the "
 "conversation will be hosted."
 msgstr ""
-"<gui>サーバー</gui> 欄に、グループ会話をホストするサーバーを入力します。"
+"<gui>サーバー</gui>欄に、グループ会話をホストするサーバーを入力します。"
 
 #: C/group-conversations.page:73(item/p)
 msgid "Leave it empty if it will be on the current server."
@@ -1783,7 +1781,7 @@ msgstr "現在のサーバー(訳注: アカウントと同じサーバー)の�
 msgid ""
 "In the <gui>Room</gui> text box, type the name you want to give to the "
 "conversation."
-msgstr "<gui>談話室</gui> 欄に、グループ会話に付ける名前を入力します。"
+msgstr "<gui>談話室</gui>欄に、グループ会話に付ける名前を入力します。"
 
 #: C/group-conversations.page:82(note/p)
 msgid ""
@@ -1792,7 +1790,7 @@ msgid ""
 "to create a private room."
 msgstr ""
 "これは、グループ会話を行う談話室の名前になります。この名前は、参加するほかの"
-"人に公開されます。非公開の談話室を作成することはできません。"
+"人に公開されます。非公開の談話室は作成できません。"
 
 #: C/group-conversations.page:90(item/p)
 msgid ""
@@ -1800,12 +1798,12 @@ msgid ""
 "<gui>Contact List</gui> window, select the contact you want to invite, and "
 "perform one of the following:"
 msgstr ""
-"グループ会話に参加するようほかの相手先を招待するには、<gui>相手先の一覧</"
-"gui> ウィンドウから、招待したい相手先を指定し、次のいずれかを行います:"
+"グループ会話に参加するようほかの相手先を招待するには、<gui>相手先の一覧</gui>"
+"ウィンドウから、招待したい相手先を指定し、次のいずれかを行います:"
 
 #: C/group-conversations.page:97(item/p)
 msgid "Right-click on the contact and choose <gui>Invite to chatroom</gui>."
-msgstr "相手先を右クリックし、<gui>談話室に招待する</gui> を選びます。"
+msgstr "相手先を右クリックし、<gui>談話室に招待する</gui>を選びます。"
 
 #: C/group-conversations.page:102(item/p)
 msgid ""
@@ -1830,7 +1828,7 @@ msgstr "グループ会話に参加"
 #: C/group-conversations.page:128(item/p)
 msgid "Expand the <gui>Room List</gui> section to see all the existing rooms."
 msgstr ""
-"<gui>談話室の一覧</gui> を展開すると、すべての談話室を見ることができます。"
+"<gui>談話室の一覧</gui>を展開すると、すべての談話室を見ることができます。"
 
 #: C/group-conversations.page:133(item/p)
 msgid "Double-click on the name of a room to join it."
@@ -1848,7 +1846,7 @@ msgstr ""
 
 #: C/hide-contacts.page:8(info/desc)
 msgid "Hide the offline contacts from your <gui>Contact List</gui>."
-msgstr "<gui>相手先の一覧</gui> で、オフラインの相手先を隠します。"
+msgstr "<gui>相手先の一覧</gui>で、オフラインの相手先を隠します。"
 
 #: C/hide-contacts.page:19(page/title)
 msgid "Hide offline contacts"
@@ -1859,8 +1857,8 @@ msgid ""
 "Normally, <app>Empathy</app> shows all your contacts: those that are online, "
 "with which you can have a conversation, and also those that are offline."
 msgstr ""
-"通常、<app>Empathy</app> はすべての相手先を表示します。つまり、会話をすること"
-"のできるオンラインの相手先と、オフラインの相手先です。"
+"通常、<app>Empathy</app> はすべての相手先を表示します。つまり、会話できるオン"
+"ラインの相手先と、オフラインの相手先です。"
 
 #: C/hide-contacts.page:25(page/p)
 msgid "To hide the contacts that are offline:"
@@ -1872,9 +1870,9 @@ msgid ""
 "<gui>Offline Contacts</gui></guiseq>, or press <keyseq><key>Ctrl</key> "
 "<key>H</key></keyseq>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、<guiseq><gui>表示</gui> <gui>オフライ"
-"ンの相手先を表示</gui></guiseq> を選ぶか、<keyseq><key>Ctrl</key> <key>H</"
-"key></keyseq> を押します。"
+"<gui>相手先の一覧</gui>ウィンドウから、<guiseq><gui>表示</gui><gui>オフライン"
+"の相手先を表示</gui></guiseq>を選ぶか、<keyseq><key>Ctrl</key> <key>H</key></"
+"keyseq> を押します。"
 
 #: C/hide-contacts.page:36(item/p)
 msgid "To show the offline contacts again, repeat the same procedure above."
@@ -1917,8 +1915,8 @@ msgid ""
 "Select <gui>Yes, import my account details from</gui> and click "
 "<gui>Forward</gui>."
 msgstr ""
-"<gui>はい、アカウントの詳細をインポートします</gui> を指定し、<gui>次へ</"
-"gui> をクリックします。"
+"<gui>はい、アカウントの詳細をインポートします</gui>を指定し、<gui>次へ</gui>"
+"をクリックします。"
 
 #: C/import-account.page:58(item/p)
 msgid "Select the check box next to each account you wish to import."
@@ -1986,7 +1984,7 @@ msgstr ""
 
 #: C/introduction.page:39(figure/title)
 msgid "<gui>Contact List</gui> window"
-msgstr "<gui>相手先の一覧</gui> ウィンドウ"
+msgstr "<gui>相手先の一覧</gui>ウィンドウ"
 
 #: C/introduction.page:40(figure/desc)
 msgid "<app>Empathy</app> main window"
@@ -2044,7 +2042,7 @@ msgid ""
 "room and click <gui style=\"button\">Join</gui>."
 msgstr ""
 "<app>Empathy</app> はパスワードを入力するよう促します。IRC 談話室のパスワード"
-"を入力し、<gui style=\"button\">参加</gui> をクリックします。"
+"を入力し、<gui style=\"button\">参加</gui>をクリックします。"
 
 #: C/irc-join-room.page:8(info/desc)
 msgid "Join an IRC channel."
@@ -2069,7 +2067,7 @@ msgid ""
 "From the <gui>Account</gui> drop-down list, select the IRC account that "
 "corresponds to the network you want to use."
 msgstr ""
-"<gui>アカウント</gui> ドロップダウンリストから、使いたいネットワークに対応す"
+"<gui>アカウント</gui>ドロップダウンリストから、使いたいネットワークに対応す"
 "る IRC アカウントを指定します。"
 
 #: C/irc-join-room.page:51(item/p)
@@ -2077,12 +2075,12 @@ msgid ""
 "In the <gui>Room</gui> text box, type the name of the channel you want to "
 "join. IRC channel names start with the hash character (<sys>#</sys>)."
 msgstr ""
-"<gui>談話室</gui> 欄に、参加したいチャンネルの名前を入力します。IRC チャンネ"
-"ルの名前はハッシュ (<sys>#</sys>) で始まります。"
+"<gui>談話室</gui>欄に、参加したいチャンネルの名前を入力します。IRC チャンネル"
+"の名前はハッシュ (<sys>#</sys>) で始まります。"
 
 #: C/irc-join-room.page:57(item/p)
 msgid "Click <gui>Join</gui> to enter the room."
-msgstr "<gui>参加</gui> をクリックして、談話室に入ります。"
+msgstr "<gui>参加</gui>をクリックして、談話室に入ります。"
 
 #: C/irc-join-room.page:64(note/p)
 msgid ""
@@ -2137,9 +2135,9 @@ msgid ""
 "a registered nickname."
 msgstr ""
 "いくつかの IRC ネットワークでは、NickServ というサービスでニックネームを登録"
-"することができます。NickServ に特別のメッセージを送ることにより、パスワードの"
-"設定や自分自身の認証ができます。ニックネームを登録しないと参加を許可しない "
-"IRC 談話室もあります。"
+"できます。NickServ に特別のメッセージを送ることにより、パスワードの設定や自分"
+"自身の認証ができます。ニックネームを登録しないと参加を許可しない IRC 談話室も"
+"あります。"
 
 #: C/irc-nick-password.page:40(page/p)
 msgid ""
@@ -2150,10 +2148,10 @@ msgid ""
 "network is known to have this feature."
 msgstr ""
 "<app>Empathy</app> は現在、ニックネームの登録をサポートしていません、しかし、"
-"自動的に <em>サーバーのパスワード</em> を NickServ に送る IRC ネットワークも"
-"あります。そのようなネットワークでは、<app>Empathy</app> の IRC パスワードを "
-"NickServ での自身の認証に使うことができます。人気のある freenode ネットワーク"
-"はこの機能を持っています。"
+"自動的に<em>サーバーのパスワード</em>を NickServ に送る IRC ネットワークもあ"
+"ります。そのようなネットワークでは、<app>Empathy</app> の IRC パスワードを "
+"NickServ での自身の認証に使えます。人気のある freenode ネットワークはこの機能"
+"を持っています。"
 
 #: C/irc-nick-password.page:46(page/p)
 msgid "To set an IRC server password:"
@@ -2168,7 +2166,7 @@ msgid ""
 "In the <gui>Password</gui> field, type the password you used to register "
 "your nikcname."
 msgstr ""
-"<gui>パスワード</gui> 欄に、ニックネームの登録に使うパスワードを入力します。"
+"<gui>パスワード</gui>欄に、ニックネームの登録に使うパスワードを入力します。"
 
 #: C/irc-nick-password.page:69(note/p)
 msgid ""
@@ -2206,8 +2204,8 @@ msgid ""
 "You can hold private conversations with other IRC users, outside of the "
 "public IRC chat rooms. To start a conversation with another IRC user:"
 msgstr ""
-"公開の IRC 談話室の外で、IRC ユーザーとプライベートなチャットをすることができ"
-"ます。次の手順で、IRC ユーザーと会話を開始します。"
+"公開の IRC 談話室の外で、IRC ユーザーとプライベートなチャットができます。次の"
+"手順で、IRC ユーザーと会話を開始します。"
 
 #: C/irc-start-conversation.page:37(item/p)
 msgid ""
@@ -2216,7 +2214,7 @@ msgid ""
 "choose <gui>Chat</gui>."
 msgstr ""
 "IRC 談話室の相手先の一覧で、チャットしたい相手先の名前をダブルクリックしま"
-"す。別の方法として、名前を右クリックして <gui>チャット</gui> を選びます。"
+"す。別の方法として、名前を右クリックして<gui>チャット</gui>を選びます。"
 
 #: C/irc-start-conversation.page:45(item/p)
 msgid ""
@@ -2236,7 +2234,7 @@ msgid ""
 msgstr ""
 "通常、IRC 談話室の相手先の一覧は、IRC 談話室のウィンドウの右側にあります。表"
 "示されていなければ、<guiseq><gui>会話</gui><gui>相手先の一覧の表示</gui></"
-"guiseq> を選びます。"
+"guiseq>を選びます。"
 
 #: C/license.page:8(info/desc)
 msgid "Legal information."
@@ -2337,8 +2335,8 @@ msgid ""
 "The resulting contact is called a <em>meta-contact</em>: a contact composed "
 "from different single contacts."
 msgstr ""
-"そのまとめたものを <em>メタ相手先</em>と呼びます。メタ相手先は、個々の相手先"
-"で構成された相手先のことです。"
+"そのまとめたものを<em>メタ相手先</em>と呼びます。メタ相手先は、個々の相手先で"
+"構成された相手先のことです。"
 
 #: C/link-contacts.page:34(page/p)
 msgid ""
@@ -2375,20 +2373,19 @@ msgid ""
 "has different accounts, and select <gui style=\"menuitem\">Link Contacts...</"
 "gui>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、複数のアカウントを持つ相手先を右ク"
-"リックして、<gui style=\"menuitem\">相手先をリンク…</gui> を指定します。"
+"<gui>相手先の一覧</gui>ウィンドウから、複数のアカウントを持つ相手先を右クリッ"
+"クして、<gui style=\"menuitem\">相手先をリンク…</gui>を指定します。"
 
 #: C/link-contacts.page:70(item/p)
 msgid ""
 "From the left pane in the <gui>Link Contacts</gui> window, select the "
 "contacts you want to combine."
 msgstr ""
-"<gui>相手先をリンク</gui> ウィンドウの左欄から、結合したい相手先を指定しま"
-"す。"
+"<gui>相手先をリンク</gui>ウィンドウの左欄から、結合したい相手先を指定します。"
 
 #: C/link-contacts.page:76(item/p)
 msgid "Click <gui style=\"button\">Link</gui>."
-msgstr "<gui style=\"button\">リンク</gui> をクリックします。"
+msgstr "<gui style=\"button\">リンク</gui>をクリックします。"
 
 # highest presence on-line がよくわからない。
 #: C/link-contacts.page:82(note/p)
@@ -2410,12 +2407,12 @@ msgid ""
 "From the <gui>Contact List</gui>, right-click the contact to separate, and "
 "select <gui style=\"menuitem\">Link Contacts...</gui>."
 msgstr ""
-"<gui>相手先の一覧</gui> から、分離したい相手先を右クリックして<gui style="
-"\"menuitem\">相手先をリンク…</gui> を指定します。"
+"<gui>相手先の一覧</gui>から、分離したい相手先を右クリックして<gui style="
+"\"menuitem\">相手先をリンク…</gui>を指定します。"
 
 #: C/link-contacts.page:100(item/p)
 msgid "Click <gui style=\"button\">Unlink</gui>."
-msgstr "<gui style=\"button\">リンクを外す</gui> をクリックします。"
+msgstr "<gui style=\"button\">リンクを外す</gui>をクリックします。"
 
 #: C/prev-conv.page:8(info/desc)
 msgid "Browse or search your previous conversations."
@@ -2452,7 +2449,7 @@ msgstr "会話の履歴の検索"
 msgid ""
 "You can perform a full-text search through all of your previous "
 "conversations."
-msgstr "会話の履歴のすべてにわたって、全文検索を行うことができます。"
+msgstr "会話の履歴のすべてにわたって、全文検索を行えます。"
 
 #: C/prev-conv.page:59(item/p) C/prev-conv.page:87(item/p)
 msgid ""
@@ -2460,8 +2457,8 @@ msgid ""
 "<gui>Previous Conversations</gui></guiseq>. Alternatively, press <key>F3</"
 "key>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、<guiseq><gui>表示</gui> <gui>会話の履"
-"歴</gui></guiseq> を選びます。または、<key>F3</key> を押します。"
+"<gui>相手先の一覧</gui>ウィンドウから、<guiseq><gui>表示</gui><gui>会話の履歴"
+"</gui></guiseq>を選びます。または、<key>F3</key> を押します。"
 
 #: C/prev-conv.page:63(item/p)
 msgid ""
@@ -2474,7 +2471,7 @@ msgstr ""
 #: C/prev-conv.page:67(item/p)
 msgid ""
 "Type the text you want to search for in the <gui>Search</gui> text field."
-msgstr "<gui>検索</gui> 欄に、検索したい語句を入力します。"
+msgstr "<gui>検索</gui>欄に、検索したい語句を入力します。"
 
 #: C/prev-conv.page:71(item/p)
 msgid ""
@@ -2535,9 +2532,9 @@ msgid ""
 "choose <gui>Previous Conversations</gui>. The <gui>Previous Conversations</"
 "gui> window will open with that contact already selected."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、ある相手先の会話の履歴をすばやく表示"
-"することができます。相手先を右クリックして <gui>会話の履歴</gui> を選ぶだけで"
-"す。その相手先が選択された状態で <gui>会話の履歴</gui> ウィンドウが開きます。"
+"<gui>相手先の一覧</gui>ウィンドウから、ある相手先の会話の履歴をすばやく表示で"
+"きます。相手先を右クリックして <gui>会話の履歴</gui>を選ぶだけです。その相手"
+"先が選択された状態で <gui>会話の履歴</gui>ウィンドウが開きます。"
 
 #: C/prob-conn-acctdisabled.page:7(info/desc)
 msgid ""
@@ -2589,8 +2586,8 @@ msgid ""
 "You should be able to find these details from the website of the messaging "
 "service."
 msgstr ""
-"<gui>詳細</gui> セクションのすべての情報が正しいことを確認します。これらの情"
-"報は、メッセージングサービスのウェブサイトで確認できるでしょう。"
+"<gui>詳細</gui>セクションのすべての情報が正しいことを確認します。これらの情報"
+"は、メッセージングサービスのウェブサイトで確認できるでしょう。"
 
 #: C/prob-conn-acctdisabled.page:66(item/p)
 msgid "Check that the account is switched on."
@@ -2639,7 +2636,7 @@ msgstr ""
 msgid ""
 "Deselect the <gui>Enabled</gui>, and then select it again to try to "
 "reconnect to the service."
-msgstr "<gui>有効化</gui> をいったん外し、再び指定して、サービスに接続します。"
+msgstr "<gui>有効化</gui>をいったん外し、再び指定して、サービスに接続します。"
 
 #: C/prob-conn-name.page:9(info/title)
 msgctxt "link:error-msg"
@@ -2669,7 +2666,7 @@ msgstr ""
 
 #: C/prob-conn-name.page:51(item/p)
 msgid "In the <gui>Nickname</gui> text box, type a new nickname."
-msgstr "<gui>ニックネーム</gui> 欄に、新しいニックネームを入力します。"
+msgstr "<gui>ニックネーム</gui>欄に、新しいニックネームを入力します。"
 
 #: C/prob-conn-name.page:56(item/p)
 msgid ""
@@ -2750,8 +2747,8 @@ msgid ""
 "details again."
 msgstr ""
 "そのアカウントをもう使うことがないのなら、<app>Empathy</app> からアカウントを"
-"完全に削除することができます。将来またそのアカウントを <app>Empathy</app> で"
-"使いたくなったら、再びアカウントの詳細を追加する必要があります。"
+"完全に削除できます。将来またそのアカウントを <app>Empathy</app> で使いたく"
+"なったら、再びアカウントの詳細を追加する必要があります。"
 
 #: C/remove-account.page:47(item/p)
 msgid ""
@@ -2769,8 +2766,8 @@ msgid ""
 "A dialog will be shown asking for confirmation. Click the <gui>Remove</gui> "
 "button to permanently remove the account."
 msgstr ""
-"確認のダイアログが表示されます。<gui>削除</gui> ボタンをクリックして、恒久的"
-"にアカウントを削除します。"
+"確認のダイアログが表示されます。<gui>削除</gui>ボタンをクリックして、恒久的に"
+"アカウントを削除します。"
 
 #: C/remove-account.page:60(note/p)
 msgid ""
@@ -2811,8 +2808,7 @@ msgid ""
 "with other services."
 msgstr ""
 "同じローカルエリアネットワーク内でこのサービスを使用している人を自動的に発見"
-"します。他のサービスと同様、メッセージやファイルをその人たちに送ることができ"
-"ます。"
+"します。他のサービスと同様、メッセージやファイルをその人たちに送れます。"
 
 # もっとこなれた訳にしたい。
 #: C/salut-protocol.page:54(page/p)
@@ -2821,8 +2817,8 @@ msgid ""
 "All the modern local area networks should be able to support this kind of "
 "service."
 msgstr ""
-"すべての現代的なローカルエリアネットワークは、この種のサービスをサポートする"
-"ことができるはずです。"
+"すべての現代的なローカルエリアネットワークは、この種のサービスをサポートでき"
+"るはずです。"
 
 #: C/send-file.page:8(info/desc)
 msgid "Send a file from your computer to one of your contacts."
@@ -2844,31 +2840,31 @@ msgid ""
 "Click on the contact you want to send a file, and choose <guiseq><gui>Edit</"
 "gui> <gui>Contact</gui><gui>Send file</gui></guiseq>."
 msgstr ""
-"ファイルを送りたい相手先をクリックし、<guiseq><gui>編集</gui> <gui>相手先</"
+"ファイルを送りたい相手先をクリックし、<guiseq><gui>編集</gui><gui>相手先</"
 "gui><gui>ファイルの送信</gui></guiseq>を選びます。"
 
 #: C/send-file.page:58(item/p)
 msgid "Select the file to send, and click on <gui>Send</gui>."
-msgstr "送信するファイルを指定し、<gui>送信</gui> をクリックします。"
+msgstr "送信するファイルを指定し、<gui>送信</gui>をクリックします。"
 
 #: C/send-file.page:63(item/p)
 msgid "The <gui>File Transfers</gui> window will appear."
-msgstr "<gui>ファイル転送</gui> ウィンドウが開きます。"
+msgstr "<gui>ファイル転送</gui>ウィンドウが開きます。"
 
 #: C/send-file.page:66(item/p)
 msgid ""
 "Wait for your contact to accept the file transfer, or click <gui>Stop</gui> "
 "to halt the transfer."
 msgstr ""
-"相手先がファイル転送を承諾するのを待ちます。そうでなければ、<gui>停止</gui> "
-"をクリックして転送を中断します。"
+"相手先がファイル転送を承諾するのを待ちます。そうでなければ、<gui>停止</gui>を"
+"クリックして転送を中断します。"
 
 #: C/send-file.page:72(item/p)
 msgid ""
 "Once the transfer is finished, it is possible to close the <gui>File "
 "Transfers</gui> window."
 msgstr ""
-"転送が終了したら、<gui>ファイル転送</gui> ウィンドウを閉じてもかまいません。"
+"転送が終了したら、<gui>ファイル転送</gui>ウィンドウを閉じてもかまいません。"
 
 #: C/send-file.page:80(note/p)
 msgid ""
@@ -2876,9 +2872,9 @@ msgid ""
 "<gui>Clear</gui> to empty the list. This will only remove the files from the "
 "list and will not delete them from your computer."
 msgstr ""
-"転送済みファイルの一覧がウィンドウに表示されている場合、<gui>消去</gui> をク"
-"リックして一覧を空にすることができます。これは一覧からファイルを削除するだけ"
-"で、コンピューターからは削除されません。"
+"転送済みファイルの一覧がウィンドウに表示されている場合、<gui>消去</gui>をク"
+"リックして一覧を空にできます。これは一覧からファイルを削除するだけで、コン"
+"ピューターからは削除されません。"
 
 #: C/send-file.page:87(note/p)
 msgid ""
@@ -2909,8 +2905,8 @@ msgid ""
 "From the <gui>Contact List</gui> window, double-click the name of the "
 "contact that you want to have a conversation with."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、会話をしたい相手先の名前をダブルク"
-"リックします。"
+"<gui>相手先の一覧</gui>ウィンドウから、会話をしたい相手先の名前をダブルクリッ"
+"クします。"
 
 #: C/send-message.page:42(item/p)
 msgid ""
@@ -2929,7 +2925,7 @@ msgid ""
 "Select the contact you want to have the conversation, and from the menu "
 "select <gui style=\"menuitem\">Chat</gui>."
 msgstr ""
-"会話をしたい相手先を選び、メニューから<gui style=\"menuitem\">チャット</gui> "
+"会話をしたい相手先を選び、メニューから<gui style=\"menuitem\">チャット</gui>"
 "を指定します。"
 
 #: C/set-custom-status.page:9(info/desc)
@@ -2963,16 +2959,16 @@ msgid ""
 "From the <gui>Contact List</gui> window, click on the drop-down list at the "
 "top."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、最上部のドロップダウンリストをクリッ"
-"クします。"
+"<gui>相手先の一覧</gui>ウィンドウから、最上部のドロップダウンリストをクリック"
+"します。"
 
 #: C/set-custom-status.page:52(item/p)
 msgid ""
 "Select the status you want to add a custom message to. You have to select "
 "the one identified with the label <gui>Custom Message</gui>."
 msgstr ""
-"独自のメッセージを設定したい在席状況を選びます。<gui>独自のメッセージ</gui> "
-"というラベルの付いているものを選ぶ必要があります。"
+"独自のメッセージを設定したい在席状況を選びます。<gui>独自のメッセージ</gui>と"
+"いうラベルの付いているものを選ぶ必要があります。"
 
 #: C/set-custom-status.page:58(item/p)
 msgid ""
@@ -3005,7 +3001,7 @@ msgstr "独自メッセージの編集と削除"
 
 #: C/set-custom-status.page:88(item/p)
 msgid "Select <gui>Edit Custom Message</gui>."
-msgstr "<gui>独自のメッセージを編集</gui> を選びます。"
+msgstr "<gui>独自のメッセージを編集</gui>を選びます。"
 
 #: C/set-custom-status.page:95(item/p)
 msgid "To edit a custom message:"
@@ -3017,8 +3013,8 @@ msgid ""
 "From the <gui>Saved Presets</gui> box, select the status message you want to "
 "edit and double-click on it."
 msgstr ""
-"<gui>保存済み独自メッセージ</gui> の欄から、編集する状況メッセージを選び、ダ"
-"ブルクリックします。"
+"<gui>保存済み独自メッセージ</gui>の欄から、編集する状況メッセージを選び、ダブ"
+"ルクリックします。"
 
 #: C/set-custom-status.page:106(item/p)
 msgid "Type the new custom message and press <key>Enter</key> to modify it."
@@ -3037,11 +3033,11 @@ msgstr "<gui>Saved Presets</gui> の欄から、削除する状況メッセー�
 
 #: C/set-custom-status.page:124(item/p)
 msgid "Click on the <gui>Remove</gui> button."
-msgstr "<gui>削除</gui> ボタンをクリックします。"
+msgstr "<gui>削除</gui>ボタンをクリックします。"
 
 #: C/set-custom-status.page:133(item/p)
 msgid "When finished, click on <gui>Close</gui>."
-msgstr "終わったら、<gui>閉じる</gui> をクリックします。"
+msgstr "終わったら、<gui>閉じる</gui>をクリックします。"
 
 #: C/set-custom-status.page:140(note/p)
 msgid ""
@@ -3049,7 +3045,7 @@ msgid ""
 "message. You will need to select it from the <gui>Contact List</gui> window."
 msgstr ""
 "独自メッセージを編集しても、現在の状況メッセージとしては設定されません。<gui>"
-"相手先の一覧</gui> から、その編集したメッセージを選ぶ必要があります。"
+"相手先の一覧</gui>から、その編集したメッセージを選ぶ必要があります。"
 
 #: C/share-desktop.page:7(info/desc)
 msgid "Show your desktop to your contacts."
@@ -3085,7 +3081,7 @@ msgstr ""
 
 #: C/share-desktop.page:51(item/p)
 msgid "From the <gui>Contact List</gui> window, do one of the following:"
-msgstr "<gui>相手先の一覧</gui> ウィンドウから、次のいずれかを行います。"
+msgstr "<gui>相手先の一覧</gui>ウィンドウから、次のいずれかを行います。"
 
 #: C/share-desktop.page:56(item/p)
 msgid ""
@@ -3094,7 +3090,7 @@ msgid ""
 "guiseq>."
 msgstr ""
 "デスクトップを共有したい相手先を指定し、<guiseq><gui>編集</gui><gui>相手先</"
-"gui> <gui>デスクトップの共有</gui></guiseq> を選びます。"
+"gui><gui>デスクトップの共有</gui></guiseq>を選びます。"
 
 #: C/share-desktop.page:63(item/p)
 msgid ""
@@ -3211,8 +3207,8 @@ msgid ""
 "Use the <em>Available</em> status when you are at your computer and able to "
 "chat with your contacts. You can set a custom message for this status."
 msgstr ""
-"<em>在席中</em> は、コンピューターのところにいて、相手先とチャットできるとき"
-"に使います。この在席状況について独自のメッセージを設定できます。"
+"<em>在席中</em>は、コンピューターのところにいて、相手先とチャットできるときに"
+"使います。この在席状況について独自のメッセージを設定できます。"
 
 #: C/status-icons.page:45(item/title)
 msgid ""
@@ -3230,11 +3226,10 @@ msgid ""
 "not use notification bubbles and sounds when you are busy. You can set a "
 "custom message for this status."
 msgstr ""
-"<em>取り込み中</em> は、いますぐチャットしたくないことを相手先に知らせる場合"
-"に使います。相手先は何か緊急に話したい場合には連絡してくることができます。デ"
-"フォルトでは、取り込み中の場合に <app>Empathy</app> は通知ポップアップを表示"
-"せず、サウンドも鳴らしません。この在席状況について独自のメッセージを設定でき"
-"ます。"
+"<em>取り込み中</em>は、いますぐチャットしたくないことを相手先に知らせる場合に"
+"使います。相手先は何か緊急に話したい場合には連絡できます。デフォルトでは、取"
+"り込み中の場合に <app>Empathy</app> は通知ポップアップを表示せず、サウンドも"
+"鳴らしません。この在席状況について独自のメッセージを設定できます。"
 
 #: C/status-icons.page:53(item/title)
 msgid ""
@@ -3252,7 +3247,7 @@ msgid ""
 "<app>Empathy</app> will not use notification bubbles and sounds when you are "
 "away. You can set a custom message for this status."
 msgstr ""
-"<em>離席中</em> は、コンピューターを離れているときに使います。しばらくコン"
+"<em>離席中</em>は、コンピューターを離れているときに使います。しばらくコン"
 "ピューターの操作がない場合、またはスクリーンセーバーが動いているときに "
 "<app>Empathy</app> は自動的に在席状況を離席中にします。デフォルトでは、離席中"
 "の場合に <app>Empathy</app> は通知ポップアップを表示せず、サウンドも鳴らしま"
@@ -3272,9 +3267,8 @@ msgid ""
 "to your contacts. You will still be connected to your accounts, and you "
 "still see your contacts’ statuses and start conversations with them."
 msgstr ""
-"在席状況を <em>隠れ中</em> にすると、相手先にはオフラインとして表示されます。"
-"アカウントには接続しており、相手の在席状況を見たり会話を始めることができま"
-"す。"
+"在席状況を<em>隠れ中</em>にすると、相手先にはオフラインとして表示されます。ア"
+"カウントには接続しており、相手の在席状況を見たり会話を始めることができます。"
 
 #: C/status-icons.page:69(item/title)
 msgid ""
@@ -3289,7 +3283,7 @@ msgid ""
 "Setting your status to <em>Offline</em> disconnects you from all of your "
 "accounts."
 msgstr ""
-"在席状況を <em>オフライン</em> にすると、すべてのアカウントを切断します。"
+"在席状況を<em>オフライン</em>にすると、すべてのアカウントを切断します。"
 
 #: C/video-call.page:10(info/desc)
 msgid "Start a video conversation with one of your contacts."
@@ -3306,9 +3300,9 @@ msgid ""
 "accounts, and it requires the other person to have an application that "
 "supports video calls."
 msgstr ""
-"ウェブカメラを持っている場合、相手先を呼び出してビデオ会話を行うことができま"
-"す。この機能は、それに適したアカウントを持っている場合にのみ、かつ相手先がビ"
-"デオ会話をサポートしているアプリケーションを持っている場合に働きます。"
+"ウェブカメラを持っている場合、相手先を呼び出してビデオ会話を行えます。この機"
+"能は、それに適したアカウントを持っている場合にのみ、かつ相手先がビデオ会話を"
+"サポートしているアプリケーションを持っている場合に働きます。"
 
 #: C/video-call.page:38(item/p)
 msgid ""
@@ -3317,10 +3311,10 @@ msgid ""
 "next to the name of the contact you wish to call and choose <gui style="
 "\"menuitem\">Video Call</gui>."
 msgstr ""
-"<gui>相手先の一覧</gui> ウィンドウから、通話したい相手先の名前の横にある"
+"<gui>相手先の一覧</gui>ウィンドウから、通話したい相手先の名前の横にある"
 "<media type=\"image\" mime=\"image/png\" src=\"figures/camera-web.png\">ビデ"
-"オ通話</media> アイコンをクリックし、<gui style=\"menuitem\">ビデオ通話</"
-"gui> を選びます。"
+"オ通話</media>アイコンをクリックし、<gui style=\"menuitem\">ビデオ通話</gui>"
+"を選びます。"
 
 #: C/video-call.page:55(note/p)
 msgid ""
@@ -3340,7 +3334,7 @@ msgid ""
 "select <gui style=\"menuitem\">Video Call</gui>."
 msgstr ""
 "会話をしたい相手先を選び、メニューから <gui style=\"menuitem\">ビデオ通話</"
-"gui> を指定します。"
+"gui>を指定します。"
 
 #~ msgid "milo@ubuntu.com"
 #~ msgstr "milo@ubuntu.com"
