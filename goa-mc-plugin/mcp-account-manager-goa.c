@@ -392,7 +392,7 @@ mcp_account_manager_goa_get (const McpAccountStorage *self,
       gpointer k, value;
       GStrv keys;
       guint i;
-      gssize nkeys = 0;
+      gsize nkeys = 0;
 
       /* Properties from GOA */
       g_hash_table_iter_init (&iter, params);
