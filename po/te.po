@@ -5,15 +5,15 @@
 # Krishna Babu K <kkrothap@redhat.com>, 2009.2011
 # Praveen Illa <mail2ipn@gmail.com>, 2011.
 # Sasi Bhushan Boddepalli <Sasi@swecha.net>,2011, 2012
-# Naveen kandimala <naveen@swecha.net>, 2012
+# Naveen kandimala(Swecha) <naveen@swecha.net>, 2012
 # GVS.Giri (Swecha Team) <gvs.giri947@gmail.com>,2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: empathy.master.te\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=empathy&keywords=I18N+L10N&component=General\n"
-"POT-Creation-Date: 2012-04-02 07:29+0000\n"
-"PO-Revision-Date: 2012-04-02 16:28+0530\n"
+"POT-Creation-Date: 2012-04-02 11:48+0000\n"
+"PO-Revision-Date: 2012-04-02 17:52+0530\n"
 "Last-Translator: Sasi Bhushan Boddepalli <sasi@swecha.net>\n"
 "Language-Team: Telugu <indlinux-telugu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -922,7 +922,7 @@ msgstr "సేవకము (_S):"
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:23
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:7
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:21
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:22
 #: ../libempathy-gtk/empathy-account-widget-yahoo.ui.h:9
 msgid "Advanced"
 msgstr "అధునాతన"
@@ -940,7 +940,7 @@ msgstr "మీ AIM సంకేతపదము ఏమిటి?"
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:11
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:10
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:24
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:25
 msgid "Remember Password"
 msgstr "సంకేతపదం గుర్తించుకొను"
 
@@ -984,32 +984,32 @@ msgstr "మీ ICQ UIN ఏమిటి?"
 msgid "What is your ICQ password?"
 msgstr "మీ ICQ సంకేతపదము ఏమిటి?"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:205
-#: ../libempathy-gtk/empathy-account-widget-sip.c:238
+#: ../libempathy-gtk/empathy-account-widget-sip.c:207
+#: ../libempathy-gtk/empathy-account-widget-sip.c:240
 msgid "Auto"
 msgstr "స్వయం"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:208
+#: ../libempathy-gtk/empathy-account-widget-sip.c:210
 msgid "UDP"
 msgstr "UDP"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:211
+#: ../libempathy-gtk/empathy-account-widget-sip.c:213
 msgid "TCP"
 msgstr "TCP"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:214
+#: ../libempathy-gtk/empathy-account-widget-sip.c:216
 msgid "TLS"
 msgstr "TLS"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:243
+#: ../libempathy-gtk/empathy-account-widget-sip.c:245
 msgid "Register"
 msgstr "నమోదుచేసుకొను"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:248
+#: ../libempathy-gtk/empathy-account-widget-sip.c:250
 msgid "Options"
 msgstr "ఐచ్ఛికాలు"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.c:251
+#: ../libempathy-gtk/empathy-account-widget-sip.c:253
 msgid "None"
 msgstr "ఏదీకాదు"
 
@@ -1270,11 +1270,16 @@ msgstr "TLS దోషాలను విస్మరించు"
 msgid "Port:"
 msgstr "పోర్టు (_P):"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:22
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:21
+#| msgid "E-_mail address:"
+msgid "Local IP Address:"
+msgstr "స్థానిక IP చిరునామా: "
+
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:23
 msgid "What is your SIP login ID?"
 msgstr "మీ SIP ప్రవేశ ఐడి ఏమిటి?"
 
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:23
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:24
 msgid "What is your SIP account password?"
 msgstr "మీ SIP ఖాతా సంకేతపదం ఏమిటి?"
 
@@ -2568,12 +2573,12 @@ msgstr "ఈ స్థితిని ఇష్టాంశము నుండి
 msgid "Click to make this status a favorite"
 msgstr "ఈ స్థితిని ఇష్టాంశముగా చేయుటకు నొక్కండి"
 
-#: ../libempathy-gtk/empathy-presence-chooser.c:388
+#: ../libempathy-gtk/empathy-presence-chooser.c:396
 msgid "Set status"
 msgstr "స్థితిని అమర్చు"
 
 #. Custom messages
-#: ../libempathy-gtk/empathy-presence-chooser.c:1135
+#: ../libempathy-gtk/empathy-presence-chooser.c:1145
 msgid "Custom messages…"
 msgstr "అనురూపిత సందేశాలు..."
 
@@ -3113,13 +3118,11 @@ msgstr ""
 
 #. Menu item: to enabled/disable the account
 #: ../src/empathy-accounts-dialog.c:1795
-#| msgid "_Enable"
 msgid "_Enabled"
 msgstr "చేతనపరుచు (_E) "
 
 #. Menu item: Rename
 #: ../src/empathy-accounts-dialog.c:1818
-#| msgid "Real name:"
 msgid "Rename"
 msgstr "పేరు మార్చండి "
 
