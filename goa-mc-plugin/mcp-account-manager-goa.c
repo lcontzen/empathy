@@ -255,8 +255,6 @@ load_store (McpAccountManagerGoa *self)
 static void
 mcp_account_manager_goa_init (McpAccountManagerGoa *self)
 {
-  gchar *path;
-
   DEBUG ("GOA MC plugin initialised");
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -307,7 +305,6 @@ _goa_client_new_cb (GObject *obj,
     gpointer user_data)
 {
   McpAccountManagerGoa *self = user_data;
-  GoaClient *client;
   GList *accounts, *ptr;
   GError *error = NULL;
 
@@ -357,10 +354,10 @@ mcp_account_manager_goa_list (const McpAccountStorage *self,
 static void
 get_enabled (const McpAccountStorage *self,
     const McpAccountManager *am,
-    const gchar *acct,
+    const gchar *acc,
     GoaObject *object)
 {
-  mcp_account_manager_set_value (am, acct, "Enabled",
+  mcp_account_manager_set_value (am, acc, "Enabled",
       goa_object_peek_chat (object) != NULL ? "true" : "false");
 }
 
@@ -368,16 +365,16 @@ get_enabled (const McpAccountStorage *self,
 static gboolean
 mcp_account_manager_goa_get (const McpAccountStorage *self,
     const McpAccountManager *am,
-    const gchar *acct,
+    const gchar *acc,
     const gchar *key)
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
   GoaObject *object;
   GoaAccount *account;
 
-  DEBUG ("%s: %s, %s", G_STRFUNC, acct, key);
+  DEBUG ("%s: %s, %s", G_STRFUNC, acc, key);
 
-  object = g_hash_table_lookup (priv->accounts, acct);
+  object = g_hash_table_lookup (priv->accounts, acc);
 
   if (object == NULL)
     return FALSE;
@@ -392,28 +389,28 @@ mcp_account_manager_goa_get (const McpAccountStorage *self,
       /* load all keys */
       GHashTable *params = get_tp_parameters (account);
       GHashTableIter iter;
-      gpointer key, value;
+      gpointer k, value;
       GStrv keys;
       guint i;
-      gssize nkeys = 0;
+      gsize nkeys = 0;
 
       /* Properties from GOA */
       g_hash_table_iter_init (&iter, params);
-      while (g_hash_table_iter_next (&iter, &key, &value))
-        mcp_account_manager_set_value (am, acct, key, value);
+      while (g_hash_table_iter_next (&iter, &k, &value))
+        mcp_account_manager_set_value (am, acc, k, value);
 
       g_hash_table_unref (params);
 
       /* Stored properties */
-      keys = g_key_file_get_keys (priv->store, acct, &nkeys, NULL);
+      keys = g_key_file_get_keys (priv->store, acc, &nkeys, NULL);
 
       for (i = 0; i < nkeys; i++)
         {
-          gchar *v = g_key_file_get_value (priv->store, acct, keys[i], NULL);
+          gchar *v = g_key_file_get_value (priv->store, acc, keys[i], NULL);
 
           if (v != NULL)
             {
-              mcp_account_manager_set_value (am, acct, keys[i], v);
+              mcp_account_manager_set_value (am, acc, keys[i], v);
               g_free (v);
             }
         }
@@ -421,11 +418,11 @@ mcp_account_manager_goa_get (const McpAccountStorage *self,
       g_strfreev (keys);
 
       /* Enabled */
-      get_enabled (self, am, acct, object);
+      get_enabled (self, am, acc, object);
     }
   else if (!tp_strdiff (key, "Enabled"))
     {
-      get_enabled (self, am, acct, object);
+      get_enabled (self, am, acc, object);
     }
   else
     {
@@ -436,11 +433,11 @@ mcp_account_manager_goa_get (const McpAccountStorage *self,
       value = g_hash_table_lookup (params, key);
 
       if (value == NULL)
-        value = g_key_file_get_value (priv->store, acct, key, NULL);
+        value = g_key_file_get_value (priv->store, acc, key, NULL);
       else
         value = g_strdup (value);
 
-      mcp_account_manager_set_value (am, acct, key, value);
+      mcp_account_manager_set_value (am, acc, key, value);
 
       g_hash_table_unref (params);
       g_free (value);
@@ -455,7 +452,7 @@ account_is_in_goa (const McpAccountStorage *self,
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
 
-  return (g_hash_table_lookup (priv->accounts, acct) != NULL);
+  return (g_hash_table_lookup (priv->accounts, account) != NULL);
 }
 
 static gboolean
@@ -466,7 +463,6 @@ mcp_account_manager_goa_set (const McpAccountStorage *self,
     const gchar *val)
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
-  GError *error = NULL;
 
   if (!account_is_in_goa (self, account))
     return FALSE;
@@ -572,14 +568,14 @@ mcp_account_manager_goa_get_restrictions (const McpAccountStorage *self,
 
 static void
 mcp_account_manager_goa_get_identifier (const McpAccountStorage *self,
-    const gchar *acct,
+    const gchar *acc,
     GValue *identifier)
 {
   McpAccountManagerGoaPrivate *priv = GET_PRIVATE (self);
   GoaObject *object;
   GoaAccount *account;
 
-  object = g_hash_table_lookup (priv->accounts, acct);
+  object = g_hash_table_lookup (priv->accounts, acc);
   g_return_if_fail (object != NULL);
 
   account = goa_object_peek_account (object);
