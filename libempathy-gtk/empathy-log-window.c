@@ -1236,11 +1236,11 @@ get_icon_for_event (TplEvent *event)
   else if (TPL_IS_CALL_EVENT (event))
     {
       TplCallEvent *call = TPL_CALL_EVENT (event);
-      TplCallEndReason reason = tpl_call_event_get_end_reason (call);
+      TpCallStateChangeReason reason = tpl_call_event_get_end_reason (call);
       TplEntity *sender = tpl_event_get_sender (event);
       TplEntity *receiver = tpl_event_get_receiver (event);
 
-      if (reason == TPL_CALL_END_REASON_NO_ANSWER)
+      if (reason == TP_CALL_STATE_CHANGE_REASON_NO_ANSWER)
         icon = EMPATHY_IMAGE_CALL_MISSED;
       else if (tpl_entity_get_entity_type (sender) == TPL_ENTITY_SELF)
         icon = EMPATHY_IMAGE_CALL_OUTGOING;
@@ -1357,7 +1357,7 @@ log_window_append_call (TplEvent *event,
       COL_EVENTS_EVENT, event,
       -1);
 
-  if (tpl_call_event_get_end_reason (call) != TPL_CALL_END_REASON_NO_ANSWER)
+  if (tpl_call_event_get_end_reason (call) != TP_CALL_STATE_CHANGE_REASON_NO_ANSWER)
     {
       gchar *body;
       gchar *tmp;
@@ -3243,11 +3243,12 @@ log_window_got_messages_for_date_cb (GObject *manager,
             }
           else
             {
-              TplCallEndReason reason = tpl_call_event_get_end_reason (call);
+              TpCallStateChangeReason reason =
+                tpl_call_event_get_end_reason (call);
               TplEntity *sender = tpl_event_get_sender (event);
               TplEntity *receiver = tpl_event_get_receiver (event);
 
-              if (reason == TPL_CALL_END_REASON_NO_ANSWER)
+              if (reason == TP_CALL_STATE_CHANGE_REASON_NO_ANSWER)
                 {
                   if (ctx->subtype & EVENT_CALL_MISSED)
                     append = TRUE;

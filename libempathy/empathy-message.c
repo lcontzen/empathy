@@ -411,7 +411,7 @@ empathy_message_from_tpl_log_event (TplEvent *logevent)
 
 		timestamp = tpl_event_get_timestamp (logevent);
 
-		if (tpl_call_event_get_end_reason (call) == TPL_CALL_END_REASON_NO_ANSWER)
+		if (tpl_call_event_get_end_reason (call) == TP_CALL_STATE_CHANGE_REASON_NO_ANSWER)
 			body = g_strdup_printf (_("Missed call from %s"),
 				tpl_entity_get_alias (tpl_event_get_sender (logevent)));
 		else if (tpl_entity_get_entity_type (tpl_event_get_sender (logevent)) == TPL_ENTITY_SELF)
