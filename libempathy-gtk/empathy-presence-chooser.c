@@ -384,8 +384,9 @@ presence_chooser_set_status_editing (EmpathyPresenceChooser *self,
 		priv->editing_status = TRUE;
 
 		get_state_and_status (self, &status);
-		tooltip_text = g_strdup_printf ("<b>Current message: %s</b>\n"
-		    "<small><i>Press Enter to set the new message or Esc to cancel.</i></small>",
+		/* Translators: %s is a status message like 'At the pub' for example */
+		tooltip_text = g_strdup_printf (_("<b>Current message: %s</b>\n"
+			"<small><i>Press Enter to set the new message or Esc to cancel.</i></small>"),
 		    status);
 		gtk_widget_set_tooltip_markup (entry, tooltip_text);
 		gtk_entry_set_icon_from_stock (GTK_ENTRY (entry),
