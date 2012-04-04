@@ -269,7 +269,7 @@ destroy (NstPlugin *plugin)
 
 static
 NstPluginInfo plugin_info = {
-  "im",
+  "empathy",
   "empathy",
   N_("Instant Message (Empathy)"),
   GETTEXT_PACKAGE,
