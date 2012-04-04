@@ -58,6 +58,9 @@ void empathy_local_xmpp_assistant_widget_create_account (
 gboolean empathy_local_xmpp_assistant_widget_should_create_account (
     TpAccountManager *manager);
 
+gboolean empathy_local_xmpp_assistant_widget_is_valid (
+        EmpathyLocalXmppAssistantWidget *self);
+
 G_END_DECLS
 
 #endif /* __EMPATHY_LOCAL_XMPP_ASSISTANT_WIDGET_H__ */
