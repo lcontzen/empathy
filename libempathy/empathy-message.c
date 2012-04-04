@@ -32,11 +32,6 @@
 #include <telepathy-glib/account.h>
 #include <telepathy-glib/account-manager.h>
 
-#include <telepathy-logger/entity.h>
-#include <telepathy-logger/event.h>
-#include <telepathy-logger/text-event.h>
-#include <telepathy-logger/call-event.h>
-
 #include "empathy-client-factory.h"
 #include "empathy-message.h"
 #include "empathy-utils.h"

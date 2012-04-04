@@ -29,8 +29,6 @@
 #include <telepathy-glib/interfaces.h>
 #include <telepathy-glib/util.h>
 
-#include <telepathy-logger/log-manager.h>
-
 #include <folks/folks.h>
 #include <folks/folks-telepathy.h>
 
