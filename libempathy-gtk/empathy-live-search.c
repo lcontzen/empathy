@@ -357,6 +357,14 @@ live_search_key_press_event_cb (GtkWidget *widget,
          return FALSE;
      }
 
+   /* Don't forward shift keys events as focusing the search entry would
+    * cancel an in-progress editing on a cell renderer (like when renaming a
+    * group). There is no point focusing it anyway as we don't display the
+    * search entry when only a shift key is pressed. */
+   if (event->keyval == GDK_KEY_Shift_L ||
+       event->keyval == GDK_KEY_Shift_R)
+       return FALSE;
+
   /* realize the widget if it is not realized yet */
   gtk_widget_realize (priv->search_entry);
   if (!gtk_widget_has_focus (priv->search_entry))
