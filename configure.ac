@@ -479,38 +479,6 @@ AC_SUBST(GEOCODE_CFLAGS)
 AC_SUBST(GEOCODE_LIBS)
 
 # -----------------------------------------------------------
-# meego widgets support
-# -----------------------------------------------------------
-AC_ARG_ENABLE(meego,
-              AS_HELP_STRING([--enable-meego=@<:@no/yes@:>@],
-                             [Enable meego widgets]), ,
-                             enable_meego=no)
-
-if test "x$enable_meego" != "xno"; then
-    PKG_CHECK_MODULES(MEEGO,
-    [
-       mx-gtk-1.0
-       gio-unix-2.0
-    ], have_meego="yes", have_meego="no")
-
-    if test "x$have_meego" = "xyes"; then
-       AC_DEFINE(HAVE_MEEGO, 1, [Define if you have meego])
-    fi
-else
-   have_meego="no"
-fi
-
-if test "x$enable_meego" = "xyes" -a "x$have_meego" != "xyes"; then
-   AC_MSG_ERROR([Could not find meego dependencies:
-
-$MEEGO_PKG_ERRORS])
-fi
-
-AM_CONDITIONAL(HAVE_MEEGO, test "x$have_meego" = "xyes")
-AC_SUBST(MEEGO_CFLAGS)
-AC_SUBST(MEEGO_LIBS)
-
-# -----------------------------------------------------------
 # nautilus-sendto
 # -----------------------------------------------------------
 AC_ARG_ENABLE(nautilus-sendto,
@@ -640,7 +608,6 @@ Configure summary:
 	Display maps (libchamplain).:  ${have_libchamplain}
 	Location awareness (Geoclue):  ${have_geoclue}
 	Geocode support (Geocode)...:  ${have_geocode}
-	Meego widgets...............:  ${have_meego}
 	Cheese webcam support ......:  ${have_cheese}
 	Camera monitoring...........:  ${have_gudev}
 

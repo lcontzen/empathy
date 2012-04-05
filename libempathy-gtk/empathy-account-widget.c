@@ -1782,8 +1782,6 @@ out:
   { #cm, #proto, "empathy-account-widget-"#proto".ui", \
     account_widget_build_##proto }
 
-#ifndef HAVE_MEEGO
-/* Meego doesn't support registration */
 static void
 add_register_buttons (EmpathyAccountWidget *self,
     TpAccount *account)
@@ -1823,7 +1821,6 @@ add_register_buttons (EmpathyAccountWidget *self,
   gtk_widget_show (self->priv->radiobutton_reuse);
   gtk_widget_show (radiobutton_register);
 }
-#endif /* HAVE_MEEGO */
 
 static void
 remember_password_toggled_cb (GtkToggleButton *button,
@@ -2017,9 +2014,7 @@ do_constructed (GObject *obj)
   else
     account_widget_set_control_buttons_sensitivity (self, FALSE);
 
-#ifndef HAVE_MEEGO
   add_register_buttons (self, account);
-#endif /* HAVE_MEEGO */
 
   /* hook up to widget destruction to unref ourselves */
   g_signal_connect (self->ui_details->widget, "destroy",

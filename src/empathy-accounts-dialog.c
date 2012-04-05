@@ -1391,24 +1391,6 @@ accounts_dialog_button_remove_clicked_cb (GtkWidget *button,
   accounts_dialog_remove_account_iter (dialog, &iter);
 }
 
-#ifdef HAVE_MEEGO
-static void
-accounts_dialog_view_delete_activated_cb (EmpathyCellRendererActivatable *cell,
-    const gchar *path_string,
-    EmpathyAccountsDialog *dialog)
-{
-  EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-
-  model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->treeview));
-  if (!gtk_tree_model_get_iter_from_string (model, &iter, path_string))
-    return;
-
-  accounts_dialog_remove_account_iter (dialog, &iter);
-}
-#endif /* HAVE_MEEGO */
-
 static void
 accounts_dialog_model_add_columns (EmpathyAccountsDialog *dialog)
 {
@@ -1460,20 +1442,6 @@ accounts_dialog_model_add_columns (EmpathyAccountsDialog *dialog)
       G_CALLBACK (accounts_dialog_name_editing_started_cb),
       dialog);
   g_object_set (priv->name_renderer, "ypad", 4, NULL);
-
-#ifdef HAVE_MEEGO
-  /* Delete column */
-  cell = empathy_cell_renderer_activatable_new ();
-  gtk_tree_view_column_pack_start (column, cell, FALSE);
-  g_object_set (cell,
-        "icon-name", GTK_STOCK_DELETE,
-        "show-on-select", TRUE,
-        NULL);
-
-  g_signal_connect (cell, "path-activated",
-      G_CALLBACK (accounts_dialog_view_delete_activated_cb),
-      dialog);
-#endif /* HAVE_MEEGO */
 }
 
 static EmpathyAccountSettings *
@@ -2479,11 +2447,6 @@ accounts_dialog_build_ui (EmpathyAccountsDialog *dialog)
   g_object_unref (gui);
 
   action_area = gtk_dialog_get_action_area (GTK_DIALOG (dialog));
-
-#ifdef HAVE_MEEGO
-  gtk_widget_hide (action_area);
-  gtk_widget_hide (priv->button_remove);
-#endif /* HAVE_MEEGO */
 
   /* Display loading page */
   priv->loading = TRUE;
