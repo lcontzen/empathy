@@ -307,3 +307,10 @@ empathy_local_xmpp_assistant_widget_should_create_account (
 
   return !salut_created;
 }
+
+gboolean
+empathy_local_xmpp_assistant_widget_is_valid (
+        EmpathyLocalXmppAssistantWidget *self)
+{
+  return empathy_account_settings_is_valid (self->priv->settings);
+}

@@ -27,7 +27,7 @@
 
 #include <glib-object.h>
 #include <telepathy-glib/message.h>
-#include <telepathy-logger/event.h>
+#include <telepathy-logger/telepathy-logger.h>
 
 #include "empathy-contact.h"
 #include "empathy-time.h"

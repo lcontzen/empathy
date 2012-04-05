@@ -44,7 +44,7 @@
 #include <telepathy-glib/connection-manager.h>
 #include <telepathy-glib/interfaces.h>
 
-#include <telepathy-logger/log-manager.h>
+#include <telepathy-logger/telepathy-logger.h>
 
 #include <libempathy/empathy-client-factory.h>
 #include <libempathy/empathy-connection-aggregator.h>

@@ -26,7 +26,7 @@
 
 #include <telepathy-glib/contact.h>
 #include <telepathy-glib/account.h>
-#include <telepathy-logger/entity.h>
+#include <telepathy-logger/telepathy-logger.h>
 #include <folks/folks.h>
 
 G_BEGIN_DECLS

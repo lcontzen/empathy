@@ -35,7 +35,6 @@
 #include <telepathy-glib/proxy-subclass.h>
 
 #include <telepathy-logger/telepathy-logger.h>
-#include <telepathy-logger/call-event.h>
 
 #include <extensions/extensions.h>
 

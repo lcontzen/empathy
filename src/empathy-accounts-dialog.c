@@ -2236,7 +2236,9 @@ maybe_show_salut_dialog (EmpathyAccountsDialog *self)
 
   button = gtk_dialog_add_button (GTK_DIALOG (dialog),
       _("_Connect"), GTK_RESPONSE_YES);
-  gtk_widget_set_sensitive (button, FALSE);
+  gtk_widget_set_sensitive (button,
+      empathy_local_xmpp_assistant_widget_is_valid (
+        EMPATHY_LOCAL_XMPP_ASSISTANT_WIDGET (widget)));
 
   g_signal_connect (widget, "valid", G_CALLBACK (salut_valid_cb),
       button);
