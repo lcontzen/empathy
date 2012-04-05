@@ -1,3 +1,52 @@
+NEW in 3.4.0.1 (05/04/2012)
+==============
+
+The "Please unify version numbers" release.
+
+This new releases fixes calls logging and is usable with the stable version of
+telepathy-logger.
+
+Most of the Telepathy components have been branched and released as stable. We
+recommend to distributors to use the following versions of these components:
+ • telepathy-glib 0.18.0
+ • telepathy-gabble 0.16.0
+ • telepathy-mission-control 5.12.0
+ • telepathy-logger 0.4.0
+ • telepathy-salut 0.8.0
+ • telepathy-haze 0.6.0
+
+Dependencies:
+ • Clutter ≥ 1.10.0
+ • telepathy-logger ≥ 0.2.13
+
+Bugs fixed:
+ - Fixed #652800, Empathy should notify when someone mention me at IRC (Will Thompson)
+ - Fixed #670601, empathy-accounts segfault (settings are null for liststore iter) (Guillaume Desmottes)
+ - Fixed #672560, Call window inline toolbar borders are not crisp (Cosimo Cecchi)
+ - Fixed #672561, Call window preview drop placeholder should not be red (Cosimo Cecchi)
+ - Fixed #672796, gst_element_get_name: return value should be freed (Debarshi Ray)
+ - Fixed #672839, Pidgin importer treeview should expand vertically. (Guillaume Desmottes)
+ - Fixed #673030, Empathy need porting to logger stable call1 support (Danielle Madeley, Nicolas Dufresne)
+ - Fixed #673046, Video preview is always behind the incoming video (Cosimo Cecchi)
+ - Fixed #673141, Right-click on GOA account let you disable it (Guillaume Desmottes)
+ - Fixed #673162, "Enable" account menu item doesn't connect the account (Guillaume Desmottes)
+ - Fixed #673444, Needs a clutter ≥ 1.10 dep (Guillaume Desmottes)
+ - Fixed #673451, Initial Empathy Accounts Dialog does not allow to click "Connect" (Guillaume Desmottes)
+ - Fixed #673480, nautilus-sendto menu entry "Instant Message (Empathy)" lacks icon (Guillaume Desmottes)
+
+Translations:
+ - Updated ar Translation (Ibrahim Saed)
+ - Updated eu Translation (Inaki Larranaga Murgoitio)
+ - Updated fa Translation (Arash Mousavi)
+ - Updated id Translation (Andika Triwidada)
+ - Updated ja Translation (Mako N)
+ - Updated ko Translation (Changwoo Ryu)
+ - Updated nb Translation (Kjartan Maraas)
+ - Updated or Translation (ManojKumar Giri)
+
+Documentation translations:
+ - Updated ja Documentation translation (Mako N)
+
 NEW in 3.4.0 (26/03/2012)
 ============
 Bugs fixed:
