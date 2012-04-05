@@ -266,58 +266,6 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Gettext package name])
 
 # -----------------------------------------------------------
-# Connectivity integration
-# -----------------------------------------------------------
-AC_ARG_WITH(connectivity,
-              AS_HELP_STRING([--with-connectivity=@<:@nm/connman/auto/no@:>@],
-                             [build with connectivity support]), ,
-                             with_connectivity=auto)
-
-if test "x$with_connectivity" = "xno"; then
-   have_nm=no
-   have_connman=no
-
-elif test "x$with_connectivity" = "xconnman"; then
-   have_nm=no
-
-   PKG_CHECK_MODULES(CONNMAN,
-   [
-      dbus-glib-1
-   ], have_connman="yes", have_connman="no")
-
-   if test "x$have_connman" = "xyes"; then
-      AC_DEFINE(HAVE_CONNMAN, 1, [Define if you have connman dependencies])
-   fi
-
-else
-   have_connman=no
-
-   PKG_CHECK_MODULES(NETWORK_MANAGER,
-   [
-      libnm-glib >= $NETWORK_MANAGER_REQUIRED
-   ], have_nm="yes", have_nm="no")
-
-   if test "x$have_nm" = "xyes"; then
-      AC_DEFINE(HAVE_NM, 1, [Define if you have libnm-glib])
-   fi
-fi
-
-if test "x$with_connectivity" = "xconnman" -a "x$have_connman" != "xyes"; then
-   AC_MSG_ERROR([Couldn't find connman dependencies:
-
-$CONNMAN_PKG_ERRORS])
-fi
-
-if test "x$with_connectivity" = "xnm" -a "x$have_nm" != "xyes"; then
-   AC_MSG_ERROR([Couldn't find Network Manager dependencies:
-
-$NETWORK_MANAGER_PKG_ERRORS])
-fi
-
-AM_CONDITIONAL(HAVE_NM, test "x$have_nm" = "xyes")
-AM_CONDITIONAL(HAVE_CONNMAN, test "x$have_connman" = "xyes")
-
-# -----------------------------------------------------------
 # gudev
 # -----------------------------------------------------------
 AC_ARG_ENABLE(gudev,
@@ -610,10 +558,6 @@ Configure summary:
 	Geocode support (Geocode)...:  ${have_geocode}
 	Cheese webcam support ......:  ${have_cheese}
 	Camera monitoring...........:  ${have_gudev}
-
-    Connectivity:
-	NetworkManager integration..:  ${have_nm}
-	ConnMan integration.........:  ${have_connman}
 
     Extras:
 	Nautilus-sendto plugin......:  ${have_nst}
