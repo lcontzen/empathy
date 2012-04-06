@@ -1,3 +1,9 @@
+NEW in 3.4.0.2 (06/04/2012)
+==============
+
+This release fixes the build with --enable-empathy-av and brings back the
+"Previous conversations" menu item which has been accidentally removed.
+
 NEW in 3.4.0.1 (05/04/2012)
 ==============
 
