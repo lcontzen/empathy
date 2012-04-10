@@ -39,7 +39,6 @@
 #include <telepathy-glib/account-manager.h>
 #include <telepathy-glib/util.h>
 #include <telepathy-logger/telepathy-logger.h>
-#include <libempathy/empathy-contact-list.h>
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-keyring.h>
 #include <libempathy/empathy-utils.h>

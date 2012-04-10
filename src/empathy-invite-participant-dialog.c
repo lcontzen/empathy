@@ -17,7 +17,6 @@
 #include "empathy-invite-participant-dialog.h"
 
 #include <libempathy/empathy-utils.h>
-#include <libempathy/empathy-contact-list.h>
 
 #include <libempathy-gtk/empathy-contact-chooser.h>
 #include <libempathy-gtk/empathy-individual-view.h>

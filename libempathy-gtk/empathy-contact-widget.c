@@ -37,7 +37,6 @@
 #include <telepathy-glib/interfaces.h>
 
 #include <libempathy/empathy-tp-contact-factory.h>
-#include <libempathy/empathy-contact-list.h>
 #include <libempathy/empathy-location.h>
 #include <libempathy/empathy-time.h>
 #include <libempathy/empathy-utils.h>

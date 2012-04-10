@@ -37,7 +37,6 @@
 #include <libempathy/empathy-request-util.h>
 #include <libempathy/empathy-chatroom-manager.h>
 #include <libempathy/empathy-chatroom.h>
-#include <libempathy/empathy-contact-list.h>
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-individual-manager.h>
 #include <libempathy/empathy-gsettings.h>
