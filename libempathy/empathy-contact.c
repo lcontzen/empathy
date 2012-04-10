@@ -1701,6 +1701,23 @@ tp_caps_to_capabilities (TpCapabilities *caps)
   guint i;
   GPtrArray *classes;
 
+  if (tp_capabilities_supports_file_transfer (caps))
+    capabilities |= EMPATHY_CAPABILITIES_FT;
+
+  if (tp_capabilities_supports_stream_tubes (caps, TP_HANDLE_TYPE_CONTACT,
+        "rfb"))
+    capabilities |= EMPATHY_CAPABILITIES_RFB_STREAM_TUBE;
+
+  if (tp_capabilities_supports_audio_video_call (caps, TP_HANDLE_TYPE_CONTACT))
+    {
+      capabilities |= EMPATHY_CAPABILITIES_AUDIO;
+      capabilities |= EMPATHY_CAPABILITIES_VIDEO;
+    }
+  else if (tp_capabilities_supports_audio_call (caps, TP_HANDLE_TYPE_CONTACT))
+    {
+      capabilities |= EMPATHY_CAPABILITIES_AUDIO;
+    }
+
   classes = tp_capabilities_get_channel_classes (caps);
 
   for (i = 0; i < classes->len; i++)
@@ -1724,68 +1741,11 @@ tp_caps_to_capabilities (TpCapabilities *caps)
       chan_type = tp_asv_get_string (fixed_prop,
           TP_PROP_CHANNEL_CHANNEL_TYPE);
 
-      if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_FILE_TRANSFER))
-        {
-          capabilities |= EMPATHY_CAPABILITIES_FT;
-        }
-      else if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_STREAM_TUBE))
-        {
-          const gchar *service;
-
-          service = tp_asv_get_string (fixed_prop,
-              TP_PROP_CHANNEL_TYPE_STREAM_TUBE_SERVICE);
-
-          if (!tp_strdiff (service, "rfb"))
-            capabilities |= EMPATHY_CAPABILITIES_RFB_STREAM_TUBE;
-        }
-      else if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_STREAMED_MEDIA))
-        {
-          guint j;
-
-          for (j = 0; allowed_prop[j] != NULL; j++)
-            {
-              if (!tp_strdiff (allowed_prop[j],
-                    TP_PROP_CHANNEL_TYPE_STREAMED_MEDIA_INITIAL_AUDIO))
-                capabilities |= EMPATHY_CAPABILITIES_AUDIO;
-              else if (!tp_strdiff (allowed_prop[j],
-                    TP_PROP_CHANNEL_TYPE_STREAMED_MEDIA_INITIAL_VIDEO))
-                capabilities |= EMPATHY_CAPABILITIES_VIDEO;
-            }
-
-          if (tp_asv_get_boolean (fixed_prop,
-                    TP_PROP_CHANNEL_TYPE_STREAMED_MEDIA_INITIAL_AUDIO, NULL))
-            capabilities |= EMPATHY_CAPABILITIES_AUDIO;
-          if (tp_asv_get_boolean (fixed_prop,
-                    TP_PROP_CHANNEL_TYPE_STREAMED_MEDIA_INITIAL_VIDEO, NULL))
-            capabilities |= EMPATHY_CAPABILITIES_VIDEO;
-        }
-      else if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_TEXT))
+      if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_TEXT))
         {
           if (tp_asv_get_boolean (fixed_prop,
                 TP_PROP_CHANNEL_INTERFACE_SMS_SMS_CHANNEL, NULL))
             capabilities |= EMPATHY_CAPABILITIES_SMS;
-        }
-      else if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_CALL))
-        {
-          guint j;
-
-          if (tp_asv_get_boolean (fixed_prop,
-              TP_PROP_CHANNEL_TYPE_CALL_INITIAL_AUDIO, NULL))
-            capabilities |= EMPATHY_CAPABILITIES_AUDIO;
-
-          if (tp_asv_get_boolean (fixed_prop,
-              TP_PROP_CHANNEL_TYPE_CALL_INITIAL_VIDEO, NULL))
-            capabilities |= EMPATHY_CAPABILITIES_VIDEO;
-
-          for (j = 0; allowed_prop[j] != NULL; j++)
-            {
-              if (!tp_strdiff (allowed_prop[j],
-                    TP_PROP_CHANNEL_TYPE_CALL_INITIAL_AUDIO))
-                capabilities |= EMPATHY_CAPABILITIES_AUDIO;
-              else if (!tp_strdiff (allowed_prop[j],
-                    TP_PROP_CHANNEL_TYPE_CALL_INITIAL_VIDEO))
-                capabilities |= EMPATHY_CAPABILITIES_VIDEO;
-            }
         }
     }
 
