@@ -216,23 +216,6 @@ empathy_tp_chat_add (EmpathyTpChat *self,
     }
 }
 
-static void
-tp_chat_remove (EmpathyContactList *list,
-    EmpathyContact *contact,
-    const gchar *message)
-{
-  EmpathyTpChat *self = (EmpathyTpChat *) list;
-  TpHandle handle;
-  GArray handles = {(gchar *) &handle, 1};
-
-  g_return_if_fail (EMPATHY_IS_TP_CHAT (list));
-  g_return_if_fail (EMPATHY_IS_CONTACT (contact));
-
-  handle = empathy_contact_get_handle (contact);
-  tp_cli_channel_interface_group_call_remove_members ((TpChannel *) self, -1,
-      &handles, NULL, NULL, NULL, NULL, NULL);
-}
-
 static GList *
 tp_chat_get_members (EmpathyContactList *list)
 {
@@ -1324,7 +1307,6 @@ empathy_tp_chat_init (EmpathyTpChat *self)
 static void
 tp_chat_iface_init (EmpathyContactListIface *iface)
 {
-  iface->remove = tp_chat_remove;
   iface->get_members = tp_chat_get_members;
 }
 
