@@ -169,34 +169,6 @@ empathy_plist_parse_dict (xmlNode *a_node)
 	return tp_g_value_slice_new_take_boxed (G_TYPE_HASH_TABLE, dict);
 }
 
-static GValue *
-empathy_plist_parse_array (xmlNode *a_node)
-{
-	xmlNode *cur_node = a_node->children;
-	GValueArray *array;
-
-	array = g_value_array_new (4);
-
-	while (cur_node) {
-		GValue *cur_value;
-
-		cur_value = empathy_plist_parse_node (cur_node);
-		if (cur_value) {
-			g_value_array_append (array, cur_value);
-			tp_g_value_slice_free (cur_value);
-		}
-
-		/* When an array contains an element enclosed in "unknown" tags (ie
-		 * non-type ones), we silently skip them since early
-		 * SysInfoExtended files used to have <key> values enclosed within
-		 * <array> tags.
-		 */
-		cur_node = cur_node->next;
-	}
-
-	return tp_g_value_slice_new_take_boxed (G_TYPE_VALUE_ARRAY, array);
-}
-
 typedef GValue *(*ParseCallback) (xmlNode *);
 
 struct Parser {
@@ -211,7 +183,6 @@ static const struct Parser parsers[] = { {"integer", empathy_plist_parse_integer
 					 {"false",   empathy_plist_parse_boolean},
 					 {"data",    empathy_plist_parse_data},
 					 {"dict",    empathy_plist_parse_dict},
-					 {"array",   empathy_plist_parse_array},
 					 {NULL,	  NULL} };
 
 static ParseCallback
