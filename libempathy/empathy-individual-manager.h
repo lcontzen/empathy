@@ -74,13 +74,6 @@ void empathy_individual_manager_remove (EmpathyIndividualManager *manager,
 void empathy_individual_manager_remove_group (EmpathyIndividualManager *manager,
     const gchar *group);
 
-void empathy_individual_manager_link_personas (EmpathyIndividualManager *self,
-    GeeSet *personas);
-
-void empathy_individual_manager_unlink_individual (
-    EmpathyIndividualManager *self,
-    FolksIndividual *individual);
-
 gboolean empathy_individual_manager_supports_blocking (
     EmpathyIndividualManager *self,
     FolksIndividual *individual);
