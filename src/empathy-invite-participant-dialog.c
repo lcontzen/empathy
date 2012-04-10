@@ -146,8 +146,7 @@ filter_individual (EmpathyContactChooser *chooser,
     return FALSE;
 
   /* Filter out contacts which are already in the chat */
-  members = empathy_contact_list_get_members (EMPATHY_CONTACT_LIST (
-        self->priv->tp_chat));
+  members = empathy_tp_chat_get_members (self->priv->tp_chat);
 
   for (l = members; l != NULL; l = g_list_next (l))
     {

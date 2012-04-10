@@ -28,7 +28,6 @@
 
 #include "empathy-tp-chat.h"
 #include "empathy-tp-contact-factory.h"
-#include "empathy-contact-list.h"
 #include "empathy-request-util.h"
 #include "empathy-time.h"
 #include "empathy-utils.h"
@@ -65,8 +64,6 @@ struct _EmpathyTpChatPrivate
   GSimpleAsyncResult *ready_result;
 };
 
-static void tp_chat_iface_init (EmpathyContactListIface *iface);
-
 enum
 {
   PROP_0,
@@ -89,9 +86,7 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_TYPE_WITH_CODE (EmpathyTpChat, empathy_tp_chat, TP_TYPE_TEXT_CHANNEL,
-       G_IMPLEMENT_INTERFACE (EMPATHY_TYPE_CONTACT_LIST,
-            tp_chat_iface_init));
+G_DEFINE_TYPE (EmpathyTpChat, empathy_tp_chat, TP_TYPE_TEXT_CHANNEL)
 
 static void
 tp_chat_set_delivery_status (EmpathyTpChat *self,
@@ -216,13 +211,10 @@ empathy_tp_chat_add (EmpathyTpChat *self,
     }
 }
 
-static GList *
-tp_chat_get_members (EmpathyContactList *list)
+GList *
+empathy_tp_chat_get_members (EmpathyTpChat *self)
 {
-  EmpathyTpChat *self = (EmpathyTpChat *) list;
   GList *members = NULL;
-
-  g_return_val_if_fail (EMPATHY_IS_TP_CHAT (list), NULL);
 
   if (self->priv->members)
     {
@@ -1302,12 +1294,6 @@ empathy_tp_chat_init (EmpathyTpChat *self)
   self->priv->pending_messages_queue = g_queue_new ();
   self->priv->messages_being_sent = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, NULL);
-}
-
-static void
-tp_chat_iface_init (EmpathyContactListIface *iface)
-{
-  iface->get_members = tp_chat_get_members;
 }
 
 EmpathyTpChat *

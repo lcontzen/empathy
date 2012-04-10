@@ -2012,7 +2012,7 @@ chat_input_key_press_event_cb (GtkWidget   *widget,
 		}
 		is_start_of_buffer = gtk_text_iter_is_start (&start);
 
-		list = empathy_contact_list_get_members (EMPATHY_CONTACT_LIST (priv->tp_chat));
+		list = empathy_tp_chat_get_members (priv->tp_chat);
 		g_completion_add_items (priv->completion, list);
 
 		nick = gtk_text_buffer_get_text (buffer, &start, &current, FALSE);

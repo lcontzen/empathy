@@ -107,6 +107,8 @@ void empathy_tp_chat_add (EmpathyTpChat *self,
     EmpathyContact *contact,
     const gchar *message);
 
+GList * empathy_tp_chat_get_members (EmpathyTpChat *self);
+
 G_END_DECLS
 
 #endif /* __EMPATHY_TP_CHAT_H__ */
