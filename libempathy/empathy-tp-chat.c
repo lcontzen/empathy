@@ -629,21 +629,20 @@ static void
 update_subject (EmpathyTpChat *self,
     GHashTable *properties)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
   gboolean can_set, valid;
   const gchar *subject;
 
   can_set = tp_asv_get_boolean (properties, "CanSet", &valid);
   if (valid)
-    priv->can_set_subject = can_set;
+    self->priv->can_set_subject = can_set;
 
   subject = tp_asv_get_string (properties, "Subject");
   if (subject != NULL)
     {
       const gchar *actor;
 
-      g_free (priv->subject);
-      priv->subject = g_strdup (subject);
+      g_free (self->priv->subject);
+      self->priv->subject = g_strdup (subject);
 
       /* If the actor is included with this update, use it;
        * otherwise, clear it to avoid showing stale information.
@@ -653,8 +652,8 @@ update_subject (EmpathyTpChat *self,
        * signals.
        */
       actor = tp_asv_get_string (properties, "Actor");
-      g_free (priv->subject_actor);
-      priv->subject_actor = g_strdup (actor);
+      g_free (self->priv->subject_actor);
+      self->priv->subject_actor = g_strdup (actor);
 
       g_object_notify (G_OBJECT (self), "subject");
     }
@@ -670,7 +669,6 @@ tp_chat_get_all_subject_cb (TpProxy *proxy,
     GObject *chat)
 {
   EmpathyTpChat *self = EMPATHY_TP_CHAT (chat);
-  EmpathyTpChatPrivate *priv = self->priv;
 
   if (error != NULL)
     {
@@ -678,7 +676,7 @@ tp_chat_get_all_subject_cb (TpProxy *proxy,
       return;
     }
 
-  priv->supports_subject = TRUE;
+  self->priv->supports_subject = TRUE;
   update_subject (self, properties);
 }
 
@@ -686,7 +684,6 @@ static void
 update_title (EmpathyTpChat *self,
     GHashTable *properties)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
   const gchar *title = tp_asv_get_string (properties, "Title");
 
   if (title != NULL)
@@ -694,8 +691,8 @@ update_title (EmpathyTpChat *self,
       if (tp_str_empty (title))
         title = NULL;
 
-      g_free (priv->title);
-      priv->title = g_strdup (title);
+      g_free (self->priv->title);
+      self->priv->title = g_strdup (title);
       g_object_notify (G_OBJECT (self), "title");
     }
 }
@@ -747,41 +744,31 @@ empathy_tp_chat_set_subject (EmpathyTpChat *self,
 const gchar *
 empathy_tp_chat_get_title (EmpathyTpChat *self)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
-
-  return priv->title;
+  return self->priv->title;
 }
 
 gboolean
 empathy_tp_chat_supports_subject (EmpathyTpChat *self)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
-
-  return priv->supports_subject;
+  return self->priv->supports_subject;
 }
 
 gboolean
 empathy_tp_chat_can_set_subject (EmpathyTpChat *self)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
-
-  return priv->can_set_subject;
+  return self->priv->can_set_subject;
 }
 
 const gchar *
 empathy_tp_chat_get_subject (EmpathyTpChat *self)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
-
-  return priv->subject;
+  return self->priv->subject;
 }
 
 const gchar *
 empathy_tp_chat_get_subject_actor (EmpathyTpChat *self)
 {
-  EmpathyTpChatPrivate *priv = self->priv;
-
-  return priv->subject_actor;
+  return self->priv->subject_actor;
 }
 
 static void
