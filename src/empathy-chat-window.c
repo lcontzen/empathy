@@ -1188,8 +1188,7 @@ chat_window_invite_participant_activate_cb (GtkAction         *action,
 
 		contact = empathy_contact_dup_from_tp_contact (tp_contact);
 
-		empathy_contact_list_add (EMPATHY_CONTACT_LIST (tp_chat),
-				contact, _("Inviting you to this room"));
+		empathy_tp_chat_add (tp_chat, contact, _("Inviting you to this room"));
 
 		g_object_unref (contact);
 	}
@@ -2045,7 +2044,7 @@ drag_data_received_individual_id (EmpathyChatWindow *self,
 			tp_channel_get_identifier ((TpChannel *) chat));
 
 	contact = empathy_contact_dup_from_tp_contact (tp_contact);
-	empathy_contact_list_add (EMPATHY_CONTACT_LIST (chat), contact, NULL);
+	empathy_tp_chat_add (chat, contact, NULL);
 	g_object_unref (contact);
 
 out:

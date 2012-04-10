@@ -103,6 +103,10 @@ TpChannelChatState empathy_tp_chat_get_chat_state (EmpathyTpChat *chat,
 
 EmpathyContact * empathy_tp_chat_get_self_contact (EmpathyTpChat *self);
 
+void empathy_tp_chat_add (EmpathyTpChat *self,
+    EmpathyContact *contact,
+    const gchar *message);
+
 G_END_DECLS
 
 #endif /* __EMPATHY_TP_CHAT_H__ */

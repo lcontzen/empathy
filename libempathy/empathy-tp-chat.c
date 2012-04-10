@@ -157,12 +157,11 @@ create_conference_cb (GObject *source,
     }
 }
 
-static void
-tp_chat_add (EmpathyContactList *list,
+void
+empathy_tp_chat_add (EmpathyTpChat *self,
     EmpathyContact *contact,
     const gchar *message)
 {
-  EmpathyTpChat *self = (EmpathyTpChat *) list;
   TpChannel *channel = (TpChannel *) self;
 
   if (tp_proxy_has_interface_by_id (self,
@@ -171,7 +170,6 @@ tp_chat_add (EmpathyContactList *list,
       TpHandle handle;
       GArray handles = {(gchar *) &handle, 1};
 
-      g_return_if_fail (EMPATHY_IS_TP_CHAT (list));
       g_return_if_fail (EMPATHY_IS_CONTACT (contact));
 
       handle = empathy_contact_get_handle (contact);
@@ -1326,7 +1324,6 @@ empathy_tp_chat_init (EmpathyTpChat *self)
 static void
 tp_chat_iface_init (EmpathyContactListIface *iface)
 {
-  iface->add = tp_chat_add;
   iface->remove = tp_chat_remove;
   iface->get_members = tp_chat_get_members;
 }

@@ -1560,8 +1560,7 @@ room_sub_menu_activate_cb (GtkWidget *item,
   g_return_if_fail (EMPATHY_IS_CONTACT (contact));
 
   /* send invitation */
-  empathy_contact_list_add (EMPATHY_CONTACT_LIST (chat),
-      contact, _("Inviting you to this room"));
+  empathy_tp_chat_add (chat, contact, _("Inviting you to this room"));
 
 out:
   g_object_unref (contact);
