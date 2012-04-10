@@ -1696,8 +1696,6 @@ static EmpathyCapabilities
 tp_caps_to_capabilities (TpCapabilities *caps)
 {
   EmpathyCapabilities capabilities = 0;
-  guint i;
-  GPtrArray *classes;
 
   if (tp_capabilities_supports_file_transfer (caps))
     capabilities |= EMPATHY_CAPABILITIES_FT;
@@ -1716,36 +1714,8 @@ tp_caps_to_capabilities (TpCapabilities *caps)
       capabilities |= EMPATHY_CAPABILITIES_AUDIO;
     }
 
-  classes = tp_capabilities_get_channel_classes (caps);
-
-  for (i = 0; i < classes->len; i++)
-    {
-      GValueArray *class_struct;
-      GHashTable *fixed_prop;
-      GStrv allowed_prop;
-      TpHandleType handle_type;
-      const gchar *chan_type;
-
-      class_struct = g_ptr_array_index (classes, i);
-      tp_value_array_unpack (class_struct, 2,
-          &fixed_prop,
-          &allowed_prop);
-
-      handle_type = tp_asv_get_uint32 (fixed_prop,
-          TP_PROP_CHANNEL_TARGET_HANDLE_TYPE, NULL);
-      if (handle_type != TP_HANDLE_TYPE_CONTACT)
-        continue;
-
-      chan_type = tp_asv_get_string (fixed_prop,
-          TP_PROP_CHANNEL_CHANNEL_TYPE);
-
-      if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_TEXT))
-        {
-          if (tp_asv_get_boolean (fixed_prop,
-                TP_PROP_CHANNEL_INTERFACE_SMS_SMS_CHANNEL, NULL))
-            capabilities |= EMPATHY_CAPABILITIES_SMS;
-        }
-    }
+  if (tp_capabilities_supports_sms (caps))
+    capabilities |= EMPATHY_CAPABILITIES_SMS;
 
   return capabilities;
 }
