@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-03-16 10:47+0000\n"
-"PO-Revision-Date: 2012-03-20 17:15+0000\n"
+"PO-Revision-Date: 2012-04-11 16:38+0000\n"
 "Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -3495,7 +3495,7 @@ msgstr[0] ""
 #: ../src/empathy-chat-window.c:314
 #, c-format
 msgid "Leave %s?"
-msgstr "级别 %s？"
+msgstr "离开 %s？"
 
 #: ../src/empathy-chat-window.c:315
 msgid ""
