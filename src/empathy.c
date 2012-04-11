@@ -367,13 +367,6 @@ empathy_app_command_line (GApplication *app,
       self->notifications_approver =
         empathy_notifications_approver_dup_singleton ();
     }
-  else
-    {
-      /* We're requested to show stuff again, disable the start hidden global in
-       * case the accounts wizard wants to pop up.
-       */
-      self->start_hidden = FALSE;
-    }
 
   if (self->show_preferences)
     empathy_roster_window_show_preferences (
