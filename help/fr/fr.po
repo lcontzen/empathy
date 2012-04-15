@@ -1,37 +1,43 @@
-# French translation of cheese documentation.
-# Copyright (C) 2008-2011 Free Software Foundation, Inc.
-# This file is distributed under the same license as the cheese
-# documentation package.
+# French translation of empathy documentation.
+# Copyright (C) 2008-2012 Free Software Foundation, Inc.
+# This file is distributed under the same license as the empathy
+# package.
 #
-# Bruno Brouard <annoa.b@gmail.com>, 2008-2011
+# Bruno Brouard <annoa.b@gmail.com>, 2008-2012
 # Claude Paroz <claude@2xlibre.net>, 2008-2010
 # Yannick Tailliez <ytdispatch-libre@yahoo.com>, 2008.
 # Laurent Coudeur <laurentc@iol.ie>, 2009.
 # Baptiste Mille-Matthias <bmm80@free.fr>, 2009 (figures)
 # Luc Pionchon <pionchon.luc@gmail.com>, 2011
 # Luc Guillemin <luc.guillemin@gmail.com>, 2011
-#
+# Andre Matuch <andre.matuch@videotron.ca>, 2012
+# Ajmir BUSGEETH <Ajmir.Busgeeth@gmail.com>, 2012
+# Alain Lojewski <allomervan@gmail.com>, 2012
 msgid ""
 msgstr ""
-"Project-Id-Version: cheese doc fr\n"
-"POT-Creation-Date: 2012-01-01 18:48+0000\n"
-"PO-Revision-Date: 2012-02-12 11:00+0100\n"
+"Project-Id-Version: empathy 3.2.2\n"
+"POT-Creation-Date: 2012-04-12 22:02+0000\n"
+"PO-Revision-Date: 2012-04-14 01:20+0100\n"
 "Last-Translator: Bruno Brouard <annoa.b@gmail.com>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
 msgstr ""
-"Bruno Brouard <annoa.b@gmail.com>, 2008-2009,2012\n"
+"Bruno Brouard <annoa.b@gmail.com>, 2008-2012\n"
 "Claude Paroz <claude@2xlibre.net>, 2008-2010\n"
 "Yannick Tailliez <ytdispatch-libre@yahoo.com>, 2008\n"
 "Laurent Coudeur <laurentc@iol.ie>, 2009\n"
 "Luc Pionchon <pionchon.luc@gmail.com>, 2011\n"
-"Luc Guillemin <luc.guillemin@gmail.com>, 2011"
+"Luc Guillemin <luc.guillemin@gmail.com>, 2012\n"
+"Ajmir BUSGEETH <Ajmir.Busgeeth@gmail.com>, 2012\n"
+"Andre Matuch <andre.matuch@videotron.ca>, 2012\n"
+"Alain Lojewski <allomervan@gmail.com>, 2012"
 
 #. This is a reference to an external file such as an image or video. When
 #. the file changes, the md5 hash will change to let you know you need to
@@ -42,855 +48,3479 @@ msgstr ""
 #. the file changes, the md5 hash will change to let you know you need to
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
-#: C/index.page:26(media)
+#: C/index.page:28(media)
 msgctxt "_"
 msgid ""
-"external ref='figures/cheese.png' md5='e801510f287b3db068beb2daf8989124'"
+"external ref='figures/empathy-logo.png' "
+"md5='1afc419a644e90b16393807e35cb5cb2'"
 msgstr ""
-"external ref='figures/cheese.png' md5='e801510f287b3db068beb2daf8989124'"
+"external ref='figures/empathy-logo.png' "
+"md5='1afc419a644e90b16393807e35cb5cb2'"
 
 #: C/index.page:7(info/title)
 msgctxt "link"
-msgid "Cheese Webcam Booth"
-msgstr "Studio webcam Cheese"
+msgid "Empathy Internet Messenger"
+msgstr "Messagerie instantanée Empathy"
 
 #: C/index.page:8(info/title)
 msgctxt "text"
-msgid "Cheese Webcam Booth"
-msgstr "Studio webcam Cheese"
+msgid "Empathy Internet Messenger"
+msgstr "Messagerie instantanée Empathy"
 
-#: C/index.page:11(credit/name) C/effects-apply.page:9(credit/name)
-#: C/introduction.page:11(credit/name) C/mode-wide.page:10(credit/name)
-#: C/photo-delete.page:10(credit/name) C/photo-save.page:10(credit/name)
-#: C/photo-take.page:15(credit/name) C/photo-view.page:10(credit/name)
-#: C/pref-burst-mode.page:10(credit/name)
-#: C/pref-countdown.page:10(credit/name) C/pref-flash.page:9(credit/name)
-#: C/pref-image-properties.page:10(credit/name)
-#: C/pref-photo-resolution.page:10(credit/name)
-#: C/video-record.page:10(credit/name)
-msgid "Julita Inca"
-msgstr "Julita Inca"
+#: C/index.page:19(credit/name) C/add-account.page:21(credit/name)
+#: C/audio-call.page:19(credit/name) C/audio-video.page:17(credit/name)
+#: C/create-account.page:19(credit/name)
+#: C/disable-account.page:21(credit/name)
+#: C/favorite-rooms.page:14(credit/name) C/geolocation.page:17(credit/name)
+#: C/geolocation-not-showing.page:17(credit/name)
+#: C/geolocation-privacy.page:17(credit/name)
+#: C/geolocation-supported.page:16(credit/name)
+#: C/geolocation-turn.page:18(credit/name)
+#: C/geolocation-what-is.page:18(credit/name)
+#: C/group-conversations.page:19(credit/name)
+#: C/hide-contacts.page:11(credit/name) C/import-account.page:23(credit/name)
+#: C/introduction.page:13(credit/name) C/irc-commands.page:10(credit/name)
+#: C/irc-join-pwd.page:17(credit/name) C/irc-join-room.page:16(credit/name)
+#: C/irc-manage.page:19(credit/name) C/irc-nick-password.page:18(credit/name)
+#: C/irc-send-file.page:16(credit/name)
+#: C/irc-start-conversation.page:15(credit/name)
+#: C/link-contacts.page:15(credit/name) C/prev-conv.page:17(credit/name)
+#: C/prob-conn-acctdisabled.page:19(credit/name)
+#: C/prob-conn-auth.page:21(credit/name) C/prob-conn-name.page:18(credit/name)
+#: C/prob-conn-neterror.page:19(credit/name)
+#: C/remove-account.page:19(credit/name) C/salut-protocol.page:18(credit/name)
+#: C/send-file.page:21(credit/name) C/set-custom-status.page:19(credit/name)
+#: C/share-desktop.page:14(credit/name) C/status-icons.page:16(credit/name)
+#: C/video-call.page:22(credit/name)
+msgid "Milo Casagrande"
+msgstr "Milo Casagrande"
 
-#: C/index.page:13(credit/years) C/index.page:19(credit/years)
-#: C/effects-apply.page:11(credit/years) C/introduction.page:13(credit/years)
-#: C/mode-wide.page:12(credit/years) C/photo-delete.page:12(credit/years)
-#: C/photo-save.page:12(credit/years) C/photo-take.page:17(credit/years)
-#: C/photo-view.page:12(credit/years) C/pref-burst-mode.page:12(credit/years)
-#: C/pref-countdown.page:12(credit/years) C/pref-flash.page:11(credit/years)
-#: C/pref-image-properties.page:12(credit/years)
-#: C/pref-photo-resolution.page:12(credit/years)
-#: C/video-record.page:12(credit/years)
-msgid "2011"
-msgstr "2011"
-
-#: C/index.page:17(credit/name) C/effects-apply.page:14(credit/name)
-#: C/introduction.page:16(credit/name) C/mode-wide.page:15(credit/name)
-#: C/photo-delete.page:15(credit/name) C/photo-save.page:15(credit/name)
-#: C/photo-take.page:20(credit/name) C/photo-view.page:15(credit/name)
-#: C/pref-burst-mode.page:15(credit/name)
-#: C/pref-countdown.page:15(credit/name) C/pref-flash.page:14(credit/name)
-#: C/pref-image-properties.page:15(credit/name)
-#: C/pref-photo-resolution.page:15(credit/name)
-#: C/video-record.page:15(credit/name)
-msgid "Ekaterina Gerasimova"
-msgstr "Ekaterina Gerasimova"
-
-#: C/index.page:22(info/desc)
-msgid ""
-"Cheese lets you take pictures and make videos using your webcam. You can "
-"even add special effects!"
+#: C/index.page:23(license/p) C/account-irc.page:20(license/p)
+#: C/account-jabber.page:18(license/p) C/accounts-window.page:22(license/p)
+#: C/add-account.page:29(license/p) C/add-contact.page:22(license/p)
+#: C/audio-call.page:23(license/p) C/audio-video.page:21(license/p)
+#: C/change-status.page:28(license/p) C/create-account.page:23(license/p)
+#: C/disable-account.page:29(license/p) C/favorite-rooms.page:18(license/p)
+#: C/geolocation.page:21(license/p)
+#: C/geolocation-not-showing.page:21(license/p)
+#: C/geolocation-privacy.page:21(license/p)
+#: C/geolocation-supported.page:20(license/p)
+#: C/geolocation-turn.page:22(license/p)
+#: C/geolocation-what-is.page:22(license/p)
+#: C/group-conversations.page:23(license/p) C/hide-contacts.page:15(license/p)
+#: C/import-account.page:31(license/p) C/introduction.page:17(license/p)
+#: C/irc-commands.page:14(license/p) C/irc-join-pwd.page:21(license/p)
+#: C/irc-join-room.page:20(license/p) C/irc-manage.page:23(license/p)
+#: C/irc-nick-password.page:22(license/p) C/irc-send-file.page:20(license/p)
+#: C/irc-start-conversation.page:19(license/p)
+#: C/link-contacts.page:19(license/p) C/prev-conv.page:25(license/p)
+#: C/prob-conn-acctdisabled.page:23(license/p)
+#: C/prob-conn-auth.page:25(license/p) C/prob-conn-name.page:22(license/p)
+#: C/prob-conn-neterror.page:23(license/p) C/prob-conn.page:18(license/p)
+#: C/remove-account.page:23(license/p) C/salut-protocol.page:22(license/p)
+#: C/send-file.page:25(license/p) C/send-message.page:21(license/p)
+#: C/set-custom-status.page:23(license/p) C/share-desktop.page:22(license/p)
+#: C/status-icons.page:24(license/p) C/video-call.page:26(license/p)
+msgid "Creative Commons Share Alike 3.0"
 msgstr ""
-"Cheese permet de prendre des photos et des vidéos en utilisant votre webcam. "
-"Vous pouvez même ajouter des effets spéciaux !"
+"Creative Commons Paternité - Partage des Conditions Initiales à l'Identique "
+"3.0"
 
-#: C/index.page:25(page/title)
+#: C/index.page:27(page/title)
 msgid ""
-"<media type=\"image\" mime=\"image/png\" src=\"figures/cheese.png\" width="
-"\"40\" height=\"40\"> </media> Cheese Webcam Booth"
+"<media type=\"image\" mime=\"image/png\" src=\"figures/empathy-logo.png\"> "
+"Empathy Internet Messenger logo </media> Empathy Internet Messenger"
 msgstr ""
-"<media type=\"image\" mime=\"image/png\" src=\"figures/cheese.png\" width="
-"\"40\" height=\"40\"> </media> Studio webcam Cheese"
+"<media type=\"image\" mime=\"image/png\" src=\"figures/empathy-logo.png\"> "
+"Logo de la messagerie instantanée Empathy </media> Messagerie instantanée "
+"Empathy"
 
-#: C/index.page:32(section/title)
-msgid "Main features"
-msgstr "Principales fonctionnalités"
+#: C/index.page:35(section/title)
+msgid "Account Management"
+msgstr "Gestion du compte"
 
-#: C/index.page:36(section/title)
-msgid "Preferences"
-msgstr "Préférences"
+#: C/index.page:39(section/title)
+msgid "Contact Management"
+msgstr "Gestion des contacts"
 
-#: C/index.page:40(section/title)
-msgid "Common problems and questions"
-msgstr "Problèmes et questions fréquents"
+#: C/index.page:43(section/title)
+msgid "Text Conversations"
+msgstr "Conversations en mode texte"
+
+#: C/index.page:47(section/title)
+msgid "Audio and Video Conversations"
+msgstr "Conversations audio et vidéo"
+
+#: C/index.page:51(section/title)
+msgid "Advanced Actions"
+msgstr "Actions avancées"
+
+#: C/index.page:55(section/title) C/irc-manage.page:57(section/title)
+msgid "Common Problems"
+msgstr "Problèmes courants"
 
 #. This is a reference to an external file such as an image or video. When
 #. the file changes, the md5 hash will change to let you know you need to
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
-#: C/effects-apply.page:45(media)
+#: C/account-irc.page:106(media)
 msgctxt "_"
 msgid ""
-"external ref='figures/effects.png' md5='27139b3d1500c8caac548fab39e05c28'"
+"external ref='figures/gtk-add.png' md5='a856b499d8d4681b70b5ce6f25bc5c6d'"
 msgstr ""
-"external ref='figures/effects.png' md5='27139b3d1500c8caac548fab39e05c28'"
+"external ref='figures/gtk-add.png' md5='a856b499d8d4681b70b5ce6f25bc5c6d'"
 
-#: C/effects-apply.page:18(info/desc)
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/account-irc.page:109(media) C/prob-conn-auth.page:58(media)
+#: C/prob-conn-name.page:44(media) C/prob-conn-neterror.page:59(media)
+msgctxt "_"
 msgid ""
-"Add fun effects to your photos and videos, like turning yourself green or "
-"distorting the picture like a funhouse mirror."
+"external ref='figures/gtk-edit.png' md5='4f21b451732817be0604fe3e2c8da98b'"
 msgstr ""
-"Ajouter des effets amusants à vos photos et vidéos, comme devenir tout vert "
-"ou distordre l'image comme dans un miroir déformant."
+"external ref='figures/gtk-edit.png' md5='4f21b451732817be0604fe3e2c8da98b'"
 
-#: C/effects-apply.page:22(page/title)
-msgid "Apply effects to photos and videos"
-msgstr "Ajout d'effets aux photos et aux vidéos"
-
-#: C/effects-apply.page:24(page/p)
-msgid "You can apply fun, interesting effects to your photos and videos:"
-msgstr "Vous pouvez appliquer des effets amusants à vos photos et vos vidéos :"
-
-#: C/effects-apply.page:26(item/p)
-msgid "Click <gui>Effects</gui>."
-msgstr "Cliquez sur <gui>Effets</gui>."
-
-#: C/effects-apply.page:28(item/p)
-msgid "Select the effect you want to use by clicking one of the options."
-msgstr "Sélectionnez les effets souhaités en cliquant sur une des options."
-
-#: C/effects-apply.page:29(item/p)
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/account-irc.page:112(media)
+msgctxt "_"
 msgid ""
-"If you like, you can select multiple effects. For example, if you select "
-"<gui>Hulk</gui> and <gui>Kung-Fu</gui>, the video will be altered to have a "
-"green shade and will show a repeated image."
+"external ref='figures/gtk-remove.png' md5='215e3a325a3dd619874e35c30a018bb6'"
 msgstr ""
-"Si vous le souhaitez, vous pouvez sélectionner plusieurs effets. Par "
-"exemple, si vous sélectionnez <gui>Hulk</gui> et <gui>Kung-Fu</gui>, la "
-"vidéo va être transformée pour avoir un ton vert et afficher une image "
-"répétée."
+"external ref='figures/gtk-remove.png' md5='215e3a325a3dd619874e35c30a018bb6'"
 
-#: C/effects-apply.page:34(item/p)
+#: C/account-irc.page:8(info/desc)
+msgid "Additional information necessary for connecting to IRC networks."
+msgstr ""
+"Informations supplémentaires nécessaires pour se connecter aux réseaux IRC."
+
+#: C/account-irc.page:16(credit/name) C/account-jabber.page:14(credit/name)
+#: C/accounts-window.page:18(credit/name) C/add-account.page:25(credit/name)
+#: C/disable-account.page:25(credit/name)
+#: C/import-account.page:27(credit/name) C/prev-conv.page:21(credit/name)
+#: C/status-icons.page:20(credit/name)
+msgid "Shaun McCance"
+msgstr "Shaun McCance"
+
+#: C/account-irc.page:31(page/title)
+msgid "IRC account details"
+msgstr "Détails du compte IRC"
+
+# Alias = Nickname ? NON c'est différent (Bruno)
+#: C/account-irc.page:33(page/p)
 msgid ""
-"Click <gui>Effects</gui> to hide the effects menu and return to the normal "
-"view."
+"IRC accounts require different information than many other types of "
+"accounts. To create an IRC account, you must specify at least an IRC network "
+"and a nickname. This page details the information you can provide for an IRC "
+"account."
 msgstr ""
-"Cliquez sur <gui>Effets</gui> pour cacher le menu des effets et revenir à la "
-"vue normale."
+"Les comptes IRC nécessitent des informations qui diffèrent beaucoup d'autres "
+"types de comptes. Pour créer un compte IRC, vous devez spécifier au moins un "
+"nom de réseau IRC et un pseudonyme. Cette page énumère les informations que "
+"vous pouvez fournir pour un compte IRC."
 
-#: C/effects-apply.page:39(page/p)
+#: C/account-irc.page:39(note/p) C/irc-manage.page:37(note/p)
 msgid ""
-"<app>Cheese</app> offers 34 effects, of which only 9 are shown on the first "
-"page. Click <gui>Next Effects</gui> and <gui>Previous Effects</gui> to "
-"navigate to the other pages."
+"You must have the <sys>telepathy-idle</sys> package installed to use IRC in "
+"<app>Empathy</app>."
 msgstr ""
-"<app>Cheese</app> fournit 34 effets. Seuls 9 d'entre eux sont affichés sur "
-"la première page. Cliquez sur <gui>Effets suivants</gui> ou <gui>Effets "
-"précédents</gui> pour naviguer parmi les autres pages."
+"Vous devez avoir installé le paquet <sys>telepathy-idle</sys> pour pouvoir "
+"utiliser IRC avec <app>Empathy</app>."
 
-#: C/effects-apply.page:44(figure/title)
-msgid "Some of the effects, from left to right: Bulge, Edge and Mirror"
-msgstr "Quelques effets, de gauche à droite : boursouflure, contours et miroir"
+#: C/account-irc.page:45(item/title) C/account-irc.page:120(item/title)
+msgid "<gui>Network</gui>"
+msgstr "<gui>Réseau</gui>"
 
-#: C/effects-apply.page:48(note/p)
+#: C/account-irc.page:46(item/p)
 msgid ""
-"To deselect all effects, click <gui>Effects</gui> and select <gui>No Effect</"
-"gui>."
+"IRC is an open system that allows people to run separate IRC networks. Each "
+"network is distinct and has its own users and chat rooms. <app>Empathy</app> "
+"lists the most popular networks in the <gui>Network</gui> drop-down list. "
+"You can add additional networks. See <link xref=\"#networks\"/> below."
 msgstr ""
-"Pour enlever tous les effets, cliquez sur <gui>Effets</gui> et sélectionnez "
-"<gui>Aucun effet</gui>."
+"IRC est un système ouvert qui permet aux utilisateurs de faire fonctionner "
+"des réseaux IRC séparés. Chaque réseau est distinct et possède ses propres "
+"utilisateurs et salons de discussions. <app>Empathy</app> dresse une liste "
+"des réseaux les plus populaires dans la liste déroulante <gui>Réseaux</gui>. "
+"Vous pouvez ajouter des réseaux supplémentaires. Consultez <link xref="
+"\"#networks\"/> ci-dessous."
 
-#: C/introduction.page:20(info/desc)
-msgid "Introduction to the <app>Cheese Webcam Booth</app>."
-msgstr "Introduction au <app>Studio webcam Cheese</app>."
+#: C/account-irc.page:53(item/title)
+msgid "<gui>Nickname</gui>"
+msgstr "<gui>Pseudonyme</gui>"
 
-#: C/introduction.page:23(page/title)
+#: C/account-irc.page:54(item/p)
+msgid ""
+"Your nickname is your unique name on the IRC network. Only one person on a "
+"network may use a given nickname. If you get an error message that says "
+"<link xref=\"prob-conn-name\" role=\"error-msg\"/> you will need to change "
+"your nickname."
+msgstr ""
+"Votre pseudonyme est votre unique nom sur le réseau IRC. Un pseudonyme donné "
+"ne peut être utilisé que par une seule personne sur un même réseau. Si vous "
+"voyez apparaître ce message d'erreur <link xref=\"prob-conn-name\" role="
+"\"error-msg\"/>, c'est que vous devez changer de pseudonyme."
+
+#: C/account-irc.page:60(item/title)
+msgid "<gui>Password</gui>"
+msgstr "<gui>Mot de passe</gui>"
+
+#: C/account-irc.page:61(item/p)
+msgid ""
+"Some servers, particularly those on private networks, require a password to "
+"connect. If you are authorized to use the network, the network "
+"administrators should provide you with a password."
+msgstr ""
+"Quelques serveurs, en particulier ceux des réseau privés, nécessitent un mot "
+"de passe pour vous y connecter. Si vous êtes autorisé à utiliser le réseau, "
+"son administrateur doit vous fournir un mot de passe."
+
+#: C/account-irc.page:65(note/title)
+msgid "NickServ Passwords"
+msgstr "Mots de passe NickServ"
+
+#: C/account-irc.page:66(note/p)
+msgid ""
+"On some networks, nicknames can be registered using a service known as "
+"NickServ. <app>Empathy</app> does not directly support nickname passwords. "
+"On some networks, including the popular freenode network, server passwords "
+"are automatically forwarded to NickServ, allowing you to set this field to "
+"identify yourself with NickServ. See <link xref=\"irc-nick-password\"/> for "
+"more details."
+msgstr ""
+"Sur certains réseaux, les pseudonymes peuvent être enregistrés en utilisant "
+"un service nommé NickServ. <app>Empathy</app> ne prend pas directement en "
+"charge les mots de passe de pseudonyme. Sur certains réseaux, incluant le "
+"populaire Freenode, les mots de passe du serveur sont automatiquement "
+"transférés vers NickServ, vous permettant ainsi de vous authentifier. "
+"Consultez <link xref=\"irc-nick-password\"/> pour plus de détails."
+
+#: C/account-irc.page:76(item/title)
+msgid "<gui>Real name</gui>"
+msgstr "<gui>Nom réel</gui>"
+
+#: C/account-irc.page:77(item/p)
+msgid ""
+"You can provide your real name in addition to your nickname. Other users "
+"will be able to see this when they view your information."
+msgstr ""
+"Vous pouvez fournir votre vrai nom en plus de votre pseudonyme. Les autres "
+"utilisateurs peuvent ainsi le voir lorsqu'ils affichent vos informations."
+
+#: C/account-irc.page:81(item/title)
+msgid "<gui>Quit message</gui>"
+msgstr "<gui>Message de départ</gui>"
+
+#: C/account-irc.page:82(item/p)
+msgid ""
+"When you go offline, a quit message is sent to all the chat rooms you’re in "
+"and to all the users you’re having a private conversation with. Use this "
+"field to provide a custom quit message."
+msgstr ""
+"Lorsque vous vous déconnectez, un message de départ est envoyé dans tous les "
+"salons de discussion où vous êtes présent et à tous les utilisateurs avec "
+"qui vous êtes en conversation. Renseignez ce champ pour personnaliser votre "
+"message de déconnexion."
+
+#: C/account-irc.page:94(info/title)
+msgctxt "link"
+msgid "IRC Networks"
+msgstr "Réseaux IRC"
+
+#: C/account-irc.page:97(section/title)
+msgid "Networks"
+msgstr "Réseaux"
+
+#: C/account-irc.page:99(section/p)
+msgid ""
+"<app>Empathy</app> includes a list of popular IRC networks. If you wish to "
+"another IRC network, you can add it to the list. You can also modify "
+"networks and remove them from the list."
+msgstr ""
+"<app>Empathy</app> comprend une liste des réseaux IRC les plus populaires. "
+"Si vous souhaitez vous connecter à un autre réseau IRC, vous pouvez "
+"l'ajouter à la liste. Vous pouvez aussi modifier les réseaux existants et "
+"les supprimer de la liste."
+
+#: C/account-irc.page:104(item/p)
+msgid ""
+"To add a network to the list, click <media type=\"image\" mime=\"image/png\" "
+"src=\"figures/gtk-add.png\" width=\"16\" height=\"16\">Add</media>."
+msgstr ""
+"Pour ajouter un réseau à la liste, cliquez sur <media type=\"image\" mime="
+"\"image/png\" src=\"figures/gtk-add.png\" width=\"16\" height="
+"\"16\">Ajouter</media>."
+
+#: C/account-irc.page:107(item/p)
+msgid ""
+"To modify a network in the list, select the network and click <media type="
+"\"image\" mime=\"image/png\" src=\"figures/gtk-edit.png\" width=\"16\" "
+"height=\"16\">Edit</media>."
+msgstr ""
+"Pour modifier un réseau de la liste, sélectionnez le réseau et cliquez sur "
+"<media type=\"image\" mime=\"image/png\" src=\"figures/gtk-edit.png\" width="
+"\"16\" height=\"16\">Modifier</media>."
+
+#: C/account-irc.page:110(item/p)
+msgid ""
+"To remove a network from the list, select the network and click <media type="
+"\"image\" mime=\"image/png\" src=\"figures/gtk-remove.png\" width=\"16\" "
+"height=\"16\">Remove</media>."
+msgstr ""
+"Pour supprimer un réseau de la liste, sélectionnez le réseau et cliquez sur "
+"<media type=\"image\" mime=\"image/png\" src=\"figures/gtk-remove.png\" "
+"width=\"16\" height=\"16\">Supprimer</media>."
+
+#: C/account-irc.page:115(section/p)
+msgid ""
+"When adding or modifying a network, you can enter the following information:"
+msgstr ""
+"Lorsque vous ajoutez ou modifiez un réseau, vous pouvez saisir les "
+"informations suivantes :"
+
+#: C/account-irc.page:121(item/p)
+msgid ""
+"This is the name of the network as you want it to appear in the list of "
+"networks."
+msgstr ""
+"C'est le nom du réseau tel que vous voulez qu'il apparaisse dans la liste "
+"des réseaux."
+
+#: C/account-irc.page:125(item/title)
+msgid "<gui>Charset</gui>"
+msgstr "<gui>Codage de caractères</gui>"
+
+#: C/account-irc.page:126(item/p)
+msgid ""
+"This specifies the character encoding that is typically used on this "
+"network. A character encoding is a specific way of recording characters "
+"internally in a computer. There are many character encodings, and you need "
+"to use the same character encoding as other users to see their messages "
+"correctly."
+msgstr ""
+"Ceci définit le codage de caractères qui est généralement utilisé sur ce "
+"réseau. Un codage de caractères est une façon spécifique d'enregistrer les "
+"caractères dans un ordinateur. Il existe de nombreux codages de caractères "
+"et vous devez utiliser le même que ceux des autres utilisateurs pour pouvoir "
+"afficher leurs messages correctement."
+
+#: C/account-irc.page:135(item/p)
+msgid ""
+"By default, <app>Empathy</app> uses UTF-8, a modern character encoding that "
+"can handle text from most of the world's languages. Another common encoding "
+"for English and some other Western languages is ISO-8859-1."
+msgstr ""
+"Par défaut, <app>Empathy</app> utilise l'UTF-8, un codage de caractères "
+"moderne qui peut traiter le texte de la plupart des langues du monde. Un "
+"autre codage commun pour l'anglais et quelques autres langues occidentales "
+"est le codage ISO-8859-1."
+
+#: C/account-irc.page:141(item/title)
+msgid "<gui>Servers</gui>"
+msgstr "<gui>Serveurs</gui>"
+
+#: C/account-irc.page:142(item/p)
+msgid ""
+"An IRC network may have many servers you can connect to. When you are "
+"connected to a server on a particular network, you can communicate with all "
+"users on all other servers on that network. You can add and remove servers "
+"for this network using the <gui>Add</gui> and <gui>Remove</gui> buttons."
+msgstr ""
+"Un réseau IRC peut avoir plusieurs serveurs auxquels vous pouvez vous "
+"connecter. Lorsque vous êtes connecté à un serveur sur un réseau en "
+"particulier, vous pouvez communiquer avec tous les utilisateurs de tous les "
+"autres serveurs sur ce réseau. Vous pouvez ajouter et enlever des serveurs "
+"de ce réseau avec les boutons <gui>Ajouter</gui> et <gui>Enlever</gui>."
+
+#: C/account-irc.page:147(item/p)
+msgid ""
+"When a server is selected, click the field under <gui>Server</gui> or "
+"<gui>Port</gui> to edit it. Alternatively, use the left and right arrow keys "
+"to focus the field, and press the space bar to begin editing."
+msgstr ""
+"Lorsqu'un serveur est sélectionné, cliquez sur le champ au-dessous de "
+"<gui>Serveur</gui> ou <gui>Port</gui> pour le modifier. Vous pouvez aussi "
+"utiliser les flèches droite et gauche pour sélectionner le champ et ensuite "
+"appuyer sur la barre d'espace pour commencer l'édition."
+
+#: C/account-irc.page:151(item/p)
+msgid ""
+"Select the check box in the <gui>SSL</gui> column to encrypt all "
+"communication with a server. Note that this does not prevent other users on "
+"the network from seeing what you write on public chat rooms."
+msgstr ""
+"Sélectionnez la case à cocher dans la colonne <gui>SSL</gui> pour chiffrer "
+"toutes les communications avec un serveur. Il est à noter que ceci n'empêche "
+"pas les autres utilisateurs de voir ce que vous écrivez dans les salons de "
+"discussion publics."
+
+#: C/account-jabber.page:7(info/desc)
+msgid "Advanced options for Jabber and Google Talk accounts."
+msgstr "Options avancées pour les comptes Jabber et Google Talk."
+
+#: C/account-jabber.page:29(page/title)
+msgid "Jabber account details"
+msgstr "Détails du compte Jabber"
+
+#: C/account-jabber.page:31(page/p)
+msgid ""
+"Most Jabber accounts will require only a login ID and a password to connect. "
+"For some accounts or on certain types of networks, you may need to enter "
+"additional information in the <gui>Advanced</gui> section. Normally, you "
+"will not need to use the advanced options below. For general instructions on "
+"adding an account, see <link xref=\"add-account\"/>."
+msgstr ""
+"La plupart des comptes Jabber n'ont besoin que d'un identifiant de connexion "
+"et d'un mot de passe pour se connecter. Pour certains comptes ou sur "
+"certains types de réseaux, il vous faudra peut-être saisir des informations "
+"supplémentaires dans la section <gui>Avancé</gui>. Normalement, vous n'avez "
+"pas à utiliser les options avancées ci-dessous. Pour des instructions "
+"générales sur la façon d'ajouter un compte, consultez <link xref=\"add-"
+"account\"/>."
+
+#: C/account-jabber.page:39(note/p)
+msgid ""
+"Google Talk is a type of Jabber account. These instructions hold for Google "
+"Talk accounts as well."
+msgstr ""
+"Google Talk est un type de compte Jabber. Ces instructions sont donc aussi "
+"valables pour les comptes Google Talk."
+
+#: C/account-jabber.page:45(item/title)
+msgid "<gui>Encryption required (TLS/SSL)</gui>"
+msgstr "<gui>Chiffrement requis (TLS/SSL)</gui>"
+
+#: C/account-jabber.page:46(item/title)
+msgid "<gui>Ignore SSL certificate errors</gui>"
+msgstr "<gui>Ignorer les erreurs de certificat SSL</gui>"
+
+#: C/account-jabber.page:47(item/p)
+msgid ""
+"Whenever possible, communication between <app>Empathy</app> and the Jabber "
+"server is encrypted. If encrypted communication is not possible, messages "
+"may be sent unencrypted. Select <gui>Encryption required</gui> to prevent "
+"<app>Empathy</app> from communicating with the Jabber server when encryption "
+"is not possible."
+msgstr ""
+"Chaque fois que possible, la communication entre <app>Empathy</app> et le "
+"serveur Jabber est chiffrée. Si le chiffrement n'est pas possible, le "
+"message sera envoyé en clair. Sélectionnez <gui>Chiffrement requis</gui> "
+"pour empêcher <app>Empathy</app> de communiquer avec le serveur Jabber "
+"lorsque le chiffrement n'est pas possible."
+
+#: C/account-jabber.page:52(item/p)
+msgid ""
+"Some Jabber servers may encrypt data using invalid certificates, or using "
+"certificates from unknown authorities. If you trust the server you are "
+"connecting to, you can select <gui>Ignore SSL certificate errors</gui> to "
+"allow encrypted communication with invalid certificates."
+msgstr ""
+"Certains serveurs Jabber peuvent chiffrer les données en utilisant des "
+"certificats non valides ou provenant d'autorités non reconnues. Si vous "
+"faites confiance au serveur sur lequel vous êtes connecté, vous pouvez "
+"sélectionner <gui>Ignorer les erreurs de certificat SSL</gui> pour autoriser "
+"les communications chiffrées avec des certificats non valides."
+
+#: C/account-jabber.page:59(item/title)
+msgid "<gui>Resource</gui>"
+msgstr "<gui>Ressource</gui>"
+
+#: C/account-jabber.page:60(item/title)
+msgid "<gui>Priority</gui>"
+msgstr "<gui>Priorité</gui>"
+
+#: C/account-jabber.page:61(item/p)
+msgid ""
+"If you have multiple applications (for instance, on separate computers) "
+"connected to your account at the same time, you can set a resource to "
+"uniquely identify each one. By default, <app>Empathy</app> will use "
+"<input>Telepathy</input> as the resource."
+msgstr ""
+"Si vous avez plusieurs applications (par exemple à partir d'ordinateurs "
+"différents) connectées à votre compte en même temps, vous pouvez définir une "
+"ressource pour identifier chacune d'elles. Par défaut, <app>Empathy</app> "
+"utilise <input>Telepathy</input> en tant que ressource."
+
+#: C/account-jabber.page:65(item/p)
+msgid ""
+"You can set the priority to specify which application should receive "
+"incoming messages from your contacts. New messages will be sent to the "
+"application with the highest priority."
+msgstr ""
+"Vous pouvez définir la priorité pour spécifier quelle application doit "
+"recevoir les messages entrants de vos contacts. Les nouveaux messages sont "
+"envoyés à l'application possédant la plus haute priorité."
+
+#: C/account-jabber.page:70(item/title)
+msgid "<gui>Override server settings</gui>"
+msgstr "<gui>Outrepasser les paramètres du serveur</gui>"
+
+#: C/account-jabber.page:71(item/p)
+msgid ""
+"<app>Empathy</app> will use default settings to connect to the Jabber server "
+"based on your login ID. For some Jabber servers, you will need to enter "
+"custom server settings manually. These settings should be provided for you "
+"by your Jabber provider."
+msgstr ""
+"<app>Empathy</app> utilise les paramètres par défaut pour se connecter au "
+"serveur Jabber selon vos informations de connexions. Pour certains serveurs "
+"Jabber, vous devez saisir manuellement des paramètres personnalisés. Ces "
+"paramètres doivent vous être remis par votre fournisseur Jabber."
+
+#: C/accounts-window.page:11(info/desc)
+msgid "Add, modify, and delete accounts."
+msgstr "Ajouter, modifier et supprimer des comptes."
+
+#: C/accounts-window.page:33(page/title)
+msgid "Accounts Window"
+msgstr "Fenêtre des comptes"
+
+#: C/accounts-window.page:35(page/p)
+msgid ""
+"The <gui>Accounts</gui> window allows you to add, modify, and delete "
+"accounts."
+msgstr ""
+"La fenêtre des <gui>Comptes</gui> vous permet d'ajouter, de modifier et de "
+"supprimer des comptes."
+
+#: C/accounts-window.page:43(section/title)
+msgid "Account Details"
+msgstr "Détails du compte"
+
+#: C/accounts-window.page:44(section/p)
+msgid ""
+"For most types of accounts, you can simply enter a login ID and a password. "
+"Certain accounts or account types, however, may require additional "
+"information."
+msgstr ""
+"Pour la plupart des types de comptes, la saisie d'un identifiant de "
+"connexion et d'un mot de passe suffit. Cependant, certains comptes ou types "
+"de comptes nécessitent des informations supplémentaires."
+
+#: C/add-account.page:9(info/desc)
+msgid "Add a new account to <app>Empathy</app>."
+msgstr "Ajouter un nouveau compte à <app>Empathy</app>."
+
+#: C/add-account.page:40(page/title)
+msgid "Add a new account"
+msgstr "Ajout d'un nouveau compte"
+
+#: C/add-account.page:42(page/p)
+msgid ""
+"You can add instant messaging accounts from any supported service to "
+"communicate with all of your contacts in <app>Empathy</app>. For some "
+"account providers, these steps will also allow you to register for a new "
+"account. For more details, see <link xref=\"create-account\"/>."
+msgstr ""
+"Vous pouvez ajouter des comptes de messagerie instantanée à partir de "
+"n'importe quel service pris en charge pour communiquer avec tous vos "
+"contacts dans <app>Empathy</app>. Pour certains fournisseurs de comptes, ces "
+"étapes vous permettent aussi d'enregistrer un nouveau compte. Pour plus de "
+"détails, consultez <link xref=\"create-account\"/>."
+
+#: C/add-account.page:49(item/p) C/disable-account.page:49(item/p)
+#: C/irc-nick-password.page:50(item/p) C/remove-account.page:43(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, choose <guiseq><gui>Edit</gui> "
+"<gui>Accounts</gui></guiseq>, or press <key>F4</key>."
+msgstr ""
+"À partir de la fenêtre <gui>Liste des contacts</gui>, choisissez "
+"<guiseq><gui>Édition</gui> <gui>Comptes</gui></guiseq>, ou appuyez sur "
+"<key>F4</key>."
+
+#: C/add-account.page:53(item/p)
+msgid "Click <gui style=\"button\">+</gui>."
+msgstr "Cliquez sur <gui style=\"button\">+</gui>."
+
+#: C/add-account.page:58(item/p)
+msgid ""
+"From the <gui>Protocol</gui> drop-down list, select the type of account you "
+"wish to add."
+msgstr ""
+"À partir de la liste déroulante <gui>Protocole</gui>, sélectionnez le type "
+"de compte que vous souhaitez ajouter."
+
+#: C/add-account.page:62(item/p)
+msgid ""
+"If you do not already have a registered account, select <gui>Create a new "
+"account on the server</gui>. This feature is not available for all account "
+"types, and may not work with some account providers. See <link xref=\"create-"
+"account\"/> for more information."
+msgstr ""
+"Si vous n'avez pas encore de compte enregistré, sélectionnez <gui>Créer un "
+"nouveau compte sur le serveur</gui>. Cette fonction n'est pas disponible "
+"pour tous les types de compte et peut ne pas fonctionner avec certains "
+"fournisseurs de comptes. Consultez <link xref=\"create-account\"/> pour plus "
+"d'informations."
+
+#: C/add-account.page:69(item/p)
+msgid ""
+"Enter the required information. For most accounts, you will only need a "
+"login ID and a password. Some accounts may require additional information. "
+"See <link xref=\"accounts-window#details\"/>for more information."
+msgstr ""
+"Saisissez les informations requises. Pour la plupart des comptes, vous "
+"n'avez besoin que d'un identifiant de connexion et d'un mot de passe. "
+"D'autres comptes peuvent demander plus d'informations. Consultez <link xref="
+"\"accounts-window#details\"/> pour plus d'informations."
+
+#: C/add-account.page:74(item/p) C/import-account.page:61(item/p)
+#: C/irc-nick-password.page:63(item/p)
+msgid "Click <gui style=\"button\">Apply</gui>."
+msgstr "Cliquez sur <gui style=\"button\">Appliquer</gui>."
+
+#: C/add-account.page:81(note/p)
+msgid ""
+"To change the name that identifies the account in the <gui>Accounts</gui> "
+"window, select the account from the list on the left and either click on the "
+"name or press the space bar. Edit the account name and press <key>Enter</"
+"key> when you’re finished."
+msgstr ""
+"Pour modifier le nom qui identifie le compte dans la fenêtre des "
+"<gui>Comptes</gui>, sélectionnez le compte à partir de la liste de gauche et "
+"cliquez sur le nom ou appuyez sur la barre d'espace. Modifiez le nom du "
+"compte et appuyez sur <key>Entrée</key> lorsque vous avez terminé."
+
+#: C/add-contact.page:9(info/desc)
+msgid "Add someone to the contact list."
+msgstr "Ajouter une personne à la liste des contacts."
+
+#: C/add-contact.page:18(credit/name) C/change-status.page:24(credit/name)
+#: C/prob-conn-acctdisabled.page:15(credit/name)
+#: C/prob-conn-auth.page:17(credit/name)
+#: C/prob-conn-neterror.page:15(credit/name) C/prob-conn.page:14(credit/name)
+#: C/send-file.page:17(credit/name) C/send-message.page:17(credit/name)
+msgid "Phil Bull"
+msgstr "Phil Bull"
+
+#: C/add-contact.page:33(page/title)
+msgid "Add someone to your list of contacts"
+msgstr "Ajout d'une personne à votre liste de contacts"
+
+#: C/add-contact.page:37(item/p)
+msgid "Choose <guiseq><gui>Chat</gui><gui>Add Contact</gui></guiseq>."
+msgstr ""
+"Sélectionnez <guiseq><gui>Discussion</gui><gui>Ajouter un contact</gui></"
+"guiseq>."
+
+#: C/add-contact.page:40(item/p)
+msgid ""
+"From the <gui>Account</gui> drop-down list, select the account you wish to "
+"use to connect to your contact. Your contact will need to be using the same "
+"service as the account you select."
+msgstr ""
+"À partir de la liste déroulante <gui>Compte</gui>, sélectionnez le compte "
+"que vous voulez utiliser pour vous connecter à votre contact. Votre contact "
+"doit utiliser le même service que celui que vous avez sélectionné."
+
+#: C/add-contact.page:45(item/p)
+msgid ""
+"In the <gui>Identifier</gui> field, enter your contact’s login ID, username, "
+"screen name, or other appropriate identifier for the service type."
+msgstr ""
+"Dans le champ <gui>Identifiant</gui>, saisissez l'identifiant de connexion "
+"de votre contact, son nom d'utilisateur, son pseudonyme ou tout autre "
+"identifiant approprié à ce type de service."
+
+#: C/add-contact.page:49(item/p)
+msgid ""
+"In the <gui>Alias</gui> field, type your contact’s name as you would like it "
+"to appear in your contact list."
+msgstr ""
+"Dans le champ <gui>Alias</gui>, saisissez le nom de votre contact tel que "
+"vous voulez le voir apparaître dans votre liste des contacts."
+
+#: C/add-contact.page:53(item/p)
+msgid "Click <gui>Add</gui> to add the person to your list of contacts."
+msgstr ""
+"Cliquez sur <gui>Ajouter</gui> pour ajouter cette personne à votre liste de "
+"contacts."
+
+#: C/add-contact.page:61(note/p)
+msgid ""
+"To add a new person to your list of contacts, you need to be connected to "
+"the Internet and to your account."
+msgstr ""
+"Pour ajouter une nouvelle personne à votre liste de contacts, vous devez "
+"être connecté à Internet et à votre compte."
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/audio-call.page:36(media) C/audio-video.page:70(media)
+#: C/video-call.page:39(media)
+msgctxt "_"
+msgid ""
+"external ref='figures/camera-web.png' md5='8166b4372f25b78cbf5a64fe2eac2ce5'"
+msgstr ""
+"external ref='figures/camera-web.png' md5='8166b4372f25b78cbf5a64fe2eac2ce5'"
+
+#: C/audio-call.page:9(info/desc)
+msgid "Call your contacts over the Internet."
+msgstr "Appeler vos contacts sur Internet."
+
+#: C/audio-call.page:27(page/title)
+msgid "Start an audio conversation"
+msgstr "Démarrage d'une conversation audio"
+
+#: C/audio-call.page:29(page/p)
+msgid ""
+"You can call your contacts and have an audio conversation with them. This "
+"features only works with certain types of accounts, and it requires the "
+"other person to have an application that supports audio calls."
+msgstr ""
+"Vous pouvez appeler vos contacts et avoir une conversation audio avec eux. "
+"Cette option n'est disponible qu'avec certains types de comptes et il faut "
+"que l'autre personne possède une application compatible avec les appels "
+"audio."
+
+#: C/audio-call.page:34(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, click the <media type=\"image\" "
+"mime=\"image/png\" src=\"figures/camera-web.png\">video call</media> icon "
+"next to the name of the contact you wish to call and choose <gui style="
+"\"menuitem\">Audio Call</gui>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, cliquez sur <media type="
+"\"image\" mime=\"image/png\" src=\"figures/camera-web.png\">appel vidéo</"
+"media> à côté du nom de la personne que vous souhaitez contacter et "
+"sélectionnez <gui style=\"menuitem\">Appel audio</gui>."
+
+#: C/audio-call.page:42(item/p) C/video-call.page:44(item/p)
+msgid ""
+"A new window will open. When the connection is established, you will see "
+"<gui>Connected</gui> at the bottom of the window, along with the total "
+"conversation time."
+msgstr ""
+"Une nouvelle fenêtre s'ouvre. Lorsque la connexion est établie, vous voyez "
+"s'afficher <gui>Connecté</gui> au bas de la fenêtre, à côté du temps de "
+"conversation total."
+
+#: C/audio-call.page:48(item/p) C/video-call.page:49(item/p)
+msgid "To end the conversation, click on <gui style=\"button\">Hang up</gui>."
+msgstr ""
+"Pour mettre fin à la conversation, cliquez sur <gui style=\"button"
+"\">Raccrocher</gui>."
+
+#: C/audio-call.page:55(note/p)
+msgid ""
+"To turn an audio conversation into a video conversation, choose <guiseq><gui "
+"style=\"menu\">Video</gui> <gui style=\"menuitem\">Video On</gui></guiseq>."
+msgstr ""
+"Pour passer d'une conversation audio à une conversation vidéo, sélectionnez "
+"<guiseq><gui style=\"menu\">Vidéo</gui> <gui style=\"menuitem\">Vidéo "
+"activée</gui></guiseq>."
+
+#: C/audio-call.page:63(section/title)
+msgid "Start an audio conversation with a meta-contact"
+msgstr "Démarrage d'une conversation audio avec un méta-contact"
+
+# meta-contact
+#: C/audio-call.page:66(item/p) C/send-message.page:53(item/p)
+#: C/video-call.page:64(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, right-click on the meta-contact."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, faites un clic droit sur le "
+"méta-contact."
+
+#: C/audio-call.page:71(item/p)
+msgid ""
+"Select the contact you want to have the conversation, and from the menu "
+"select <gui style=\"menuitem\">Audio Call</gui>."
+msgstr ""
+"Sélectionnez le contact avec lequel vous voulez avoir une conversation et "
+"sélectionnez <gui style=\"menuitem\">Appel audio</gui> à partir du menu."
+
+#: C/audio-call.page:78(note/p) C/send-message.page:65(note/p)
+#: C/video-call.page:76(note/p)
+msgid ""
+"To recognize if a contact is a <em>meta-contact</em>, move your mouse on a "
+"contact in the <gui>Contact List</gui> window, and stop over it for a "
+"second: a small pop-up message will appear showing the number of the "
+"contacts that form the meta-contact."
+msgstr ""
+"Pour savoir si un contact est un <em>méta-contact</em>, placez le curseur de "
+"votre souris sur un contact dans votre fenêtre <gui>Liste des contacts</gui> "
+"et attendez pendant environ une seconde : un petit message indiquant le "
+"nombre de contacts composant le méta-contact apparaît."
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/audio-video.page:58(media)
+msgctxt "_"
+msgid ""
+"external ref='figures/audio-input-microphone.png' "
+"md5='8d89026b66a263a3bc5b1f0665948567'"
+msgstr ""
+"external ref='figures/audio-input-microphone.png' "
+"md5='8d89026b66a263a3bc5b1f0665948567'"
+
+#: C/audio-video.page:8(info/desc)
+msgid ""
+"Information on when it is possible to have an audio or video conversation."
+msgstr ""
+"Information pour savoir quand il est possible d'avoir une conversation audio "
+"ou vidéo."
+
+#: C/audio-video.page:32(page/title)
+msgid "Audio and video support"
+msgstr "Prise en charge audio et vidéo"
+
+#: C/audio-video.page:34(page/p)
+msgid ""
+"You can only have audio and video conversation with contacts who are using "
+"an application which also supports this feature. When your contacts support "
+"audio or video conversations, you will see the following icons next to their "
+"names in the contact list:"
+msgstr ""
+"Vous ne pouvez avoir des conversations audio et vidéo qu'avec des contacts "
+"qui utilisent une application prenant aussi en charge cette fonction. "
+"Lorsque c'est le cas, les icônes suivantes s'affichent à côté de leur nom "
+"dans la liste des contacts :"
+
+#: C/audio-video.page:43(td/p)
+msgid "Icon"
+msgstr "Icône"
+
+#: C/audio-video.page:48(td/p)
+msgid "Description"
+msgstr "Description"
+
+#: C/audio-video.page:57(td/p)
+msgid ""
+"<media type=\"image\" mime=\"image/png\" src=\"figures/audio-input-"
+"microphone.png\"> Icon for audio conversation </media>"
+msgstr ""
+"<media type=\"image\" mime=\"image/png\" src=\"figures/audio-input-"
+"microphone.png\"> Icône de conversation audio </media>"
+
+#: C/audio-video.page:64(td/p)
+msgid "The contact is able to have an audio conversation."
+msgstr "Le contact est en mesure d'avoir une conversation audio."
+
+#: C/audio-video.page:69(td/p)
+msgid ""
+"<media type=\"image\" mime=\"image/png\" src=\"figures/camera-web.png\"> "
+"Icon for video conversation </media>"
+msgstr ""
+"<media type=\"image\" mime=\"image/png\" src=\"figures/camera-web.png\"> "
+"Icône de conversation vidéo </media>"
+
+#: C/audio-video.page:76(td/p)
+msgid "The contact is able to have a video conversation."
+msgstr "Le contact est en mesure d'avoir une conversation vidéo."
+
+# Est ce nécessaire d'indiquer que le microphone doit être fonctionnel?
+#: C/audio-video.page:83(note/p)
+msgid ""
+"In order to have an audio conversation, you need to have a sound card that "
+"is supported by your operating system, and a working microphone."
+msgstr ""
+"Pour avoir une conversation audio, il vous faut une carte son prise en "
+"charge par votre système d'exploitation et un microphone opérationnel."
+
+# idem
+#: C/audio-video.page:87(note/p)
+msgid ""
+"In order to have a video conversation, you need to have a webcam that is "
+"supported by your operating system, and a working microphone."
+msgstr ""
+"Pour avoir une conversation vidéo, il vous faut une webcam prise en charge "
+"par votre système d'exploitation et un microphone opérationnel."
+
+#: C/audio-video.page:95(section/title)
+msgid "Supported Account Types"
+msgstr "Types de comptes pris en charge"
+
+# négation?
+#: C/audio-video.page:97(section/p)
+msgid ""
+"You can only have audio and video conversations using accounts on certain "
+"supported services. The following table lists whether audio and video is "
+"supported for each type of account."
+msgstr ""
+"Vous ne pouvez avoir des conversations audio et vidéo qu'avec les comptes de "
+"certains services pris en charge. Le tableau suivant indique si l'audio et "
+"la vidéo sont pris en charge pour chaque type de compte."
+
+#: C/audio-video.page:102(note/p)
+msgid ""
+"Account types are provided by plugins. Your system may not have all of the "
+"following types available, or it may have types not listed here. Updated "
+"plugins may make audio or video conversations possible on account types that "
+"are listed as unsupported here."
+msgstr ""
+"Les types de comptes sont fournis par des greffons. Il est possible que "
+"votre système n'ait pas tous les types suivants disponibles, ou il se peut "
+"que certains types ne soient pas présentés ici. La mise à jour des greffons "
+"peut permettre des conversations audio ou vidéo sur des types de comptes qui "
+"sont répertoriés ici comme incompatibles."
+
+#: C/audio-video.page:128(td/p)
+msgid "Service"
+msgstr "Service"
+
+#: C/audio-video.page:129(td/p)
+msgid "Audio"
+msgstr "Audio"
+
+#: C/audio-video.page:130(td/p)
+msgid "Video"
+msgstr "Vidéo"
+
+#: C/audio-video.page:135(td/p)
+msgid "AIM"
+msgstr "AIM"
+
+#: C/audio-video.page:136(td/p) C/audio-video.page:137(td/p)
+#: C/audio-video.page:141(td/p) C/audio-video.page:142(td/p)
+#: C/audio-video.page:146(td/p) C/audio-video.page:147(td/p)
+#: C/audio-video.page:156(td/p) C/audio-video.page:157(td/p)
+#: C/audio-video.page:161(td/p) C/audio-video.page:162(td/p)
+#: C/audio-video.page:166(td/p) C/audio-video.page:167(td/p)
+#: C/audio-video.page:181(td/p) C/audio-video.page:182(td/p)
+#: C/audio-video.page:186(td/p) C/audio-video.page:187(td/p)
+#: C/audio-video.page:191(td/p) C/audio-video.page:192(td/p)
+#: C/audio-video.page:196(td/p) C/audio-video.page:197(td/p)
+#: C/audio-video.page:201(td/p) C/audio-video.page:202(td/p)
+#: C/audio-video.page:211(td/p) C/audio-video.page:212(td/p)
+#: C/audio-video.page:216(td/p) C/audio-video.page:217(td/p)
+msgid "No"
+msgstr "Non"
+
+#: C/audio-video.page:140(td/p)
+msgid "Facebook Chat"
+msgstr "Discussion Facebook"
+
+#: C/audio-video.page:145(td/p)
+msgid "gadugadu"
+msgstr "gadugadu"
+
+#: C/audio-video.page:150(td/p)
+msgid "Google Talk"
+msgstr "Google Talk"
+
+#: C/audio-video.page:151(td/p) C/audio-video.page:152(td/p)
+#: C/audio-video.page:171(td/p) C/audio-video.page:172(td/p)
+#: C/audio-video.page:176(td/p) C/audio-video.page:177(td/p)
+#: C/audio-video.page:206(td/p) C/audio-video.page:207(td/p)
+msgid "Yes"
+msgstr "Oui"
+
+#: C/audio-video.page:155(td/p)
+msgid "Groupwise"
+msgstr "Groupwise"
+
+#: C/audio-video.page:160(td/p)
+msgid "ICQ"
+msgstr "ICQ"
+
+#: C/audio-video.page:165(td/p) C/create-account.page:107(section/title)
+msgid "IRC"
+msgstr "IRC"
+
+#: C/audio-video.page:170(td/p) C/create-account.page:60(section/title)
+msgid "Jabber"
+msgstr "Jabber"
+
+#: C/audio-video.page:175(td/p)
+msgid "MSN"
+msgstr "MSN"
+
+#: C/audio-video.page:180(td/p)
+msgid "myspace"
+msgstr "myspace"
+
+#: C/audio-video.page:185(td/p)
+msgid "qq"
+msgstr "qq"
+
+#: C/audio-video.page:190(td/p) C/create-account.page:78(section/title)
+msgid "People Nearby"
+msgstr "Personnes à proximité"
+
+# Type de compte?
+#: C/audio-video.page:195(td/p)
+msgid "sametime"
+msgstr "sametime"
+
+#: C/audio-video.page:200(td/p)
+msgid "silc"
+msgstr "silc"
+
+#: C/audio-video.page:205(td/p) C/create-account.page:89(section/title)
+msgid "SIP"
+msgstr "SIP"
+
+#: C/audio-video.page:210(td/p)
+msgid "Yahoo!"
+msgstr "Yahoo!"
+
+#: C/audio-video.page:215(td/p)
+msgid "zephyr"
+msgstr "zephyr"
+
+#: C/change-status.page:9(info/desc)
+msgid "Change your status to advertise your availability to your contacts."
+msgstr ""
+"Modifier votre état pour informer vos contacts sur votre disponibilité."
+
+#: C/change-status.page:39(page/title)
+msgid "Change your status"
+msgstr "Modification de votre état"
+
+#: C/change-status.page:41(page/p)
+msgid ""
+"You can set your status to indicate your availability to your contacts. "
+"<app>Empathy</app> allows you to select from a list of defined statuses."
+msgstr ""
+"Vous pouvez définir votre état pour informer vos contacts sur votre "
+"disponibilité. <app>Empathy</app> vous permet de choisir à partir d'une "
+"liste d'états prédéfinis."
+
+#: C/change-status.page:46(item/p)
+msgid ""
+"Click on the drop-down list at the top of the <gui>Contact List</gui> window."
+msgstr ""
+"Cliquez sur la liste déroulante en haut de la fenêtre <gui>Liste des "
+"contacts</gui>."
+
+#: C/change-status.page:51(item/p)
+msgid "Select a status from the list."
+msgstr "Sélectionnez un état dans la liste."
+
+#: C/change-status.page:57(page/p)
+msgid ""
+"See <link xref=\"status-icons\"/> for a list of the built-in statuses and "
+"what they mean. You can also <link xref=\"set-custom-status\">add custom "
+"status messages</link> to provide more information about your availability "
+"to your contacts."
+msgstr ""
+"Consultez <link xref=\"status-icons\"/> pour voir la liste des états "
+"prédéfinis et leur signification. Vous pouvez aussi <link xref=\"set-custom-"
+"status\">ajouter des états personnalisés</link> pour informer davantage vos "
+"contacts sur votre disponibilité."
+
+#: C/change-status.page:63(note/p)
+msgid ""
+"If you do not use your computer for a while, or if the screensaver is on, "
+"the status will be automatically set to Away."
+msgstr ""
+"Si vous n'utilisez pas votre ordinateur pendant un certain laps de temps, ou "
+"si l'économiseur d'écran est actif, votre état est automatiquement défini à "
+"Absent."
+
+#: C/create-account.page:9(info/desc)
+msgid "Register for an account with one of the supported messaging services."
+msgstr ""
+"Enregistrer un compte avec un des services de messagerie instantanée pris en "
+"charge."
+
+#: C/create-account.page:34(page/title)
+msgid "Register for a new account"
+msgstr "Enregistrement d'un nouveau compte"
+
+# types de compte(S) ??
+#: C/create-account.page:36(page/p)
+msgid ""
+"Most account types require you to create an account with a account provider "
+"before you can connect using instant messaging applications like "
+"<app>Empathy</app>. With some account providers, you can use <app>Empathy</"
+"app> to register for a new account, using the same steps as you would to "
+"<link xref=\"add-account\">add an account</link>."
+msgstr ""
+"Dans la plupart des cas, un compte doit être créé chez un fournisseur de "
+"compte avant de pouvoir vous connecter sur une application de messagerie "
+"instantanée comme <app>Empathy</app>. Avec certains fournisseurs de comptes, "
+"vous pouvez utiliser <app>Empathy</app> pour enregistrer un nouveau compte "
+"en suivant les mêmes étapes qu'en passant par <link xref=\"add-account"
+"\">Ajouter un compte</link>."
+
+#: C/create-account.page:42(page/p)
+msgid ""
+"This page provides information on creating a new account for various types "
+"of accounts. Your account provider should give you a login ID and a "
+"password, as well as any additional information you need to connect using "
+"<app>Empathy</app>."
+msgstr ""
+"Cette page vous informe sur la création d'un nouveau compte pour divers "
+"types de comptes. Votre fournisseur de compte doit vous fournir un "
+"identifiant de connexion et un mot de passe, ainsi que toutes les "
+"informations supplémentaires nécessaires pour vous connecter en utilisant "
+"<app>Empathy</app>."
+
+#: C/create-account.page:47(section/title)
+msgid "Facebook"
+msgstr "Facebook"
+
+#: C/create-account.page:48(section/p)
+msgid ""
+"Facebook is one of the most-used social networks. It allows users to create "
+"their own profile and to communicate with their friends."
+msgstr ""
+"Facebook est l'un des réseaux sociaux les plus utilisés. Il permet aux "
+"utilisateurs de créer leur propre profil et de communiquer avec leurs amis."
+
+#: C/create-account.page:52(section/p)
+msgid ""
+"To use Facebook to communicate with your friends, you will need to create a "
+"new account from the website: <link href=\"http://www.facebook.com\">www."
+"facebook.com</link>."
+msgstr ""
+"Pour communiquer avec vos amis en utilisant Facebook, vous devrez créer un "
+"nouveau compte sur leur site Web : <link href=\"http://www.facebook.com"
+"\">www.facebook.com</link>."
+
+#: C/create-account.page:62(section/p)
+msgid ""
+"Jabber is an open instant messaging system. Like email, Jabber allows you to "
+"choose your account provider and communicate with all other Jabber users, "
+"regardless of their account provider."
+msgstr ""
+"Jabber est un système de messagerie instantanée libre. Tout comme avec les "
+"courriels, Jabber vous permet de choisir votre fournisseur de compte et de "
+"communiquer avec tous les autres utilisateurs de Jabber, indépendamment de "
+"leur fournisseur de compte."
+
+#: C/create-account.page:66(section/p)
+msgid ""
+"You will need to create a new account with a Jabber provider. There are many "
+"free providers; one popular provider is <link href=\"http://register.jabber."
+"org/\">Jabber.org</link>."
+msgstr ""
+"Vous devez créer un nouveau compte avec un fournisseur Jabber. Il y a "
+"plusieurs fournisseurs gratuits ; un des plus populaires est <link href="
+"\"http://register.jabber.org/\">Jabber.org</link>."
+
+#: C/create-account.page:71(note/p)
+msgid ""
+"If you use Google Mail or Google Talk, you already have a Jabber account. "
+"Google Talk is a Jabber service. Simply use your Google Mail address and "
+"password in <app>Empathy</app> to connect."
+msgstr ""
+"Si vous utilisez Google Mail ou Google Talk, vous avez déjà un compte "
+"Jabber. Google Talk est un service Jabber. Utilisez simplement votre adresse "
+"Google Mail et son mot de passe associé dans <app>Empathy</app> pour vous y "
+"connecter."
+
+#: C/create-account.page:80(section/p)
+msgid ""
+"You do not need to create an account with a service provider to use this "
+"feature. This service works whenever you are connected to a local network, "
+"such as a wireless hotspot. It automatically finds all other users on the "
+"network who are also using this service."
+msgstr ""
+"Vous n'avez pas besoin de créer un compte avec un fournisseur de service "
+"pour utiliser cette fonctionnalité. Ce service fonctionne dès que vous êtes "
+"connecté à un réseau local, comme un réseau sans fil. Il trouve "
+"automatiquement les autres utilisateurs sur le réseau qui utilisent déjà ce "
+"service."
+
+#: C/create-account.page:85(section/p)
+msgid "For more information, see <link xref=\"salut-protocol\"/>."
+msgstr "Pour plus d'informations, consultez <link xref=\"salut-protocol\"/>."
+
+#: C/create-account.page:91(section/p)
+msgid ""
+"SIP is an open system which allows users to have audio and video "
+"conversations over the Internet. You need to create an account with a SIP "
+"provider. You can communicate with all other SIP users, regardless of which "
+"SIP provider they use."
+msgstr ""
+"SIP est un système libre qui permet aux utilisateurs d'avoir des "
+"conversations audio et vidéo par Internet. Vous devez créer un compte chez "
+"un fournisseur SIP. Vous pouvez communiquer avec tous les autres "
+"utilisateurs SIP, indépendamment du fournisseur SIP qu'ils utilisent."
+
+#: C/create-account.page:97(note/p)
+msgid ""
+"Due to technical differences, the free <link href=\"https://www.ekiga.net/"
+"index.php?page=register\">Ekiga.net</link> service does not currently work "
+"with <app>Empathy</app>."
+msgstr ""
+"En raison de différences techniques, le service gratuit <link href=\"https://"
+"www.ekiga.net/index.php?page=register\">Ekiga.net</link> ne fonctionne "
+"actuellement pas avec <app>Empathy</app>."
+
+#: C/create-account.page:102(section/p)
+msgid ""
+"Some SIP providers allow you to call normal phones from your computer. "
+"Generally, you will need to subscribe to a paid service for this feature."
+msgstr ""
+"Certains fournisseurs SIP vous permettent de faire des appels vers des "
+"téléphones fixes à partir de votre ordinateur. Généralement, vous devez "
+"souscrire à un service payant pour utiliser cette fonction."
+
+#: C/create-account.page:109(section/p)
+msgid ""
+"You do not need to register for an account to use IRC. Although you specify "
+"a nickname when you add an IRC account to <app>Empathy</app>, this nickname "
+"is only established each time you connect. If another user is using the "
+"nickname, you will need to choose a new nickname."
+msgstr ""
+"Vous n'avez pas besoin d'enregistrer un compte pour utiliser IRC. Même si "
+"vous devez spécifier un pseudonyme lorsque vous ajoutez un compte IRC sur "
+"<app>Empathy</app>, celui-ci n'est valide que pour la durée de la connexion. "
+"Si le même pseudonyme est déjà utilisé, vous devez en choisir un autre."
+
+#: C/create-account.page:114(section/p)
+msgid ""
+"Some IRC networks use a service called NickServ to allow users to protect "
+"their nicknames. See <link xref=\"irc-nick-password\"/> for more information."
+msgstr ""
+"Certains réseaux IRC utilisent un service appelé NickServ qui permet aux "
+"utilisateurs de protéger leurs pseudonymes. Consultez <link xref=\"irc-nick-"
+"password\"/> pour plus d'information."
+
+#: C/create-account.page:117(section/p)
+msgid ""
+"Some IRC servers are password protected. You will need to know the password "
+"to connect to these servers. Generally, these are private IRC networks."
+msgstr ""
+"Certains serveurs IRC sont protégés par mot de passe. Vous devez connaître "
+"ce mot de passe pour vous y connecter. En général, ce sont des réseaux IRC "
+"privés."
+
+#: C/create-account.page:122(section/title)
+msgid "Proprietary Services"
+msgstr "Services propriétaires"
+
+#: C/create-account.page:124(section/p)
+msgid ""
+"There are many proprietary instant messaging services that have been "
+"developed by different companies or organizations. <app>Empathy</app> allows "
+"you to connect to an existing account for most popular services. To create a "
+"new account with one of these services, you will need to visit the service’s "
+"web site and agree to its terms of use."
+msgstr ""
+"Il existe plusieurs services de messagerie instantanée propriétaires qui ont "
+"été développés par différentes sociétés ou organisations. <app>Empathy</app> "
+"vous permet de vous connecter à un compte existant pour la plupart des "
+"services. Pour créer un nouveau compte avec un de ces services, vous devez "
+"visiter le site Web du service et accepter ses conditions d'utilisation."
+
+#: C/create-account.page:132(item/p)
+msgid "<link href=\"http://dashboard.aim.com/aim\">AIM</link>"
+msgstr "<link href=\"http://dashboard.aim.com/aim\">AIM</link>"
+
+#: C/create-account.page:137(item/p)
+msgid "<link href=\"https://www.icq.com/register/\">ICQ</link>"
+msgstr "<link href=\"https://www.icq.com/register/\">ICQ</link>"
+
+#: C/create-account.page:142(item/p)
+msgid "<link href=\"https://accountservices.passport.net\">MSN</link>"
+msgstr "<link href=\"https://accountservices.passport.net\">MSN</link>"
+
+#: C/create-account.page:147(item/p)
+msgid "<link href=\"https://login.yahoo.com/config/login\">Yahoo!</link>"
+msgstr "<link href=\"https://login.yahoo.com/config/login\">Yahoo!</link>"
+
+#: C/disable-account.page:9(info/desc)
+msgid "Prevent <app>Empathy</app> from automatically logging in to an account."
+msgstr ""
+"Empêcher <app>Empathy</app> de se connecter automatiquement à un compte."
+
+#: C/disable-account.page:40(page/title)
+msgid "Disable an account"
+msgstr "Désactivation d'un compte"
+
+#: C/disable-account.page:42(page/p)
+msgid ""
+"You can disable an account to prevent <app>Empathy</app> from logging in to "
+"it without removing the account entirely. You may wish to disable and re-"
+"enable an account if you only want to be logged in to the account at certain "
+"times, but you still want to use <app>Empathy</app> for other accounts."
+msgstr ""
+"Vous pouvez désactiver un compte pour empêcher <app>Empathy</app> de s'y "
+"connecter sans avoir à le supprimer complètement. Vous pouvez activer et "
+"désactiver un compte que vous ne voulez pas utiliser en permanence tout en "
+"continuant d'utiliser <app>Empathy</app> avec les autres comptes."
+
+#: C/disable-account.page:53(item/p)
+msgid ""
+"Select the account you wish to disable from the accounts list on the left "
+"side of the window."
+msgstr ""
+"Sélectionnez le compte que vous voulez désactiver dans la liste des comptes "
+"à gauche de la fenêtre."
+
+# À revoir...
+#: C/disable-account.page:57(item/p)
+msgid "On the right side of the window, switch it off."
+msgstr "Désactivez-le dans la partie droite de la fenêtre."
+
+#: C/disable-account.page:62(page/p)
+msgid "To re-enable the account, switch it on."
+msgstr "Réactivez-le à partir du même endroit."
+
+#: C/favorite-rooms.page:10(info/desc)
+msgid "Set, join and manage favorite rooms."
+msgstr "Définir, rejoindre et gérer les salons favoris."
+
+#: C/favorite-rooms.page:29(page/title)
+msgid "Favorite rooms"
+msgstr "Salons favoris"
+
+#: C/favorite-rooms.page:32(section/title)
+msgid "Set a room as a favorite"
+msgstr "Définition d'un salon comme favori"
+
+#: C/favorite-rooms.page:35(item/p)
+msgid "Join a room."
+msgstr "Rejoindre un salon."
+
+#: C/favorite-rooms.page:40(item/p)
+msgid ""
+"See <link xref=\"irc-join-room\"/> for more information on how to join an "
+"IRC room."
+msgstr ""
+"Consultez <link xref=\"irc-join-room\"/> pour plus d'informations sur "
+"comment rejoindre un salon IRC."
+
+#: C/favorite-rooms.page:46(item/p)
+msgid ""
+"See <link xref=\"group-conversations\"/> for more information on how to "
+"start or join a group conversation."
+msgstr ""
+"Consultez <link xref=\"group-conversations\"/> pour plus d'informations sur "
+"comment démarrer ou rejoindre une discussion de groupe."
+
+#: C/favorite-rooms.page:54(item/p)
+msgid ""
+"From the conversation window, choose <guiseq><gui>Conversation</"
+"gui><gui>Favorite Chat Room</gui></guiseq>."
+msgstr ""
+"À partir de la fenêtre de conversation, choisir <guiseq><gui>Conversation</"
+"gui><gui>Salon de discussion favori</gui></guiseq>."
+
+#: C/favorite-rooms.page:63(section/title)
+msgid "Join favorite rooms"
+msgstr "Rejoindre les salons favoris"
+
+#: C/favorite-rooms.page:66(item/p) C/send-file.page:40(item/p)
+msgid "From the <gui>Contact List</gui> window, perform one of the following:"
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, effectuez une des actions "
+"suivantes :"
+
+#: C/favorite-rooms.page:71(item/p)
+msgid "Press <key>F5</key>."
+msgstr "appuyez sur <key>F5</key>,"
+
+#: C/favorite-rooms.page:76(item/p)
+msgid ""
+"Choose <guiseq><gui>Room</gui><gui>Join Favorites</gui></guiseq>, to join "
+"all your favorite rooms."
+msgstr ""
+"choisissez <guiseq><gui>Salon</gui><gui>Rejoindre les favoris</gui></guiseq> "
+"pour rejoindre tous les salons favoris,"
+
+#: C/favorite-rooms.page:82(item/p)
+msgid "Choose <gui>Room</gui>, and select the favorite room you want to join."
+msgstr ""
+"choisissez <gui>Salon</gui> et sélectionnez le salon favori que vous voulez "
+"rejoindre."
+
+#: C/favorite-rooms.page:90(note/p)
+msgid ""
+"To join a favorite room, you need to be connected to the Internet and to "
+"your account."
+msgstr ""
+"Pour rejoindre un salon favori, vous devez être connecté à Internet et à "
+"votre compte."
+
+#: C/favorite-rooms.page:98(section/title)
+msgid "Manage favorite rooms"
+msgstr "Gestion des salons favoris"
+
+#: C/favorite-rooms.page:101(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, choose <guiseq><gui>Room</"
+"gui><gui>Manage Favorites</gui></guiseq>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, choisissez "
+"<guiseq><gui>Salon</gui><gui>Gérer les favoris</gui></guiseq>."
+
+# ouf...
+#: C/favorite-rooms.page:107(item/p)
+msgid ""
+"From the <gui>Account</gui> drop-down list, select the account you want to "
+"manage the favorite rooms of."
+msgstr ""
+"Dans la liste déroulante <gui>Compte</gui>, sélectionnez le compte où se "
+"trouve le salon à gérer."
+
+#: C/favorite-rooms.page:111(item/p)
+msgid "Select <gui>All</gui> to see all you favorite rooms."
+msgstr ""
+"Sélectionnez <gui>Tous les comptes</gui> pour afficher tous vos salons "
+"favoris."
+
+#: C/favorite-rooms.page:116(item/p)
+msgid "Select the favorite room you want to manage:"
+msgstr "Sélectionnez le salon favori que vous voulez gérer :"
+
+#: C/favorite-rooms.page:121(item/p)
+msgid ""
+"Select the <gui>Auto-Connect</gui> check-box in order to automatically join "
+"that room when you connect to your account."
+msgstr ""
+"Cochez la case <gui>Connexion automatique</gui> pour rejoindre "
+"automatiquement ce salon lorsque vous vous connectez à votre compte."
+
+#: C/favorite-rooms.page:127(item/p)
+msgid "Click on <gui>Remove</gui> to remove the room from your favorites."
+msgstr ""
+"Cliquez sur <gui>Supprimer</gui> pour supprimer le salon de vos favoris."
+
+#: C/favorite-rooms.page:134(item/p)
+msgid "When done, click <gui>Close</gui>."
+msgstr "Lorsque que vous avez terminé, cliquez sur <gui>Fermer</gui>."
+
+#: C/geolocation.page:8(info/desc)
+msgid "Use and understand geolocation in <app>Empathy</app>."
+msgstr "Utiliser et comprendre la géolocalisation dans <app>Empathy</app>."
+
+#: C/geolocation.page:32(page/title)
+msgid "Geographical position"
+msgstr "Position géographique"
+
+#: C/geolocation.page:35(section/title)
+msgid "Geolocation"
+msgstr "Géolocalisation"
+
+#: C/geolocation.page:39(section/title)
+msgid "Fix common problems"
+msgstr "Résolution de problèmes courants"
+
+#: C/geolocation-not-showing.page:8(info/desc)
+msgid "<app>Empathy</app> does not publish my geographical position."
+msgstr "<app>Empathy</app> ne publie pas ma position géographique."
+
+#: C/geolocation-not-showing.page:32(page/title)
+msgid "Geographical position not published"
+msgstr "Position géographique non publiée"
+
+#: C/geolocation-not-showing.page:34(page/p)
+msgid ""
+"If your contacts cannot see your location, <app>Empathy</app> might not be "
+"able to discover with a good margin of precision your geographical position."
+msgstr ""
+"Si vos contacts ne peuvent pas voir votre position, c'est peut-être "
+"qu'<app>Empathy</app> n'arrive pas à localiser précisément votre position "
+"géographique."
+
+#: C/geolocation-not-showing.page:38(page/p)
+msgid ""
+"In this case, your position will not be published, but you are still able to "
+"see the location of your contacts."
+msgstr ""
+"Dans ce cas, votre position ne sera pas publiée, mais vous pourrez toujours "
+"voir la position de vos contacts."
+
+#: C/geolocation-not-showing.page:42(page/p)
+msgid ""
+"If you want to publish your geographical position, you can try to use an "
+"external device such as a GPS."
+msgstr ""
+"Si vous voulez publier votre position géographique, vous pouvez essayer "
+"d'utiliser un périphérique externe tel qu'un GPS."
+
+#: C/geolocation-not-showing.page:48(note/p)
+msgid ""
+"In order to publish your geographical location, your Jabber server needs to "
+"support the Personal Eventing Protocal (PEP). A list of <link href=\"http://"
+"coccinella.im/servers/servers_by_pubsub_pep.html\">servers which support "
+"PEP</link> is maintained online. Google Talk does not support this feature "
+"at this time."
+msgstr ""
+"Afin de publier votre position géographique, votre serveur Jabber doit "
+"prendre en charge le protocole PEP (Personal Eventing Protocol). Une liste "
+"des <link href=\"http://coccinella.im/servers/servers_by_pubsub_pep.html"
+"\">serveurs qui supportent le PEP</link> est tenue à jour en ligne. Google "
+"Talk ne prend pas en charge cette fonctionnalité pour l'instant."
+
+#: C/geolocation-privacy.page:8(info/desc)
+msgid "What information are sent and to who."
+msgstr "Quelles informations sont envoyées et à qui."
+
+# Je vois pas vraiment autre chose...
+#: C/geolocation-privacy.page:32(page/title)
+msgid "Geolocation Privacy"
+msgstr "Confidentialité de la géolocalisation"
+
+#: C/geolocation-privacy.page:35(section/title)
+msgid "What information is sent"
+msgstr "Informations envoyées"
+
+#: C/geolocation-privacy.page:36(section/p)
+msgid ""
+"What is possible to send is: your country, region, locality, area, street, "
+"building, floor, room, and postal code, longitude, latitude and altitude, "
+"speed and bearing."
+msgstr ""
+"Ce qu'il est possible d'envoyer : votre pays, votre région, votre "
+"département, votre ville, votre rue, votre numéro de bâtiment, votre numéro "
+"d'étage, votre numéro de chambre, votre code postal, la longitude, la "
+"latitude, l'altitude, la vitesse et le relèvement."
+
+#: C/geolocation-privacy.page:40(section/p)
+msgid ""
+"The accuracy and the quantity of information about your geographical "
+"position are based on the software or on the infrastructure used to discover "
+"your position."
+msgstr ""
+"La précision et la quantité d'informations sur votre position géographique "
+"sont basés sur le logiciel ou sur le matériel utilisés pour trouver votre "
+"position."
+
+#: C/geolocation-privacy.page:44(section/p)
+msgid ""
+"Different kind of networks may have different accuracy settings, and may "
+"send different information. The use of external devices such as GPS or "
+"mobile phone will increase the accuracy of the information sent."
+msgstr ""
+"Des types de réseaux différents peuvent avoir des paramètres de précision "
+"différents et peuvent envoyer des informations différentes. L'utilisation de "
+"périphériques externes tels qu'un GPS ou qu'un téléphone cellulaire augmente "
+"la précision des informations envoyées."
+
+#: C/geolocation-privacy.page:49(section/p)
+msgid ""
+"When the privacy mode is enabled, nothing more precise than your city will "
+"be sent, even if you are using an external device."
+msgstr ""
+"Lorsque le mode confidentiel est activé, seul le nom de votre ville est "
+"envoyé, même si vous utilisez un périphérique externe."
+
+#: C/geolocation-privacy.page:56(section/title)
+msgid "Who can see the information sent"
+msgstr "Destinataires de l'information envoyée"
+
+#: C/geolocation-privacy.page:57(section/p)
+msgid "Only your contacts can see your geographical position."
+msgstr "Seuls vos contacts peuvent voir votre position géographique."
+
+#: C/geolocation-privacy.page:63(section/title)
+msgid "What is the privacy mode"
+msgstr "Mode confidentiel"
+
+#: C/geolocation-privacy.page:64(section/p)
+msgid ""
+"The privacy mode, enabled by default, is a reduced accuracy mode that will "
+"decrease the accuracy of the geographical position sent to your contacts."
+msgstr ""
+"Le mode confidentiel, activé par défaut, est un mode de précision réduite "
+"qui diminue la précision de la position géographique envoyée à vos contacts."
+
+#: C/geolocation-privacy.page:71(section/title)
+msgid "Privacy overview"
+msgstr "Vue d'ensemble sur la confidentialité"
+
+#: C/geolocation-privacy.page:72(section/p)
+msgid ""
+"Overview of the various geolocation privacy settings in <app>Empathy</app>."
+msgstr ""
+"Vue d'ensemble des différents paramètres de confidentialité de "
+"géolocalisation dans <app>Empathy</app>."
+
+#: C/geolocation-privacy.page:77(item/p)
+msgid "Geolocation is not enabled by default."
+msgstr "La géolocalisation n'est pas activée par défaut."
+
+#: C/geolocation-privacy.page:82(item/p)
+msgid "Privacy mode is enabled by default."
+msgstr "Le mode confidentiel est activé par défaut."
+
+#: C/geolocation-privacy.page:87(item/p)
+msgid ""
+"Privacy mode prevails even when using external and more precise devices."
+msgstr ""
+"Le mode confidentiel prévaut même lorsque vous utilisez des périphériques "
+"externes plus précis."
+
+#: C/geolocation-privacy.page:92(item/p)
+msgid "Only your contacts can see your position."
+msgstr "Seuls vos contacts peuvent connaître votre position."
+
+#: C/geolocation-supported.page:7(info/desc)
+msgid "Services that supports geolocation and compatibility."
+msgstr ""
+"Les services qui prennent en charge la géolocalisation et la compatibilité."
+
+#: C/geolocation-supported.page:31(page/title)
+msgid "Supported services"
+msgstr "Services pris en charge"
+
+#: C/geolocation-supported.page:33(page/p)
+msgid ""
+"The geolocation feature at the moment is compatible only with the Jabber "
+"service. In order to use it, you and your contacts need to have a Jabber "
+"account."
+msgstr ""
+"La fonctionnalité de géolocalisation n'est actuellement compatible qu'avec "
+"le service Jabber. Pour l'utiliser, vous et vos contacts devez posséder un "
+"compte Jabber."
+
+#: C/geolocation-supported.page:39(note/p)
+msgid ""
+"It is necessary that also the server you are using supports the geolocation "
+"feature. Most of the Jabber servers support it. See your service website "
+"documentation for more information."
+msgstr ""
+"Il est aussi nécessaire que le serveur que vous utilisez supporte la "
+"fonctionnalité de géolocalisation. La plupart des serveurs Jabber la "
+"supportent. Pour plus d'informations, consultez la documentation Web de "
+"votre service."
+
+#: C/geolocation-supported.page:47(section/title)
+msgid "Compatibility"
+msgstr "Compatibilité"
+
+#: C/geolocation-supported.page:49(section/p)
+msgid ""
+"<app>Empathy</app> geolocation feature is not compatible with other "
+"geographical position services such as <em>Google Latitude</em>, <em>Yahoo "
+"Fire Eagle</em> or <em>Brightkite</em>."
+msgstr ""
+"La fonctionnalité de géolocalisation d'<app>Empathy</app> n'est pas "
+"compatible avec d'autres services tels que <em>Google Latitude</em>, "
+"<em>Yahoo Fire Eagle</em> ou <em>Brightkite</em>."
+
+#: C/geolocation-turn.page:9(info/desc)
+msgid "How to activate and deactivate geolocation in <app>Empathy</app>."
+msgstr ""
+"Comment activer et désactiver la géolocalisation dans <app>Empathy</app>."
+
+#: C/geolocation-turn.page:33(page/title)
+msgid "Activate/Deactivate geolocation"
+msgstr "Activation/Désactivation de la géolocalisation"
+
+#: C/geolocation-turn.page:37(item/p)
+msgid "Choose <guiseq><gui>Edit</gui><gui>Preferences</gui></guiseq>."
+msgstr "Choisissez <guiseq><gui>Édition</gui><gui>Préférences</gui></guiseq>."
+
+#: C/geolocation-turn.page:42(item/p)
+msgid "Select the <gui>Location</gui> tab."
+msgstr "Sélectionnez l'onglet <gui>Position</gui>."
+
+#: C/geolocation-turn.page:47(item/p)
+msgid ""
+"Select <gui>Publish location to my contacts</gui> to activate geolocation."
+msgstr ""
+"Sélectionnez <gui>Publier ma position pour mes contacts</gui> pour activer "
+"la géolocalisation."
+
+#: C/geolocation-turn.page:50(item/p)
+msgid "To deactivate geolocation, deselect it."
+msgstr "Pour désactiver la géolocalisation, désélectionnez-la."
+
+#: C/geolocation-turn.page:55(item/p)
+msgid ""
+"To increase the accuracy of your position, deselect <gui>Reduce location "
+"accuracy</gui>."
+msgstr ""
+"Pour augmenter la précision de votre position, désélectionnez <gui>Réduire "
+"la précision de la position</gui>."
+
+#: C/geolocation-turn.page:61(item/p)
+msgid ""
+"If you have an external device like a GPS or want to send a more accurate "
+"position, select the appropriate option in the <gui>Location sources</gui> "
+"section."
+msgstr ""
+"Si vous avez un périphérique externe comme un GPS, ou si vous voulez donner "
+"une plus grande précision sur votre position, sélectionnez l'option "
+"appropriée dans la section <gui>Sources de positionnement</gui>."
+
+#: C/geolocation-what-is.page:9(info/desc)
+msgid "Understanding geolocation."
+msgstr "Comprendre la géolocalisation."
+
+#: C/geolocation-what-is.page:33(page/title)
+msgid "What is geolocation"
+msgstr "La géolocalisation"
+
+#: C/geolocation-what-is.page:35(page/p)
+msgid ""
+"Geolocation allows you to identify the real geographical location of a "
+"computer or a device connected to the Internet."
+msgstr ""
+"La géolocalisation vous permet d'identifier la véritable position "
+"géographique d'un ordinateur ou d'un périphérique connecté à Internet."
+
+#: C/geolocation-what-is.page:37(page/p)
+msgid "With geolocation in <app>Empathy</app> you can:"
+msgstr "Avec la géolocalisation dans <app>Empathy</app>, vous pouvez :"
+
+#: C/geolocation-what-is.page:42(item/p)
+msgid "Publish your geographical location to your contacts."
+msgstr "communiquer votre position géographique à vos contacts,"
+
+#: C/geolocation-what-is.page:47(item/p)
+msgid "See your contacts’ geographical location and quickly contact them."
+msgstr "connaître leur position géographique et les contacter rapidement,"
+
+#: C/geolocation-what-is.page:52(item/p)
+msgid ""
+"Set the accuracy of your location and the device used to discover your "
+"location."
+msgstr ""
+"définir la précision de votre position et le périphérique utilisé pour la "
+"trouver."
+
+#: C/geolocation-what-is.page:60(note/p)
+msgid ""
+"In order to see your contacts’ geographical locations, they need to use a "
+"service and an application that supports geolocation."
+msgstr ""
+"Pour connaître les positions géographiques de vos contacts, ils doivent "
+"utiliser un service et une application qui prenne en charge la "
+"géolocalisation."
+
+#: C/group-conversations.page:8(info/desc)
+msgid "Start or join a group conversation with your contacts."
+msgstr "Démarrer ou rejoindre une discussion de groupe avec vos contacts."
+
+#: C/group-conversations.page:34(page/title)
+msgid "Group conversations"
+msgstr "Discussion de groupe"
+
+#: C/group-conversations.page:36(page/p)
+msgid ""
+"Group conversations permits you to have text conversations with more than "
+"one contact at the same time."
+msgstr ""
+"Les discussions de groupe vous permettent de discuter par écrit avec "
+"plusieurs contacts à la fois."
+
+#: C/group-conversations.page:40(page/p)
+msgid ""
+"To have a group conversation you need to have a registered account with "
+"either Jabber or Google Talk, or a People Nearby account."
+msgstr ""
+"Pour accéder à une discussion de groupe, vous devez posséder un compte "
+"enregistré sur Jabber ou Google Talk ou un compte de Personnes à proximité."
+
+#: C/group-conversations.page:46(note/p)
+msgid ""
+"You can have a group conversation only with the contacts that are using the "
+"same service as yours."
+msgstr ""
+"Vous ne pouvez participer à une discussion de groupe qu'avec les contacts "
+"qui utilisent le même service que le vôtre."
+
+#: C/group-conversations.page:54(section/title)
+msgid "Start a group conversation"
+msgstr "Lancement d'une discussion de groupe"
+
+#: C/group-conversations.page:58(item/p)
+#: C/group-conversations.page:122(item/p) C/irc-join-room.page:39(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, choose <guiseq><gui>Room</"
+"gui><gui>Join</gui></guiseq>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, choisissez "
+"<guiseq><gui>Salon</gui><gui>Rejoindre...</gui></guiseq>."
+
+#: C/group-conversations.page:63(item/p)
+msgid ""
+"From the <gui>Account</gui> drop-down list, select the account you want to "
+"use for the group conversation."
+msgstr ""
+"Dans la liste déroulante <gui>Compte</gui> , sélectionnez le compte que vous "
+"souhaitez utiliser pour la discussion de groupe."
+
+#: C/group-conversations.page:69(item/p)
+msgid ""
+"In the <gui>Server</gui> text box, type the name of server in which the "
+"conversation will be hosted."
+msgstr ""
+"Dans le champ <gui>Serveur</gui>, saisissez le nom du serveur qui héberge la "
+"discussion."
+
+#: C/group-conversations.page:73(item/p)
+msgid "Leave it empty if it will be on the current server."
+msgstr "Laissez-le vide si vous utilisez le serveur en cours."
+
+#: C/group-conversations.page:78(item/p)
+msgid ""
+"In the <gui>Room</gui> text box, type the name you want to give to the "
+"conversation."
+msgstr ""
+"Dans le champ <gui>Salon</gui>, saisissez le nom que vous souhaitez donner à "
+"la discussion."
+
+#: C/group-conversations.page:82(note/p)
+msgid ""
+"This will be the name of the room you are going to have a conversation. This "
+"name will be publicly available for other people to join. It is not possible "
+"to create a private room."
+msgstr ""
+"Ce sera le nom du salon où vous discuterez. Ce nom sera publiquement "
+"accessible aux autres personnes pour qu'elles puissent y accéder. Il est "
+"impossible de créer un salon privé."
+
+#: C/group-conversations.page:90(item/p)
+msgid ""
+"To invite other contacts to join the group conversation, from the "
+"<gui>Contact List</gui> window, select the contact you want to invite, and "
+"perform one of the following:"
+msgstr ""
+"Pour inviter d'autres contacts à rejoindre la discussion de groupe, "
+"sélectionnez le contact que vous désirez inviter dans la fenêtre <gui>Liste "
+"des contacts</gui> et effectuez une des actions suivantes :"
+
+#: C/group-conversations.page:97(item/p)
+msgid "Right-click on the contact and choose <gui>Invite to chatroom</gui>."
+msgstr ""
+"faites un clic droit sur l'un de vos contacts et sélectionnez <gui>Inviter à "
+"un salon de discussion</gui>,"
+
+#: C/group-conversations.page:102(item/p)
+msgid ""
+"Choose <guiseq><gui>Edit</gui><gui>Contact</gui><gui>Invite to chatroom</"
+"gui></guiseq>."
+msgstr ""
+"choisissez <guiseq><gui>Édition</gui><gui>Contact</gui><gui>Inviter à un "
+"salon de discussion</gui></guiseq>."
+
+#: C/group-conversations.page:107(item/p)
+msgid ""
+"If you have more than one group conversation open, select the one you want "
+"to invite your contacts."
+msgstr ""
+"Si vous avez plus d'une discussion de groupe ouverte, sélectionnez celle où "
+"vous voulez inviter vos contacts."
+
+#: C/group-conversations.page:118(section/title)
+msgid "Join a group conversation"
+msgstr "Rejoindre une discussion de groupe"
+
+#: C/group-conversations.page:128(item/p)
+msgid "Expand the <gui>Room List</gui> section to see all the existing rooms."
+msgstr ""
+"Déroulez la <gui>Liste des salons</gui> pour afficher tous les salons "
+"existants."
+
+#: C/group-conversations.page:133(item/p)
+msgid "Double-click on the name of a room to join it."
+msgstr "Faites un double clic sur le nom d'un salon pour le rejoindre."
+
+#: C/group-conversations.page:139(section/p)
+msgid ""
+"It is not possible to join all existing rooms. Some of the rooms might "
+"require a password, or might be invitation only. <app>Empathy</app> does not "
+"support these kind of rooms."
+msgstr ""
+"Il n'est pas possible de rejoindre tous les salons existants. Certains "
+"salons nécessitent un mot de passe ou une invitation. <app>Empathy</app> ne "
+"prend pas en charge ce genre de salon."
+
+#: C/hide-contacts.page:8(info/desc)
+msgid "Hide the offline contacts from your <gui>Contact List</gui>."
+msgstr ""
+"Masquer les contacts déconnectés de votre <gui>liste des contacts</gui>."
+
+#: C/hide-contacts.page:19(page/title)
+msgid "Hide offline contacts"
+msgstr "Masquage des contacts déconnectés "
+
+#: C/hide-contacts.page:21(page/p)
+msgid ""
+"Normally, <app>Empathy</app> shows all your contacts: those that are online, "
+"with which you can have a conversation, and also those that are offline."
+msgstr ""
+"Normalement, <app>Empathy</app> affiche tous vos contacts : ceux qui sont "
+"connectés, avec qui vous pouvez avoir une discussion et aussi ceux qui sont "
+"déconnectés."
+
+#: C/hide-contacts.page:25(page/p)
+msgid "To hide the contacts that are offline:"
+msgstr "Pour masquer les contacts qui sont déconnectés :"
+
+#: C/hide-contacts.page:31(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, choose <guiseq><gui>View</gui> "
+"<gui>Offline Contacts</gui></guiseq>, or press <keyseq><key>Ctrl</key> "
+"<key>H</key></keyseq>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, choisissez "
+"<guiseq><gui>Affichage</gui> <gui>Contacts déconnectés</gui></guiseq>, ou "
+"appuyez sur <keyseq><key>Ctrl</key> <key>H</key></keyseq>."
+
+#: C/hide-contacts.page:36(item/p)
+msgid "To show the offline contacts again, repeat the same procedure above."
+msgstr ""
+"Pour afficher à nouveau les contacts déconnectés, répétez la même procédure "
+"ci-dessus."
+
+#: C/import-account.page:10(info/desc)
+msgid "Import an account from another instant messaging application."
+msgstr "Importer un compte d'une autre application de messagerie instantanée."
+
+#: C/import-account.page:19(credit/name)
+msgid "Peter Haslam"
+msgstr "Peter Haslam"
+
+#: C/import-account.page:42(page/title)
+msgid "Import an existing account"
+msgstr "Importation d'un compte existant"
+
+#: C/import-account.page:44(page/p)
+msgid ""
+"The first time you run <app>Empathy</app>, it will offer to import your "
+"accounts from other instant messaging applications. Currently, the only "
+"supported application is <app>Pidgin</app>."
+msgstr ""
+"La première fois que vous lancez <app>Empathy</app>, il vous propose "
+"d'importer vos comptes à partir d'autres applications de messagerie "
+"instantanée. Actuellement, la seule application prise en charge est "
+"<app>Pidgin</app>."
+
+#: C/import-account.page:50(item/p)
+msgid ""
+"Run <app>Empathy</app> for the first time. An assistant will offer you a "
+"number of options to create new accounts."
+msgstr ""
+"Lancez <app>Empathy</app> pour la première fois. Un assistant vous propose "
+"un certain nombre d'options pour créer de nouveaux comptes."
+
+#: C/import-account.page:54(item/p)
+msgid ""
+"Select <gui>Yes, import my account details from</gui> and click "
+"<gui>Forward</gui>."
+msgstr ""
+"Sélectionnez <gui>Oui, importer les détails de mes comptes à partir de</gui> "
+"et cliquez sur <gui>Suivant</gui>."
+
+#: C/import-account.page:58(item/p)
+msgid "Select the check box next to each account you wish to import."
+msgstr "Cochez la case à côté de chaque compte à importer."
+
+#: C/import-account.page:66(note/p)
+msgid ""
+"It is not currently possible to import accounts after you have completed the "
+"first-run assistant."
+msgstr ""
+"Pour l'instant, vous ne pouvez plus importer de comptes après avoir utilisé "
+"l'assistant de première utilisation."
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/introduction.page:41(media)
+msgctxt "_"
+msgid ""
+"external ref='figures/empathy-main-window.png' "
+"md5='54908dcb2588beddb15ef0968d2c2582'"
+msgstr ""
+"external ref='figures/empathy-main-window.png' "
+"md5='54908dcb2588beddb15ef0968d2c2582'"
+
+#: C/introduction.page:9(info/desc)
+msgid "Introduction to the <app>Empathy</app> instant messenger."
+msgstr "Introduction à la messagerie instantanée <app>Empathy</app>."
+
+#: C/introduction.page:21(page/title)
 msgid "Introduction"
 msgstr "Introduction"
 
-#: C/introduction.page:25(page/p)
+#: C/introduction.page:23(page/p)
 msgid ""
-"<app>Cheese</app> is a fun webcam booth application which lets you take "
-"photos and record videos using your webcam. By using <app>Cheese</app>, you "
-"can make funny, original photos and videos that you can easily share with "
-"others. It can take multiple photos in quick succession (using the <link "
-"xref=\"burst-mode\"><gui>Burst mode</gui></link>) and lets you <link xref="
-"\"apply-effects\">apply effects</link> that add a special, fancy or funny "
-"touch to your photos and videos."
+"<app>Empathy</app> is an instant messaging application for the GNOME "
+"Desktop. It supports text messaging, voice &amp; video calls, file "
+"transfers, and all the most used messaging systems such as MSN and Google "
+"Talk."
 msgstr ""
-"<app>Cheese</app> est une application amusante pour votre webcam qui vous "
-"permet de prendre des photos et de faire des vidéos avec votre webcam. En "
-"utilisant <app>Cheese</app>, vous pouvez faire des photos et des vidéos "
-"amusantes et originales que vous pouvez facilement partager avec les autres. "
-"Elle permet de prendre de multiples photos les unes à la suite des autres "
-"(en utilisant le <link xref=\"burst-mode\"><gui>mode rafale</gui></link>) et "
-"vous permet d'<link xref=\"apply-effects\">utiliser des effets</link> pour "
-"ajouter une touche spéciale, fantaisiste ou amusante à vos photos et vidéos."
+"<app>Empathy</app> est un client de messagerie instantanée pour "
+"l'environnement de bureau GNOME. Il prend en charge la messagerie textuelle, "
+"les appels audio et vidéo, le transfert de fichiers et tous les systèmes de "
+"messagerie les plus utilisés comme MSN et Google Talk."
 
-#: C/introduction.page:33(page/p)
+#: C/introduction.page:28(page/p)
 msgid ""
-"By default, <app>Cheese</app> starts in <gui>Photo mode</gui>, ready to "
-"<link xref=\"take-photo\">take a photo</link>. You need to switch to "
-"<gui>Video mode</gui> to <link xref=\"record-video\">record a video</link> "
-"or switch to <gui>Burst mode</gui> to <link xref=\"burst-mode\">take "
-"multiple photos at once</link>."
+"<app>Empathy</app> includes features that help you better collaborate while "
+"at work, and that let you easily keep in touch with your friends."
 msgstr ""
-"Par défaut, <app>Cheese</app> démarre en <gui>mode photo</gui>, prêt à <link "
-"xref=\"take-photo\">prendre une photo</link>. Vous devez basculer en "
-"<gui>mode vidéo</gui> pour <link xref=\"record-video\">prendre une vidéo</"
-"link> ou basculer en <gui>mode rafale</gui> pour <link xref=\"burst-mode"
-"\">prendre plusieurs photos d'un coup</link>."
+"<app>Empathy</app> inclut des fonctionnalités qui vous aident à mieux "
+"collaborer au travail et qui vous permettent de rester facilement en contact "
+"avec vos amis."
 
-#: C/introduction.page:39(page/p)
+#: C/introduction.page:32(page/p)
 msgid ""
-"<app>Cheese</app> works with most webcams, but if your particular make and "
-"model does not seem to work properly, see <link xref=\"webcams\">Webcams</"
-"link> for advice on getting it to work."
+"Using <app>Empathy</app>, you can group all the conversations in a single "
+"window, have multiple windows for different kind of conversations, easily "
+"search through your previous conversations, and share your desktop in just "
+"two clicks."
 msgstr ""
-"<app>Cheese</app> fonctionne avec la plupart des webcams, mais si la votre "
-"n'a pas l'air de fonctionner normalement, consultez <link xref=\"webcams"
-"\">Webcams</link> pour obtenir des conseils sur la manière dont vous "
-"pourriez la faire fonctionner."
+"En utilisant <app>Empathy</app>, vous pouvez grouper toutes vos "
+"conversations dans une seule fenêtre, avoir plusieurs fenêtres pour "
+"différents types de conversations, faire facilement une recherche dans vos "
+"conversations précédentes et partager votre bureau en seulement deux clics."
 
-#: C/mode-wide.page:19(info/desc)
+#: C/introduction.page:39(figure/title)
+msgid "<gui>Contact List</gui> window"
+msgstr "Fenêtre <gui>Liste des contacts</gui>"
+
+#: C/introduction.page:40(figure/desc)
+msgid "<app>Empathy</app> main window"
+msgstr "Fenêtre principale d'<app>Empathy</app>"
+
+#: C/introduction.page:42(media/p)
+msgid "<app>Empathy</app> main window."
+msgstr "Fenêtre principale d' <app>Empathy</app>."
+
+#: C/irc-commands.page:7(info/desc)
+msgid "The supported IRC commands."
+msgstr "Les commandes IRC prises en charge."
+
+#: C/irc-commands.page:18(page/title)
+msgid "Supported IRC commands"
+msgstr "Commandes IRC prises en charge"
+
+#: C/irc-commands.page:19(page/p)
 msgid ""
-"Change the position of the photo stream so that the webcam video feed is "
-"larger."
+"To see the list of the supported IRC commands, in a chat room type <input>/"
+"help</input> and press <key>Enter</key>."
 msgstr ""
-"Modifier la position du flux d'images pour que l'entrée vidéo de la webcam "
-"soit plus grande."
+"Pour voir la liste des commandes IRC prises en charge dans un salon de "
+"discussion, saisissez <input>/help</input> et appuyez sur <key>Entrée</key>."
 
-#: C/mode-wide.page:23(page/title)
-msgid "Make the webcam video preview bigger"
-msgstr "Agrandir la prévisualisation de la vidéo de la webcam"
+#: C/irc-commands.page:24(note/p)
+msgid "All commands available have a small description on their usage."
+msgstr ""
+"Toutes les commandes disponibles disposent d'une courte description de leur "
+"mode d'emploi."
 
-#: C/mode-wide.page:25(page/p)
+#: C/irc-join-pwd.page:9(info/desc)
+msgid "Enter password-protected IRC chat rooms."
+msgstr "Entrer dans les salons de discussions IRC protégés par mot de passe."
+
+#: C/irc-join-pwd.page:25(page/title)
+msgid "Join a protected IRC chat room"
+msgstr "Rejoindre un salon de discussion protégé IRC"
+
+#: C/irc-join-pwd.page:27(page/p)
 msgid ""
-"The photo stream is where photos and videos appear after you have taken or "
-"recorded them. By default, it is a horizontal strip at the bottom of the "
-"<app>Cheese</app> window."
+"On some IRC networks, private IRC rooms may be protected with a password. If "
+"you know the password, use the following steps to join:"
 msgstr ""
-"Le flux d'images est l'endroit où les photos et les vidéos apparaissent "
-"après avoir été prises ou enregistrées. Par défaut, c'est une bande "
-"horizontale en bas de la fenêtre <app>Cheese</app>."
+"Sur certains réseaux IRC, des salons privés IRC peuvent être protégés par un "
+"mot de passe. Si vous connaissez le mot de passe, suivez les étapes "
+"suivantes pour le rejoindre :"
 
-#: C/mode-wide.page:29(page/p)
+#: C/irc-join-pwd.page:33(item/p)
+msgid "<link xref=\"irc-join-room\">Join the room</link> as normal."
+msgstr ""
+"<link xref=\"irc-join-room\">Rejoindre le salon</link> comme d'habitude."
+
+#: C/irc-join-pwd.page:38(item/p)
 msgid ""
-"You can make the photo stream appear as a vertical bar. This is useful if "
-"you have a wide computer screen which is not very high; switching to a "
-"vertical layout means that there is more room to display the video feed from "
-"the webcam."
+"Empathy will prompt you for a password. Enter the password for the IRC chat "
+"room and click <gui style=\"button\">Join</gui>."
 msgstr ""
-"Vous pouvez afficher le flux d'images verticalement. C'est utile si vous "
-"avez un écran large mais pas très haut ; le passage à un affichage vertical "
-"laisse plus de place pour afficher l'entrée vidéo de la webcam."
+"Empathy vous demandera un mot de passe. Saisissez le mot de passe du salon "
+"de discussion IRC et cliquez sur <gui style=\"button\">Rejoindre</gui>."
 
-#: C/mode-wide.page:34(page/p)
+#: C/irc-join-room.page:8(info/desc)
+msgid "Join an IRC channel."
+msgstr "Rejoindre un canal IRC."
+
+#: C/irc-join-room.page:31(page/title)
+msgid "Join an IRC chat room"
+msgstr "Rejoindre un salon de discussion IRC"
+
+#: C/irc-join-room.page:33(page/p)
 msgid ""
-"To switch to a vertical layout, click <guiseq><gui>Cheese</gui> <gui>Wide "
-"Mode</gui></guiseq>. To switch back to a horizontal layout, uncheck the "
-"option."
+"You can join IRC chat rooms (also known as IRC channels) on any IRC network "
+"you’re connected to. To connect to an IRC network, see <link xref=\"add-"
+"account\"/> and <link xref=\"account-irc\"/>."
 msgstr ""
-"Pour passer à un affichage vertical, cliquez sur <guiseq><gui>Cheese</gui> "
-"<gui>Mode large</gui></guiseq>. Pour revenir à l'affichage horizontal, "
-"décochez l'option."
+"Vous pouvez rejoindre un salon de discussion IRC (aussi connu comme canaux "
+"IRC) sur n'importe quel réseau IRC auquel vous êtes connecté. Pour vous "
+"connecter à un réseau IRC, consultez <link xref=\"add-account\"/> et <link "
+"xref=\"account-irc\"/>."
 
-#: C/mode-wide.page:39(note/p)
+#: C/irc-join-room.page:45(item/p)
 msgid ""
-"Another way to increase the size of the webcam preview is to make "
-"<app>Cheese</app> fullscreen. To do this, click <guiseq><gui>Cheese</"
-"gui><gui>Fullscreen</gui></guiseq> or press <key>F11</key>. To quit the "
-"fullscreen mode, press <key>F11</key>."
+"From the <gui>Account</gui> drop-down list, select the IRC account that "
+"corresponds to the network you want to use."
 msgstr ""
-"Une autre façon d'agrandir le flux de la webcam est d'utiliser <app>Cheese</"
-"app> en mode plein écran. Pour cela, cliquez sur <guiseq><gui>Cheese</"
-"gui><gui>Plein écran</gui></guiseq> ou appuyez sur la touche <key>F11</key>. "
-"Pour quitter le mode plein écran, appuyez sur <key>F11</key>."
+"À partir de la liste déroulante <gui>Compte</gui>, sélectionnez le compte "
+"IRC qui correspond au réseau que vous voulez utiliser."
 
-#: C/photo-delete.page:19(info/desc)
-msgid "Remove photos and videos that you no longer want to keep."
-msgstr "Supprimer des photos et des vidéos que vous ne voulez plus garder."
-
-#: C/photo-delete.page:22(page/title)
-msgid "Delete a photo or video"
-msgstr "Suppression d'une photo ou d'une vidéo"
-
-#: C/photo-delete.page:24(page/p)
-msgid "If you no longer want a photo or video, you can permanently delete it:"
-msgstr ""
-"Si vous ne voulez plus d'une photo ou d'une vidéo, vous pouvez la supprimer "
-"définitivement :"
-
-#: C/photo-delete.page:28(item/p)
+#: C/irc-join-room.page:51(item/p)
 msgid ""
-"Find the photo or video that you want to delete in the photo stream at the "
-"bottom of the <app>Cheese</app> window."
+"In the <gui>Room</gui> text box, type the name of the channel you want to "
+"join. IRC channel names start with the hash character (<sys>#</sys>)."
 msgstr ""
-"Trouvez la photo ou la vidéo que vous voulez supprimer dans le flux d'images "
-"en bas de la fenêtre <app>Cheese</app>."
+"Dans la zone de texte <gui>Salon</gui>, saisissez le nom du canal que vous "
+"voulez rejoindre. Les noms d'un canal IRC commencent par un caractère dièse "
+"(<sys>#</sys>)."
 
-#: C/photo-delete.page:32(item/p)
+#: C/irc-join-room.page:57(item/p)
+msgid "Click <gui>Join</gui> to enter the room."
+msgstr "Cliquez sur <gui>Rejoindre</gui> pour entrer dans le salon."
+
+#: C/irc-join-room.page:64(note/p)
 msgid ""
-"Right-click it and select <gui>Delete</gui>. Alternatively, click it once to "
-"select it and press the <key>Delete</key> key."
+"To join multiple rooms, you need to repeat the steps above for each room."
 msgstr ""
-"Faites un clic droit et sélectionnez <gui>Supprimer</gui>. Vous pouvez aussi "
-"cliquer une fois pour la sélectionner puis appuyer sur la touche <key>Suppr</"
-"key>."
+"Pour rejoindre plusieurs salons, vous devez reproduire les étapes ci-dessus "
+"pour chaque salon."
 
-#: C/photo-delete.page:36(item/p)
+#: C/irc-manage.page:9(info/desc)
+msgid "How to use IRC with <app>Empathy</app>."
+msgstr "Comment utiliser IRC avec <app>Empathy</app>."
+
+#: C/irc-manage.page:34(page/title)
+msgid "Internet Relay Chat (IRC)"
+msgstr "Relais de discussion internet (IRC)"
+
+#: C/irc-manage.page:41(when/p)
 msgid ""
-"You will be asked if you want to permanently delete it. Confirm by clicking "
-"<gui>Delete</gui>; you will not be able to recover the photo."
+"<link action=\"install:telepathy-idle\" xref=\"index\" style=\"button"
+"\">Install telepathy-idle</link>"
 msgstr ""
-"Il vous est demandé si vous souhaitez la supprimer définitivement. Confirmez "
-"en cliquant sur <gui>Supprimer</gui>. Vous ne pourrez plus récupérer la "
-"photo."
+"<link action=\"install:telepathy-idle\" xref=\"index\" style=\"button"
+"\">Installer telepathy-idle</link>"
 
-#: C/photo-delete.page:41(page/p)
+#: C/irc-manage.page:48(info/title)
+msgctxt "link"
+msgid "IRC Chat Rooms and Conversations"
+msgstr "Salons de discussions et conversations IRC"
+
+#: C/irc-manage.page:50(section/title)
+msgid "Chat Rooms and Conversations"
+msgstr "Salons de discussions et conversations"
+
+#: C/irc-manage.page:55(info/title)
+msgctxt "link"
+msgid "Common IRC Problems"
+msgstr "Problèmes IRC courants"
+
+#: C/irc-nick-password.page:10(info/desc)
+msgid "Protect your nickname to prevent other IRC users from using it."
+msgstr ""
+"Protéger votre pseudonyme pour éviter son utilisation par d'autres "
+"utilisateurs IRC."
+
+#: C/irc-nick-password.page:33(page/title)
+msgid "Use a nickname password on IRC"
+msgstr "Utilisation d'un mot de passe de pseudonyme sur IRC"
+
+#: C/irc-nick-password.page:35(page/p)
 msgid ""
-"If you are not sure whether you want to permanently delete the photo or "
-"video, you can right click it and select <gui>Move to Trash</gui> instead. "
-"This will move it to the computer's <gui>Trash</gui> folder."
+"On some IRC networks, you can register your nickname with a service called "
+"NickServ. By sending special messages to NickServ, you can set your password "
+"and identify yourself. Some IRC chat rooms may not allow you to join without "
+"a registered nickname."
 msgstr ""
-"Si vous n'êtes pas sûr de vouloir supprimer de manière définitive une photo "
-"ou une vidéo, vous pouvez faire un clic droit dessus et sélectionner "
-"<gui>Mettre à la corbeille</gui> à la place. La photo est alors déplacée "
-"dans le dossier <gui>Corbeille</gui> de l'ordinateur."
+"Sur certains réseaux IRC, vous pouvez enregistrer votre pseudonyme par le "
+"biais d'un service nommé NickServ. En envoyant un message spécifique à "
+"NickServ, vous pouvez définir votre mot de passe et vous identifier. "
+"Certains salons de discussion IRC ne vous autorisent pas à les rejoindre "
+"sans pseudonyme enregistré."
 
-#: C/photo-delete.page:45(note/p)
+#: C/irc-nick-password.page:40(page/p)
 msgid ""
-"Cheese does not have its own <gui>Trash</gui> folder and you cannot access "
-"your computer's <gui>Trash</gui> folder from within <app>Cheese</app>."
+"<app>Empathy</app> does not currently support nickname registration. Some "
+"IRC networks, however, will automatically forward a <em>server password</em> "
+"to NickServ. On these networks, you can use the IRC password in "
+"<app>Empathy</app> to identify yourself to NickServ. The popular freenode "
+"network is known to have this feature."
 msgstr ""
-"Cheese ne possède pas de dossier <gui>Corbeille</gui> personnel et vous ne "
-"pouvez pas accéder au dossier <gui>Corbeille</gui> à partir de <app>Cheese</"
-"app>."
+"<app>Empathy</app> ne prend pas encore en charge l'enregistrement de "
+"pseudonymes. Cependant, certains réseaux IRC redirigent automatiquement un "
+"<em>mot de passe de serveur</em> vers NickServ. Sur ces réseaux, vous pouvez "
+"utiliser le mot de passe IRC d'<app>Empathy</app> pour vous identifier sur "
+"NickServ. Le réseau très répandu freenode est connu pour posséder cette "
+"fonctionnalité."
 
-#: C/photo-save.page:19(info/desc)
-msgid "Save a photo or video in a different folder."
-msgstr "Enregistrer une photo ou une vidéo dans un dossier différent."
+#: C/irc-nick-password.page:46(page/p)
+msgid "To set an IRC server password:"
+msgstr "Pour définir un mot de passe de serveur IRC :"
 
-#: C/photo-save.page:22(page/title)
-msgid "Save a photo or video"
-msgstr "Enregistrement d'une photo ou d'une vidéo"
+#: C/irc-nick-password.page:54(item/p)
+msgid "Select the IRC account from the list on the left of the dialog."
+msgstr ""
+"Sélectionnez le compte IRC dans la liste à gauche dans la boîte de dialogue,"
 
-#: C/photo-save.page:24(page/p)
+#: C/irc-nick-password.page:57(item/p)
 msgid ""
-"By default, Cheese saves the photos and videos in the <guiseq><gui>Pictures</"
-"gui><gui>Webcam</gui></guiseq> and <guiseq><gui>Videos</gui><gui>Webcam</"
-"gui></guiseq> folders in your user folder."
+"In the <gui>Password</gui> field, type the password you used to register "
+"your nikcname."
 msgstr ""
-"Par défaut, Cheese enregistre les photos et les vidéos dans les dossiers "
-"<guiseq><gui>Images</gui><gui>Webcam</gui></guiseq> et <guiseq><gui>Vidéos</"
-"gui><gui>Webcam</gui></guiseq> de votre dossier Personnel."
+"dans le champ <gui>Mot de Passe</gui>, saisissez le mot de passe que vous "
+"avez utilisé pour enregistrer votre pseudonyme."
 
-#: C/photo-save.page:29(page/p)
+#: C/irc-nick-password.page:69(note/p)
 msgid ""
-"To save an image to a different location, right-click the image in the photo "
-"stream and click <gui>Save As</gui>. Then, choose where you want to save the "
-"image."
+"These instructions only allow you to use a password-protected nickname on "
+"certain IRC networks. It is not currently possible to register an IRC "
+"nickname or change your nickname password using <app>Empathy</app>."
 msgstr ""
-"Pour enregistrer une image dans un autre dossier, faites un clic droit sur "
-"la photo dans le flux d'images et cliquez sur <gui>Enregistrer sous</gui> "
-"puis choisissez le dossier où vous voulez enregistrer l'image."
+"Ces instructions ne vous autorisent à utiliser un pseudonyme protégé par un "
+"mot de passe que sur certains réseaux IRC. Il est actuellement impossible "
+"d'enregistrer un pseudonyme IRC ou de modifier le mot de passe de votre "
+"pseudonyme avec <app>Empathy</app>."
 
-#: C/photo-save.page:33(page/p)
+#: C/irc-send-file.page:9(info/desc)
+msgid "<app>Empathy</app> does not currently support sending files using IRC."
+msgstr ""
+"<app>Empathy</app> ne prend pas pour l'instant en charge l'envoi de fichiers "
+"par IRC."
+
+#: C/irc-send-file.page:31(page/title)
+msgid "Send files over IRC"
+msgstr "Envoi de fichiers sur IRC"
+
+#: C/irc-send-file.page:33(page/p)
+msgid "It is not currently possible to send files using IRC."
+msgstr ""
+"Il est actuellement impossible d'envoyer des fichiers en utilisant IRC."
+
+#: C/irc-start-conversation.page:8(info/desc)
+msgid "Start a conversation with an IRC contact."
+msgstr "Démarrer une conversation avec un contact IRC."
+
+#: C/irc-start-conversation.page:30(page/title)
+msgid "Chat with somebody on IRC"
+msgstr "Discussion avec quelqu'un sur IRC"
+
+#: C/irc-start-conversation.page:32(page/p)
 msgid ""
-"Alternatively, open the folder where you want to keep the image using the "
-"file manager, then drag it from the photo stream into that folder."
+"You can hold private conversations with other IRC users, outside of the "
+"public IRC chat rooms. To start a conversation with another IRC user:"
 msgstr ""
-"Vous pouvez aussi utiliser le gestionnaire de fichiers pour ouvrir le "
-"dossier où vous souhaitez enregistrer l'image, puis la glisser du flux "
-"d'images vers le dossier."
+"Vous pouvez entretenir des conversations privées avec d'autres utilisateurs "
+"IRC, en dehors des salons de discussions publics IRC. Pour démarrer une "
+"conversation avec un autre utilisateur IRC :"
 
-#: C/photo-save.page:36(page/p)
+#: C/irc-start-conversation.page:37(item/p)
 msgid ""
-"A new copy of the image will be saved in the new location. The old version "
-"will remain in the <guiseq><gui>Pictures</gui><gui>Webcam</gui></guiseq> or "
-"<guiseq><gui>Videos</gui><gui>Webcam</gui></guiseq> folder."
+"In the contact list for an IRC chat room, double click the name of the user "
+"you want to chat with. Alternatively, right click the name of the user and "
+"choose <gui>Chat</gui>."
 msgstr ""
-"Une nouvelle copie de l'image est enregistrée dans le nouvel emplacement. "
-"L'ancienne version reste dans le dossier <guiseq><gui>Images</"
-"gui><gui>Webcam</gui></guiseq> ou <guiseq><gui>Vidéos</gui><gui>Webcam</"
-"gui></guiseq>."
+"Dans la liste des contacts d'un salon de discussion IRC, double-cliquez sur "
+"le nom de l'utilisateur avec qui vous voulez discuter. Vous pouvez aussi "
+"faire un clic droit sur le nom de l'utilisateur et sélectionner "
+"<gui>Discuter</gui>."
 
-#: C/photo-take.page:24(info/desc)
-msgid "Use your webcam to take photos instead of videos."
-msgstr "Utiliser sa webcam pour faire des photos plutôt que des vidéos."
-
-#: C/photo-take.page:27(page/title)
-msgid "Take photos with the webcam"
-msgstr "Prise de photos avec la webcam"
-
-#: C/photo-take.page:29(page/p)
+#: C/irc-start-conversation.page:45(item/p)
 msgid ""
-"Webcams can be used to take still photos, as well as videos. To take a photo:"
+"The IRC room contact list is not the same as <app>Empathy</app> contact "
+"list. It contains a list of users in the IRC chat room you joined. Different "
+"rooms can have different contacts listed."
 msgstr ""
-"Les webcams permettent de prendre aussi bien des photos que des vidéos. Pour "
-"prendre une photo :"
+"La liste des contacts d'un salon IRC est différente de celle d'<app>Empathy</"
+"app>. Elle contient la liste des utilisateurs du salon de discussion IRC que "
+"vous avez rejoint. Des salons de discussion différents peuvent avoir "
+"différents contacts répertoriés."
 
-#: C/photo-take.page:34(item/p)
+#: C/irc-start-conversation.page:52(item/p)
 msgid ""
-"Make sure that you're in <gui>Photo mode</gui>. If you are, the button in "
-"the main window will say <gui>Take a Photo</gui>."
+"The IRC room contact list is usually on the right side of the IRC room "
+"window. If you do not see it, choose <guiseq><gui>Conversation</"
+"gui><gui>Show Contact List</gui></guiseq>."
 msgstr ""
-"Vérifiez que vous êtes dans le <gui>Mode photo</gui>. Si c'est le cas, le "
-"bouton de la fenêtre principale affiche <gui>Prendre une photo</gui>."
-
-#: C/photo-take.page:36(item/p)
-msgid ""
-"To switch to <gui>Photo mode</gui>, click the small photo button in the "
-"bottom left of the window or click <guiseq><gui>Cheese</gui> <gui>Photo</"
-"gui></guiseq>."
-msgstr ""
-"Pour passer au <gui>mode photo</gui>, cliquez sur le bouton contenant une "
-"petite photo en bas à gauche de la fenêtre ou cliquez sur "
-"<guiseq><gui>Cheese</gui> <gui>Photo</gui></guiseq>."
-
-#: C/photo-take.page:41(item/p)
-msgid "Click <gui>Take a Photo</gui> or press the <key>spacebar</key>."
-msgstr ""
-"Cliquez sur <gui>Prendre une photo</gui> ou appuyez sur la <key>barre "
-"d'espace</key>."
-
-#: C/photo-take.page:44(item/p)
-msgid ""
-"There will be a short countdown, followed by a flash, and then the photo "
-"will appear in the photo stream at the bottom of the window."
-msgstr ""
-"Un court retardateur est affiché, suivi d'un flash, puis la photo apparaît "
-"dans le flux d'images en bas de la fenêtre."
-
-#: C/photo-take.page:49(page/p)
-msgid ""
-"The photos in the photo stream are automatically saved in the "
-"<guiseq><gui>Pictures</gui><gui>Webcam</gui></guiseq> folder in your user "
-"folder. They are saved in the JPEG (<file>.jpg</file>) format."
-msgstr ""
-"Les photos du flux d'images sont automatiquement enregistrées dans le "
-"dossier <guiseq><gui>Images</gui><gui>Webcam</gui></guiseq> de votre dossier "
-"personnel. Elles sont enregistrées dans le format JPEG (<file>.jpg</file>)."
-
-#: C/photo-take.page:53(page/p)
-msgid ""
-"To cancel taking a photo after you have clicked <gui>Take a Photo</gui>, "
-"press <key>Esc</key> before the countdown finishes."
-msgstr ""
-"Pour annuler la prise d'une photo après avoir cliqué sur <gui>Prendre une "
-"photo</gui>, appuyez sur la touche <key>Échap</key> avant la fin du "
-"retardateur."
-
-#: C/photo-take.page:57(note/p)
-msgid ""
-"To take multiple photos in rapid succession, use <link xref=\"burst-mode"
-"\">Burst mode</link>."
-msgstr ""
-"Pour prendre plusieurs photos les unes à la suite des autres, utilisez le "
-"<link xref=\"burst-mode\">mode rafale</link>."
-
-#: C/photo-view.page:19(info/desc)
-msgid "Photos and videos will automatically appear in the photo stream."
-msgstr ""
-"Les photos et les vidéos apparaissent automatiquement dans le flux d'images."
-
-#: C/photo-view.page:23(page/title)
-msgid "View a photo or video that you took"
-msgstr "Affichage d'une photo ou d'une vidéo que vous avez faite"
-
-#: C/photo-view.page:25(page/p)
-msgid ""
-"After you take a photo or record a video, it will appear in the photo stream "
-"at the bottom of the window."
-msgstr ""
-"Après avoir pris une photo ou enregistré une vidéo, elle apparaît dans le "
-"flux d'images en bas de la fenêtre."
-
-#: C/photo-view.page:28(page/p)
-msgid ""
-"If you want to see a bigger version of a photo, or to play a video, double-"
-"click it. This will open it in the default photo viewer or video player."
-msgstr ""
-"Si vous souhaitez voir une version plus grande d'une photo ou lire une "
-"vidéo, double-cliquez dessus. Elle est alors ouverte dans le visionneur de "
-"photos ou le lecteur de vidéos par défaut."
-
-#: C/photo-view.page:31(page/p)
-msgid ""
-"All of the photos and videos in the photo stream are saved in the "
-"<guiseq><gui>Pictures</gui><gui>Webcam</gui></guiseq> or "
-"<guiseq><gui>Videos</gui><gui>Webcam</gui></guiseq> folders in your user "
-"folder."
-msgstr ""
-"Toutes les photos et vidéos du flux d'images sont enregistrées dans les "
-"dossiers <guiseq><gui>Images</gui><gui>Webcam</gui></guiseq> ou "
-"<guiseq><gui>Vidéos</gui><gui>Webcam</gui></guiseq> de votre dossier "
-"personnel."
-
-#: C/pref-burst-mode.page:19(info/desc)
-msgid ""
-"<gui>Burst mode</gui> takes several photos rapidly. Change your pose in "
-"between each shot!"
-msgstr ""
-"Le <gui>mode rafale</gui> prend plusieurs photos rapidement. Changez de pose "
-"entre chaque prise !"
-
-#: C/pref-burst-mode.page:23(page/title)
-msgid "Take multiple photos in quick succession"
-msgstr "Prise de plusieurs photos les unes à la suite des autres"
-
-#: C/pref-burst-mode.page:25(page/p)
-msgid ""
-"You can use <gui>Burst mode</gui> to automatically take several photos in "
-"one go, with a short pause between shots. It is particularly fun if you "
-"change your pose in between photos! To use <gui>Burst mode</gui>:"
-msgstr ""
-"Vous pouvez utiliser le <gui>mode rafale</gui> pour prendre plusieurs photos "
-"d'un coup, avec un court temps de pause entre elles. C'est particulièrement "
-"amusant si vous changez de pose entre les prises ! Pour utiliser le "
-"<gui>mode rafale</gui> :"
-
-#: C/pref-burst-mode.page:31(item/p)
-msgid ""
-"Click <gui>Burst</gui>, the <gui>Take a Photo</gui> button will now say "
-"<gui>Take Multiple Photos</gui>."
-msgstr ""
-"Cliquez sur <gui>Rafale</gui>. Le bouton <gui>Prendre une photo</gui> "
-"devient <gui>Prendre plusieurs photos</gui>."
-
-#: C/pref-burst-mode.page:33(item/p)
-msgid ""
-"Alternatively, click <guiseq><gui>Cheese</gui><gui>Burst</gui></guiseq>."
-msgstr ""
-"Vous pouvez aussi cliquer sur <guiseq><gui>Cheese</gui><gui>Rafale</gui></"
+"La liste des contacts du salon IRC est généralement sur la partie droite de "
+"la fenêtre du salon. Si vous ne la voyez pas, choisissez "
+"<guiseq><gui>Conversation</gui><gui>Afficher la liste des contacts</gui></"
 "guiseq>."
 
-#: C/pref-burst-mode.page:36(item/p)
-msgid "Click <gui>Take Multiple Photos</gui> or press the <key>spacebar</key>."
-msgstr ""
-"Cliquez sur <gui>Prendre plusieurs photos</gui> ou appuyez sur la <key>barre "
-"d'espace</key>."
+#: C/license.page:8(info/desc)
+msgid "Legal information."
+msgstr "Informations légales."
 
-#: C/pref-burst-mode.page:38(item/p)
+#: C/license.page:11(page/title)
+msgid "License"
+msgstr "Licence"
+
+#: C/license.page:12(page/p)
 msgid ""
-"By default, four photos will be taken, with a three second delay and a "
-"countdown between photos."
+"This work is distributed under a CreativeCommons Attribution-Share Alike 3.0 "
+"Unported license."
 msgstr ""
-"Par défaut, quatre photos sont prises, avec, entre chaque photo, un délai de "
-"trois secondes et un compte à rebours."
+"Cette œuvre est distribuée sous licence Creative Commons Paternité-Partage "
+"des Conditions Initiales à l'Identique 3.0 Unported."
 
-#: C/pref-burst-mode.page:43(page/p)
+#: C/license.page:20(page/p)
+msgid "You are free:"
+msgstr "Vous êtes libre :"
+
+#: C/license.page:25(item/title)
+msgid "<em>To share</em>"
+msgstr "<em>de partager</em>"
+
+#: C/license.page:26(item/p)
+msgid "To copy, distribute and transmit the work."
+msgstr "de reproduire, distribuer et communiquer cette création."
+
+#: C/license.page:29(item/title)
+msgid "<em>To remix</em>"
+msgstr "<em>de modifier</em>"
+
+#: C/license.page:30(item/p)
+msgid "To adapt the work."
+msgstr "d'adapter cette création,"
+
+#: C/license.page:33(page/p)
+msgid "Under the following conditions:"
+msgstr "selon les conditions suivantes :"
+
+#: C/license.page:38(item/title)
+msgid "<em>Attribution</em>"
+msgstr "<em>Paternité</em>"
+
+#: C/license.page:39(item/p)
 msgid ""
-"Press <key>Esc</key> if you want to stop <app>Cheese</app> from taking "
-"photos at any point."
+"You must attribute the work in the manner specified by the author or "
+"licensor (but not in any way that suggests that they endorse you or your use "
+"of the work)."
 msgstr ""
-"Appuyez sur la touche <key>Échap</key> quand vous le souhaitez, si vous "
-"voulez que <app>Cheese</app> arrête de prendre des photos."
+"Vous devez citer le nom de l'auteur original de la manière indiquée par "
+"l'auteur de l'œuvre ou le titulaire des droits qui vous confère cette "
+"autorisation (mais pas d'une manière qui suggérerait qu'ils vous soutiennent "
+"ou approuvent votre utilisation de l'œuvre)."
 
-#: C/pref-burst-mode.page:47(section/title)
-msgid "Change how many photos are taken and the delay between them"
-msgstr "Modification du nombre de photos prises et du délai entre elles"
+#: C/license.page:46(item/title)
+msgid "<em>Share Alike</em>"
+msgstr "<em>Partage des conditions initiales à l'identique</em>"
 
-#: C/pref-burst-mode.page:48(section/p)
+#: C/license.page:47(item/p)
 msgid ""
-"You can change how many photos will be taken in each burst and the length of "
-"the delay between the photos:"
+"If you alter, transform, or build upon this work, you may distribute the "
+"resulting work only under the same, similar or a compatible license."
 msgstr ""
-"Vous pouvez changer le nombre de photos à prendre à chaque rafale et la "
-"durée du délai entre les photos :"
+"Si vous modifiez, transformez ou adaptez cette création, vous n'avez le "
+"droit de distribuer la création qui en résulte que sous un contrat identique "
+"à celui-ci."
 
-#: C/pref-burst-mode.page:52(item/p) C/pref-image-properties.page:30(item/p)
-#: C/pref-photo-resolution.page:36(item/p)
-msgid "Click <guiseq><gui>Edit</gui><gui>Preferences</gui></guiseq>."
-msgstr "Cliquez sur <guiseq><gui>Édition</gui><gui>Préférences</gui></guiseq>."
-
-#: C/pref-burst-mode.page:55(item/p)
+#: C/license.page:53(page/p)
 msgid ""
-"Change the options under <gui>Burst mode</gui> and click <gui>Close</gui>."
+"For the full text of the license, see the <link href=\"http://"
+"creativecommons.org/licenses/by-sa/3.0/legalcode\">CreativeCommons website</"
+"link>, or read the full <link href=\"http://creativecommons.org/licenses/by-"
+"sa/3.0/\">Commons Deed</link>."
 msgstr ""
-"Modifiez les options sous <gui>Mode rafale</gui> et cliquez sur <gui>Fermer</"
+"Pour prendre connaissance du texte complet de la licence, consultez le <link "
+"href=\"http://creativecommons.org/licenses/by-sa/3.0/legalcode\">site Web "
+"CreativeCommons</link> ou lisez in extenso le <link href=\"http://"
+"creativecommons.org/licenses/by-sa/3.0/\">contrat Commons</link>."
+
+#: C/link-contacts.page:11(info/desc)
+msgid "Merge and separate different contacts into a single one."
+msgstr "Lier et séparer des contacts différents en un seul."
+
+#: C/link-contacts.page:25(page/title)
+msgid "Combine and separate contacts"
+msgstr "Union et séparation de contacts"
+
+#: C/link-contacts.page:26(page/p)
+msgid ""
+"If one, or more, of your contacts has multiple accounts with different "
+"messaging services, you can combine these contacts into a single one."
+msgstr ""
+"Si un ou plusieurs de vos contacts possèdent plusieurs comptes sur des "
+"services de messagerie différents, vous pouvez lier ces contacts en un seul."
+
+#: C/link-contacts.page:30(page/p)
+msgid ""
+"The resulting contact is called a <em>meta-contact</em>: a contact composed "
+"from different single contacts."
+msgstr ""
+"La liaison crée un contact appelé <em>méta-contact</em> : un contact composé "
+"de plusieurs contacts distincts."
+
+#: C/link-contacts.page:34(page/p)
+msgid ""
+"If you have a Jane Smith contact that is using three different messaging "
+"services like:"
+msgstr ""
+"Si vous avez un contact Jean Bonneau qui utilise trois services de "
+"messagerie différents comme :"
+
+#: C/link-contacts.page:40(item/p)
+msgid "janes@facebook"
+msgstr "jean@facebook"
+
+#: C/link-contacts.page:45(item/p)
+msgid "jane.smith@gmail"
+msgstr "jean.bonneau@gmail"
+
+#: C/link-contacts.page:50(item/p)
+msgid "jane_smith@hotmail"
+msgstr "jean_bonneau@hotmail"
+
+#: C/link-contacts.page:55(page/p)
+msgid "You can combine these contacts into a single Jane Smith one."
+msgstr "vous pouvez lier ces contacts en un seul Jean Bonneau."
+
+#: C/link-contacts.page:60(section/title)
+msgid "Combining contacts"
+msgstr "Lien entre contacts"
+
+#: C/link-contacts.page:63(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, right-click one of the contact that "
+"has different accounts, and select <gui style=\"menuitem\">Link Contacts...</"
+"gui>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, faites un clic droit sur l'un "
+"des contacts qui possède différents comptes et sélectionnez <gui style="
+"\"menuitem\">Lier les contacts</gui>."
+
+#: C/link-contacts.page:70(item/p)
+msgid ""
+"From the left pane in the <gui>Link Contacts</gui> window, select the "
+"contacts you want to combine."
+msgstr ""
+"Dans le panneau de gauche de la fenêtre <gui>Lier des contacts</gui>, "
+"sélectionnez les contacts que vous voulez lier."
+
+#: C/link-contacts.page:76(item/p)
+msgid "Click <gui style=\"button\">Link</gui>."
+msgstr "Cliquez sur <gui style=\"button\">Lier</gui>."
+
+#: C/link-contacts.page:82(note/p)
+msgid ""
+"When a meta-contact has been created, the default contact that will be used "
+"to have a conversation with when you double-click on it, is the contact with "
+"the highest presence on-line."
+msgstr ""
+"Par défaut, quand un méta contact a été créé et que vous faites un double "
+"clic dessus, vous êtes mis en ligne avec le contact qui a la plus forte "
+"présence sur le réseau."
+
+#: C/link-contacts.page:91(section/title)
+msgid "Separating contacts"
+msgstr "Séparation de contacts"
+
+#: C/link-contacts.page:94(item/p)
+msgid ""
+"From the <gui>Contact List</gui>, right-click the contact to separate, and "
+"select <gui style=\"menuitem\">Link Contacts...</gui>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, faites un clic droit sur le "
+"contact à séparer et sélectionnez <gui style=\"menuitem\">Lier des "
+"contacts...</gui>."
+
+#: C/link-contacts.page:100(item/p)
+msgid "Click <gui style=\"button\">Unlink</gui>."
+msgstr "Cliquez sur <gui style=\"button\">Séparer</gui>."
+
+#: C/prev-conv.page:8(info/desc)
+msgid "Browse or search your previous conversations."
+msgstr "Parcourir ou rechercher ses conversations précédentes."
+
+#: C/prev-conv.page:36(page/title)
+msgid "View previous conversations"
+msgstr "Affichage des conversations précédentes"
+
+#: C/prev-conv.page:38(page/p)
+msgid ""
+"<app>Empathy</app> automatically saves all your text conversations you have "
+"with your contacts. You can <link xref=\"#search\">search through all of "
+"your previous conversations</link> or <link xref=\"#browse\">browse previous "
+"conversations</link> by contact and date."
+msgstr ""
+"<app>Empathy</app> sauvegarde automatiquement toutes les conversations "
+"textuelles que vous avez eu avec vos contacts. Vous pouvez <link xref="
+"\"#search\">rechercher dans toutes vos conversations précédentes</link> ou "
+"<link xref=\"#browse\">consultez vos conversations précédentes</link> par "
+"contact et par date."
+
+#: C/prev-conv.page:46(note/p)
+msgid ""
+"You do not need to be connected to the Internet to view and search your "
+"previous conversations."
+msgstr ""
+"Vous n'avez pas besoin d'être connecté à Internet pour afficher et "
+"rechercher parmi vos conversations précédentes."
+
+#: C/prev-conv.page:53(section/title)
+msgid "Search previous conversations"
+msgstr "Recherche de conversations précédentes"
+
+#: C/prev-conv.page:55(section/p)
+msgid ""
+"You can perform a full-text search through all of your previous "
+"conversations."
+msgstr ""
+"Vous pouvez lancer une recherche textuelle dans toutes vos conversations "
+"précédentes."
+
+#: C/prev-conv.page:59(item/p) C/prev-conv.page:87(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, choose <guiseq><gui>View</gui> "
+"<gui>Previous Conversations</gui></guiseq>. Alternatively, press <key>F3</"
+"key>."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, choisissez "
+"<guiseq><gui>Affichage</gui> <gui>Conversations précédentes</gui></guiseq>, "
+"ou appuyez sur <key>F3</key>."
+
+#: C/prev-conv.page:63(item/p)
+msgid ""
+"Select an account from the drop-down list in the top. A list of contacts and "
+"chat room for that account will be shown below."
+msgstr ""
+"Sélectionnez un compte dans la liste déroulante située en haut de la "
+"fenêtre. Une liste des contacts et des salons de discussion pour ce compte "
+"s'affiche en dessous."
+
+#: C/prev-conv.page:67(item/p)
+msgid ""
+"Type the text you want to search for in the <gui>Search</gui> text field."
+msgstr ""
+"Saisissez le texte que vous voulez rechercher dans le champ <gui>Rechercher</"
 "gui>."
 
-#: C/pref-burst-mode.page:59(note/p)
+#: C/prev-conv.page:71(item/p)
 msgid ""
-"The delay is between the last photo taken and the start of the countdown for "
-"the next photo, not between two photos."
+"Any conversations that matched your search terms will be shown. By default, "
+"conversations are ordered by date."
 msgstr ""
-"Le délai est celui entre la dernière prise de photo et le début du compte à "
-"rebours pour la photo suivante et non pas celui entre deux photos."
+"Toutes les conversations qui correspondent à vos critères de recherche "
+"s'affichent. Par défaut, elles sont classées par date."
 
-#: C/pref-countdown.page:19(info/desc)
-msgid "Remove the countdown so that photos are taken instantly."
-msgstr ""
-"Enlever le compte à rebours pour que les photos soient prises instantanément."
+#: C/prev-conv.page:80(section/title)
+msgid "Browse previous conversations"
+msgstr "Consultation des conversations précédentes"
 
-#: C/pref-countdown.page:22(page/title)
-msgid "Disable the <gui>Countdown</gui> before photos are taken"
-msgstr "Désactivation du <gui>retardateur</gui> avant la prise des photos"
-
-#: C/pref-countdown.page:24(page/p)
+#: C/prev-conv.page:82(section/p)
 msgid ""
-"By default, <app>Cheese</app> counts down from three before taking a photo. "
-"You can disable this feature by clicking <guiseq><gui>Edit</gui> "
-"<gui>Preferences</gui></guiseq> and unchecking <gui>Countdown</gui>."
+"You can browse your previous conversations with your contacts or in chat "
+"rooms by date."
 msgstr ""
-"Par défaut, <app>Cheese</app> affiche un compte à rebours de trois secondes "
-"avant de prendre une photo. Vous pouvez l'empêcher en cliquant sur "
-"<guiseq><gui>Édition</gui> <gui>Préférences</gui></guiseq> et en décochant "
-"<gui>Retardateur</gui>."
+"Vous pouvez parcourir vos conversations précédentes avec vos contacts ou "
+"dans les salons de discussion en fonction de la date."
 
-#: C/pref-flash.page:18(info/desc)
-msgid "Stop the screen from flashing white when taking a photo."
-msgstr "Enlever le flash de l'écran lors de la prise de photos."
-
-#: C/pref-flash.page:21(page/title)
-msgid "Disable the flash"
-msgstr "Désactivation du flash"
-
-#: C/pref-flash.page:23(page/p)
+#: C/prev-conv.page:91(item/p)
 msgid ""
-"When you take a photo with Cheese, the computer screen briefly turns white. "
-"This provides additional light."
+"Select an account from the drop-down list in the top left. A list of "
+"contacts and chat room for that account will be shown below."
 msgstr ""
-"Quand vous prenez une photos avec Cheese, l'écran de l'ordinateur devient "
-"blanc un court instant, ce qui augmente la lumière."
+"Sélectionnez un compte dans la liste déroulante en haut à gauche de la "
+"fenêtre. Une liste de contacts et salon de discussion pour ce compte "
+"s'affichent en dessous."
 
-#: C/pref-flash.page:26(page/p)
+#: C/prev-conv.page:95(item/p)
 msgid ""
-"To disable this feature, click <guiseq><gui>Edit</gui><gui>Preferences</"
-"gui></guiseq> and uncheck <gui>Fire Flash</gui>."
+"Select a contact or chat room to view your previous conversations from. By "
+"default the most recent conversation will be shown."
 msgstr ""
-"Pour désactiver cette fonctionnalité, cliquez sur <guiseq><gui>Édition</"
-"gui><gui>Préférences</gui></guiseq> et décochez <gui>Utiliser le flash</gui>."
+"Sélectionnez un contact ou un salon de discussion pour en afficher vos "
+"conversations précédentes. La conversation la plus récente s'affiche par "
+"défaut."
+
+#: C/prev-conv.page:99(item/p)
+msgid ""
+"You can browse your conversations by date. Days on which you had a "
+"conversation with the selected contact will be shown in bold text. Click a "
+"date to select it. Click the arrows next to the month and year to browse "
+"earlier dates."
+msgstr ""
+"Vous pouvez parcourir vos conversations par date. Les jours où vous avez eu "
+"une conversation avec le contact sélectionné sont affichés en gras. Cliquez "
+"sur une date pour la sélectionner. Cliquez sur les flèches à côté du mois et "
+"de l'année pour parcourir des dates antérieures."
+
+#: C/prev-conv.page:105(section/p)
+msgid ""
+"You can search for text in the conversations by typing into the search field "
+"at the top. The matching conversations will be showed."
+msgstr ""
+"Pour rechercher du texte dans les conversations, saisissez-le dans le champ "
+"de recherche en haut. Les conversations correspondantes s'affichent."
+
+#: C/prev-conv.page:111(note/p)
+msgid ""
+"You can quickly view the previous conversations with one of your contacts "
+"from the <gui>Contact List</gui> window. Simply right click the contact and "
+"choose <gui>Previous Conversations</gui>. The <gui>Previous Conversations</"
+"gui> window will open with that contact already selected."
+msgstr ""
+"Vous pouvez afficher rapidement les conversations précédentes avec l'un de "
+"vos contacts dans la fenêtre <gui>Liste des contacts</gui>. Faites un clic "
+"droit sur le contact puis choisissez <gui>Conversations précédentes</gui>. "
+"La fenêtre <gui>Conversations Précédentes</gui> s'ouvre avec ce contact déjà "
+"sélectionné."
+
+#: C/prob-conn-acctdisabled.page:7(info/desc)
+msgid ""
+"The instant messaging account that you want to use is not enabled in the "
+"list of accounts."
+msgstr ""
+"Le compte de messagerie instantanée que vous souhaitez utiliser est "
+"désactivé dans la liste des comptes."
+
+#: C/prob-conn-acctdisabled.page:34(page/title)
+msgid "My account is not enabled"
+msgstr "Mon compte est désactivé"
+
+#: C/prob-conn-acctdisabled.page:36(page/p)
+msgid ""
+"If the instant messaging account that you want to use is not enabled in the "
+"drop-down account list when you try to start a new conversation or join a "
+"room, your account details may not be correct."
+msgstr ""
+"Si le compte de messagerie instantanée que vous souhaitez utiliser est "
+"désactivé dans la liste déroulante des comptes lorsque vous essayez de "
+"démarrer une nouvelle conversation ou de rejoindre un salon, il se peut que "
+"les détails de votre compte soient incorrects."
+
+#: C/prob-conn-acctdisabled.page:44(item/p) C/prob-conn-auth.page:45(item/p)
+#: C/prob-conn-neterror.page:53(item/p)
+msgid ""
+"Make sure that you are connected to the Internet, or to a local area network."
+msgstr "Assurez-vous que vous êtes connecté à Internet ou à un réseau local."
+
+#: C/prob-conn-acctdisabled.page:49(item/p)
+msgid ""
+"Choose <guiseq><gui>Edit</gui><gui>Accounts</gui></guiseq> and select the "
+"account that is not working."
+msgstr ""
+"Choisissez <guiseq><gui>Édition</gui><gui>Comptes</gui></guiseq> et "
+"sélectionnez le compte qui ne fonctionne pas."
+
+#: C/prob-conn-acctdisabled.page:55(item/p) C/prob-conn-auth.page:63(item/p)
+msgid ""
+"Type your username and password again to make sure that they are correct."
+msgstr ""
+"Saisissez de nouveau votre identifiant de connexion et votre mot de passe "
+"pour vous assurer qu'ils sont corrects."
+
+#: C/prob-conn-acctdisabled.page:60(item/p)
+#: C/prob-conn-neterror.page:64(item/p)
+msgid ""
+"Check in the <gui>Advanced</gui> section that all the details are correct. "
+"You should be able to find these details from the website of the messaging "
+"service."
+msgstr ""
+"Vérifiez dans la partie <gui>Avancé</gui> que tous les détails sont "
+"corrects. Vous devriez être en mesure de trouver ces détails sur le site Web "
+"du service de messagerie."
+
+#: C/prob-conn-acctdisabled.page:66(item/p)
+msgid "Check that the account is switched on."
+msgstr "Vérifiez que le compte est activé."
+
+#: C/prob-conn-auth.page:8(info/desc)
+msgid ""
+"An error message which says “<gui>Authentication failed</gui>” appears in "
+"the main window."
+msgstr ""
+"Le message d'erreur <gui>L'authentification a échoué</gui> apparaît dans la "
+"fenêtre principale."
+
+#: C/prob-conn-auth.page:36(page/title)
+msgid "I get a message that says “Authentication failed”"
+msgstr "Affichage du message « L'authentification a échoué »"
+
+#: C/prob-conn-auth.page:38(page/p)
+msgid ""
+"This kind of error happens when your instant messaging service is not "
+"allowing you to connect because it does not recognize your username or "
+"password for some reason."
+msgstr ""
+"Ce genre d'erreur se produit lorsque votre service de messagerie instantanée "
+"ne vous autorise pas à vous connecter parce qu'il ne reconnaît pas votre "
+"identifiant de connexion ou votre mot de passe pour une certaine raison."
+
+#: C/prob-conn-auth.page:50(item/p)
+msgid ""
+"Make sure that you have registered an account with the service you are "
+"trying to connect to. If you do not have an account, most services will not "
+"allow you to connect."
+msgstr ""
+"Assurez-vous que vous avez enregistré un compte pour le service auquel vous "
+"essayez de vous connecter. Si vous n'avez pas de compte, la plupart des "
+"services ne vous permettent pas de vous connecter."
+
+#: C/prob-conn-auth.page:57(item/p) C/prob-conn-name.page:43(item/p)
+#: C/prob-conn-neterror.page:58(item/p)
+msgid ""
+"Click the <media type=\"image\" mime=\"image/png\" src=\"figures/gtk-edit.png"
+"\">edit</media> icon in the error message."
+msgstr ""
+"Cliquez sur <media type=\"image\" mime=\"image/png\" src=\"figures/gtk-edit."
+"png\">éditer</media> dans le message d'erreur."
+
+#: C/prob-conn-auth.page:68(item/p)
+msgid ""
+"Deselect the <gui>Enabled</gui>, and then select it again to try to "
+"reconnect to the service."
+msgstr ""
+"Déconnectez puis reconnectez-vous pour essayer de vous reconnecter au "
+"service."
+
+#: C/prob-conn-name.page:9(info/title)
+msgctxt "link:error-msg"
+msgid "“Name in use”"
+msgstr "« Nom déjà utilisé »"
+
+#: C/prob-conn-name.page:10(info/desc)
+msgid ""
+"An error message which says “<gui>Name in use</gui>” appears in the main "
+"window."
+msgstr ""
+"Le message d'erreur <gui>Nom déjà utilisé</gui> s'affiche dans la fenêtre "
+"principale."
+
+#: C/prob-conn-name.page:33(page/title)
+msgid "I get a message that says “Name in use”"
+msgstr "Affichage du message « Nom utilisé »"
+
+#: C/prob-conn-name.page:35(page/p)
+msgid ""
+"This kind of error happens when you try to connect to your IRC account and "
+"you are using a nickname that is already being used by someone else on that "
+"particular network."
+msgstr ""
+"Ce type d'erreur s'affiche quand vous essayez de vous connecter à votre "
+"compte IRC avec un pseudonyme déjà utilisé par quelqu'un d'autre sur ce "
+"réseau."
+
+#: C/prob-conn-name.page:51(item/p)
+msgid "In the <gui>Nickname</gui> text box, type a new nickname."
+msgstr "Saisissez un nouveau <gui>Pseudonyme</gui> dans le champ texte."
+
+#: C/prob-conn-name.page:56(item/p)
+msgid ""
+"If you have registered that nickname within the network you are using, set "
+"the password for that nickname. For more information, see <link xref=\"irc-"
+"nick-password\"/>."
+msgstr ""
+"Si vous aviez enregistré ce pseudonyme sur ce réseau, saisissez le mot de "
+"passe adéquat. Consultez <link xref=\"irc-nick-password\"/> pour plus "
+"d'informations."
+
+#: C/prob-conn-name.page:65(item/p) C/prob-conn-neterror.page:79(item/p)
+msgid ""
+"Switch the account off, and then switch it on to try to reconnect to the "
+"service."
+msgstr ""
+"Déconnectez puis reconnectez-vous pour essayer de vous reconnecter au "
+"service."
+
+#: C/prob-conn-neterror.page:7(info/desc)
+msgid ""
+"An error message which says “<gui>Network error</gui>” appears in the main "
+"window."
+msgstr ""
+"Le message d'erreur <gui>Erreur réseau</gui> s'affiche dans la fenêtre "
+"principale."
+
+#: C/prob-conn-neterror.page:34(page/title)
+msgid "I get a message that says “Network error”"
+msgstr "Affichage du message « Erreur réseau »"
+
+#: C/prob-conn-neterror.page:42(page/p)
+msgid ""
+"This kind of error happens when <app>Empathy</app> cannot communicate with "
+"the instant messaging service for some reason."
+msgstr ""
+"Ce genre d'erreur se produit lorsque <app>Empathy</app> ne peut pas "
+"communiquer avec le service de messagerie instantanée pour une quelconque "
+"raison."
+
+#: C/prob-conn-neterror.page:46(page/p)
+msgid ""
+"Also, this kind of error happens when you try to use an IRC account without "
+"setting a nickname."
+msgstr ""
+"Ce type d'erreur se produit également lorsque vous essayez d'utiliser un "
+"compte IRC sans définir un pseudonyme."
+
+#: C/prob-conn-neterror.page:87(section/title)
+msgid "Proxy support"
+msgstr "Prise en charge d'un serveur mandataire"
+
+#: C/prob-conn-neterror.page:88(section/p)
+msgid ""
+"At the moment <app>Empathy</app> can not be configured to work with a proxy."
+msgstr ""
+"Pour le moment, <app>Empathy</app> ne peut pas être configuré pour "
+"fonctionner avec un serveur mandataire."
+
+#: C/prob-conn.page:7(info/desc)
+msgid "Diagnose common problems connecting to an instant messaging service."
+msgstr ""
+"Diagnostiquer les problèmes de connexion à un service de messagerie "
+"instantanée."
+
+#: C/prob-conn.page:29(page/title)
+msgid "Problems connecting to an instant messaging service"
+msgstr "Problèmes de connexion à un service de messagerie instantanée"
+
+#: C/remove-account.page:8(info/desc)
+msgid "Completely remove an account from <app>Empathy</app>."
+msgstr "Supprimer complètement un compte d'<app>Empathy</app>."
+
+#: C/remove-account.page:34(page/title)
+msgid "Remove an account"
+msgstr "Suppression d'un compte"
+
+#: C/remove-account.page:36(page/p)
+msgid ""
+"You can completely remove an account from <app>Empathy</app> if you no "
+"longer wish to use the account. If you wish to use the account in "
+"<app>Empathy</app> again in the future, you will have to add your account "
+"details again."
+msgstr ""
+"Vous pouvez supprimer complètement un compte d'<app>Empathy</app> si vous ne "
+"souhaitez plus l'utiliser. Si vous souhaitez l'utiliser de nouveau sur "
+"<app>Empathy</app> à l'avenir, vous devrez ajouter votre compte à nouveau."
+
+#: C/remove-account.page:47(item/p)
+msgid ""
+"Select the account you wish to remove from the accounts list on the left "
+"side of the window."
+msgstr ""
+"Sélectionnez le compte que vous souhaitez supprimer de la liste des comptes "
+"dans la partie gauche de la fenêtre."
+
+#: C/remove-account.page:51(item/p)
+msgid "Click <gui style=\"button\">-</gui>."
+msgstr "Cliquez sur <gui style=\"button\">-</gui>."
+
+#: C/remove-account.page:54(item/p)
+msgid ""
+"A dialog will be shown asking for confirmation. Click the <gui>Remove</gui> "
+"button to permanently remove the account."
+msgstr ""
+"Une boîte de dialogue s'affiche pour vous demander confirmation. Cliquez sur "
+"le bouton <gui>Supprimer</gui> pour supprimer définitivement le compte."
+
+#: C/remove-account.page:60(note/p)
+msgid ""
+"Even after removing an account, <app>Empathy</app> does not delete your "
+"conversation history for that account."
+msgstr ""
+"Même après la suppression d'un compte, <app>Empathy</app> ne supprime pas "
+"les historiques de conversation qui lui sont associés."
+
+#: C/salut-protocol.page:8(info/desc)
+msgid "Understanding the People Nearby feature."
+msgstr "Comprendre la fonction « Personnes à proximité »."
+
+#: C/salut-protocol.page:33(page/title)
+msgid "What is People Nearby?"
+msgstr "Personnes à proximité"
+
+#: C/salut-protocol.page:40(page/p)
+msgid ""
+"The People Nearby service is a serverless communication service: you do not "
+"need to connect and authenticate to a central server in order to use it."
+msgstr ""
+"Le service « Personnes à proximité » est un service de communication sans "
+"serveur : vous n'avez pas besoin de vous connecter et de vous authentifier "
+"auprès d'un serveur central pour l'utiliser."
+
+#: C/salut-protocol.page:45(page/p)
+msgid ""
+"This kind of serverless messaging system is restricted to a local area "
+"network and an active Internet connection is not necessary."
+msgstr ""
+"Ce type de système de messagerie sans serveur est limité à un réseau local "
+"et donc une connexion active à Internet n'est pas nécessaire."
+
+#: C/salut-protocol.page:49(page/p)
+msgid ""
+"The people that use this service inside the same local area network will be "
+"auto-discovered, and it will be possible to send them messages and files as "
+"with other services."
+msgstr ""
+"Les personnes utilisant ce service à l'intérieur d'un même réseau local sont "
+"découvertes automatiquement et il est possible de leur envoyer des messages "
+"et des fichiers comme avec d'autres services."
+
+#: C/salut-protocol.page:54(page/p)
+msgid ""
+"All the modern local area networks should be able to support this kind of "
+"service."
+msgstr ""
+"Tous les réseaux locaux modernes devraient être en mesure de prendre en "
+"charge ce genre de service."
+
+#: C/send-file.page:8(info/desc)
+msgid "Send a file from your computer to one of your contacts."
+msgstr "Envoyer un fichier de votre ordinateur à l'un de vos contacts."
+
+#: C/send-file.page:36(page/title)
+msgid "Send files"
+msgstr "Envoi de fichiers"
+
+#: C/send-file.page:45(item/p)
+msgid ""
+"Right click on the contact you want to send a file to, and choose <gui>Send "
+"file</gui>."
+msgstr ""
+"Faites un clic droit sur le contact à qui vous voulez envoyer un fichier et "
+"sélectionnez <gui>Envoyer un fichier</gui>."
+
+#: C/send-file.page:50(item/p)
+msgid ""
+"Click on the contact you want to send a file, and choose <guiseq><gui>Edit</"
+"gui> <gui>Contact</gui><gui>Send file</gui></guiseq>."
+msgstr ""
+"Cliquez sur le contact à qui vous voulez envoyer un fichier et choisissez "
+"<guiseq><gui>Édition</gui><gui>Contact</gui><gui>Envoyer un fichier</gui></"
+"guiseq>."
+
+#: C/send-file.page:58(item/p)
+msgid "Select the file to send, and click on <gui>Send</gui>."
+msgstr "Sélectionnez le fichier à envoyer et cliquez sur <gui>Envoyer</gui>."
+
+#: C/send-file.page:63(item/p)
+msgid "The <gui>File Transfers</gui> window will appear."
+msgstr "La fenêtre <gui>Transferts de fichiers</gui> s'affiche."
+
+#: C/send-file.page:66(item/p)
+msgid ""
+"Wait for your contact to accept the file transfer, or click <gui>Stop</gui> "
+"to halt the transfer."
+msgstr ""
+"Attendez que votre contact accepte le transfert de fichier, ou cliquez sur "
+"<gui>Arrêter</gui> pour stopper le transfert."
+
+#: C/send-file.page:72(item/p)
+msgid ""
+"Once the transfer is finished, it is possible to close the <gui>File "
+"Transfers</gui> window."
+msgstr ""
+"Une fois que le transfert est terminé, vous pouvez fermer la fenêtre "
+"<gui>Transferts de fichiers</gui>."
+
+#: C/send-file.page:80(note/p)
+msgid ""
+"If you have multiple finished transfers listed in the window, click on "
+"<gui>Clear</gui> to empty the list. This will only remove the files from the "
+"list and will not delete them from your computer."
+msgstr ""
+"Si vous avez plusieurs transferts terminés listés dans la fenêtre, cliquez "
+"sur <gui>Effacer</gui> pour vider la liste. Cela supprimera les fichiers "
+"uniquement dans la liste mais pas de votre ordinateur."
+
+#: C/send-file.page:87(note/p)
+msgid ""
+"It is possible to send files only using the following services: <em>Jabber</"
+"em>, <em>Google Talk</em> and <em>People Nearby</em>."
+msgstr ""
+"Il est possible d'envoyer des fichiers uniquement en utilisant les services "
+"suivants : <em>Jabber</em>, <em>Google Talk</em> et <em>Personnes à "
+"proximité</em>."
+
+#: C/send-file.page:93(note/p)
+msgid ""
+"In order to send a file to someone, you need to be connected to the "
+"Internet, or to a local area network."
+msgstr ""
+"Pour envoyer un fichier à quelqu'un, vous devez être connecté à Internet ou "
+"à un réseau local."
+
+#: C/send-message.page:8(info/desc)
+msgid "Send a message to one of your contacts."
+msgstr "Envoyer un message à l'un de ses contacts."
+
+#: C/send-message.page:32(page/title)
+msgid "Send a message to someone"
+msgstr "Envoi d'un message à quelqu'un"
+
+#: C/send-message.page:36(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, double-click the name of the "
+"contact that you want to have a conversation with."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, faites un double clic sur le "
+"nom du contact avec qui vous voulez entamer une conversation."
+
+#: C/send-message.page:42(item/p)
+msgid ""
+"A new window will open. Type a message into the box at the bottom of the "
+"window and press <key>Enter</key> to send it."
+msgstr ""
+"Une nouvelle fenêtre s'ouvre. Saisissez le message dans la boîte de dialogue "
+"en bas de la fenêtre et appuyez sur <key>Entrée</key> pour l'envoyer."
+
+#: C/send-message.page:50(section/title)
+msgid "Send a message to a meta-contact"
+msgstr "Envoi d'un message à un méta-contact"
+
+#: C/send-message.page:58(item/p)
+msgid ""
+"Select the contact you want to have the conversation, and from the menu "
+"select <gui style=\"menuitem\">Chat</gui>."
+msgstr ""
+"Sélectionnez le contact avec qui vous voulez entamer une conversation et à "
+"partir du menu, sélectionnez <gui style=\"menuitem\">Discussion</gui>."
+
+#: C/set-custom-status.page:9(info/desc)
+msgid "Add, edit or delete personal messages for your status."
+msgstr ""
+"Ajouter, modifier ou supprimer les messages personnalisés pour votre état."
+
+#: C/set-custom-status.page:15(credit/name)
+msgid "Jim Campbell"
+msgstr "Jim Campbell"
+
+#: C/set-custom-status.page:34(page/title)
+msgid "Set a custom message"
+msgstr "Définition d'un message personnalisé"
+
+#: C/set-custom-status.page:36(page/p)
+msgid ""
+"Sometimes you may want to set a custom message for your status, for example "
+"to let people know that you will be unavailable for a certain period of time."
+msgstr ""
+"Parfois vous souhaitez définir un message personnalisé pour votre état, par "
+"exemple pour que les gens sachent que vous ne serez pas disponible pendant "
+"une certaine période de temps."
+
+#: C/set-custom-status.page:40(page/p)
+msgid ""
+"It is possible to set a custom message based on the different statuses "
+"available."
+msgstr ""
+"Il est possible d'associer un message personnalisé à chaque état disponible."
+
+#: C/set-custom-status.page:46(item/p) C/set-custom-status.page:82(item/p)
+msgid ""
+"From the <gui>Contact List</gui> window, click on the drop-down list at the "
+"top."
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, cliquez sur la liste "
+"déroulante du haut."
+
+#: C/set-custom-status.page:52(item/p)
+msgid ""
+"Select the status you want to add a custom message to. You have to select "
+"the one identified with the label <gui>Custom Message</gui>."
+msgstr ""
+"Sélectionnez l'état auquel vous voulez ajouter un message personnalisé. Vous "
+"devez sélectionner celui qui est identifié par l'étiquette <gui>Message "
+"personnalisé</gui>."
+
+#: C/set-custom-status.page:58(item/p)
+msgid ""
+"Enter your custom message in the text box at the top of the window, and "
+"press <key>Enter</key> to set the message."
+msgstr ""
+"Saisissez votre message personnalisé dans la boîte de dialogue en haut de la "
+"fenêtre et appuyez sur <key>Entrée</key> pour définir le message."
+
+#: C/set-custom-status.page:64(item/p)
+msgid ""
+"If you want to set the custom message as a favorite, saving it in order to "
+"use it again, click on the little heart on the right of the text box where "
+"you wrote your custom message."
+msgstr ""
+"Si vous voulez définir le message personnalisé comme un favori et "
+"l'enregistrer pour pouvoir le réutiliser, cliquez sur le petit cœur à droite "
+"de la boîte de dialogue où vous avez saisi votre message personnalisé."
+
+#: C/set-custom-status.page:69(item/p)
+msgid ""
+"If you do not do it, the custom message will not be available the next time "
+"you use <app>Empathy</app>. It will be saved only for the current session."
+msgstr ""
+"Si vous ne le faites pas, le message personnalisé ne sera pas disponible à "
+"la prochaine ouverture d'<app>Empathy</app>. Il n'est conservé que pour la "
+"session actuelle."
+
+#: C/set-custom-status.page:78(section/title)
+msgid "Edit and remove a custom message"
+msgstr "Modification et suppression d'un message personnalisé"
+
+#: C/set-custom-status.page:88(item/p)
+msgid "Select <gui>Edit Custom Message</gui>."
+msgstr "Sélectionnez <gui>Édition des messages personnalisés</gui>."
+
+#: C/set-custom-status.page:95(item/p)
+msgid "To edit a custom message:"
+msgstr "Pour modifier un message personnalisé :"
+
+#: C/set-custom-status.page:100(item/p)
+msgid ""
+"From the <gui>Saved Presets</gui> box, select the status message you want to "
+"edit and double-click on it."
+msgstr ""
+"Dans la fenêtre <gui>Édition des messages personnalisés</gui>, sélectionnez "
+"le message d'état que vous voulez modifier et faites un double clic dessus."
+
+#: C/set-custom-status.page:106(item/p)
+msgid "Type the new custom message and press <key>Enter</key> to modify it."
+msgstr ""
+"Saisissez le nouveau message personnalisé et appuyez sur <key>Entrée</key> "
+"pour le modifier."
+
+#: C/set-custom-status.page:113(item/p)
+msgid "To remove a custom message:"
+msgstr "Pour supprimer un message personnalisé :"
+
+#: C/set-custom-status.page:118(item/p)
+msgid ""
+"From the <gui>Saved Presets</gui> box, select the status message you want to "
+"remove."
+msgstr ""
+"Dans la fenêtre <gui>Édition des messages personnalisés</gui>, sélectionnez "
+"le message d'état que vous voulez supprimer."
+
+#: C/set-custom-status.page:124(item/p)
+msgid "Click on the <gui>Remove</gui> button."
+msgstr "Cliquez sur le bouton <gui>Enlever</gui>."
+
+#: C/set-custom-status.page:133(item/p)
+msgid "When finished, click on <gui>Close</gui>."
+msgstr "Quand vous avez terminé, cliquez sur <gui>Fermer</gui>."
+
+#: C/set-custom-status.page:140(note/p)
+msgid ""
+"When you edit a custom message, it will not be set as the current status "
+"message. You will need to select it from the <gui>Contact List</gui> window."
+msgstr ""
+"Quand vous modifiez un message personnalisé, il n'est pas défini comme "
+"message de l'état actuel. Vous devez le sélectionner à partir de la fenêtre "
+"<gui>Liste des contacts</gui>."
+
+#: C/share-desktop.page:7(info/desc)
+msgid "Show your desktop to your contacts."
+msgstr "Montrer son bureau à ses contacts."
+
+#: C/share-desktop.page:18(credit/name)
+msgid "Ekaterina Gerasimova"
+msgstr "Ekaterina Gerasimova"
+
+#: C/share-desktop.page:33(page/title)
+msgid "Share your desktop"
+msgstr "Partage de votre bureau"
+
+#: C/share-desktop.page:35(page/p)
+msgid ""
+"It is possible to share your desktop with some of your contacts. You can use "
+"this functionality to show your desktop to your contacts to, for example, "
+"ask for help or help your contacts resolve a problem."
+msgstr ""
+"Il est possible de partager votre bureau avec certains de vos contacts. Vous "
+"pouvez utiliser cette fonctionnalité pour montrer votre bureau à vos "
+"contacts pour, par exemple, demander de l'aide ou aider vos contacts à "
+"résoudre un problème."
+
+#: C/share-desktop.page:42(note/p)
+msgid ""
+"To be able to share your desktop, you need to have a VNC server, which has "
+"support for the feature, installed on your system. <app>Vino</app>, the "
+"GNOME VNC server, has the required support."
+msgstr ""
+"Pour pouvoir partager votre bureau, vous devez avoir un serveur VNC qui "
+"prend en charge cette fonctionnalité, installé sur votre système. <app>Vino</"
+"app>, le serveur VNC de GNOME, dispose du support nécessaire."
+
+#: C/share-desktop.page:51(item/p)
+msgid "From the <gui>Contact List</gui> window, do one of the following:"
+msgstr ""
+"Dans la fenêtre <gui>Liste des contacts</gui>, faites l'une des actions "
+"suivantes :"
+
+#: C/share-desktop.page:56(item/p)
+msgid ""
+"Select the contact you want to share your desktop with and choose "
+"<guiseq><gui>Edit</gui><gui>Contact</gui> <gui>Share My Desktop</gui></"
+"guiseq>."
+msgstr ""
+"Sélectionnez le contact avec qui vous voulez partager votre bureau et "
+"choisissez <guiseq><gui>Édition</gui><gui>Contact</gui><gui>Partager mon "
+"bureau</gui></guiseq>."
+
+#: C/share-desktop.page:63(item/p)
+msgid ""
+"Right-click on the name of the contact you want to share your desktop with "
+"and select <gui>Share My Desktop</gui>."
+msgstr ""
+"Faites un clic droit sur le nom du contact avec qui vous voulez partager "
+"votre bureau et sélectionnez <gui>Partager mon bureau</gui>."
+
+#: C/share-desktop.page:71(item/p)
+msgid ""
+"An invitation to view your desktop will be sent to the contact you have "
+"selected. To view your desktop, they will need to accept it."
+msgstr ""
+"Une invitation à voir votre bureau est envoyée au contact que vous avez "
+"sélectionné. Pour afficher votre bureau, il doit accepter l'invitation."
+
+#: C/share-desktop.page:77(item/p)
+msgid ""
+"You can disconnect the contact from your computer using your desktop sharing "
+"application."
+msgstr ""
+"Vous pouvez déconnecter le contact depuis votre ordinateur en utilisant "
+"votre application de partage de bureau."
+
+#: C/share-desktop.page:82(note/p)
+msgid ""
+"For more information about how to use the remote desktop sharing "
+"application, refer to its help."
+msgstr ""
+"Pour plus d'informations sur la façon d'utiliser l'application de partage de "
+"bureau distant, référez-vous à son manuel d'aide."
+
+#: C/share-desktop.page:90(page/p)
+msgid ""
+"When you share your desktop with someone else, it is possible to experience "
+"system performance slowdown and low Internet speed."
+msgstr ""
+"Lorsque vous partagez votre bureau avec quelqu'un d'autre, il est possible "
+"de constater un ralentissement des performances du système et du réseau."
+
+#: C/share-desktop.page:96(note/p)
+msgid ""
+"Some of your contacts may not be able to use this feature. It is necessary "
+"for them to have version 2.28, or newer, of <app>Empathy</app> and a "
+"compatible remote desktop viewer application installed in their system."
+msgstr ""
+"Certains de vos contacts peuvent ne pas être en mesure d'utiliser cette "
+"fonctionnalité. Il leur est nécessaire de disposer au minimum de la version "
+"2.28 d'<app>Empathy</app> et d'une application compatible avec l'affichage "
+"de bureau distant, installée sur leur système."
 
 #. This is a reference to an external file such as an image or video. When
 #. the file changes, the md5 hash will change to let you know you need to
 #. update your localized copy. The msgstr is not used at all. Set it to
 #. whatever you like once you have updated your copy of the file.
-#: C/pref-image-properties.page:45(media)
+#: C/status-icons.page:39(media)
 msgctxt "_"
 msgid ""
-"external ref='figures/image-properties.png' "
-"md5='70c32a1dd7c9a20dabef58d0789f2a5a'"
+"external ref='figures/available.png' md5='2196b2f0ad4ce26fdb7b9d48e75d1947'"
 msgstr ""
-"external ref='figures/image-properties.png' "
-"md5='70c32a1dd7c9a20dabef58d0789f2a5a'"
+"external ref='figures/available.png' md5='2196b2f0ad4ce26fdb7b9d48e75d1947'"
 
-#: C/pref-image-properties.page:19(info/desc)
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/status-icons.page:45(media)
+msgctxt "_"
+msgid "external ref='figures/busy.png' md5='15eb2adff5faedf97b0cb9105d09410a'"
+msgstr "external ref='figures/busy.png' md5='15eb2adff5faedf97b0cb9105d09410a'"
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/status-icons.page:53(media)
+msgctxt "_"
+msgid "external ref='figures/away.png' md5='9c504d6ffa0cf1a9cc8933d16e1bea33'"
+msgstr "external ref='figures/away.png' md5='9c504d6ffa0cf1a9cc8933d16e1bea33'"
+
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#.
+#. This is a reference to an external file such as an image or video. When
+#. the file changes, the md5 hash will change to let you know you need to
+#. update your localized copy. The msgstr is not used at all. Set it to
+#. whatever you like once you have updated your copy of the file.
+#: C/status-icons.page:62(media) C/status-icons.page:69(media)
+msgctxt "_"
 msgid ""
-"Adjust the saturation, contrast, brightness and hue to make photos and "
-"videos look better."
+"external ref='figures/offline.png' md5='c5b0c21181cbd6e13f8909243c0fa964'"
 msgstr ""
-"Ajuster la saturation, le contraste, la luminosité et la teinte pour "
-"améliorer vos photos et vos vidéos."
+"external ref='figures/offline.png' md5='c5b0c21181cbd6e13f8909243c0fa964'"
 
-#: C/pref-image-properties.page:23(page/title)
-msgid "My photos and videos look wrong"
-msgstr "Mes photos et vidéos n'ont pas l'air normales"
+#: C/status-icons.page:7(info/desc)
+msgid "Understanding the various statuses and status icons."
+msgstr "Comprendre les différents états et leurs icônes respectives."
 
-#: C/pref-image-properties.page:25(page/p)
+#: C/status-icons.page:35(page/title)
+msgid "Status Types and Icons"
+msgstr "Types d'états et icônes"
+
+#: C/status-icons.page:39(item/title)
 msgid ""
-"If your photos or videos are too dark or the colors seem to be wrong, try "
-"adjusting their saturation, contrast, brightness and hue:"
+"<media type=\"image\" mime=\"image/png\" src=\"figures/available.png"
+"\">Available icon</media> <gui>Available</gui>"
 msgstr ""
-"Si vos photos ou vos vidéos sont trop sombres ou si les couleurs ont l'air "
-"fausses, essayez d'ajuster la saturation, le contraste, la luminosité et la "
-"teinte :"
+"<media type=\"image\" mime=\"image/png\" src=\"figures/available.png\">Icône "
+"Disponible</media> <gui>Disponible</gui>"
 
-#: C/pref-image-properties.page:33(item/p)
+#: C/status-icons.page:41(item/p)
 msgid ""
-"Under <gui>Image properties</gui>, change the sliders to find the best "
-"settings for your webcam."
+"Use the <em>Available</em> status when you are at your computer and able to "
+"chat with your contacts. You can set a custom message for this status."
 msgstr ""
-"Sous <gui>Propriétés de l'image</gui>, modifiez les positions des glissières "
-"pour trouver les meilleurs réglages pour votre webcam."
+"Utilisez l'état <em>Disponible</em> quand vous êtes sur votre ordinateur et "
+"enclin à discuter avec vos contacts. Vous pouvez définir un message "
+"personnalisé pour cet état."
 
-#: C/pref-image-properties.page:37(item/p)
+#: C/status-icons.page:45(item/title)
 msgid ""
-"Click <gui>Close</gui> and check to see if the photos and videos look better."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/busy.png\">Busy icon</"
+"media> <gui>Busy</gui>"
 msgstr ""
-"Cliquez sur <gui>Fermer</gui> et vérifiez que les photos et les vidéos sont "
-"meilleures."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/busy.png\">icône "
+"Occupé</media> <gui>Occupé</gui>"
 
-#: C/pref-image-properties.page:43(figure/title)
+#: C/status-icons.page:47(item/p)
 msgid ""
-"Different options under <gui>Image properties</gui> (left to right): "
-"applying brightness, contrast, hue and saturation"
+"Use the <em>Busy</em> status to let your contacts know that you don’t want "
+"to chat right now. They can still contact you, for instance if they have "
+"something urgent they need to discuss. By default, <app>Empathy</app> will "
+"not use notification bubbles and sounds when you are busy. You can set a "
+"custom message for this status."
 msgstr ""
-"Différentes options dans <gui>Propriétés de l'image</gui> (de gauche à "
-"droite) : modification de la luminosité, du contraste, de la teinte et de la "
-"saturation"
+"Utilisez l'état <em>Occupé</em> quand vous souhaitez informer vos contacts "
+"que vous ne pouvez pas discuter pour le moment. Ils peuvent toujours vous "
+"contacter, par exemple s'ils ont besoin de discuter de quelque chose "
+"d'urgent. Par défaut, <app>Empathy</app> ne fait pas usage de bulles de "
+"notification et de sons lorsque vous êtes occupé. Vous pouvez définir un "
+"message personnalisé pour cet état."
 
-#: C/pref-image-properties.page:50(item/title)
-msgid "Brightness"
-msgstr "Luminosité"
-
-#: C/pref-image-properties.page:51(item/p)
+#: C/status-icons.page:53(item/title)
 msgid ""
-"Increasing the brightness will make the photos and videos lighter. However, "
-"if you are in a dark room, increasing the brightness might make the image "
-"look more noisy."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/away.png\">Away icon</"
+"media> <gui>Away</gui>"
 msgstr ""
-"Augmenter la luminosité rend la photo et la vidéo plus lumineuse. Cependant, "
-"si vous êtes dans une pièce sombre, augmenter la luminosité augmente le "
-"grain de l'image."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/away.png\">icône "
+"Absent</media> <gui>Absent</gui>"
 
-#: C/pref-image-properties.page:54(item/title)
-msgid "Contrast"
-msgstr "Contraste"
-
-#: C/pref-image-properties.page:55(item/p)
+#: C/status-icons.page:55(item/p)
 msgid ""
-"Setting a higher contrast will increase the difference between darker and "
-"lighter colors. If the image looks washed out, try increasing the contrast."
+"Use the <em>Away</em> status when you are going away from your computer. "
+"<app>Empathy</app> automatically sets your status to Away if you do not use "
+"your computer for a while, or if your screensaver is on. By default, "
+"<app>Empathy</app> will not use notification bubbles and sounds when you are "
+"away. You can set a custom message for this status."
 msgstr ""
-"Utiliser un fort contraste augmente la différence entre les couleurs sombres "
-"et claires. Si l'image a l'air délavée, essayez d'augmenter le contraste."
+"Utilisez l'état <em>Absent</em> quand vous n'êtes pas à portée de votre "
+"ordinateur. <app>Empathy</app> définit automatiquement votre état à Absent "
+"si vous n'utilisez pas votre ordinateur pendant un certain temps ou si votre "
+"écran de veille est actif. Par défaut, <app>Empathy</app> ne fait pas usage "
+"de bulles de notification et de sons lorsque vous êtes absent. Vous pouvez "
+"définir un message personnalisé pour cet état."
 
-#: C/pref-image-properties.page:58(item/title)
-msgid "Hue"
-msgstr "Teinte"
-
-#: C/pref-image-properties.page:59(item/p)
+#: C/status-icons.page:62(item/title)
 msgid ""
-"Changing the hue of the image will add a tint to it. If image seems to be "
-"the wrong color (for example, too yellow), try changing the hue."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/offline.png\">Offline "
+"icon</media> <gui>Invisible</gui>"
 msgstr ""
-"Modifier la teinte de l'image lui ajoute une couleur particulière. Si les "
-"couleurs de l'image semblent fausses (par exemple, trop de jaune), essayez "
-"de changer la teinte."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/offline.png\">icône "
+"Hors-ligne</media> <gui>Invisible</gui>"
 
-#: C/pref-image-properties.page:62(item/title)
-msgid "Saturation"
-msgstr "Saturation"
-
-#: C/pref-image-properties.page:63(item/p)
+#: C/status-icons.page:64(item/p)
 msgid ""
-"Reducing the saturation makes the image less colorful. If colors seem too "
-"harsh, reduce the saturation."
+"When you set your status to <em>Invisible</em>, you will appear as offline "
+"to your contacts. You will still be connected to your accounts, and you "
+"still see your contacts’ statuses and start conversations with them."
 msgstr ""
-"Réduire la saturation rend l'image moins colorée. Si les couleurs semblent "
-"trop accentuées, réduisez la saturation."
+"Quand vous définissez votre état à <em>Invisible</em>, vous apparaissez "
+"comme hors-ligne à vos contacts. Vous êtes encore connecté à vos comptes, et "
+"vous pouvez encore voir les états de vos contacts et engager des "
+"conversations avec eux."
 
-#: C/pref-photo-resolution.page:19(info/desc)
+#: C/status-icons.page:69(item/title)
 msgid ""
-"The resolution of a video or photo determines how much detail you can see in "
-"it, changing it will affect the file size."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/offline.png\">Offline "
+"icon</media> <gui>Offline</gui>"
 msgstr ""
-"La résolution d'une vidéo ou d'une photo détermine la quantité de détails "
-"qu'elle contient ; la modifier affecte la taille du fichier."
+"<media type=\"image\" mime=\"image/png\" src=\"figures/offline.png\">Hors-"
+"ligne icon</media> <gui>Déconnecté</gui>"
 
-#: C/pref-photo-resolution.page:24(page/title)
-msgid "Change the capture resolution of your webcam"
-msgstr "Modification de la résolution de capture de votre webcam"
-
-#: C/pref-photo-resolution.page:26(page/p)
+#: C/status-icons.page:71(item/p)
 msgid ""
-"Higher resolution generally means better quality images, but photos and "
-"videos with higher resolution take up more space on your hard disk. High "
-"resolution videos, in particular, take up a lot of space."
+"Setting your status to <em>Offline</em> disconnects you from all of your "
+"accounts."
 msgstr ""
-"Une plus haute résolution permet généralement d'obtenir des images de "
-"meilleure qualité, mais les photos et les vidéos avec une plus haute "
-"résolution prennent plus de place sur le disque dur, particulièrement pour "
-"les vidéos."
+"Définissez votre état à <em>Déconnecté</em> pour vous déconnecter de tous "
+"vos comptes."
 
-#: C/pref-photo-resolution.page:30(page/p)
+#: C/video-call.page:10(info/desc)
+msgid "Start a video conversation with one of your contacts."
+msgstr "Démarrer une conversation vidéo avec l'un de ses contacts."
+
+#: C/video-call.page:29(page/title)
+msgid "Start a video conversation"
+msgstr "Démarrage d'une conversation vidéo"
+
+#: C/video-call.page:31(page/p)
 msgid ""
-"If you want your images to take up less disk space, reduce the resolution of "
-"your webcam. If you want better quality images, increase the resolution. To "
-"change the webcam resolution:"
+"If you have a webcam, you can call your contacts and have a video "
+"conversation with them. This feature only works with certain types of "
+"accounts, and it requires the other person to have an application that "
+"supports video calls."
 msgstr ""
-"Si vous voulez que vos photos prennent moins de place sur le disque, "
-"réduisez la résolution de votre webcam. Si vous voulez des images de "
-"meilleur qualité, augmentez la résolution. Pour modifier la résolution de la "
-"webcam :"
+"Si vous avez une webcam, vous pouvez appeler vos contacts et avoir une "
+"conversation vidéo avec eux. Cette fonctionnalité fonctionne uniquement avec "
+"certains types de compte et il est nécessaire que l'autre personne possède "
+"également une application qui prenne en charge les appels vidéo."
 
-#: C/pref-photo-resolution.page:39(item/p)
+#: C/video-call.page:38(item/p)
 msgid ""
-"Choose a different resolution from the drop-down list. Some webcams only "
-"support one resolution, so you may not have a choice."
+"From the <gui>Contact List</gui> window, click the <media type=\"image\" "
+"mime=\"image/png\" src=\"figures/camera-web.png\">video call</media> icon "
+"next to the name of the contact you wish to call and choose <gui style="
+"\"menuitem\">Video Call</gui>."
 msgstr ""
-"Choisissez une résolution différente dans la liste déroulante. Certaines "
-"webcams ne prennent en charge qu'une seule résolution, il est donc possible "
-"que vous n'ayez pas le choix."
+"Dans la fenêtre <gui>Liste des contacts</gui>, cliquez sur l'icône <media "
+"type=\"image\" mime=\"image/png\" src=\"figures/camera-web.png\">appel "
+"vidéo</media> à côté du nom du contact que vous voulez appeler et "
+"choisissez <gui style=\"menuitem\">Appel vidéo</gui>."
 
-#: C/pref-photo-resolution.page:43(item/p)
-msgid "Click <gui>Close</gui>."
-msgstr "Cliquez sur <gui>Fermer</gui>."
-
-#: C/video-record.page:19(info/desc)
-msgid "Use your webcam to record short movies for sharing with friends."
-msgstr ""
-"Utiliser sa webcam pour enregistrer des films courts pour les partager avec "
-"des amis."
-
-#: C/video-record.page:22(page/title)
-msgid "Record a video"
-msgstr "Enregistrement d'une vidéo"
-
-#: C/video-record.page:24(page/p)
-msgid "To record a video using your webcam:"
-msgstr "Pour enregistrer une vidéo à l'aide de votre webcam :"
-
-#: C/video-record.page:28(item/p)
+#: C/video-call.page:55(note/p)
 msgid ""
-"Make sure that you are in <gui>Video mode</gui>. If you are, the button in "
-"the middle of the window will say <gui>Start Recording</gui>."
+"To turn a video conversation into an audio conversation, choose <guiseq><gui "
+"style=\"menu\">Video</gui><gui style=\"menuitem\">Video Off</gui></guiseq>."
 msgstr ""
-"Vérifiez que vous êtes dans le <gui>Mode vidéo</gui>. Si c'est le cas, le "
-"bouton de la fenêtre principale affiche <gui>Enregistrer une vidéo</gui>."
+"Pour basculer une conversation vidéo en conversation audio, sélectionnez "
+"<guiseq><gui style=\"menu\">Vidéo</gui><gui style=\"menuitem\">Vidéo "
+"désactivée</gui></guiseq>."
 
-#: C/video-record.page:30(item/p)
+#: C/video-call.page:61(section/title)
+msgid "Start a video conversation with a meta-contact"
+msgstr "Démarrage d'une conversation vidéo avec un méta-contact"
+
+#: C/video-call.page:69(item/p)
 msgid ""
-"You can switch to <gui>Video mode</gui> by clicking the button in the main "
-"window or by clicking <guiseq><gui>Cheese</gui><gui>Video</gui></guiseq>."
+"Select the contact you want to have the conversation, and from the menu "
+"select <gui style=\"menuitem\">Video Call</gui>."
 msgstr ""
-"Vous pouvez passer au <gui>mode vidéo</gui> en cliquant sur le bouton de la "
-"fenêtre principale ou en cliquant sur <guiseq><gui>Cheese</gui><gui>Vidéo</"
-"gui></guiseq>."
-
-#: C/video-record.page:34(item/p)
-msgid ""
-"Click <gui>Start Recording</gui>, or press the <key>spacebar</key>. "
-"<app>Cheese</app> will start recording from your webcam."
-msgstr ""
-"Cliquez sur <gui>Enregistrer une vidéo</gui> ou appuyez sur la <key>barre "
-"d'espace</key>. <app>Cheese</app> démarre l'enregistrement avec votre webcam."
-
-#: C/video-record.page:38(item/p)
-msgid ""
-"To stop recording, click <gui>Stop Recording</gui> or press <key>Esc</key>."
-msgstr ""
-"Pour arrêter l'enregistrement, cliquez sur <gui>Arrêter l'enregistrement</"
-"gui> ou appuyez sur <key>Échap</key>."
-
-#: C/video-record.page:43(page/p)
-msgid "Videos are saved in the Ogg Theora (<file>.ogv</file>) format."
-msgstr ""
-"Les vidéos sont enregistrées dans le format Ogg Theora (<file>.ogv</file>)."
-
-#: C/video-record.page:45(page/p)
-msgid ""
-"After you have stopped recording, the video will automatically appear in the "
-"photo stream at the bottom of the <app>Cheese</app> window. From there, you "
-"can <link xref=\"view-photo\">play back the video</link>, upload it to a "
-"social network, post it on your blog or YouTube channel, or share it with "
-"friends by <link href=\"help:gnome-help/net-default-email\">email</link>."
-msgstr ""
-"Après avoir arrêté l'enregistrement, la vidéo apparaît automatiquement dans "
-"le flux d'images en bas de la fenêtre de <app>Cheese</app>. À partir de "
-"celui-ci, vous pouvez <link xref=\"view-photo\">lire la vidéo</link>, "
-"l'envoyer vers un réseau social, la poster sur votre blog ou sur une chaîne "
-"YouTube ou la partager avec des amis par <link href=\"help:gnome-help/net-default-email\">courriel</link>."
-
-#: C/video-record.page:51(page/p)
-msgid ""
-"If you have problems sharing a video with people using other operating "
-"systems (like Windows or Mac OS), you may need to <link href=\"help:gnome-"
-"help/video-sending\">convert it to a different format</link>."
-msgstr ""
-"Si vous n'arrivez pas à partager une vidéo avec des personnes utilisant "
-"d'autres systèmes d'exploitation (comme Windows ou Mac OS), vous pouvez "
-"avoir besoin de <link href=\"help:gnome-"
-"help/video-sending\">les convertir "
-"dans un autre format</link>."
+"Sélectionnez le contact avec qui vous voulez avoir la conversation, et "
+"sélectionnez <gui style=\"menuitem\">Appel vidéo</gui> dans le menu."
