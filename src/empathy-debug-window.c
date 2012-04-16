@@ -1494,15 +1494,19 @@ debug_window_time_formatter (GtkTreeViewColumn *tree_column,
 }
 
 static gboolean
-debug_window_store_filter_foreach (GtkTreeModel *model,
+debug_window_copy_model_foreach (GtkTreeModel *model,
     GtkTreePath *path,
     GtkTreeIter *iter,
     gpointer user_data)
 {
-  gchar **debug_data = (gchar **)user_data;
+  gchar **text = (gchar **) user_data;
+  gchar *tmp;
   gchar *domain, *category, *message, *level_str, *level_upper;
   gdouble timestamp;
-  gchar *line, *time_str, *tmp;
+  gchar *line, *time_str;
+
+  if (*text == NULL)
+    *text = g_strdup ("");
 
   gtk_tree_model_get (model, iter,
       COL_DEBUG_TIMESTAMP, &timestamp,
@@ -1522,21 +1526,17 @@ debug_window_store_filter_foreach (GtkTreeModel *model,
 
   g_free (time_str);
 
-  /* Compact all message lines in the out parameter debug_data */
-  if (!tp_str_empty (*debug_data))
-    tmp = g_strconcat (*debug_data, line, NULL);
-  else
-    tmp = g_strdup (line);
+  tmp = g_strconcat (*text, line, NULL);
 
-  g_free (*debug_data);
-  *debug_data = tmp;
-
+  g_free (*text);
   g_free (line);
   g_free (level_upper);
   g_free (level_str);
   g_free (domain);
   g_free (category);
   g_free (message);
+
+  *text = tmp;
 
   return FALSE;
 }
@@ -1572,7 +1572,7 @@ debug_window_save_file_chooser_response_cb (GtkDialog *dialog,
     }
 
   gtk_tree_model_foreach (self->priv->store_filter,
-      debug_window_store_filter_foreach, &debug_data);
+      debug_window_copy_model_foreach, &debug_data);
 
   g_output_stream_write (G_OUTPUT_STREAM (output_stream), debug_data,
       strlen (debug_data), NULL, &file_write_error);
@@ -1766,55 +1766,10 @@ debug_window_send_to_pastebin_cb (GtkToolButton *tool_button,
   DEBUG ("Preparing debug data for sending to pastebin.");
 
   gtk_tree_model_foreach (self->priv->store_filter,
-      debug_window_store_filter_foreach, &debug_data);
+      debug_window_copy_model_foreach, &debug_data);
 
   debug_window_send_to_pastebin (self, debug_data);
   g_free (debug_data);
-}
-
-static gboolean
-debug_window_copy_model_foreach (GtkTreeModel *model,
-    GtkTreePath *path,
-    GtkTreeIter *iter,
-    gpointer user_data)
-{
-  gchar **text = (gchar **) user_data;
-  gchar *tmp;
-  gchar *domain, *category, *message, *level_str, *level_upper;
-  gdouble timestamp;
-  gchar *line, *time_str;
-
-  gtk_tree_model_get (model, iter,
-      COL_DEBUG_TIMESTAMP, &timestamp,
-      COL_DEBUG_DOMAIN, &domain,
-      COL_DEBUG_CATEGORY, &category,
-      COL_DEBUG_LEVEL_STRING, &level_str,
-      COL_DEBUG_MESSAGE, &message,
-      -1);
-
-  level_upper = g_ascii_strup (level_str, -1);
-
-  time_str = debug_window_format_timestamp (timestamp);
-
-  line = g_strdup_printf ("%s%s%s-%s: %s: %s\n",
-      domain, EMP_STR_EMPTY (category) ? "" : "/",
-      category, level_upper, time_str, message);
-
-  g_free (time_str);
-
-  tmp = g_strconcat (*text, line, NULL);
-
-  g_free (*text);
-  g_free (line);
-  g_free (level_upper);
-  g_free (level_str);
-  g_free (domain);
-  g_free (category);
-  g_free (message);
-
-  *text = tmp;
-
-  return FALSE;
 }
 
 static void
@@ -1822,9 +1777,7 @@ debug_window_copy_clicked_cb (GtkToolButton *tool_button,
     EmpathyDebugWindow *self)
 {
   GtkClipboard *clipboard;
-  gchar *text;
-
-  text = g_strdup ("");
+  gchar *text = NULL;
 
   gtk_tree_model_foreach (self->priv->store_filter,
       debug_window_copy_model_foreach, &text);
