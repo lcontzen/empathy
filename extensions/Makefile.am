@@ -12,7 +12,6 @@ EXTRA_DIST = \
     all.xml \
     generic-types.xml \
     misc.xml \
-    Debug.xml \
     Logger.xml \
     Connection_Interface_Renaming.xml \
     Authentication_TLS_Certificate.xml \

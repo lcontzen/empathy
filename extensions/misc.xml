@@ -4,7 +4,6 @@
 
 <tp:title>Misc extensions for Empathy</tp:title>
 
-<xi:include href="Debug.xml" />
 <xi:include href="Logger.xml" />
 <xi:include href="Chat_Manager.xml" />
 <xi:include href="Connection_Interface_Renaming.xml" />
