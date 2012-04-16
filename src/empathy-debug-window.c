@@ -129,26 +129,26 @@ struct _EmpathyDebugWindowPriv
 };
 
 static const gchar *
-log_level_to_string (guint level)
+log_level_to_string (GLogLevelFlags level)
 {
   switch (level)
     {
-    case TP_DEBUG_LEVEL_ERROR:
+    case G_LOG_LEVEL_ERROR:
       return "Error";
       break;
-    case TP_DEBUG_LEVEL_CRITICAL:
+    case G_LOG_LEVEL_CRITICAL:
       return "Critical";
       break;
-    case TP_DEBUG_LEVEL_WARNING:
+    case G_LOG_LEVEL_WARNING:
       return "Warning";
       break;
-    case TP_DEBUG_LEVEL_MESSAGE:
+    case G_LOG_LEVEL_MESSAGE:
       return "Message";
       break;
-    case TP_DEBUG_LEVEL_INFO:
+    case G_LOG_LEVEL_INFO:
       return "Info";
       break;
-    case TP_DEBUG_LEVEL_DEBUG:
+    case G_LOG_LEVEL_DEBUG:
       return "Debug";
       break;
     default:
@@ -215,7 +215,7 @@ insert_values_in_buffer (GtkListStore *store,
         gdouble timestamp,
         const gchar *domain,
         const gchar *category,
-        guint level,
+        GLogLevelFlags level,
         const gchar *string)
 {
   GtkTreeIter iter;
@@ -232,15 +232,24 @@ insert_values_in_buffer (GtkListStore *store,
 
 static void
 debug_window_add_message (EmpathyDebugWindow *self,
-    TpProxy *proxy,
-    gdouble timestamp,
-    const gchar *domain_category,
-    guint level,
-    const gchar *message)
+    TpDebugClient *debug,
+    TpDebugMessage *msg)
 {
   gchar *domain, *category;
   gchar *string;
   GtkListStore *active_buffer, *pause_buffer;
+  gdouble timestamp;
+  const gchar *domain_category, *message;
+  GLogLevelFlags level;
+  GDateTime *t;
+
+  t = tp_debug_message_get_time (msg);
+  /* FIME: we loose the microseconds */
+  timestamp = (gdouble) g_date_time_to_unix (t);
+
+  domain_category = tp_debug_message_get_domain (msg);
+  level = tp_debug_message_get_level (msg);
+  message = tp_debug_message_get_message (msg);
 
   if (g_strrstr (domain_category, "/"))
     {
@@ -260,8 +269,8 @@ debug_window_add_message (EmpathyDebugWindow *self,
   else
     string = g_strdup (message);
 
-  pause_buffer = g_object_get_data (G_OBJECT (proxy), "pause-buffer");
-  active_buffer = g_object_get_data (G_OBJECT (proxy), "active-buffer");
+  pause_buffer = g_object_get_data (G_OBJECT (debug), "pause-buffer");
+  active_buffer = g_object_get_data (G_OBJECT (debug), "active-buffer");
 
   if (self->priv->paused)
     {
@@ -287,34 +296,40 @@ debug_window_add_message (EmpathyDebugWindow *self,
 }
 
 static void
-debug_window_new_debug_message_cb (TpProxy *proxy,
-    gdouble timestamp,
-    const gchar *domain,
-    guint level,
-    const gchar *message,
-    gpointer user_data,
-    GObject *weak_object)
+debug_window_new_debug_message_cb (TpDebugClient *debug,
+    TpDebugMessage *msg,
+    gpointer user_data)
 {
   EmpathyDebugWindow *self = user_data;
 
-  debug_window_add_message (self, proxy, timestamp, domain, level,
-      message);
+  debug_window_add_message (self, debug, msg);
 }
 
 static void
-debug_window_set_enabled (TpProxy *proxy,
+set_enabled_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpDebugClient *debug = TP_DEBUG_CLIENT (source);
+  gboolean enabled = GPOINTER_TO_UINT (user_data);
+  GError *error = NULL;
+
+  if (!tp_debug_client_set_enabled_finish (debug, result, &error))
+    {
+      DEBUG ("Failed to %s debugging on %s", enabled ? "enable" : "disable",
+          tp_proxy_get_bus_name (debug));
+      g_error_free (error);
+    }
+}
+
+static void
+debug_window_set_enabled (TpDebugClient *debug,
     gboolean enabled)
 {
-  GValue *val;
+  g_return_if_fail (debug != NULL);
 
-  g_return_if_fail (proxy != NULL);
-
-  val = tp_g_value_slice_new_boolean (enabled);
-
-  tp_cli_dbus_properties_call_set (proxy, -1, TP_IFACE_DEBUG,
-      "Enabled", val, NULL, NULL, NULL, NULL);
-
-  tp_g_value_slice_free (val);
+  tp_debug_client_set_enabled_async (debug, enabled,
+      set_enabled_cb, GUINT_TO_POINTER (enabled));
 }
 
 static void
@@ -419,12 +434,11 @@ proxy_invalidated_cb (TpProxy *proxy,
 }
 
 static void
-debug_window_get_messages_cb (TpProxy *proxy,
-    const GPtrArray *messages,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+debug_window_get_messages_cb (GObject *object,
+    GAsyncResult *result,
+    gpointer user_data)
 {
+  TpDebugClient *debug = TP_DEBUG_CLIENT (object);
   EmpathyDebugWindow *self = user_data;
   gchar *active_service_name;
   guint i;
@@ -432,8 +446,10 @@ debug_window_get_messages_cb (TpProxy *proxy,
   gboolean valid_iter;
   GtkTreeIter iter;
   gchar *proxy_service_name;
+  GPtrArray *messages;
+  GError *error = NULL;
 
-  active_buffer = g_object_get_data (G_OBJECT (proxy), "active-buffer");
+  active_buffer = g_object_get_data (object, "active-buffer");
   valid_iter = debug_window_get_iter_for_active_buffer (active_buffer, &iter,
       self);
   gtk_tree_model_get (GTK_TREE_MODEL (self->priv->service_store), &iter,
@@ -441,9 +457,12 @@ debug_window_get_messages_cb (TpProxy *proxy,
       -1);
 
   active_service_name = get_active_service_name (self);
-  if (error != NULL)
+
+  messages = tp_debug_client_get_messages_finish (debug, result, &error);
+  if (messages == NULL)
     {
-      DEBUG ("GetMessages failed: %s", error->message);
+      DEBUG ("Failed to get debug messsages: %s", error->message);
+      g_error_free (error);
 
       /* We want to set the window sensitivity to false only when proxy for the
        * selected service is unable to fetch debug messages */
@@ -451,7 +470,7 @@ debug_window_get_messages_cb (TpProxy *proxy,
         debug_window_set_toolbar_sensitivity (self, FALSE);
 
       /* We created the proxy for GetMessages call. Now destroy it. */
-      tp_clear_object (&proxy);
+      tp_clear_object (&debug);
       return;
     }
 
@@ -459,16 +478,11 @@ debug_window_get_messages_cb (TpProxy *proxy,
   g_free (active_service_name);
   debug_window_set_toolbar_sensitivity (self, TRUE);
 
-
   for (i = 0; i < messages->len; i++)
     {
-      GValueArray *values = g_ptr_array_index (messages, i);
+      TpDebugMessage *msg = g_ptr_array_index (messages, i);
 
-      debug_window_add_message (self, proxy,
-          g_value_get_double (g_value_array_get_nth (values, 0)),
-          g_value_get_string (g_value_array_get_nth (values, 1)),
-          g_value_get_uint (g_value_array_get_nth (values, 2)),
-          g_value_get_string (g_value_array_get_nth (values, 3)));
+      debug_window_add_message (self, debug, msg);
     }
 
   /* Now we save this precious proxy in the service_store along its service */
@@ -478,20 +492,19 @@ debug_window_get_messages_cb (TpProxy *proxy,
           " messages. Saving it.", proxy_service_name);
 
       gtk_list_store_set (self->priv->service_store, &iter,
-          COL_PROXY, proxy,
+          COL_PROXY, debug,
           -1);
     }
 
   g_free (proxy_service_name);
 
   /* Connect to "invalidated" signal */
-  g_signal_connect (proxy, "invalidated",
+  g_signal_connect (debug, "invalidated",
       G_CALLBACK (proxy_invalidated_cb), self);
 
  /* Connect to NewDebugMessage */
-  emp_cli_debug_connect_to_new_debug_message (
-      proxy, debug_window_new_debug_message_cb, self,
-      NULL, NULL, NULL);
+  tp_g_signal_connect_object (debug, "new-debug-message",
+      G_CALLBACK (debug_window_new_debug_message_cb), self, 0);
 
   /* Now that active-buffer is up to date, we can see which messages are
    * to be visible */
@@ -499,7 +512,7 @@ debug_window_get_messages_cb (TpProxy *proxy,
         self->priv->store_filter));
 
   /* Set the proxy to signal for new debug messages */
-  debug_window_set_enabled (proxy, TRUE);
+  debug_window_set_enabled (debug, TRUE);
 }
 
 static void
@@ -508,9 +521,10 @@ create_proxy_to_get_messages (EmpathyDebugWindow *self,
     TpDBusDaemon *dbus)
 {
   gchar *bus_name, *name = NULL;
-  TpProxy *new_proxy, *stored_proxy = NULL;
+  TpDebugClient *new_proxy, *stored_proxy = NULL;
   GtkTreeModel *pause_buffer, *active_buffer;
   gboolean gone;
+  GError *error = NULL;
 
   gtk_tree_model_get (GTK_TREE_MODEL (self->priv->service_store), iter,
       COL_NAME, &name,
@@ -535,11 +549,17 @@ create_proxy_to_get_messages (EmpathyDebugWindow *self,
 
   gtk_tree_model_get (GTK_TREE_MODEL (self->priv->service_store), iter,
       COL_UNIQUE_NAME, &bus_name, -1);
-  new_proxy = g_object_new (TP_TYPE_PROXY,
-      "bus-name", bus_name,
-      "dbus-daemon", dbus,
-      "object-path", DEBUG_OBJECT_PATH,
-      NULL);
+
+  new_proxy = tp_debug_client_new (dbus, bus_name, &error);
+
+  if (new_proxy == NULL)
+    {
+      DEBUG ("Failed to create TpDebugClient on bus %s: %s", bus_name,
+          error->message);
+      g_free (bus_name);
+      goto finally;
+    }
+
   g_free (bus_name);
 
   g_object_set_data (G_OBJECT (new_proxy), "active-buffer", active_buffer);
@@ -550,10 +570,9 @@ create_proxy_to_get_messages (EmpathyDebugWindow *self,
    * * Wasn't saved as last GetMessages call failed
    * * The service has newly arrived and no proxy has been prepared yet for it
    * * A service with the same name has reappeared but the owner maybe new */
-  tp_proxy_add_interface_by_id (new_proxy, emp_iface_quark_debug ());
 
-  emp_cli_debug_call_get_messages (new_proxy, -1,
-      debug_window_get_messages_cb, self, NULL, NULL);
+  tp_debug_client_get_messages_async (TP_DEBUG_CLIENT (new_proxy),
+      debug_window_get_messages_cb, self);
 
 finally:
   g_free (name);
@@ -2026,32 +2045,32 @@ am_prepared_cb (GObject *am,
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Debug"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_DEBUG,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_DEBUG,
       -1);
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Info"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_INFO,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_INFO,
       -1);
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Message"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_MESSAGE,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_MESSAGE,
       -1);
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Warning"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_WARNING,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_WARNING,
       -1);
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Critical"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_CRITICAL,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_CRITICAL,
       -1);
 
   gtk_list_store_insert_with_values (level_store, &iter, -1,
       COL_LEVEL_NAME, _("Error"),
-      COL_LEVEL_VALUE, TP_DEBUG_LEVEL_ERROR,
+      COL_LEVEL_VALUE, G_LOG_LEVEL_ERROR,
       -1);
 
   gtk_combo_box_set_active (GTK_COMBO_BOX (self->priv->level_filter), 0);
