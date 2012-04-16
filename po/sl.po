@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: empathy master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-03-16 13:14+0000\n"
-"PO-Revision-Date: 2012-03-16 14:51+0100\n"
-"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"PO-Revision-Date: 2012-04-14 11:32+0200\n"
+"Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenščina <gnome-si@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -159,7 +159,7 @@ msgstr "Prikaz prihajajočih dogodkov v vrstici stanja."
 
 #: ../data/org.gnome.Empathy.gschema.xml.in.h:28
 msgid "Display incoming events in the status area. If false, present them to the user immediately."
-msgstr "Prikaz prihajajočih dogodkov v vrstici stanja. V primeru, da možnost ni izbrana, bodo prikazane takoj."
+msgstr "Prikaz prihajajočih dogodkov v vrstici stanja. V primeru da možnost ni izbrana, bodo prikazane takoj."
 
 #: ../data/org.gnome.Empathy.gschema.xml.in.h:29
 msgid "The position for the chat window side pane"
@@ -1073,7 +1073,7 @@ msgid ""
 "Use <a href=\"http://www.facebook.com/username/\">this page</a> to choose a Facebook username if you don't have one."
 msgstr ""
 "To je vaše uporabniško ime in ne običajna Facebook prijava.\n"
-"V primeru, da ste facebook.com/<b>badger</b>, vnesite <b>badger</b>.\n"
+"V primeru da ste facebook.com/<b>badger</b>, vnesite <b>badger</b>.\n"
 "Uporabite <a href=\"http://www.facebook.com/username/\">to stran</a> za izbor uporabniškega imena, v kolikor ga še nimate."
 
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:6
@@ -1759,7 +1759,7 @@ msgstr "Predstavitveno sporočilo:"
 
 #: ../libempathy-gtk/empathy-contact-search-dialog.c:629
 msgid "Please let me see when you're online. Thanks!"
-msgstr "Želel bi videti, kdaj ste na zvezi. Hvala!"
+msgstr "Želel bi videti, kdaj ste prisotni v klepetu. Hvala!"
 
 #: ../libempathy-gtk/empathy-contact-widget.c:567
 #: ../libempathy-gtk/empathy-individual-widget.c:304
@@ -3447,9 +3447,9 @@ msgstr[3] "%s (%d neprebrana)"
 msgid "%s (and %u other)"
 msgid_plural "%s (and %u others)"
 msgstr[0] "%s (in %u drugih)"
-msgstr[1] "%s (in %u drugo)"
-msgstr[2] "%s (in %u drugi)"
-msgstr[3] "%s (in %u druga)"
+msgstr[1] "%s (in %u drug)"
+msgstr[2] "%s (in %u druga)"
+msgstr[3] "%s (in %u drugi)"
 
 #: ../src/empathy-chat-window.c:668
 #, c-format
@@ -3890,7 +3890,7 @@ msgstr "_Nov pogovor ..."
 #: ../src/empathy-roster-window-menubar.ui.h:3
 #: ../src/empathy-status-icon.ui.h:3
 msgid "New _Call…"
-msgstr "Nov _klic ..."
+msgstr "Nov k_lic ..."
 
 #: ../src/empathy-roster-window-menubar.ui.h:6
 msgid "_Search for Contacts…"
@@ -3902,11 +3902,11 @@ msgstr "Prenosi _datotek"
 
 #: ../src/empathy-roster-window-menubar.ui.h:8
 msgid "_Offline Contacts"
-msgstr "Nepri_sotni stiki"
+msgstr "_Neprisotni stiki"
 
 #: ../src/empathy-roster-window-menubar.ui.h:9
 msgid "Show P_rotocols"
-msgstr "Pokaži _protokole"
+msgstr "Pokaži p_rotokole"
 
 #: ../src/empathy-roster-window-menubar.ui.h:10
 msgid "Credit Balance"
@@ -3950,7 +3950,7 @@ msgstr "_Običajna velikost"
 
 #: ../src/empathy-roster-window-menubar.ui.h:22
 msgid "_Compact Size"
-msgstr "_Skrčen pogled"
+msgstr "S_krčen pogled"
 
 #: ../src/empathy-roster-window-menubar.ui.h:23
 msgid "_Room"
@@ -3962,7 +3962,7 @@ msgstr "_Pridruži se"
 
 #: ../src/empathy-roster-window-menubar.ui.h:25
 msgid "Join _Favorites"
-msgstr "Pridruži se _priljubljenim"
+msgstr "Pridruži se p_riljubljenim"
 
 #: ../src/empathy-roster-window-menubar.ui.h:26
 msgid "Manage Favorites"
@@ -4115,7 +4115,7 @@ msgstr "Pokaži _smeške kot slike"
 
 #: ../src/empathy-preferences.ui.h:2
 msgid "Show contact _list in rooms"
-msgstr "Pokaži _seznam stikov v klepetalnicah"
+msgstr "Pokaži s_eznam stikov v klepetalnicah"
 
 #: ../src/empathy-preferences.ui.h:3
 msgid "Appearance"
@@ -4127,11 +4127,11 @@ msgstr "Začni klepet v:"
 
 #: ../src/empathy-preferences.ui.h:5
 msgid "new ta_bs"
-msgstr "novi _zavihki"
+msgstr "novih _zavihkih"
 
 #: ../src/empathy-preferences.ui.h:6
 msgid "new _windows"
-msgstr "nova _okna"
+msgstr "novih _oknih"
 
 #: ../src/empathy-preferences.ui.h:7
 msgid "Display incoming events in the notification area"
@@ -4159,7 +4159,7 @@ msgstr "_Omogoči obvestila v oblačkih"
 
 #: ../src/empathy-preferences.ui.h:13
 msgid "Disable notifications when _away or busy"
-msgstr "Onemogoči obvestila  ob _odsotnosti ali zaposlenosti"
+msgstr "Onemogoči obvestila ob odsotnosti ali _zaposlenosti"
 
 #: ../src/empathy-preferences.ui.h:14
 msgid "Enable notifications when the _chat is not focused"
@@ -4199,7 +4199,7 @@ msgstr "Uporabi _podporo odpravljanja odmevov za izboljšanje kakovosti klica."
 
 #: ../src/empathy-preferences.ui.h:23
 msgid "Echo cancellation helps to make your voice sound clearer to the other person, but may cause problems on some computers. If you or the other person hear strange noises or glitches during calls, try turning echo cancellation off and restarting the call."
-msgstr "Odpravljanje odmevov omogoči čistejši zvok glasu med klicanjem, vendar pa se lahko na nekaterih sistemih pojavijo težave. V primeru, da med pogovorom zaslišite nenavadne zvoke ali šume, onemogočite odpravljanje odmevov in ponovno vzpostavite klic."
+msgstr "Odpravljanje odmevov omogoči čistejši zvok glasu med klicanjem, vendar pa se lahko na nekaterih sistemih pojavijo težave. V primeru da med pogovorom zaslišite nenavadne zvoke ali šume, onemogočite odpravljanje odmevov in ponovno vzpostavite klic."
 
 #: ../src/empathy-preferences.ui.h:26
 msgid "_Publish location to my contacts"
@@ -4550,7 +4550,7 @@ msgstr "Uporabniki v bližini"
 
 #: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:150
 msgid "Empathy can automatically discover and chat with the people connected on the same network as you. If you want to use this feature, please check that the details below are correct."
-msgstr "Program Empathy lahko samodejno odkrije in izmenjuje podatke z uporabniki v istem omrežju. V primeru, da želite uporabljati to možnost, preverite spodnje podatke."
+msgstr "Program Empathy lahko samodejno odkrije in izmenjuje podatke z uporabniki v istem omrežju. V primeru da želite uporabljati to možnost, preverite spodnje podatke."
 
 #: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:183
 msgid "You can change these details later or disable this feature by choosing <span style=\"italic\">Edit → Accounts</span> in the Contact List."
