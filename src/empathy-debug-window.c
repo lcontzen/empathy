@@ -2143,8 +2143,6 @@ empathy_debug_window_init (EmpathyDebugWindow *empathy_debug_window)
       EMPATHY_TYPE_DEBUG_WINDOW, EmpathyDebugWindowPriv);
 
   empathy_debug_window->priv = priv;
-
-  priv->dispose_run = FALSE;
 }
 
 static void
@@ -2191,27 +2189,13 @@ debug_window_dispose (GObject *object)
   EmpathyDebugWindow *selector = EMPATHY_DEBUG_WINDOW (object);
   EmpathyDebugWindowPriv *priv = GET_PRIV (selector);
 
-  if (priv->dispose_run)
-    return;
-
-  priv->dispose_run = TRUE;
-
   if (priv->name_owner_changed_signal != NULL)
     tp_proxy_signal_connection_disconnect (priv->name_owner_changed_signal);
 
-  if (priv->service_store != NULL)
-    g_object_unref (priv->service_store);
-
-  if (priv->dbus != NULL)
-    g_object_unref (priv->dbus);
-
-  if (priv->am != NULL)
-    {
-      g_object_unref (priv->am);
-      priv->am = NULL;
-    }
-
-  tp_clear_object (&priv->all_active_buffer);
+  g_clear_object (&priv->service_store);
+  g_clear_object (&priv->dbus);
+  g_clear_object (&priv->am);
+  g_clear_object (&priv->all_active_buffer);
 
   (G_OBJECT_CLASS (empathy_debug_window_parent_class)->dispose) (object);
 }
