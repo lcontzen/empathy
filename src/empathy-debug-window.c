@@ -58,12 +58,7 @@ typedef enum
 
 enum
 {
-  COL_DEBUG_TIMESTAMP = 0,
-  COL_DEBUG_DOMAIN,
-  COL_DEBUG_CATEGORY,
-  COL_DEBUG_LEVEL_STRING,
-  COL_DEBUG_MESSAGE,
-  COL_DEBUG_LEVEL_VALUE,
+  COL_DEBUG_MESSAGE = 0,
   NUM_DEBUG_COLS
 };
 
@@ -181,52 +176,28 @@ copy_buffered_messages (GtkTreeModel *buffer,
 {
   GtkListStore *active_buffer = data;
   GtkTreeIter active_buffer_iter;
-  gdouble timestamp;
-  gchar *domain, *category, *message, *level_string;
-  guint level;
+  TpDebugMessage *msg;
 
   gtk_tree_model_get (buffer, iter,
-      COL_DEBUG_TIMESTAMP, &timestamp,
-      COL_DEBUG_DOMAIN, &domain,
-      COL_DEBUG_CATEGORY, &category,
-      COL_DEBUG_LEVEL_STRING, &level_string,
-      COL_DEBUG_MESSAGE, &message,
-      COL_DEBUG_LEVEL_VALUE, &level,
+      COL_DEBUG_MESSAGE, &msg,
       -1);
   gtk_list_store_insert_with_values (active_buffer, &active_buffer_iter, -1,
-      COL_DEBUG_TIMESTAMP, timestamp,
-      COL_DEBUG_DOMAIN, domain,
-      COL_DEBUG_CATEGORY, category,
-      COL_DEBUG_LEVEL_STRING, level_string,
-      COL_DEBUG_MESSAGE, message,
-      COL_DEBUG_LEVEL_VALUE, level,
+      COL_DEBUG_MESSAGE, msg,
       -1);
 
-  g_free (domain);
-  g_free (category);
-  g_free (level_string);
-  g_free (message);
+  g_object_unref (msg);
 
   return FALSE;
 }
 
 static void
 insert_values_in_buffer (GtkListStore *store,
-        gdouble timestamp,
-        const gchar *domain,
-        const gchar *category,
-        GLogLevelFlags level,
-        const gchar *string)
+    TpDebugMessage *msg)
 {
   GtkTreeIter iter;
 
   gtk_list_store_insert_with_values (store, &iter, -1,
-      COL_DEBUG_TIMESTAMP, timestamp,
-      COL_DEBUG_DOMAIN, domain,
-      COL_DEBUG_CATEGORY, category,
-      COL_DEBUG_LEVEL_STRING, log_level_to_string (level),
-      COL_DEBUG_MESSAGE, string,
-      COL_DEBUG_LEVEL_VALUE, level,
+      COL_DEBUG_MESSAGE, msg,
       -1);
 }
 
@@ -235,64 +206,22 @@ debug_window_add_message (EmpathyDebugWindow *self,
     TpDebugClient *debug,
     TpDebugMessage *msg)
 {
-  gchar *domain, *category;
-  gchar *string;
   GtkListStore *active_buffer, *pause_buffer;
-  gdouble timestamp;
-  const gchar *domain_category, *message;
-  GLogLevelFlags level;
-  GDateTime *t;
-
-  t = tp_debug_message_get_time (msg);
-  /* FIME: we loose the microseconds */
-  timestamp = (gdouble) g_date_time_to_unix (t);
-
-  domain_category = tp_debug_message_get_domain (msg);
-  level = tp_debug_message_get_level (msg);
-  message = tp_debug_message_get_message (msg);
-
-  if (g_strrstr (domain_category, "/"))
-    {
-      gchar **parts = g_strsplit (domain_category, "/", 2);
-      domain = g_strdup (parts[0]);
-      category = g_strdup (parts[1]);
-      g_strfreev (parts);
-    }
-  else
-    {
-      domain = g_strdup (domain_category);
-      category = g_strdup ("");
-    }
-
-  if (g_str_has_suffix (message, "\n"))
-    string = g_strchomp (g_strdup (message));
-  else
-    string = g_strdup (message);
 
   pause_buffer = g_object_get_data (G_OBJECT (debug), "pause-buffer");
   active_buffer = g_object_get_data (G_OBJECT (debug), "active-buffer");
 
   if (self->priv->paused)
     {
-      insert_values_in_buffer (pause_buffer, timestamp,
-          domain, category, level,
-          string);
+      insert_values_in_buffer (pause_buffer, msg);
     }
   else
     {
       /* Append 'this' message to this service's and All's active-buffers */
-      insert_values_in_buffer (active_buffer, timestamp,
-          domain, category, level,
-          string);
+      insert_values_in_buffer (active_buffer, msg);
 
-      insert_values_in_buffer (self->priv->all_active_buffer, timestamp,
-          domain, category, level,
-          string);
+      insert_values_in_buffer (self->priv->all_active_buffer, msg);
     }
-
-  g_free (string);
-  g_free (domain);
-  g_free (category);
 }
 
 static void
@@ -585,12 +514,7 @@ static GtkListStore *
 new_list_store_for_service (void)
 {
   return gtk_list_store_new (NUM_DEBUG_COLS,
-             G_TYPE_DOUBLE, /* COL_DEBUG_TIMESTAMP */
-             G_TYPE_STRING, /* COL_DEBUG_DOMAIN */
-             G_TYPE_STRING, /* COL_DEBUG_CATEGORY */
-             G_TYPE_STRING, /* COL_DEBUG_LEVEL_STRING */
-             G_TYPE_STRING, /* COL_DEBUG_MESSAGE */
-             G_TYPE_UINT);  /* COL_DEBUG_LEVEL_VALUE */
+             TP_TYPE_DEBUG_MESSAGE); /* COL_DEBUG_MESSAGE */
 }
 
 static gboolean
@@ -599,23 +523,25 @@ debug_window_visible_func (GtkTreeModel *model,
     gpointer user_data)
 {
   EmpathyDebugWindow *self = user_data;
-  guint filter_value, level;
+  GLogLevelFlags filter_value;
   GtkTreeModel *filter_model;
   GtkTreeIter filter_iter;
+  TpDebugMessage *msg;
+  gboolean result;
 
   filter_model = gtk_combo_box_get_model (
       GTK_COMBO_BOX (self->priv->level_filter));
   gtk_combo_box_get_active_iter (GTK_COMBO_BOX (self->priv->level_filter),
       &filter_iter);
 
-  gtk_tree_model_get (model, iter, COL_DEBUG_LEVEL_VALUE, &level, -1);
+  gtk_tree_model_get (model, iter, COL_DEBUG_MESSAGE, &msg, -1);
   gtk_tree_model_get (filter_model, &filter_iter,
       COL_LEVEL_VALUE, &filter_value, -1);
 
-  if (level <= filter_value)
-    return TRUE;
+  result = (tp_debug_message_get_level (msg) <= filter_value);
+  g_object_unref (msg);
 
-  return FALSE;
+  return result;
 }
 
 static gboolean
@@ -1364,7 +1290,8 @@ debug_window_menu_copy_activate_cb (GtkMenuItem *menu_item,
   GtkTreePath *path;
   GtkTreeViewColumn *focus_column;
   GtkTreeIter iter;
-  gchar *message;
+  TpDebugMessage *msg;
+  const gchar *message;
   GtkClipboard *clipboard;
 
   gtk_tree_view_get_cursor (GTK_TREE_VIEW (self->priv->view),
@@ -1379,8 +1306,10 @@ debug_window_menu_copy_activate_cb (GtkMenuItem *menu_item,
   gtk_tree_model_get_iter (self->priv->store_filter, &iter, path);
 
   gtk_tree_model_get (self->priv->store_filter, &iter,
-      COL_DEBUG_MESSAGE, &message,
+      COL_DEBUG_MESSAGE, &msg,
       -1);
+
+  message = tp_debug_message_get_message (msg);
 
   if (EMP_STR_EMPTY (message))
     {
@@ -1394,7 +1323,7 @@ debug_window_menu_copy_activate_cb (GtkMenuItem *menu_item,
 
   gtk_clipboard_set_text (clipboard, message, -1);
 
-  g_free (message);
+  g_object_unref (msg);
 }
 
 typedef struct
@@ -1452,25 +1381,20 @@ debug_window_button_press_event_cb (GtkTreeView *view,
 }
 
 static gchar *
-debug_window_format_timestamp (gdouble timestamp)
+debug_window_format_timestamp (TpDebugMessage *msg)
 {
-  struct tm *tstruct;
-  char time_str[32];
+  GDateTime *t;
+  gchar *time_str, *text;
   gint ms;
-  time_t sec;
-  gchar *text;
 
-  ms = (int) ((timestamp - (int) timestamp)*1e6);
-  sec = (long) timestamp;
-  tstruct = localtime ((time_t *) &sec);
-  if (!strftime (time_str, sizeof (time_str), "%x %T", tstruct))
-    {
-      DEBUG ("Failed to format timestamp: %e", timestamp);
-      time_str[0] = '\0';
-    }
+  t = tp_debug_message_get_time (msg);
 
+  time_str = g_date_time_format (t, "%x %T");
+
+  ms = g_date_time_get_microsecond (t);
   text = g_strdup_printf ("%s.%d", time_str, ms);
 
+  g_free (time_str);
   return text;
 }
 
@@ -1481,16 +1405,88 @@ debug_window_time_formatter (GtkTreeViewColumn *tree_column,
     GtkTreeIter *iter,
     gpointer data)
 {
-  gdouble timestamp;
+  TpDebugMessage *msg;
   gchar *time_str;
 
-  gtk_tree_model_get (tree_model, iter, COL_DEBUG_TIMESTAMP, &timestamp, -1);
+  gtk_tree_model_get (tree_model, iter, COL_DEBUG_MESSAGE, &msg, -1);
 
-  time_str = debug_window_format_timestamp (timestamp);
+  time_str = debug_window_format_timestamp (msg);
 
   g_object_set (G_OBJECT (cell), "text", time_str, NULL);
 
-  g_free (time_str);
+  g_object_unref (msg);
+}
+
+static void
+debug_window_domain_formatter (GtkTreeViewColumn *tree_column,
+    GtkCellRenderer *cell,
+    GtkTreeModel *tree_model,
+    GtkTreeIter *iter,
+    gpointer data)
+{
+  TpDebugMessage *msg;
+
+  gtk_tree_model_get (tree_model, iter, COL_DEBUG_MESSAGE, &msg, -1);
+
+  g_object_set (G_OBJECT (cell), "text", tp_debug_message_get_domain (msg),
+      NULL);
+
+  g_object_unref (msg);
+}
+
+static void
+debug_window_category_formatter (GtkTreeViewColumn *tree_column,
+    GtkCellRenderer *cell,
+    GtkTreeModel *tree_model,
+    GtkTreeIter *iter,
+    gpointer data)
+{
+  TpDebugMessage *msg;
+  const gchar *category;
+
+  gtk_tree_model_get (tree_model, iter, COL_DEBUG_MESSAGE, &msg, -1);
+
+  category = tp_debug_message_get_category (msg);
+
+  g_object_set (G_OBJECT (cell), "text", category ? category : "", NULL);
+
+  g_object_unref (msg);
+}
+
+static void
+debug_window_message_formatter (GtkTreeViewColumn *tree_column,
+    GtkCellRenderer *cell,
+    GtkTreeModel *tree_model,
+    GtkTreeIter *iter,
+    gpointer data)
+{
+  TpDebugMessage *msg;
+
+  gtk_tree_model_get (tree_model, iter, COL_DEBUG_MESSAGE, &msg, -1);
+
+  g_object_set (G_OBJECT (cell), "text",
+      tp_debug_message_get_message (msg), NULL);
+
+  g_object_unref (msg);
+}
+
+static void
+debug_window_level_formatter (GtkTreeViewColumn *tree_column,
+    GtkCellRenderer *cell,
+    GtkTreeModel *tree_model,
+    GtkTreeIter *iter,
+    gpointer data)
+{
+  TpDebugMessage *msg;
+  const gchar *level;
+
+  gtk_tree_model_get (tree_model, iter, COL_DEBUG_MESSAGE, &msg, -1);
+
+  level = log_level_to_string (tp_debug_message_get_level (msg));
+
+  g_object_set (G_OBJECT (cell), "text", level, NULL);
+
+  g_object_unref (msg);
 }
 
 static gboolean
@@ -1501,28 +1497,28 @@ debug_window_copy_model_foreach (GtkTreeModel *model,
 {
   gchar **text = (gchar **) user_data;
   gchar *tmp;
-  gchar *domain, *category, *message, *level_str, *level_upper;
-  gdouble timestamp;
+  gchar *level_upper;
+  const gchar *level_str, *category;
   gchar *line, *time_str;
+  TpDebugMessage *msg;
 
   if (*text == NULL)
     *text = g_strdup ("");
 
   gtk_tree_model_get (model, iter,
-      COL_DEBUG_TIMESTAMP, &timestamp,
-      COL_DEBUG_DOMAIN, &domain,
-      COL_DEBUG_CATEGORY, &category,
-      COL_DEBUG_LEVEL_STRING, &level_str,
-      COL_DEBUG_MESSAGE, &message,
+      COL_DEBUG_MESSAGE, &msg,
       -1);
 
+  level_str = log_level_to_string (tp_debug_message_get_level (msg));
   level_upper = g_ascii_strup (level_str, -1);
 
-  time_str = debug_window_format_timestamp (timestamp);
+  time_str = debug_window_format_timestamp (msg);
+  category = tp_debug_message_get_category (msg);
 
   line = g_strdup_printf ("%s%s%s-%s: %s: %s\n",
-      domain, EMP_STR_EMPTY (category) ? "" : "/",
-      category, level_upper, time_str, message);
+      tp_debug_message_get_domain (msg),
+      category ? "" : "/", category ? category : "",
+      level_upper, time_str, tp_debug_message_get_message (msg));
 
   g_free (time_str);
 
@@ -1531,10 +1527,7 @@ debug_window_copy_model_foreach (GtkTreeModel *model,
   g_free (*text);
   g_free (line);
   g_free (level_upper);
-  g_free (level_str);
-  g_free (domain);
-  g_free (category);
-  g_free (message);
+  g_object_unref (msg);
 
   *text = tmp;
 
@@ -2043,17 +2036,21 @@ am_prepared_cb (GObject *am,
   gtk_tree_view_insert_column_with_data_func (GTK_TREE_VIEW (self->priv->view),
       -1, _("Time"), renderer,
       (GtkTreeCellDataFunc) debug_window_time_formatter, NULL, NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (self->priv->view),
-      -1, _("Domain"), renderer, "text", COL_DEBUG_DOMAIN, NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (self->priv->view),
-      -1, _("Category"), renderer, "text", COL_DEBUG_CATEGORY, NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (self->priv->view),
-      -1, _("Level"), renderer, "text", COL_DEBUG_LEVEL_STRING, NULL);
+  gtk_tree_view_insert_column_with_data_func (GTK_TREE_VIEW (self->priv->view),
+      -1, _("Domain"), renderer,
+      (GtkTreeCellDataFunc) debug_window_domain_formatter, NULL, NULL);
+  gtk_tree_view_insert_column_with_data_func (GTK_TREE_VIEW (self->priv->view),
+      -1, _("Category"), renderer,
+      (GtkTreeCellDataFunc) debug_window_category_formatter, NULL, NULL);
+  gtk_tree_view_insert_column_with_data_func (GTK_TREE_VIEW (self->priv->view),
+      -1, _("Level"), renderer,
+      (GtkTreeCellDataFunc) debug_window_level_formatter, NULL, NULL);
 
   renderer = gtk_cell_renderer_text_new ();
   g_object_set (renderer, "family", "Monospace", NULL);
-  gtk_tree_view_insert_column_with_attributes (GTK_TREE_VIEW (self->priv->view),
-      -1, _("Message"), renderer, "text", COL_DEBUG_MESSAGE, NULL);
+  gtk_tree_view_insert_column_with_data_func (GTK_TREE_VIEW (self->priv->view),
+      -1, _("Message"), renderer,
+      (GtkTreeCellDataFunc) debug_window_message_formatter, NULL, NULL);
 
   self->priv->store_filter = NULL;
 
