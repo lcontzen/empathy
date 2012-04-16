@@ -42,11 +42,12 @@ G_BEGIN_DECLS
 
 typedef struct _EmpathyDebugWindow EmpathyDebugWindow;
 typedef struct _EmpathyDebugWindowClass EmpathyDebugWindowClass;
+typedef struct _EmpathyDebugWindowPriv EmpathyDebugWindowPriv;
 
 struct _EmpathyDebugWindow
 {
   GtkWindow parent;
-  gpointer priv;
+  EmpathyDebugWindowPriv *priv;
 };
 
 struct _EmpathyDebugWindowClass
