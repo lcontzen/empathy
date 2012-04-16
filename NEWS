@@ -1,3 +1,19 @@
+NEW in 3.4.1 (16/04/2012)
+============
+
+Bugs fixed:
+ - Fixed #673691, empathy -h should not present existing roster window (Guillaume Desmottes)
+
+Translations:
+ - Updated ar Translation (Ibrahim Saed)
+ - Updated ca Translation (Jordi Serratosa)
+ - Updated ca@valencia Translation (Carles Ferrando)
+ - Updated hi Translation (Chandan Kumar)
+ - Updated zh_CN Translation (Automatic Mirroring)
+
+Documentation translations:
+ - Updated fr Documentation translation (Bruno Brouard)
+
 NEW in 3.4.0.2 (06/04/2012)
 ==============
 
