@@ -24,9 +24,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <telepathy-glib/channel.h>
-
-#include <libempathy/empathy-tls-certificate.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 G_BEGIN_DECLS
 
@@ -65,7 +63,7 @@ void empathy_server_tls_handler_new_async (TpChannel *channel,
 EmpathyServerTLSHandler * empathy_server_tls_handler_new_finish (
     GAsyncResult *result, GError **error);
 
-EmpathyTLSCertificate * empathy_server_tls_handler_get_certificate (
+TpTLSCertificate * empathy_server_tls_handler_get_certificate (
     EmpathyServerTLSHandler *self);
 
 G_END_DECLS

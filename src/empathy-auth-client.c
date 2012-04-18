@@ -93,8 +93,8 @@ tls_dialog_response_cb (GtkDialog *dialog,
     gint response_id,
     gpointer user_data)
 {
-  EmpathyTLSCertificate *certificate = NULL;
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificate *certificate = NULL;
+  TpTLSCertificateRejectReason reason = 0;
   GHashTable *details = NULL;
   EmpathyTLSDialog *tls_dialog = EMPATHY_TLS_DIALOG (dialog);
   gboolean remember = FALSE;
@@ -113,13 +113,15 @@ tls_dialog_response_cb (GtkDialog *dialog,
 
   if (response_id == GTK_RESPONSE_YES)
     {
-      empathy_tls_certificate_accept_async (certificate, NULL, NULL);
+      tp_tls_certificate_accept_async (certificate, NULL, NULL);
     }
   else
     {
       tp_asv_set_boolean (details, "user-requested", TRUE);
-      empathy_tls_certificate_reject_async (certificate, reason, details,
-          NULL, NULL);
+      tp_tls_certificate_add_rejection (certificate, reason, NULL,
+          g_variant_new_parsed ("{ 'user-requested': <%b> }", TRUE));
+
+      tp_tls_certificate_reject_async (certificate, NULL, NULL);
     }
 
   if (remember)
@@ -138,9 +140,9 @@ tls_dialog_response_cb (GtkDialog *dialog,
 }
 
 static void
-display_interactive_dialog (EmpathyTLSCertificate *certificate,
+display_interactive_dialog (TpTLSCertificate *certificate,
     EmpathyTLSVerifier *verifier,
-    EmpTLSCertificateRejectReason reason,
+    TpTLSCertificateRejectReason reason,
     GHashTable *details)
 {
   GtkWidget *tls_dialog;
@@ -162,9 +164,9 @@ verifier_verify_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
-  EmpTLSCertificateRejectReason reason;
+  TpTLSCertificateRejectReason reason;
   GError *error = NULL;
-  EmpathyTLSCertificate *certificate = NULL;
+  TpTLSCertificate *certificate = NULL;
   GHashTable *details = NULL;
   gchar *hostname = NULL;
 
@@ -185,7 +187,7 @@ verifier_verify_cb (GObject *source,
     }
   else
     {
-      empathy_tls_certificate_accept_async (certificate, NULL, NULL);
+      tp_tls_certificate_accept_async (certificate, NULL, NULL);
     }
 
   g_free (hostname);
@@ -197,7 +199,7 @@ auth_factory_new_tls_handler_cb (EmpathyAuthFactory *factory,
     EmpathyServerTLSHandler *handler,
     gpointer user_data)
 {
-  EmpathyTLSCertificate *certificate = NULL;
+  TpTLSCertificate *certificate = NULL;
   gchar *hostname = NULL;
   gchar **reference_identities = NULL;
   EmpathyTLSVerifier *verifier;

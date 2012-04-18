@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <libempathy/empathy-tls-certificate.h>
 #include <libempathy/empathy-tls-verifier.h>
 #include "test-helper.h"
 #include "mock-pkcs11.h"
@@ -11,12 +10,9 @@
 
 #include <gnutls/gnutls.h>
 
-#include <telepathy-glib/dbus-properties-mixin.h>
-#include <telepathy-glib/enums.h>
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
 #include <telepathy-glib/svc-tls.h>
 #include <telepathy-glib/svc-generic.h>
-#include <telepathy-glib/telepathy-glib.h>
 
 #define MOCK_TLS_CERTIFICATE_PATH "/mock/certificate"
 
@@ -206,10 +202,10 @@ mock_tls_certificate_iface_init (gpointer g_iface,
 #if 0
 static void
 mock_tls_certificate_assert_rejected (MockTLSCertificate *self,
-        EmpTLSCertificateRejectReason reason)
+        TpTLSCertificateRejectReason reason)
 {
   GValueArray *rejection;
-  EmpTLSCertificateRejectReason rejection_reason;
+  TpTLSCertificateRejectReason rejection_reason;
   gchar *rejection_error;
   GHashTable *rejection_details;
   guint i;
@@ -282,7 +278,7 @@ typedef struct {
   TpDBusDaemon *dbus;
   const gchar *dbus_name;
   MockTLSCertificate *mock;
-  EmpathyTLSCertificate *cert;
+  TpTLSCertificate *cert;
   GAsyncResult *result;
 } Test;
 
@@ -384,17 +380,22 @@ static void
 ensure_certificate_proxy (Test *test)
 {
   GError *error = NULL;
+  GQuark features[] = { TP_TLS_CERTIFICATE_FEATURE_CORE, 0 };
 
   if (test->cert)
     return;
 
   /* Create and prepare a certificate */
-  test->cert = empathy_tls_certificate_new (test->dbus, test->dbus_name,
-          MOCK_TLS_CERTIFICATE_PATH, &error);
-  g_assert_no_error (error);
-  empathy_tls_certificate_prepare_async (test->cert, fetch_callback_result, test);
+  /* We don't use tp_tls_certificate_new() as we don't pass a parent */
+  test->cert = g_object_new (TP_TYPE_TLS_CERTIFICATE,
+      "dbus-daemon", test->dbus,
+      "bus-name", test->dbus_name,
+      "object-path", MOCK_TLS_CERTIFICATE_PATH,
+      NULL);
+
+  tp_proxy_prepare_async (test->cert, features, fetch_callback_result, test);
   g_main_loop_run (test->loop);
-  empathy_tls_certificate_prepare_finish (test->cert, test->result, &error);
+  tp_proxy_prepare_finish (test->cert, test->result, &error);
   g_assert_no_error (error);
 
   /* Clear for any future async stuff */
@@ -414,9 +415,9 @@ test_certificate_mock_basics (Test *test,
 
   ensure_certificate_proxy (test);
 
-  empathy_tls_certificate_accept_async (test->cert, fetch_callback_result, test);
+  tp_tls_certificate_accept_async (test->cert, fetch_callback_result, test);
   g_main_loop_run (test->loop);
-  empathy_tls_certificate_accept_finish (test->cert, test->result, &error);
+  tp_tls_certificate_accept_finish (test->cert, test->result, &error);
   g_assert_no_error (error);
 
   g_assert (test->mock->state == TP_TLS_CERTIFICATE_STATE_ACCEPTED);
@@ -426,7 +427,7 @@ static void
 test_certificate_verify_success_with_pkcs11_lookup (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -467,7 +468,7 @@ static void
 test_certificate_verify_success_with_full_chain (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -506,7 +507,7 @@ static void
 test_certificate_verify_root_not_found (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -531,7 +532,7 @@ test_certificate_verify_root_not_found (Test *test,
 
   /* And it should say we're self-signed (oddly enough) */
   g_assert_error (error, G_IO_ERROR,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
+      TP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
 
   g_clear_error (&error);
   g_object_unref (verifier);
@@ -541,7 +542,7 @@ static void
 test_certificate_verify_root_not_anchored (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -566,7 +567,7 @@ test_certificate_verify_root_not_anchored (Test *test,
 
   /* And it should say we're self-signed (oddly enough) */
   g_assert_error (error, G_IO_ERROR,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
+      TP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
 
   g_clear_error (&error);
   g_object_unref (verifier);
@@ -576,7 +577,7 @@ static void
 test_certificate_verify_identities_invalid (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -602,7 +603,7 @@ test_certificate_verify_identities_invalid (Test *test,
 
   /* And it should say we're self-signed (oddly enough) */
   g_assert_error (error, G_IO_ERROR,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
+      TP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
 
   g_clear_error (&error);
   g_object_unref (verifier);
@@ -612,7 +613,7 @@ static void
 test_certificate_verify_uses_reference_identities (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -639,7 +640,7 @@ test_certificate_verify_uses_reference_identities (Test *test,
 
   /* And it should say we're self-signed (oddly enough) */
   g_assert_error (error, G_IO_ERROR,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
+      TP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
 
   g_clear_error (&error);
   g_object_unref (verifier);
@@ -649,7 +650,7 @@ static void
 test_certificate_verify_success_with_pinned (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -688,7 +689,7 @@ static void
 test_certificate_verify_pinned_wrong_host (Test *test,
         gconstpointer data G_GNUC_UNUSED)
 {
-  EmpTLSCertificateRejectReason reason = 0;
+  TpTLSCertificateRejectReason reason = 0;
   GError *error = NULL;
   EmpathyTLSVerifier *verifier;
   const gchar *reference_identities[] = {
@@ -713,7 +714,7 @@ test_certificate_verify_pinned_wrong_host (Test *test,
 
   /* And it should say we're self-signed */
   g_assert_error (error, G_IO_ERROR,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
+      TP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
 
   g_clear_error (&error);
   g_object_unref (verifier);

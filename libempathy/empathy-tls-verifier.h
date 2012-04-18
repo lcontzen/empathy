@@ -24,9 +24,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <libempathy/empathy-tls-certificate.h>
-
-#include <extensions/extensions.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 G_BEGIN_DECLS
 
@@ -61,7 +59,7 @@ GType empathy_tls_verifier_get_type (void);
   EmpathyTLSVerifierClass))
 
 EmpathyTLSVerifier * empathy_tls_verifier_new (
-    EmpathyTLSCertificate *certificate,
+    TpTLSCertificate *certificate,
     const gchar *hostname,
     const gchar **reference_identities);
 
@@ -71,7 +69,7 @@ void empathy_tls_verifier_verify_async (EmpathyTLSVerifier *self,
 
 gboolean empathy_tls_verifier_verify_finish (EmpathyTLSVerifier *self,
     GAsyncResult *res,
-    EmpTLSCertificateRejectReason *reason,
+    TpTLSCertificateRejectReason *reason,
     GHashTable **details,
     GError **error);
 

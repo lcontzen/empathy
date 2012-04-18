@@ -22,12 +22,8 @@
 
 #include "empathy-server-tls-handler.h"
 
-#include <telepathy-glib/interfaces.h>
-#include <telepathy-glib/util.h>
-
 #define DEBUG_FLAG EMPATHY_DEBUG_TLS
 #include "empathy-debug.h"
-#include "empathy-tls-certificate.h"
 #include "empathy-utils.h"
 
 #include "extensions/extensions.h"
@@ -45,7 +41,7 @@ enum {
 typedef struct {
   TpChannel *channel;
 
-  EmpathyTLSCertificate *certificate;
+  TpTLSCertificate *certificate;
   gchar *hostname;
   gchar **reference_identities;
 
@@ -63,14 +59,12 @@ tls_certificate_prepared_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
-  EmpathyTLSCertificate *certificate = EMPATHY_TLS_CERTIFICATE (source);
+  TpTLSCertificate *certificate = TP_TLS_CERTIFICATE (source);
   EmpathyServerTLSHandler *self = user_data;
   GError *error = NULL;
   EmpathyServerTLSHandlerPriv *priv = GET_PRIV (self);
 
-  empathy_tls_certificate_prepare_finish (certificate, result, &error);
-
-  if (error != NULL)
+  if (!tp_proxy_prepare_finish (certificate, result, &error))
     {
       g_simple_async_result_set_from_error (priv->async_init_res, error);
       g_error_free (error);
@@ -106,8 +100,8 @@ tls_handler_init_async (GAsyncInitable *initable,
   const gchar *hostname;
   const gchar * const *identities;
   const gchar *bus_name;
-  TpDBusDaemon *dbus;
   GError *error = NULL;
+  GQuark features[] = { TP_TLS_CERTIFICATE_FEATURE_CORE, 0 };
   /*
    * Used when channel doesn't implement ReferenceIdentities. A GStrv
    * with [0] the hostname, and [1] a NULL terminator.
@@ -155,17 +149,16 @@ tls_handler_init_async (GAsyncInitable *initable,
   cert_object_path = tp_asv_get_object_path (properties,
       EMP_IFACE_CHANNEL_TYPE_SERVER_TLS_CONNECTION ".ServerCertificate");
   bus_name = tp_proxy_get_bus_name (TP_PROXY (priv->channel));
-  dbus = tp_proxy_get_dbus_daemon (TP_PROXY (priv->channel));
 
-  DEBUG ("Creating an EmpathyTLSCertificate for path %s, bus name %s",
+  DEBUG ("Creating an TpTLSCertificate for path %s, bus name %s",
       cert_object_path, bus_name);
 
-  priv->certificate = empathy_tls_certificate_new (dbus, bus_name,
+  priv->certificate = tp_tls_certificate_new (TP_PROXY (priv->channel),
       cert_object_path, &error);
 
   if (error != NULL)
     {
-      DEBUG ("Unable to create the EmpathyTLSCertificate: error %s",
+      DEBUG ("Unable to create the TpTLSCertificate: error %s",
           error->message);
 
       g_simple_async_result_set_from_error (priv->async_init_res, error);
@@ -177,7 +170,7 @@ tls_handler_init_async (GAsyncInitable *initable,
       return;
     }
 
-  empathy_tls_certificate_prepare_async (priv->certificate,
+  tp_proxy_prepare_async (priv->certificate, features,
       tls_certificate_prepared_cb, self);
 }
 
@@ -268,9 +261,9 @@ empathy_server_tls_handler_class_init (EmpathyServerTLSHandlerClass *klass)
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_CHANNEL, pspec);
 
-  pspec = g_param_spec_object ("certificate", "The EmpathyTLSCertificate",
-      "The EmpathyTLSCertificate carried by the channel.",
-      EMPATHY_TYPE_TLS_CERTIFICATE,
+  pspec = g_param_spec_object ("certificate", "The TpTLSCertificate",
+      "The TpTLSCertificate carried by the channel.",
+      TP_TYPE_TLS_CERTIFICATE,
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_TLS_CERTIFICATE, pspec);
 
@@ -325,7 +318,7 @@ empathy_server_tls_handler_new_finish (GAsyncResult *result,
     return NULL;
 }
 
-EmpathyTLSCertificate *
+TpTLSCertificate *
 empathy_server_tls_handler_get_certificate (EmpathyServerTLSHandler *self)
 {
   EmpathyServerTLSHandlerPriv *priv = GET_PRIV (self);

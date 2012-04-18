@@ -47,8 +47,8 @@ enum {
 };
 
 typedef struct {
-  EmpathyTLSCertificate *certificate;
-  EmpTLSCertificateRejectReason reason;
+  TpTLSCertificate *certificate;
+  TpTLSCertificateRejectReason reason;
   GHashTable *details;
 
   gboolean remember;
@@ -139,7 +139,7 @@ reason_to_string (EmpathyTLSDialog *self)
 {
   GString *str;
   const gchar *reason_str;
-  EmpTLSCertificateRejectReason reason;
+  TpTLSCertificateRejectReason reason;
   GHashTable *details;
   EmpathyTLSDialogPriv *priv = GET_PRIV (self);
 
@@ -153,37 +153,37 @@ reason_to_string (EmpathyTLSDialog *self)
 
   switch (reason)
     {
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED:
       reason_str = _("The certificate is not signed by a Certification "
           "Authority.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_EXPIRED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_EXPIRED:
       reason_str = _("The certificate has expired.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_NOT_ACTIVATED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_NOT_ACTIVATED:
       reason_str = _("The certificate hasn't yet been activated.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_FINGERPRINT_MISMATCH:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_FINGERPRINT_MISMATCH:
       reason_str = _("The certificate does not have the expected fingerprint.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH:
       reason_str = _("The hostname verified by the certificate doesn't match "
           "the server name.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED:
       reason_str = _("The certificate is self-signed.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_REVOKED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_REVOKED:
       reason_str = _("The certificate has been revoked by the issuing "
           "Certification Authority.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_INSECURE:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_INSECURE:
       reason_str = _("The certificate is cryptographically weak.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_LIMIT_EXCEEDED:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_LIMIT_EXCEEDED:
       reason_str = _("The certificate length exceeds verifiable limits.");
       break;
-    case EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN:
+    case TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN:
     default:
       reason_str = _("The certificate is malformed.");
       break;
@@ -192,7 +192,7 @@ reason_to_string (EmpathyTLSDialog *self)
   g_string_append (str, reason_str);
 
   /* add more information in case of HOSTNAME_MISMATCH */
-  if (reason == EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH)
+  if (reason == TP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH)
     {
       const gchar *expected_hostname, *certificate_hostname;
 
@@ -257,7 +257,7 @@ checkbox_toggled_cb (GtkToggleButton *checkbox,
 }
 
 static void
-certificate_invalidated_cb (EmpathyTLSCertificate *certificate,
+certificate_invalidated_cb (TpTLSCertificate *certificate,
     guint domain,
     gint code,
     gchar *message,
@@ -340,16 +340,16 @@ empathy_tls_dialog_class_init (EmpathyTLSDialogClass *klass)
   oclass->finalize = empathy_tls_dialog_finalize;
   oclass->constructed = empathy_tls_dialog_constructed;
 
-  pspec = g_param_spec_object ("certificate", "The EmpathyTLSCertificate",
-      "The EmpathyTLSCertificate to be displayed.",
-      EMPATHY_TYPE_TLS_CERTIFICATE,
+  pspec = g_param_spec_object ("certificate", "The TpTLSCertificate",
+      "The TpTLSCertificate to be displayed.",
+      TP_TYPE_TLS_CERTIFICATE,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_TLS_CERTIFICATE, pspec);
 
   pspec = g_param_spec_uint ("reason", "The reason",
       "The reason why the certificate is being asked for confirmation.",
-      0, NUM_EMP_TLS_CERTIFICATE_REJECT_REASONS - 1,
-      EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN,
+      0, NUM_TP_TLS_CERTIFICATE_REJECT_REASONS - 1,
+      TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_REASON, pspec);
 
@@ -367,11 +367,11 @@ empathy_tls_dialog_class_init (EmpathyTLSDialogClass *klass)
 }
 
 GtkWidget *
-empathy_tls_dialog_new (EmpathyTLSCertificate *certificate,
-    EmpTLSCertificateRejectReason reason,
+empathy_tls_dialog_new (TpTLSCertificate *certificate,
+    TpTLSCertificateRejectReason reason,
     GHashTable *details)
 {
-  g_assert (EMPATHY_IS_TLS_CERTIFICATE (certificate));
+  g_assert (TP_IS_TLS_CERTIFICATE (certificate));
 
   return g_object_new (EMPATHY_TYPE_TLS_DIALOG,
       "message-type", GTK_MESSAGE_WARNING,

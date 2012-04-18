@@ -24,8 +24,6 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 
-#include <telepathy-glib/util.h>
-
 #include "empathy-tls-verifier.h"
 
 #include <gcr/gcr.h>
@@ -48,7 +46,7 @@ enum {
 };
 
 typedef struct {
-  EmpathyTLSCertificate *certificate;
+  TpTLSCertificate *certificate;
   gchar *hostname;
   gchar **reference_identities;
 
@@ -61,7 +59,7 @@ typedef struct {
 static gboolean
 verification_output_to_reason (gint res,
     guint verify_output,
-    EmpTLSCertificateRejectReason *reason)
+    TpTLSCertificateRejectReason *reason)
 {
   gboolean retval = TRUE;
 
@@ -75,13 +73,13 @@ verification_output_to_reason (gint res,
       switch (res)
         {
         case GNUTLS_E_INSUFFICIENT_CREDENTIALS:
-          *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED;
+          *reason = TP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED;
           break;
         case GNUTLS_E_CONSTRAINT_ERROR:
-          *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_LIMIT_EXCEEDED;
+          *reason = TP_TLS_CERTIFICATE_REJECT_REASON_LIMIT_EXCEEDED;
           break;
         default:
-          *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
+          *reason = TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
           break;
         }
 
@@ -94,17 +92,17 @@ verification_output_to_reason (gint res,
       retval = FALSE;
 
       if (verify_output & GNUTLS_CERT_SIGNER_NOT_FOUND)
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED;
       else if (verify_output & GNUTLS_CERT_SIGNER_NOT_CA)
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_UNTRUSTED;
       else if (verify_output & GNUTLS_CERT_INSECURE_ALGORITHM)
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_INSECURE;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_INSECURE;
       else if (verify_output & GNUTLS_CERT_NOT_ACTIVATED)
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_NOT_ACTIVATED;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_NOT_ACTIVATED;
       else if (verify_output & GNUTLS_CERT_EXPIRED)
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_EXPIRED;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_EXPIRED;
       else
-        *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
+        *reason = TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
 
       goto out;
     }
@@ -201,7 +199,7 @@ complete_verification (EmpathyTLSVerifier *self)
 
 static void
 abort_verification (EmpathyTLSVerifier *self,
-    EmpTLSCertificateRejectReason reason)
+    TpTLSCertificateRejectReason reason)
 {
   EmpathyTLSVerifierPriv *priv = GET_PRIV (self);
 
@@ -251,8 +249,8 @@ perform_verification (EmpathyTLSVerifier *self,
         GcrCertificateChain *chain)
 {
   gboolean ret = FALSE;
-  EmpTLSCertificateRejectReason reason =
-    EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
+  TpTLSCertificateRejectReason reason =
+    TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
   gnutls_x509_crt_t *list, *anchors;
   guint n_list, n_anchors;
   guint verify_output;
@@ -282,7 +280,7 @@ perform_verification (EmpathyTLSVerifier *self,
           &anchors, &n_anchors);
   if (list == NULL || n_list == 0) {
       g_warn_if_reached ();
-      abort_verification (self, EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN);
+      abort_verification (self, TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN);
       goto out;
   }
 
@@ -328,7 +326,7 @@ perform_verification (EmpathyTLSVerifier *self,
 
       g_free (certified_hostname);
       abort_verification (self,
-              EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
+              TP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
       goto out;
     }
 
@@ -465,9 +463,9 @@ empathy_tls_verifier_class_init (EmpathyTLSVerifierClass *klass)
   oclass->finalize = empathy_tls_verifier_finalize;
   oclass->dispose = empathy_tls_verifier_dispose;
 
-  pspec = g_param_spec_object ("certificate", "The EmpathyTLSCertificate",
-      "The EmpathyTLSCertificate to be verified.",
-      EMPATHY_TYPE_TLS_CERTIFICATE,
+  pspec = g_param_spec_object ("certificate", "The TpTLSCertificate",
+      "The TpTLSCertificate to be verified.",
+      TP_TYPE_TLS_CERTIFICATE,
       G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_TLS_CERTIFICATE, pspec);
 
@@ -486,10 +484,11 @@ empathy_tls_verifier_class_init (EmpathyTLSVerifierClass *klass)
 }
 
 EmpathyTLSVerifier *
-empathy_tls_verifier_new (EmpathyTLSCertificate *certificate,
-    const gchar *hostname, const gchar **reference_identities)
+empathy_tls_verifier_new (TpTLSCertificate *certificate,
+    const gchar *hostname,
+    const gchar **reference_identities)
 {
-  g_assert (EMPATHY_IS_TLS_CERTIFICATE (certificate));
+  g_assert (TP_IS_TLS_CERTIFICATE (certificate));
   g_assert (hostname != NULL);
   g_assert (reference_identities != NULL);
 
@@ -507,7 +506,7 @@ empathy_tls_verifier_verify_async (EmpathyTLSVerifier *self,
 {
   GcrCertificateChain *chain;
   GcrCertificate *cert;
-  GPtrArray *cert_data = NULL;
+  GPtrArray *cert_data;
   GArray *data;
   guint idx;
   EmpathyTLSVerifierPriv *priv = GET_PRIV (self);
@@ -516,7 +515,7 @@ empathy_tls_verifier_verify_async (EmpathyTLSVerifier *self,
 
   g_return_if_fail (priv->verify_result == NULL);
 
-  g_object_get (priv->certificate, "cert-data", &cert_data, NULL);
+  cert_data = tp_tls_certificate_get_cert_data (priv->certificate);
   g_return_if_fail (cert_data);
 
   priv->verify_result = g_simple_async_result_new (G_OBJECT (self),
@@ -535,13 +534,12 @@ empathy_tls_verifier_verify_async (EmpathyTLSVerifier *self,
           NULL, perform_verification_cb, g_object_ref (self));
 
   g_object_unref (chain);
-  g_boxed_free (TP_ARRAY_TYPE_UCHAR_ARRAY_LIST, cert_data);
 }
 
 gboolean
 empathy_tls_verifier_verify_finish (EmpathyTLSVerifier *self,
     GAsyncResult *res,
-    EmpTLSCertificateRejectReason *reason,
+    TpTLSCertificateRejectReason *reason,
     GHashTable **details,
     GError **error)
 {
@@ -565,7 +563,7 @@ empathy_tls_verifier_verify_finish (EmpathyTLSVerifier *self,
     }
 
   if (reason != NULL)
-    *reason = EMP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
+    *reason = TP_TLS_CERTIFICATE_REJECT_REASON_UNKNOWN;
 
   return TRUE;
 }
@@ -575,11 +573,11 @@ empathy_tls_verifier_store_exception (EmpathyTLSVerifier *self)
 {
   GArray *data;
   GcrCertificate *cert;
-  GPtrArray *cert_data = NULL;
+  GPtrArray *cert_data;
   GError *error = NULL;
   EmpathyTLSVerifierPriv *priv = GET_PRIV (self);
 
-  g_object_get (priv->certificate, "cert-data", &cert_data, NULL);
+  cert_data = tp_tls_certificate_get_cert_data (priv->certificate);
   g_return_if_fail (cert_data);
 
   if (!cert_data->len)
@@ -600,5 +598,4 @@ empathy_tls_verifier_store_exception (EmpathyTLSVerifier *self)
       DEBUG ("Can't store the pinned certificate: %s", error->message);
 
   g_object_unref (cert);
-  g_boxed_free (TP_ARRAY_TYPE_UCHAR_ARRAY_LIST, cert_data);
 }

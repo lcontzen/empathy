@@ -24,9 +24,7 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
-#include <libempathy/empathy-tls-certificate.h>
-
-#include <extensions/extensions.h>
+#include <telepathy-glib/telepathy-glib.h>
 
 G_BEGIN_DECLS
 
@@ -60,8 +58,8 @@ GType empathy_tls_dialog_get_type (void);
   (G_TYPE_INSTANCE_GET_CLASS ((obj), EMPATHY_TYPE_TLS_DIALOG, \
   EmpathyTLSDialogClass))
 
-GtkWidget * empathy_tls_dialog_new (EmpathyTLSCertificate *certificate,
-    EmpTLSCertificateRejectReason reason,
+GtkWidget * empathy_tls_dialog_new (TpTLSCertificate *certificate,
+    TpTLSCertificateRejectReason reason,
     GHashTable *details);
 
 G_END_DECLS
