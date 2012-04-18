@@ -55,7 +55,6 @@ libempathy_headers =				\
 	empathy-server-tls-handler.h		\
 	empathy-status-presets.h		\
 	empathy-time.h				\
-	empathy-tls-certificate.h		\
 	empathy-tls-verifier.h			\
 	empathy-tp-chat.h			\
 	empathy-tp-contact-factory.h		\
@@ -92,7 +91,6 @@ libempathy_handwritten_source =				\
 	empathy-server-tls-handler.c			\
 	empathy-status-presets.c			\
 	empathy-time.c					\
-	empathy-tls-certificate.c			\
 	empathy-tls-verifier.c				\
 	empathy-tp-chat.c				\
 	empathy-tp-contact-factory.c			\
