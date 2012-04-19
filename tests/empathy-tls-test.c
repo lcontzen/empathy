@@ -5,6 +5,7 @@
 #include <libempathy/empathy-tls-certificate.h>
 #include <libempathy/empathy-tls-verifier.h>
 #include "test-helper.h"
+#include "mock-pkcs11.h"
 
 #include <gcr/gcr.h>
 
@@ -289,6 +290,9 @@ static void
 setup (Test *test, gconstpointer data)
 {
   GError *error = NULL;
+  GckModule *module;
+  const gchar *trust_uris[2] = { MOCK_SLOT_ONE_URI, NULL };
+
   test->loop = g_main_loop_new (NULL, FALSE);
 
   test->dbus = tp_dbus_daemon_dup (&error);
@@ -299,13 +303,20 @@ setup (Test *test, gconstpointer data)
   test->result = NULL;
   test->cert = NULL;
 
-  /* No PKCS#11 modules by default, tests add them */
+  /* Add our mock module as the only PKCS#11 module */
+  module = gck_module_new (&mock_default_functions);
+  mock_C_Initialize (NULL);
+
   gcr_pkcs11_set_modules (NULL);
+  gcr_pkcs11_add_module (module);
+  gcr_pkcs11_set_trust_lookup_uris (trust_uris);
 }
 
 static void
 teardown (Test *test, gconstpointer data)
 {
+  mock_C_Finalize (NULL);
+
   test->dbus_name = NULL;
 
   if (test->mock)
@@ -331,42 +342,30 @@ teardown (Test *test, gconstpointer data)
 }
 
 static void
-add_pkcs11_module_for_testing (Test *test,
-        const gchar *filename,
-        const gchar *subdir)
+add_certificate_to_mock (Test *test,
+        const gchar *certificate,
+        const gchar *peer)
 {
   GError *error = NULL;
-  gchar *args, *path, *directory;
-  gchar *standalone, *error_output;
-  gint exit_status;
+  GcrCertificate *cert;
+  gchar *contents;
+  gsize length;
+  gchar *path;
 
-  directory = g_build_filename (g_getenv ("EMPATHY_SRCDIR"),
-          "tests", "certificates", subdir, NULL);
+  path = g_build_filename (g_getenv ("EMPATHY_SRCDIR"),
+                           "tests", "certificates", certificate, NULL);
 
-  /*
-   * Lookup the directory for standalone pkcs11 modules installed by
-   * gnome-keyring. We use these for testing our implementation.
-   */
-  g_spawn_command_line_sync ("pkg-config --variable=pkcs11standalonedir gcr-3",
-          &standalone, &error_output, &exit_status, &error);
-  g_assert_no_error (error);
-  if (exit_status != 0)
-    {
-      g_warning ("couldn't determine standalone pkcs11 module directory: %d: %s",
-              exit_status, error_output);
-      g_assert_not_reached ();
-    }
-
-  g_strstrip (standalone);
-  args = g_strdup_printf ("directory=\"%s\"", directory);
-  path = g_build_filename (standalone, filename, NULL);
-  gcr_pkcs11_add_module_from_file (path, args, &error);
+  g_file_get_contents (path, &contents, &length, &error);
   g_assert_no_error (error);
 
-  g_free (directory);
-  g_free (standalone);
-  g_free (error_output);
-  g_free (args);
+  cert = gcr_simple_certificate_new ((const guchar *)contents, length);
+  mock_module_add_certificate (cert);
+  mock_module_add_assertion (cert,
+          peer ? CKT_X_PINNED_CERTIFICATE : CKT_X_ANCHORED_CERTIFICATE,
+          GCR_PURPOSE_SERVER_AUTH, peer);
+  g_object_unref (cert);
+
+  g_free (contents);
   g_free (path);
 }
 
@@ -445,8 +444,7 @@ test_certificate_verify_success_with_pkcs11_lookup (Test *test,
           "dhansak-collabora.cer", NULL);
 
   /* We add the collabora directory with the collabora root */
-  add_pkcs11_module_for_testing (test, "gkm-roots-store-standalone.so",
-          "collabora-ca");
+  add_certificate_to_mock (test, "collabora-ca.cer", NULL);
 
   ensure_certificate_proxy (test);
 
@@ -483,11 +481,10 @@ test_certificate_verify_success_with_full_chain (Test *test,
    */
 
   test->mock = mock_tls_certificate_new_and_register (test->dbus,
-          "dhansak-collabora.cer", "collabora-ca/collabora-ca.cer", NULL);
+          "dhansak-collabora.cer", "collabora-ca.cer", NULL);
 
   /* We add the collabora directory with the collabora root */
-  add_pkcs11_module_for_testing (test, "gkm-roots-store-standalone.so",
-          "collabora-ca");
+  add_certificate_to_mock (test, "collabora-ca.cer", NULL);
 
   ensure_certificate_proxy (test);
 
@@ -553,7 +550,7 @@ test_certificate_verify_root_not_anchored (Test *test,
   };
 
   test->mock = mock_tls_certificate_new_and_register (test->dbus,
-          "dhansak-collabora.cer", "collabora-ca/collabora-ca.cer", NULL);
+          "dhansak-collabora.cer", "collabora-ca.cer", NULL);
 
   /* Note that we're not adding any place to find root certs */
 
@@ -588,11 +585,10 @@ test_certificate_verify_identities_invalid (Test *test,
   };
 
   test->mock = mock_tls_certificate_new_and_register (test->dbus,
-          "dhansak-collabora.cer", "collabora-ca/collabora-ca.cer", NULL);
+          "dhansak-collabora.cer", "collabora-ca.cer", NULL);
 
   /* We add the collabora directory with the collabora root */
-  add_pkcs11_module_for_testing (test, "gkm-roots-store-standalone.so",
-          "collabora-ca");
+  add_certificate_to_mock (test, "collabora-ca.cer", NULL);
 
   ensure_certificate_proxy (test);
 
@@ -625,11 +621,10 @@ test_certificate_verify_uses_reference_identities (Test *test,
   };
 
   test->mock = mock_tls_certificate_new_and_register (test->dbus,
-          "dhansak-collabora.cer", "collabora-ca/collabora-ca.cer", NULL);
+          "dhansak-collabora.cer", "collabora-ca.cer", NULL);
 
   /* We add the collabora directory with the collabora root */
-  add_pkcs11_module_for_testing (test, "gkm-roots-store-standalone.so",
-          "collabora-ca");
+  add_certificate_to_mock (test, "collabora-ca.cer", NULL);
 
   ensure_certificate_proxy (test);
 
@@ -645,6 +640,80 @@ test_certificate_verify_uses_reference_identities (Test *test,
   /* And it should say we're self-signed (oddly enough) */
   g_assert_error (error, G_IO_ERROR,
       EMP_TLS_CERTIFICATE_REJECT_REASON_HOSTNAME_MISMATCH);
+
+  g_clear_error (&error);
+  g_object_unref (verifier);
+}
+
+static void
+test_certificate_verify_success_with_pinned (Test *test,
+        gconstpointer data G_GNUC_UNUSED)
+{
+  EmpTLSCertificateRejectReason reason = 0;
+  GError *error = NULL;
+  EmpathyTLSVerifier *verifier;
+  const gchar *reference_identities[] = {
+    "www.collabora.co.uk",
+    NULL
+  };
+
+  /*
+   * In this test the mock TLS connection has a full certificate
+   * chain. We look for an anchor certificate in the chain.
+   */
+
+  test->mock = mock_tls_certificate_new_and_register (test->dbus,
+          "dhansak-collabora.cer", NULL);
+
+  /* We add the collabora directory with the collabora root */
+  add_certificate_to_mock (test, "dhansak-collabora.cer", "www.collabora.co.uk");
+
+  ensure_certificate_proxy (test);
+
+  verifier = empathy_tls_verifier_new (test->cert, "www.collabora.co.uk",
+      reference_identities);
+  empathy_tls_verifier_verify_async (verifier, fetch_callback_result, test);
+  g_main_loop_run (test->loop);
+  empathy_tls_verifier_verify_finish (verifier, test->result, &reason,
+      NULL, &error);
+  g_assert_no_error (error);
+
+  /* Yay the verification was a success! */
+
+  g_clear_error (&error);
+  g_object_unref (verifier);
+}
+
+static void
+test_certificate_verify_pinned_wrong_host (Test *test,
+        gconstpointer data G_GNUC_UNUSED)
+{
+  EmpTLSCertificateRejectReason reason = 0;
+  GError *error = NULL;
+  EmpathyTLSVerifier *verifier;
+  const gchar *reference_identities[] = {
+    "www.collabora.co.uk",
+    NULL
+  };
+
+  test->mock = mock_tls_certificate_new_and_register (test->dbus,
+          "dhansak-collabora.cer", NULL);
+
+  /* Note that we're not adding any place to find root certs */
+
+  ensure_certificate_proxy (test);
+
+  verifier = empathy_tls_verifier_new (test->cert, "another.collabora.co.uk",
+      reference_identities);
+  empathy_tls_verifier_verify_async (verifier, fetch_callback_result, test);
+  g_main_loop_run (test->loop);
+
+  empathy_tls_verifier_verify_finish (verifier, test->result, &reason,
+      NULL, &error);
+
+  /* And it should say we're self-signed */
+  g_assert_error (error, G_IO_ERROR,
+      EMP_TLS_CERTIFICATE_REJECT_REASON_SELF_SIGNED);
 
   g_clear_error (&error);
   g_object_unref (verifier);
@@ -673,6 +742,10 @@ main (int argc,
           setup, test_certificate_verify_identities_invalid, teardown);
   g_test_add ("/tls/certificate_verify_uses_reference_identities", Test, NULL,
           setup, test_certificate_verify_uses_reference_identities, teardown);
+  g_test_add ("/tls/certificate_verify_success_with_pinned", Test, NULL,
+          setup, test_certificate_verify_success_with_pinned, teardown);
+  g_test_add ("/tls/certificate_verify_pinned_wrong_host", Test, NULL,
+          setup, test_certificate_verify_pinned_wrong_host, teardown);
 
   result = g_test_run ();
   test_deinit ();

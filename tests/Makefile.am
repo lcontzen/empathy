@@ -16,6 +16,7 @@ AM_CPPFLAGS =						\
 	$(EMPATHY_CFLAGS)				\
 	$(WARN_CFLAGS)					\
 	$(DISABLE_DEPRECATED)				\
+	-DSRCDIR=\""$(abs_srcdir)"\"			\
 	$(NULL)
 
 LDADD =								\
@@ -38,7 +39,8 @@ noinst_PROGRAMS = $(tests_list)
 TESTS = $(tests_list)
 
 empathy_tls_test_SOURCES = empathy-tls-test.c \
-     test-helper.c test-helper.h
+     test-helper.c test-helper.h \
+     mock-pkcs11.c mock-pkcs11.h
 
 empathy_irc_server_test_SOURCES = empathy-irc-server-test.c \
      test-helper.c test-helper.h                       \

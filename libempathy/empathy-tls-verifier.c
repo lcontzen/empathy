@@ -531,7 +531,7 @@ empathy_tls_verifier_verify_async (EmpathyTLSVerifier *self,
     g_object_unref (cert);
   }
 
-  gcr_certificate_chain_build_async (chain, GCR_PURPOSE_CLIENT_AUTH, priv->hostname, 0,
+  gcr_certificate_chain_build_async (chain, GCR_PURPOSE_SERVER_AUTH, priv->hostname, 0,
           NULL, perform_verification_cb, g_object_ref (self));
 
   g_object_unref (chain);
@@ -595,7 +595,7 @@ empathy_tls_verifier_store_exception (EmpathyTLSVerifier *self)
   DEBUG ("Storing pinned certificate:");
   debug_certificate (cert);
 
-  if (!gcr_trust_add_pinned_certificate (cert, GCR_PURPOSE_CLIENT_AUTH,
+  if (!gcr_trust_add_pinned_certificate (cert, GCR_PURPOSE_SERVER_AUTH,
           priv->hostname, NULL, &error))
       DEBUG ("Can't store the pinned certificate: %s", error->message);
 
