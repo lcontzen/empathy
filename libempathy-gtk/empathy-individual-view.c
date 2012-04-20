@@ -1821,16 +1821,19 @@ static gchar * empathy_individual_view_dup_selected_group (
 static void
 text_edited_cb (GtkCellRendererText *cellrenderertext,
     gchar *path,
-    gchar *new_name,
+    gchar *name,
     EmpathyIndividualView *self)
 {
   EmpathyIndividualViewPriv *priv = GET_PRIV (self);
-  gchar *old_name;
+  gchar *old_name, *new_name;
 
   g_object_set (priv->text_renderer, "editable", FALSE, NULL);
 
+  new_name = g_strdup (name);
+  g_strstrip (new_name);
+
   if (tp_str_empty (new_name))
-    return;
+    goto out;
 
   old_name = empathy_individual_view_dup_selected_group (self, NULL);
   g_return_if_fail (old_name != NULL);
@@ -1849,6 +1852,8 @@ text_edited_cb (GtkCellRendererText *cellrenderertext,
     }
 
   g_free (old_name);
+out:
+  g_free (new_name);
 }
 
 static void
