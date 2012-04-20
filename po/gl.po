@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy-master-po-gl-57278_.merged\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-19 19:35+0200\n"
-"PO-Revision-Date: 2012-04-19 19:36+0200\n"
+"POT-Creation-Date: 2012-04-20 15:31+0200\n"
+"PO-Revision-Date: 2012-04-20 15:31+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -2444,34 +2444,38 @@ msgstr "Conv_idar a sala de conversa"
 msgid "_Add Contact…"
 msgstr "Eng_adir un contacto…"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2304
+#: ../libempathy-gtk/empathy-individual-view.c:2364
 msgid "Delete and _Block"
 msgstr "Eliminar e _bloquear"
 
 # rever
-#: ../libempathy-gtk/empathy-individual-view.c:2339
+#: ../libempathy-gtk/empathy-individual-view.c:2399
 #, c-format
 msgid "Do you really want to remove the group '%s'?"
 msgstr "Está seguro de que quere eliminar o grupo '%s'?"
 
 # rever
-#: ../libempathy-gtk/empathy-individual-view.c:2342
+#: ../libempathy-gtk/empathy-individual-view.c:2402
 msgid "Removing group"
 msgstr "Eliminando o grupo"
 
+#: ../libempathy-gtk/empathy-individual-view.c:2470
+msgid "Re_name"
+msgstr "Re_nomear"
+
 #. Remove
-#: ../libempathy-gtk/empathy-individual-view.c:2397
-#: ../libempathy-gtk/empathy-individual-view.c:2601
+#: ../libempathy-gtk/empathy-individual-view.c:2479
+#: ../libempathy-gtk/empathy-individual-view.c:2683
 msgid "_Remove"
 msgstr "_Eliminar"
 
 # rever
-#: ../libempathy-gtk/empathy-individual-view.c:2474
+#: ../libempathy-gtk/empathy-individual-view.c:2556
 #, c-format
 msgid "Do you really want to remove the contact '%s'?"
 msgstr "Está seguro de quere eliminar o contacto '%s'?"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2483
+#: ../libempathy-gtk/empathy-individual-view.c:2565
 #, c-format
 msgid ""
 "Do you really want to remove the linked contact '%s'? Note that this will "
@@ -2480,7 +2484,7 @@ msgstr ""
 "Desexa eliminar o contacto ligado %s? Teña en conta que eliminaranse tamén "
 "todos os contactos que forman este contacto ligado."
 
-#: ../libempathy-gtk/empathy-individual-view.c:2495
+#: ../libempathy-gtk/empathy-individual-view.c:2577
 msgid "Removing contact"
 msgstr "Eliminando o contacto"
 
