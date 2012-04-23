@@ -1,4 +1,4 @@
-SUBDIRS = interactive xml
+SUBDIRS = interactive xml certificates
 
 CLEANFILES=
 

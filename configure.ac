@@ -538,6 +538,7 @@ AC_CONFIG_FILES([
    tests/Makefile
    tests/interactive/Makefile
    tests/xml/Makefile
+   tests/certificates/Makefile
    tools/Makefile
 ])
 AC_OUTPUT
