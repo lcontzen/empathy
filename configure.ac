@@ -259,7 +259,7 @@ fi
 # -----------------------------------------------------------
 # Language Support
 # -----------------------------------------------------------
-IT_PROG_INTLTOOL([0.40.0])
+IT_PROG_INTLTOOL([0.50.0])
 
 GETTEXT_PACKAGE=empathy
 AC_SUBST(GETTEXT_PACKAGE)

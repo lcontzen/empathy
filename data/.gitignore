@@ -1,7 +1,6 @@
 empathy.desktop
 empathy.desktop.in
 org.gnome.Empathy.gschema.valid
-org.gnome.Empathy.gschema.xml
 gschemas.compiled
 org.freedesktop.Telepathy.Client.Empathy.Chat.service
 org.freedesktop.Telepathy.Client.Empathy.AudioVideo.service

@@ -8,11 +8,7 @@ desktop_in_files = \
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
 
-gsettings_files = \
-	org.gnome.Empathy.gschema.xml.in \
-	$(NULL)
-gsettings_SCHEMAS = $(gsettings_files:.xml.in=.xml)
-@INTLTOOL_XML_NOMERGE_RULE@
+gsettings_SCHEMAS = org.gnome.Empathy.gschema.xml
 @GSETTINGS_RULES@
 
 # We need to compile schemas at make time
@@ -81,7 +77,7 @@ EXTRA_DIST = 				\
 	$(html_DATA)			\
 	$(clientfile_DATA)		\
 	$(servicefile_in_files)		\
-	$(gsettings_files)		\
+	$(gsettings_SCHEMAS)		\
 	$(NULL)
 
 DISTCLEANFILES = 		\
