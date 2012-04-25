@@ -1377,8 +1377,8 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
   else
     {
       TpCapabilities *caps;
-      GPtrArray *classes;
-      guint i;
+      GVariant *classes, *class;
+      GVariantIter iter;
       TpContact *contact;
 
       /* Get the self contact from the connection's self handle */
@@ -1392,21 +1392,43 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
       caps = tp_connection_get_capabilities (connection);
       g_assert (caps != NULL);
 
-      classes = tp_capabilities_get_channel_classes (caps);
+      classes = tp_capabilities_dup_channel_classes_variant (caps);
 
-      for (i = 0; i < classes->len; i++)
+      g_variant_iter_init (&iter, classes);
+      while ((class = g_variant_iter_next_value (&iter)))
         {
-          GValueArray *array = g_ptr_array_index (classes, i);
-          const char **oprops = g_value_get_boxed (
-            g_value_array_get_nth (array, 1));
+          GVariant *fixed, *allowed;
+          const gchar *chan_type = NULL;
 
-          if (tp_strv_contains (oprops,
-                TP_PROP_CHANNEL_INTERFACE_CONFERENCE_INITIAL_CHANNELS))
+          fixed = g_variant_get_child_value (class, 0);
+          allowed = g_variant_get_child_value (class, 1);
+
+          g_variant_lookup (fixed, TP_PROP_CHANNEL_CHANNEL_TYPE, "&s",
+              &chan_type);
+          if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_TEXT))
             {
-              self->priv->can_upgrade_to_muc = TRUE;
-              break;
+              const gchar **oprops;
+
+              oprops = g_variant_get_strv (allowed, NULL);
+
+              if (tp_strv_contains (oprops,
+                    TP_PROP_CHANNEL_INTERFACE_CONFERENCE_INITIAL_CHANNELS))
+                {
+                  self->priv->can_upgrade_to_muc = TRUE;
+                }
+
+              g_free (oprops);
             }
+
+          g_variant_unref (class);
+          g_variant_unref (fixed);
+          g_variant_unref (allowed);
+
+          if (self->priv->can_upgrade_to_muc)
+            break;
         }
+
+      g_variant_unref (classes);
     }
 
   if (tp_proxy_has_interface_by_id (self,
