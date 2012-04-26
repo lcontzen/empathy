@@ -21,13 +21,56 @@
  *          Xavier Claessens <xclaesse@gmail.com>
  */
 
-#ifndef __EMPATHY_NEW_CHATROOMS_WINDOW_H__
-#define __EMPATHY_NEW_CHATROOMS_WINDOW_H__
+#ifndef __EMPATHY_NEW_CHATROOM_DIALOG_H__
+#define __EMPATHY_NEW_CHATROOM_DIALOG_H__
+
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
-void empathy_new_chatroom_dialog_show (GtkWindow *parent);
+typedef struct _EmpathyNewChatroomDialog EmpathyNewChatroomDialog;
+typedef struct _EmpathyNewChatroomDialogClass EmpathyNewChatroomDialogClass;
+typedef struct _EmpathyNewChatroomDialogPriv EmpathyNewChatroomDialogPriv;
+
+struct _EmpathyNewChatroomDialogClass
+{
+  /*<private>*/
+  GtkDialogClass parent_class;
+};
+
+struct _EmpathyNewChatroomDialog
+{
+  /*<private>*/
+  GtkDialog parent;
+  EmpathyNewChatroomDialogPriv *priv;
+};
+
+GType empathy_new_chatroom_dialog_get_type (void);
+
+/* TYPE MACROS */
+#define EMPATHY_TYPE_NEW_CHATROOM_DIALOG \
+  (empathy_new_chatroom_dialog_get_type ())
+#define EMPATHY_NEW_CHATROOM_DIALOG(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), \
+    EMPATHY_TYPE_NEW_CHATROOM_DIALOG, \
+    EmpathyNewChatroomDialog))
+#define EMPATHY_NEW_CHATROOM_DIALOG_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), \
+    EMPATHY_TYPE_NEW_CHATROOM_DIALOG, \
+    EmpathyNewChatroomDialogClass))
+#define EMPATHY_IS_NEW_CHATROOM_DIALOG(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), \
+    EMPATHY_TYPE_NEW_CHATROOM_DIALOG))
+#define EMPATHY_IS_NEW_CHATROOM_DIALOG_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), \
+    EMPATHY_TYPE_NEW_CHATROOM_DIALOG))
+#define EMPATHY_NEW_CHATROOM_DIALOG_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+    EMPATHY_TYPE_NEW_CHATROOM_DIALOG, \
+    EmpathyNewChatroomDialogClass))
+
+GtkWidget * empathy_new_chatroom_dialog_show (GtkWindow *parent);
 
 G_END_DECLS
 
-#endif /* __EMPATHY_NEW_CHATROOMS_WINDOW_H__ */
+#endif /* #ifndef __EMPATHY_NEW_CHATROOM_DIALOG_H__*/
