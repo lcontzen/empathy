@@ -82,6 +82,7 @@ enum
   CHAT_STATE_CHANGED,
   MESSAGE_ACKNOWLEDGED,
   SIG_MEMBER_RENAMED,
+  SIG_MEMBERS_CHANGED,
   LAST_SIGNAL
 };
 
@@ -855,7 +856,7 @@ tp_chat_got_added_contacts_cb (TpConnection *connection,
         {
           self->priv->members = g_list_prepend (self->priv->members,
             g_object_ref (contact));
-          g_signal_emit_by_name (chat, "members-changed",
+          g_signal_emit (self, signals[SIG_MEMBERS_CHANGED], 0,
                      contact, NULL, 0, NULL, TRUE);
         }
     }
@@ -1040,9 +1041,8 @@ tp_chat_group_members_changed_cb (TpChannel *channel,
 
       if (contact != NULL)
         {
-          g_signal_emit_by_name (self, "members-changed", contact,
-                     actor_contact, reason, message,
-                     FALSE);
+          g_signal_emit (self, signals[SIG_MEMBERS_CHANGED], 0,
+                     contact, actor_contact, reason, message, FALSE);
           g_object_unref (contact);
         }
     }
@@ -1288,6 +1288,14 @@ empathy_tp_chat_class_init (EmpathyTpChatClass *klass)
       G_TYPE_NONE,
       4, EMPATHY_TYPE_CONTACT, EMPATHY_TYPE_CONTACT,
       G_TYPE_UINT, G_TYPE_STRING);
+
+  signals[SIG_MEMBERS_CHANGED] = g_signal_new ("members-changed",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL,
+      G_TYPE_NONE,
+      5, EMPATHY_TYPE_CONTACT, EMPATHY_TYPE_CONTACT,
+      G_TYPE_UINT, G_TYPE_STRING, G_TYPE_BOOLEAN);
 
   g_type_class_add_private (object_class, sizeof (EmpathyTpChatPrivate));
 }
