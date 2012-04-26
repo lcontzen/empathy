@@ -81,6 +81,7 @@ enum
   SEND_ERROR,
   CHAT_STATE_CHANGED,
   MESSAGE_ACKNOWLEDGED,
+  SIG_MEMBER_RENAMED,
   LAST_SIGNAL
 };
 
@@ -959,9 +960,8 @@ tp_chat_got_renamed_contacts_cb (TpConnection *connection,
 
       if (old != NULL)
         {
-          g_signal_emit_by_name (self, "member-renamed",
-                     old, new, rename_data->reason,
-                     rename_data->message);
+          g_signal_emit (self, signals[SIG_MEMBER_RENAMED], 0,
+              old, new, rename_data->reason, rename_data->message);
           g_object_unref (old);
         }
     }
@@ -1280,6 +1280,14 @@ empathy_tp_chat_class_init (EmpathyTpChatClass *klass)
       g_cclosure_marshal_generic,
       G_TYPE_NONE,
       1, EMPATHY_TYPE_MESSAGE);
+
+  signals[SIG_MEMBER_RENAMED] = g_signal_new ("member-renamed",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL,
+      G_TYPE_NONE,
+      4, EMPATHY_TYPE_CONTACT, EMPATHY_TYPE_CONTACT,
+      G_TYPE_UINT, G_TYPE_STRING);
 
   g_type_class_add_private (object_class, sizeof (EmpathyTpChatPrivate));
 }
