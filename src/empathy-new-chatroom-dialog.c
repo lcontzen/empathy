@@ -30,9 +30,8 @@
 #include <glib/gi18n.h>
 #include <glib/gprintf.h>
 
-#include <telepathy-glib/interfaces.h>
+#include <telepathy-glib/telepathy-glib.h>
 
-#include <libempathy/empathy-tp-roomlist.h>
 #include <libempathy/empathy-chatroom.h>
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-request-util.h>
@@ -51,7 +50,7 @@ G_DEFINE_TYPE (EmpathyNewChatroomDialog, empathy_new_chatroom_dialog,
 
 struct _EmpathyNewChatroomDialogPriv
 {
-  EmpathyTpRoomlist *room_list;
+  TpRoomList *room_list;
   /* Currently selected account */
   TpAccount *account;
   /* Signal id of the "status-changed" signal connected on the currently
@@ -403,16 +402,19 @@ new_chatroom_dialog_account_ready_cb (EmpathyAccountChooser *combobox,
 }
 
 static void
-new_chatroom_dialog_roomlist_destroy_cb (EmpathyTpRoomlist *room_list,
+listing_failed_cb (TpRoomList *room_list,
+    GError *error,
     EmpathyNewChatroomDialog *self)
 {
-  g_object_unref (self->priv->room_list);
-  self->priv->room_list = NULL;
+  gtk_label_set_text (GTK_LABEL (self->priv->label_error_message),
+      _("Failed to list rooms"));
+  gtk_widget_show_all (self->priv->viewport_error);
+  gtk_widget_set_sensitive (self->priv->treeview, FALSE);
 }
 
 static void
-new_chatroom_dialog_new_room_cb (EmpathyTpRoomlist *room_list,
-    EmpathyChatroom *chatroom,
+new_chatroom_dialog_got_room_cb (TpRoomList *room_list,
+    TpRoomInfo *room,
     EmpathyNewChatroomDialog *self)
 {
   GtkListStore *store;
@@ -422,35 +424,37 @@ new_chatroom_dialog_new_room_cb (EmpathyTpRoomlist *room_list,
   const gchar *invite_only;
   gchar *tmp;
 
-  DEBUG ("New chatroom listed: %s (%s)", empathy_chatroom_get_name (chatroom),
-      empathy_chatroom_get_room (chatroom));
+  DEBUG ("New room listed: %s (%s)", tp_room_info_get_name (room),
+      tp_room_info_get_handle_name (room));
 
   /* Add to model */
   store = GTK_LIST_STORE (self->priv->model);
-  members = g_strdup_printf ("%d", empathy_chatroom_get_members_count (
-        chatroom));
-  tmp = g_strdup_printf ("<b>%s</b>", empathy_chatroom_get_name (chatroom));
+  members = g_strdup_printf ("%d", tp_room_info_get_members_count (
+        room, NULL));
+  tmp = g_strdup_printf ("<b>%s</b>", tp_room_info_get_name (room));
+
   /* Translators: Room/Join's roomlist tooltip. Parameters are a channel name,
   yes/no, yes/no and a number. */
   tooltip = g_strdup_printf (
       _("%s\nInvite required: %s\nPassword required: %s\nMembers: %s"),
       tmp,
-      empathy_chatroom_get_invite_only (chatroom) ? _("Yes") : _("No"),
-      empathy_chatroom_get_need_password (chatroom) ? _("Yes") : _("No"),
+      tp_room_info_get_invite_only (room, NULL) ? _("Yes") : _("No"),
+      tp_room_info_get_requires_password (room, NULL) ? _("Yes") : _("No"),
       members);
   g_free (tmp);
-  invite_only = (empathy_chatroom_get_invite_only (chatroom) ?
+
+  invite_only = (tp_room_info_get_invite_only (room, NULL) ?
     GTK_STOCK_INDEX : NULL);
-  need_password = (empathy_chatroom_get_need_password (chatroom) ?
+  need_password = (tp_room_info_get_requires_password (room, NULL) ?
     GTK_STOCK_DIALOG_AUTHENTICATION : NULL);
 
   gtk_list_store_insert_with_values (store, NULL, -1,
       COL_NEED_PASSWORD, need_password,
       COL_INVITE_ONLY, invite_only,
-      COL_NAME, empathy_chatroom_get_name (chatroom),
-      COL_ROOM, empathy_chatroom_get_room (chatroom),
+      COL_NAME, tp_room_info_get_name (room),
+      COL_ROOM, tp_room_info_get_handle_name (room),
       COL_MEMBERS, members,
-      COL_MEMBERS_INT, empathy_chatroom_get_members_count (chatroom),
+      COL_MEMBERS_INT, tp_room_info_get_members_count (room, NULL),
       COL_TOOLTIP, tooltip,
       -1);
 
@@ -459,16 +463,12 @@ new_chatroom_dialog_new_room_cb (EmpathyTpRoomlist *room_list,
 }
 
 static void
-new_chatroom_dialog_listing_cb (EmpathyTpRoomlist *room_list,
-    gpointer unused,
+new_chatroom_dialog_listing_cb (TpRoomList *room_list,
+    GParamSpec *spec,
     EmpathyNewChatroomDialog *self)
 {
-  gboolean listing;
-
-  listing = empathy_tp_roomlist_is_listing (room_list);
-
   /* Update the throbber */
-  if (listing)
+  if (tp_room_list_is_listing (room_list))
     {
       gtk_spinner_start (GTK_SPINNER (self->priv->throbber));
       gtk_widget_show (self->priv->throbber);
@@ -478,28 +478,6 @@ new_chatroom_dialog_listing_cb (EmpathyTpRoomlist *room_list,
       gtk_spinner_stop (GTK_SPINNER (self->priv->throbber));
       gtk_widget_hide (self->priv->throbber);
     }
-}
-
-static void
-start_listing_error_cb (EmpathyTpRoomlist *room_list,
-    GError *error,
-    EmpathyNewChatroomDialog *self)
-{
-  gtk_label_set_text (GTK_LABEL (self->priv->label_error_message),
-      _("Could not start room listing"));
-  gtk_widget_show_all (self->priv->viewport_error);
-  gtk_widget_set_sensitive (self->priv->treeview, FALSE);
-}
-
-static void
-stop_listing_error_cb (EmpathyTpRoomlist *room_list,
-    GError *error,
-    EmpathyNewChatroomDialog *self)
-{
-  gtk_label_set_text (GTK_LABEL (self->priv->label_error_message),
-      _("Could not stop room listing"));
-  gtk_widget_show_all (self->priv->viewport_error);
-  gtk_widget_set_sensitive (self->priv->treeview, FALSE);
 }
 
 static void
@@ -515,8 +493,51 @@ static void
 new_chatroom_dialog_browse_start (EmpathyNewChatroomDialog *self)
 {
   new_chatroom_dialog_model_clear (self);
-  if (self->priv->room_list)
-    empathy_tp_roomlist_start (self->priv->room_list);
+
+  if (self->priv->room_list != NULL)
+    tp_room_list_start (self->priv->room_list);
+}
+
+static void
+new_room_list_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  EmpathyNewChatroomDialog *self = user_data;
+  GError *error = NULL;
+
+  self->priv->room_list = tp_room_list_new_finish (result, &error);
+  if (self->priv->room_list == NULL)
+    {
+      DEBUG ("Failed to create TpRoomList: %s\n", error->message);
+      g_error_free (error);
+      return;
+    }
+
+  g_signal_connect (self->priv->room_list, "got-room",
+      G_CALLBACK (new_chatroom_dialog_got_room_cb), self);
+  g_signal_connect (self->priv->room_list, "failed",
+      G_CALLBACK (listing_failed_cb), self);
+  g_signal_connect (self->priv->room_list, "notify::listing",
+      G_CALLBACK (new_chatroom_dialog_listing_cb), self);
+
+  if (gtk_expander_get_expanded (GTK_EXPANDER (self->priv->expander_browse)))
+    {
+      gtk_widget_hide (self->priv->viewport_error);
+      gtk_widget_set_sensitive (self->priv->treeview, TRUE);
+      new_chatroom_dialog_browse_start (self);
+    }
+
+  if (tp_room_list_is_listing (self->priv->room_list))
+    {
+      gtk_spinner_start (GTK_SPINNER (self->priv->throbber));
+      gtk_widget_show (self->priv->throbber);
+    }
+
+  gtk_widget_set_sensitive (self->priv->expander_browse, TRUE);
+
+  new_chatroom_dialog_update_widgets (self);
+
 }
 
 static void
@@ -524,16 +545,10 @@ new_chatroom_dialog_account_changed_cb (GtkComboBox *combobox,
     EmpathyNewChatroomDialog *self)
 {
   EmpathyAccountChooser *account_chooser;
-  gboolean listing = FALSE;
-  gboolean expanded = FALSE;
   TpConnection *connection;
   TpCapabilities *caps;
 
-  if (self->priv->room_list)
-    {
-      g_object_unref (self->priv->room_list);
-      self->priv->room_list = NULL;
-    }
+  g_clear_object (&self->priv->room_list);
 
   gtk_spinner_stop (GTK_SPINNER (self->priv->throbber));
   gtk_widget_hide (self->priv->throbber);
@@ -565,45 +580,11 @@ new_chatroom_dialog_account_changed_cb (GtkComboBox *combobox,
   if (tp_capabilities_supports_room_list (caps, NULL))
     {
       /* Roomlist channels are supported */
-      self->priv->room_list = empathy_tp_roomlist_new (self->priv->account);
-    }
-  else
-    {
-      self->priv->room_list = NULL;
+      tp_room_list_new_async (self->priv->account, NULL, new_room_list_cb,
+          self);
     }
 
-  if (self->priv->room_list)
-    {
-      g_signal_connect (self->priv->room_list, "destroy",
-          G_CALLBACK (new_chatroom_dialog_roomlist_destroy_cb), self);
-      g_signal_connect (self->priv->room_list, "new-room",
-          G_CALLBACK (new_chatroom_dialog_new_room_cb), self);
-      g_signal_connect (self->priv->room_list, "notify::is-listing",
-          G_CALLBACK (new_chatroom_dialog_listing_cb), self);
-      g_signal_connect (self->priv->room_list, "error::start",
-          G_CALLBACK (start_listing_error_cb), self);
-      g_signal_connect (self->priv->room_list, "error::stop",
-          G_CALLBACK (stop_listing_error_cb), self);
-
-      expanded = gtk_expander_get_expanded (
-          GTK_EXPANDER (self->priv->expander_browse));
-      if (expanded)
-        {
-          gtk_widget_hide (self->priv->viewport_error);
-          gtk_widget_set_sensitive (self->priv->treeview, TRUE);
-          new_chatroom_dialog_browse_start (self);
-        }
-
-      listing = empathy_tp_roomlist_is_listing (self->priv->room_list);
-      if (listing)
-        {
-          gtk_spinner_start (GTK_SPINNER (self->priv->throbber));
-          gtk_widget_show (self->priv->throbber);
-        }
-    }
-
-  gtk_widget_set_sensitive (self->priv->expander_browse,
-      self->priv->room_list != NULL);
+  gtk_widget_set_sensitive (self->priv->expander_browse, FALSE);
 
 out:
   new_chatroom_dialog_update_widgets (self);
@@ -629,13 +610,6 @@ new_chatroom_dialog_entry_changed_cb (GtkWidget *entry,
 }
 
 static void
-new_chatroom_dialog_browse_stop (EmpathyNewChatroomDialog *self)
-{
-  if (self->priv->room_list)
-    empathy_tp_roomlist_stop (self->priv->room_list);
-}
-
-static void
 new_chatroom_dialog_entry_server_activate_cb (GtkWidget *widget,
     EmpathyNewChatroomDialog *self)
 {
@@ -651,7 +625,6 @@ new_chatroom_dialog_expander_browse_activate_cb (GtkWidget *widget,
   expanded = gtk_expander_get_expanded (GTK_EXPANDER (widget));
   if (expanded)
     {
-      new_chatroom_dialog_browse_stop (self);
       gtk_window_set_resizable (GTK_WINDOW (self), FALSE);
     }
   else
