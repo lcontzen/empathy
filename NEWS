@@ -1,3 +1,51 @@
+NEW in 3.5.1 (30/04/2012)
+============
+
+Dependencies:
+ • GLib ≥ 2.32.0
+ • telepathy-glib ≥ 0.17.6
+ • Intltool ≥ 0.50.0
+
+Bugs fixed:
+ - Fixed #501065, Can't rename group (Guillaume Desmottes)
+ - Fixed #668186, make check does not run the test suite (which doesn't pass when it is run) (Guillaume Desmottes)
+ - Fixed #668261, empathy-tls-test (Stef Walter)
+ - Fixed #669134, SIP widget: add local IP widgets (Laurent Contzen)
+ - Fixed #669177, Show who changed the subject.
+ - Fixed #672619, Drop org.gnome.Empathy.gschema.xml.in (Guillaume Desmottes)
+ - Fixed #672976, Use GNetworkMonitor (Guillaume Desmottes)
+ - Fixed #673159, Add 'Rename' entry to accounts context menu (Guillaume Desmottes)
+ - Fixed #673410, Tooltip text when editing should be translatable (Laurent)
+ - Fixed #673821, Remove old contact list code (Guillaume Desmottes)
+ - Fixed #674432, The buddy list window is very small by default (Guillaume Desmottes)
+ - Fixed #640846, No tooltips in status picker (Laurent Contzen)
+
+Translations:
+ - Updated an Translation (Daniel Martinez Cucalon)
+ - Updated ar Translation (Ibrahim Saed)
+ - Updated ca Translation (Jordi Serratosa)
+ - Updated ca@valencia Translation (Carles Ferrando)
+ - Updated en_CA Translation (Tiffany Antopolski)
+ - Updated es Translation (Daniel Mustieles)
+ - Updated eu Translation (Inaki Larranaga Murgoitio)
+ - Updated fa Translation (Arash Mousavi)
+ - Updated gl Translation (Fran Diéguez)
+ - Updated he Translation (Yaron Shahrabani)
+ - Updated hi Translation (Chandan Kumar)
+ - Updated id Translation (Andika Triwidada)
+ - Updated ja Translation (Mako N)
+ - Updated ko Translation (Changwoo Ryu)
+ - Updated nb Translation (Kjartan Maraas)
+ - Updated or Translation (ManojKumar Giri)
+ - Updated sk Translation (Pavol Klačanský)
+ - Updated sl Translation (Matej Urbančič, Andrej Žnidaršič)
+ - Updated te Translation (Sasi Bhushan)
+ - Updated zh_CN Translation (Automatic Mirroring)
+
+Documentation translations:
+ - Updated fr Documentation translation (Bruno Brouard)
+ - Updated ja Documentation translation (Mako N)
+
 NEW in 3.4.1 (16/04/2012)
 ============
 
