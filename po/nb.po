@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy 3.5.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-18 19:57+0200\n"
-"PO-Revision-Date: 2012-04-18 19:58+0200\n"
+"POT-Creation-Date: 2012-04-30 10:17+0200\n"
+"PO-Revision-Date: 2012-04-30 10:17+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: no\n"
@@ -43,49 +43,49 @@ msgstr "Meldings- og VoIP-kontoer"
 msgid "Manage Messaging and VoIP accounts"
 msgstr "Håndter meldings- og VoIP-kontoer"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:1
+#: ../data/org.gnome.Empathy.gschema.xml.h:1
 msgid "Connection managers should be used"
 msgstr "Tilkoblingshåndterer skal brukes"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:2
+#: ../data/org.gnome.Empathy.gschema.xml.h:2
 msgid ""
 "Whether connectivity managers should be used to automatically disconnect/"
 "reconnect."
 msgstr "Om tilkoblingshåndterere skal brukes til å koble til/fra automatisk."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:3
+#: ../data/org.gnome.Empathy.gschema.xml.h:3
 msgid "Empathy should auto-connect on startup"
 msgstr "Empathy skal koble til automatisk ved oppstart"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:4
+#: ../data/org.gnome.Empathy.gschema.xml.h:4
 msgid "Whether Empathy should automatically log into your accounts on startup."
 msgstr "Om Empathy skal logge inn til dine kontoer automatisk ved oppstart."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:5
+#: ../data/org.gnome.Empathy.gschema.xml.h:5
 msgid "Empathy should auto-away when idle"
 msgstr "Empathy skal sette bortestatus automatisk ved inaktivitet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:6
+#: ../data/org.gnome.Empathy.gschema.xml.h:6
 msgid ""
 "Whether Empathy should go into away mode automatically if the user is idle."
 msgstr ""
 "Om Empathy skal bytte til bortemodus automatisk hvis bruker ikke er aktiv."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:7
+#: ../data/org.gnome.Empathy.gschema.xml.h:7
 msgid "Empathy default download folder"
 msgstr "Forvalgt nedlastingsmappe for Empathy"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:8
+#: ../data/org.gnome.Empathy.gschema.xml.h:8
 msgid "The default folder to save file transfers in."
 msgstr "Forvalgt mappe for lagring av filoverføringer."
 
 #. translators: Automatic tasks which are run once to port/update account settings. Ideally, this shouldn't be exposed to users at all, we just use a gsettings key here as an optimization to only run it only once.
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:10
+#: ../data/org.gnome.Empathy.gschema.xml.h:10
 msgid "Magic number used to check if sanity cleaning tasks should be run"
 msgstr ""
 "Magisk nummer som brukes til å sjekke om oppryddingsoppgaver skal kjøres"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:11
+#: ../data/org.gnome.Empathy.gschema.xml.h:11
 msgid ""
 "empathy-sanity-cleaning.c uses this number to check if the cleaning tasks "
 "should be executed or not. Users should not change this key manually."
@@ -94,76 +94,76 @@ msgstr ""
 "oppryddingsoppgaver skal kjøres eller ikke. Brukere skal ikke endre dette "
 "manuelt."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:12
+#: ../data/org.gnome.Empathy.gschema.xml.h:12
 msgid "Show offline contacts"
 msgstr "Vis frakoblede kontakter"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:13
+#: ../data/org.gnome.Empathy.gschema.xml.h:13
 msgid "Whether to show contacts that are offline in the contact list."
 msgstr "Om kontakter som er frakoblet skal vises i kontaktlisten."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:14
+#: ../data/org.gnome.Empathy.gschema.xml.h:14
 msgid "Show avatars"
 msgstr "Vis personbilder"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:15
+#: ../data/org.gnome.Empathy.gschema.xml.h:15
 msgid ""
 "Whether to show avatars for contacts in the contact list and chat windows."
 msgstr "Om bilder av kontakter skal vises i kontaktlisten og samtalevinduer."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:16
+#: ../data/org.gnome.Empathy.gschema.xml.h:16
 msgid "Show protocols"
 msgstr "Vis protokoller"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:17
+#: ../data/org.gnome.Empathy.gschema.xml.h:17
 msgid "Whether to show protocols for contacts in the contact list."
 msgstr "Om protokoller for kontakter skal vises i kontaktlisten."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:18
+#: ../data/org.gnome.Empathy.gschema.xml.h:18
 msgid "Show Balance in contact list"
 msgstr "Vis saldo i kontaktliste"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:19
+#: ../data/org.gnome.Empathy.gschema.xml.h:19
 msgid "Whether to show account balances in the contact list."
 msgstr "Om saldo for konto skal vises i kontaktlisten."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:20
+#: ../data/org.gnome.Empathy.gschema.xml.h:20
 msgid "Compact contact list"
 msgstr "Kompakt kontaktliste"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:21
+#: ../data/org.gnome.Empathy.gschema.xml.h:21
 msgid "Whether to show the contact list in compact mode."
 msgstr "Om kontaktlisten skal vises i kompakt modus."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:22
+#: ../data/org.gnome.Empathy.gschema.xml.h:22
 msgid "Hide main window"
 msgstr "Skjul hovedvinduet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:23
+#: ../data/org.gnome.Empathy.gschema.xml.h:23
 msgid "Hide the main window."
 msgstr "Skjul hovedvinduet."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:24
+#: ../data/org.gnome.Empathy.gschema.xml.h:24
 msgid "Default directory to select an avatar image from"
 msgstr "Forvalgt mappe for personbilde"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:25
+#: ../data/org.gnome.Empathy.gschema.xml.h:25
 msgid "The last directory that an avatar image was chosen from."
 msgstr "Den forrige mappen et personbilde ble valgt fra."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:26
+#: ../data/org.gnome.Empathy.gschema.xml.h:26
 msgid "Open new chats in separate windows"
 msgstr "Åpne nye samtaler i egne vinduer"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:27
+#: ../data/org.gnome.Empathy.gschema.xml.h:27
 msgid "Always open a separate chat window for new chats."
 msgstr "Alltid åpne et eget vindu til nye samtaler."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:28
+#: ../data/org.gnome.Empathy.gschema.xml.h:28
 msgid "Display incoming events in the status area"
 msgstr "Vis innkommende hendelser i statusområdet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:29
+#: ../data/org.gnome.Empathy.gschema.xml.h:29
 msgid ""
 "Display incoming events in the status area. If false, present them to the "
 "user immediately."
@@ -171,27 +171,27 @@ msgstr ""
 "Vis innkommende hendelser i statusområdet. Hvis denne er «false» vises disse "
 "til bruker med det samme."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:30
+#: ../data/org.gnome.Empathy.gschema.xml.h:30
 msgid "The position for the chat window side pane"
 msgstr "Posisjon for pratevinduets sidelinje"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:31
+#: ../data/org.gnome.Empathy.gschema.xml.h:31
 msgid "The stored position (in pixels) of the chat window side pane."
 msgstr "Lagret posisjon (i pikselr) for pratevinduets sideområde."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:32
+#: ../data/org.gnome.Empathy.gschema.xml.h:32
 msgid "Show contact groups"
 msgstr "Vis kontaktgrupper"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:33
+#: ../data/org.gnome.Empathy.gschema.xml.h:33
 msgid "Whether to show groups in the contact list."
 msgstr "Om kontaktgrupper skal vises i kontaktlisten."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:34
+#: ../data/org.gnome.Empathy.gschema.xml.h:34
 msgid "Contact list sort criterion"
 msgstr "Sorteringskriterier for kontaktliste"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:35
+#: ../data/org.gnome.Empathy.gschema.xml.h:35
 msgid ""
 "Which criterion to use when sorting the contact list. Default is to sort by "
 "the contact's state with the value \"state\". A value of \"name\" will sort "
@@ -201,103 +201,103 @@ msgstr ""
 "å sortere kontakter etter kontaktens tilstand med verdien «state». Hvis man "
 "bruker «name» vil kontaktlisten sorteres etter kontaktens navn."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:36
+#: ../data/org.gnome.Empathy.gschema.xml.h:36
 msgid "Use notification sounds"
 msgstr "Bruk varslingslyder"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:37
+#: ../data/org.gnome.Empathy.gschema.xml.h:37
 msgid "Whether to play a sound to notify of events."
 msgstr "Om lyder skal spilles av for å varsle om hendelser."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:38
+#: ../data/org.gnome.Empathy.gschema.xml.h:38
 msgid "Disable sounds when away"
 msgstr "Slå av lyder når du er borte"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:39
+#: ../data/org.gnome.Empathy.gschema.xml.h:39
 msgid "Whether to play sound notifications when away or busy."
 msgstr "Om lyder skal spilles av når du er borte eller opptatt."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:40
+#: ../data/org.gnome.Empathy.gschema.xml.h:40
 msgid "Play a sound for incoming messages"
 msgstr "Spill av lyd når meldinger kommer inn"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:41
+#: ../data/org.gnome.Empathy.gschema.xml.h:41
 msgid "Whether to play a sound to notify of incoming messages."
 msgstr "Om lyder skal spilles av for å varsle om innkommende meldinger."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:42
+#: ../data/org.gnome.Empathy.gschema.xml.h:42
 msgid "Play a sound for outgoing messages"
 msgstr "Spill av lyd for utgående meldinger"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:43
+#: ../data/org.gnome.Empathy.gschema.xml.h:43
 msgid "Whether to play a sound to notify of outgoing messages."
 msgstr "Om lyder skal spilles av for å varsle om utgående meldinger."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:44
+#: ../data/org.gnome.Empathy.gschema.xml.h:44
 msgid "Play a sound for new conversations"
 msgstr "Spill av lyd ved nye samtaler"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:45
+#: ../data/org.gnome.Empathy.gschema.xml.h:45
 msgid "Whether to play a sound to notify of new conversations."
 msgstr "Om lyder skal spilles av for å varsle om nye samtaler."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:46
+#: ../data/org.gnome.Empathy.gschema.xml.h:46
 msgid "Play a sound when a contact logs in"
 msgstr "Spill av lyd når kontakter logger inn"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:47
+#: ../data/org.gnome.Empathy.gschema.xml.h:47
 msgid "Whether to play a sound to notify of contacts logging into the network."
 msgstr ""
 "Om en lyd skal spilles av for å varsle om at kontakter logger inn på "
 "nettverket."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:48
+#: ../data/org.gnome.Empathy.gschema.xml.h:48
 msgid "Play a sound when a contact logs out"
 msgstr "Spill av lyd når kontakter logger ut"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:49
+#: ../data/org.gnome.Empathy.gschema.xml.h:49
 msgid ""
 "Whether to play a sound to notify of contacts logging out of the network."
 msgstr ""
 "Om en lyd skal spilles av for å varsle at kontakter logger ut av nettverket."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:50
+#: ../data/org.gnome.Empathy.gschema.xml.h:50
 msgid "Play a sound when we log in"
 msgstr "Spill av lyd når du logger inn"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:51
+#: ../data/org.gnome.Empathy.gschema.xml.h:51
 msgid "Whether to play a sound when logging into a network."
 msgstr "Om lyder skal spilles av når du logger inn på et nettverk."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:52
+#: ../data/org.gnome.Empathy.gschema.xml.h:52
 msgid "Play a sound when we log out"
 msgstr "Spill av lyd når du logger ut"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:53
+#: ../data/org.gnome.Empathy.gschema.xml.h:53
 msgid "Whether to play a sound when logging out of a network."
 msgstr "Om lyder skal spilles av når du logger ut av et nettverk."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:54
+#: ../data/org.gnome.Empathy.gschema.xml.h:54
 msgid "Enable popup notifications for new messages"
 msgstr "Aktiver varsling oppsprettmeldinger for nye meldinger"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:55
+#: ../data/org.gnome.Empathy.gschema.xml.h:55
 msgid "Whether to show a popup notification when receiving a new message."
 msgstr "Om varsling skal vises når en ny melding mottas."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:56
+#: ../data/org.gnome.Empathy.gschema.xml.h:56
 msgid "Disable popup notifications when away"
 msgstr "Slå av varsling når du er borte"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:57
+#: ../data/org.gnome.Empathy.gschema.xml.h:57
 msgid "Whether to show popup notifications when away or busy."
 msgstr "Om varsling skal vises når du er borte eller opptatt."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:58
+#: ../data/org.gnome.Empathy.gschema.xml.h:58
 msgid "Pop up notifications if the chat isn't focused"
 msgstr "Vis varsling når prat ikke er fokusert"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:59
+#: ../data/org.gnome.Empathy.gschema.xml.h:59
 msgid ""
 "Whether to show a popup notification when receiving a new message even if "
 "the chat is already opened, but not focused."
@@ -305,77 +305,77 @@ msgstr ""
 "Om varsling skal vises når en melding mottas selv om pratevinduet er åpent "
 "men ikke har fokus."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:60
+#: ../data/org.gnome.Empathy.gschema.xml.h:60
 msgid "Pop up notifications when a contact logs in"
 msgstr "Vis varsling når en kontakt logger inn"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:61
+#: ../data/org.gnome.Empathy.gschema.xml.h:61
 msgid "Whether to show a popup notification when a contact goes online."
 msgstr "Om et varsel skal vises når en kontakt er kobler fra."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:62
+#: ../data/org.gnome.Empathy.gschema.xml.h:62
 msgid "Pop up notifications when a contact logs out"
 msgstr "Vis varsling når en kontakt logger ut"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:63
+#: ../data/org.gnome.Empathy.gschema.xml.h:63
 msgid "Whether to show a popup notification when a contact goes offline."
 msgstr "Om varsel skal vises når en kontakt kobler fra."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:64
+#: ../data/org.gnome.Empathy.gschema.xml.h:64
 msgid "Use graphical smileys"
 msgstr "Vis smilefjes grafisk"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:65
+#: ../data/org.gnome.Empathy.gschema.xml.h:65
 msgid "Whether to convert smileys into graphical images in conversations."
 msgstr "Om smilefjes skal konverteres til grafiske bilder i samtaler."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:66
+#: ../data/org.gnome.Empathy.gschema.xml.h:66
 msgid "Show contact list in rooms"
 msgstr "Vis kontaktliste i rom"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:67
+#: ../data/org.gnome.Empathy.gschema.xml.h:67
 msgid "Whether to show the contact list in chat rooms."
 msgstr "Om kontaktlisten skal vises i praterom."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:68
+#: ../data/org.gnome.Empathy.gschema.xml.h:68
 msgid "Chat window theme"
 msgstr "Tema for samtalevindu"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:69
+#: ../data/org.gnome.Empathy.gschema.xml.h:69
 msgid "The theme that is used to display the conversation in chat windows."
 msgstr "Temaet som brukes til å vise samtaler."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:70
+#: ../data/org.gnome.Empathy.gschema.xml.h:70
 msgid "Chat window theme variant"
 msgstr "Temavariant for samtalevindu"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:71
+#: ../data/org.gnome.Empathy.gschema.xml.h:71
 msgid ""
 "The theme variant that is used to display the conversation in chat windows."
 msgstr "Temavariant som brukes til å vise samtale i pratevinduer."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:72
+#: ../data/org.gnome.Empathy.gschema.xml.h:72
 msgid "Path of the Adium theme to use"
 msgstr "Sti til Adium-tema som skal brukes"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:73
+#: ../data/org.gnome.Empathy.gschema.xml.h:73
 msgid "Path of the Adium theme to use if the theme used for chat is Adium."
 msgstr "Sti til Adium-tema skal brukes hvis tema for prat er Adium."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:74
+#: ../data/org.gnome.Empathy.gschema.xml.h:74
 msgid "Enable WebKit Developer Tools"
 msgstr "Slå på utviklerverktøy for WebKit"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:75
+#: ../data/org.gnome.Empathy.gschema.xml.h:75
 msgid ""
 "Whether WebKit developer tools, such as the Web Inspector, should be enabled."
 msgstr "Om utviklerverktøy for WebKit, som Web Inspector, skal slås på."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:76
+#: ../data/org.gnome.Empathy.gschema.xml.h:76
 msgid "Inform other users when you are typing to them"
 msgstr "Informer andre brukere når du skriver til dem"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:77
+#: ../data/org.gnome.Empathy.gschema.xml.h:77
 msgid ""
 "Whether to send the 'composing' or 'paused' chat states. Does not currently "
 "affect the 'gone' state."
@@ -383,39 +383,39 @@ msgstr ""
 "Hvorvidt tilstand for «skriver» eller «pause» i prat skal sendes. Påvirker "
 "ikke status «borte»."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:78
+#: ../data/org.gnome.Empathy.gschema.xml.h:78
 msgid "Use theme for chat rooms"
 msgstr "Bruk tema for samtalerom"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:79
+#: ../data/org.gnome.Empathy.gschema.xml.h:79
 msgid "Whether to use the theme for chat rooms."
 msgstr "Om tema skal brukes for praterom eller ikke."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:80
+#: ../data/org.gnome.Empathy.gschema.xml.h:80
 msgid "Spell checking languages"
 msgstr "Stavekontrollspråk"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:81
+#: ../data/org.gnome.Empathy.gschema.xml.h:81
 msgid ""
 "Comma-separated list of spell checker languages to use (e.g. \"en, fr, nl\")."
 msgstr ""
 "Kommaseparert liste over stavekontrollspråk som skal brukes (f.eks \"no, en, "
 "fr, nl\")."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:82
+#: ../data/org.gnome.Empathy.gschema.xml.h:82
 msgid "Enable spell checker"
 msgstr "Bruk stavekontroll"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:83
+#: ../data/org.gnome.Empathy.gschema.xml.h:83
 msgid ""
 "Whether to check words typed against the languages you want to check with."
 msgstr "Om stavekontroll skal sjekke ord mot de språkene du ønsker å bruke."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:84
+#: ../data/org.gnome.Empathy.gschema.xml.h:84
 msgid "Nick completed character"
 msgstr "Tegn for fullføring av kallenavn"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:85
+#: ../data/org.gnome.Empathy.gschema.xml.h:85
 msgid ""
 "Character to add after nickname when using nick completion (tab) in group "
 "chat."
@@ -423,54 +423,54 @@ msgstr ""
 "Tegn som skal legges til etter kallenavn når fullføring av kallenavn med "
 "tabulator benyttes i gruppeprat."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:86
+#: ../data/org.gnome.Empathy.gschema.xml.h:86
 msgid "Empathy should use the avatar of the contact as the chat window icon"
 msgstr ""
 "Empathy skal bruke personbildet for kontakten som ikon for pratevinduet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:87
+#: ../data/org.gnome.Empathy.gschema.xml.h:87
 msgid ""
 "Whether Empathy should use the avatar of the contact as the chat window icon."
 msgstr ""
 "Om Empathy skal bruke personbilde for kontakten som ikon for pratevinduet."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:88
+#: ../data/org.gnome.Empathy.gschema.xml.h:88
 msgid "Last account selected in Join Room dialog"
 msgstr "Siste konto valgt i dialogen «Bli med i rom»"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:89
+#: ../data/org.gnome.Empathy.gschema.xml.h:89
 msgid "D-Bus object path of the last account selected to join a room."
 msgstr "D-Bus objektsti for siste konto valgt for å bli med i et rom."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:90
+#: ../data/org.gnome.Empathy.gschema.xml.h:90
 msgid "Camera device"
 msgstr "Kameraenhet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:91
+#: ../data/org.gnome.Empathy.gschema.xml.h:91
 msgid "Default camera device to use in video calls, e.g. /dev/video0."
 msgstr "Forvalgt kameraenhet til bruk for videosamtaler. F.eks. /dev/video0."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:92
+#: ../data/org.gnome.Empathy.gschema.xml.h:92
 msgid "Camera position"
 msgstr "Kameraposisjon"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:93
+#: ../data/org.gnome.Empathy.gschema.xml.h:93
 msgid "Position the camera preview should be during a call."
 msgstr "Posisjon for kameraforhåndsvisning under en samtale."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:94
+#: ../data/org.gnome.Empathy.gschema.xml.h:94
 msgid "Echo cancellation support"
 msgstr "Støtte for utlikning av ekko"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:95
+#: ../data/org.gnome.Empathy.gschema.xml.h:95
 msgid "Whether to enable Pulseaudio's echo cancellation filter."
 msgstr "Hvorvidt Pulseaudio's filter for utlikning av ekko skal slås på."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:96
+#: ../data/org.gnome.Empathy.gschema.xml.h:96
 msgid "Show hint about closing the main window"
 msgstr "Vis hint om lukking av hovedvinduet"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:97
+#: ../data/org.gnome.Empathy.gschema.xml.h:97
 msgid ""
 "Whether to show the message dialog about closing the main window with the "
 "'x' button in the title bar."
@@ -478,43 +478,43 @@ msgstr ""
 "Om meldingsdialog om lukking av vinduet med «x»-knappen i tittelfeltet skal "
 "vises."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:98
+#: ../data/org.gnome.Empathy.gschema.xml.h:98
 msgid "Empathy can publish the user's location"
 msgstr "Empathy kan publisere brukers plassering"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:99
+#: ../data/org.gnome.Empathy.gschema.xml.h:99
 msgid "Whether Empathy can publish the user's location to their contacts."
 msgstr "Om Empathy kan publisere brukers plassering til kontakter."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:100
+#: ../data/org.gnome.Empathy.gschema.xml.h:100
 msgid "Empathy can use the network to guess the location"
 msgstr "Empathy kan bruke nettverket til å gjette plassering"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:101
+#: ../data/org.gnome.Empathy.gschema.xml.h:101
 msgid "Whether Empathy can use the network to guess the location."
 msgstr "Om Empathy kan bruke nettverket for å gjette plassering."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:102
+#: ../data/org.gnome.Empathy.gschema.xml.h:102
 msgid "Empathy can use the cellular network to guess the location"
 msgstr "Empathy kan bruke mobilnettverk til å gjette plassering"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:103
+#: ../data/org.gnome.Empathy.gschema.xml.h:103
 msgid "Whether Empathy can use the cellular network to guess the location."
 msgstr "Om Empathy kan bruke mobilnettverk for å gjette plassering."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:104
+#: ../data/org.gnome.Empathy.gschema.xml.h:104
 msgid "Empathy can use the GPS to guess the location"
 msgstr "Empathy kan bruke GPS til å gjette plassering"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:105
+#: ../data/org.gnome.Empathy.gschema.xml.h:105
 msgid "Whether Empathy can use the GPS to guess the location."
 msgstr "Om Empathy kan bruke GPS for å gjette plassering."
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:106
+#: ../data/org.gnome.Empathy.gschema.xml.h:106
 msgid "Empathy should reduce the location's accuracy"
 msgstr "Empathy skal redusere nøyaktighet for plasseringenseri"
 
-#: ../data/org.gnome.Empathy.gschema.xml.in.h:107
+#: ../data/org.gnome.Empathy.gschema.xml.h:107
 msgid ""
 "Whether Empathy should reduce the location's accuracy for privacy reasons."
 msgstr ""
@@ -2230,31 +2230,35 @@ msgstr "_Inviter til praterom"
 msgid "_Add Contact…"
 msgstr "_Legg til kontakt …"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2304
+#: ../libempathy-gtk/empathy-individual-view.c:2364
 msgid "Delete and _Block"
 msgstr "Slett og _blokker"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2339
+#: ../libempathy-gtk/empathy-individual-view.c:2399
 #, c-format
 msgid "Do you really want to remove the group '%s'?"
 msgstr "Vil du virkelig fjerne gruppen «%s»?"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2342
+#: ../libempathy-gtk/empathy-individual-view.c:2402
 msgid "Removing group"
 msgstr "Fjerner gruppe"
 
+#: ../libempathy-gtk/empathy-individual-view.c:2470
+msgid "Re_name"
+msgstr "Endre _navn"
+
 #. Remove
-#: ../libempathy-gtk/empathy-individual-view.c:2397
-#: ../libempathy-gtk/empathy-individual-view.c:2601
+#: ../libempathy-gtk/empathy-individual-view.c:2479
+#: ../libempathy-gtk/empathy-individual-view.c:2683
 msgid "_Remove"
 msgstr "Fje_rn"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2474
+#: ../libempathy-gtk/empathy-individual-view.c:2556
 #, c-format
 msgid "Do you really want to remove the contact '%s'?"
 msgstr "Vil du virkelig fjerne kontakten «%s»?"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2483
+#: ../libempathy-gtk/empathy-individual-view.c:2565
 #, c-format
 msgid ""
 "Do you really want to remove the linked contact '%s'? Note that this will "
@@ -2263,7 +2267,7 @@ msgstr ""
 "Vil du virkelig fjerne lenket kontakt «%s»? Merk at dette vil fjerne alle "
 "kontaktene den lenkede kontakten består av."
 
-#: ../libempathy-gtk/empathy-individual-view.c:2495
+#: ../libempathy-gtk/empathy-individual-view.c:2577
 msgid "Removing contact"
 msgstr "Fjerner kontakt"
 
@@ -2592,7 +2596,8 @@ msgid ""
 "<small><i>Press Enter to set the new message or Esc to cancel.</i></small>"
 msgstr ""
 "<b>Aktiv melding: %s</b>\n"
-"<small><i>Trykk linjeskift for å sette ny melding eller Esc for å avbryte.</i></small>"
+"<small><i>Trykk linjeskift for å sette ny melding eller Esc for å avbryte.</"
+"i></small>"
 
 #: ../libempathy-gtk/empathy-presence-chooser.c:396
 msgid "Set status"
