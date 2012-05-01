@@ -136,6 +136,22 @@ chat_destroyed_cb (gpointer data,
 }
 
 static void
+join_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpChannel *channel = TP_CHANNEL (source);
+  GError *error = NULL;
+
+  if (!tp_channel_join_finish (channel, result, &error))
+    {
+      DEBUG ("Failed to join chat (%s): %s",
+          tp_channel_get_identifier (channel), error->message);
+      g_error_free (error);
+    }
+}
+
+static void
 process_tp_chat (EmpathyChatManager *self,
     EmpathyTpChat *tp_chat,
     TpAccount *account,
@@ -193,7 +209,7 @@ process_tp_chat (EmpathyChatManager *self,
     {
       /* We have been invited to the room. Add ourself as member as this
        * channel has been approved. */
-      empathy_tp_chat_join (tp_chat);
+      tp_channel_join_async (TP_CHANNEL (tp_chat), "", join_cb, self);
     }
 }
 
