@@ -169,6 +169,7 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
       const gchar *display_name;
       const gchar *saved_cm_name;
       const gchar *proto_name;
+      GdkPixbuf *pixbuf;
 
       proto_name = tp_protocol_get_name (protocol);
       saved_cm_name = g_hash_table_lookup (priv->protocols, proto_name);
@@ -236,39 +237,52 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
           g_strdup (proto_name), g_strdup (cm_name));
 
       icon_name = empathy_protocol_icon_name (proto_name);
+      pixbuf = empathy_pixbuf_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON);
 
       display_name = empathy_protocol_name_to_display_name (proto_name);
 
       gtk_list_store_insert_with_values (priv->store,
           NULL, 0,
-          COL_ICON, icon_name,
+          COL_ICON, pixbuf,
           COL_LABEL, display_name,
           COL_CM, cm,
           COL_PROTOCOL_NAME, proto_name,
           -1);
 
+      g_clear_object (&pixbuf);
+
       if (!tp_strdiff (proto_name, "jabber") &&
           !tp_strdiff (cm_name, "gabble"))
         {
           display_name = empathy_service_name_to_display_name ("google-talk");
+          pixbuf = empathy_pixbuf_from_icon_name ("im-google-talk",
+                  GTK_ICON_SIZE_BUTTON);
+
           gtk_list_store_insert_with_values (priv->store,
              NULL, 0,
-             COL_ICON, "im-google-talk",
+             COL_ICON, pixbuf,
              COL_LABEL, display_name,
              COL_CM, cm,
              COL_PROTOCOL_NAME, proto_name,
              COL_SERVICE, "google-talk",
              -1);
 
+          g_clear_object (&pixbuf);
+
           display_name = empathy_service_name_to_display_name ("facebook");
+          pixbuf = empathy_pixbuf_from_icon_name ("im-facebook",
+                  GTK_ICON_SIZE_BUTTON);
+
           gtk_list_store_insert_with_values (priv->store,
              NULL, 0,
-             COL_ICON, "im-facebook",
+             COL_ICON, pixbuf,
              COL_LABEL, display_name,
              COL_CM, cm,
              COL_PROTOCOL_NAME, proto_name,
              COL_SERVICE, "facebook",
              -1);
+
+          g_clear_object (&pixbuf);
         }
 
       g_free (icon_name);
@@ -316,7 +330,7 @@ protocol_chooser_constructed (GObject *object)
 
   /* set up combo box with new store */
   priv->store = gtk_list_store_new (COL_COUNT,
-          G_TYPE_STRING,    /* Icon name */
+          GDK_TYPE_PIXBUF,  /* Icon */
           G_TYPE_STRING,    /* Label     */
           G_TYPE_OBJECT,    /* CM */
           G_TYPE_STRING,    /* protocol name  */
@@ -337,9 +351,8 @@ protocol_chooser_constructed (GObject *object)
   renderer = gtk_cell_renderer_pixbuf_new ();
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, FALSE);
   gtk_cell_layout_set_attributes (GTK_CELL_LAYOUT (object), renderer,
-      "icon-name", COL_ICON,
+      "pixbuf", COL_ICON,
       NULL);
-  g_object_set (renderer, "stock-size", GTK_ICON_SIZE_BUTTON, NULL);
 
   renderer = gtk_cell_renderer_text_new ();
   gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (object), renderer, TRUE);
