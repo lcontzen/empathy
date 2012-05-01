@@ -1458,38 +1458,6 @@ empathy_tp_chat_leave (EmpathyTpChat *self,
     message, tp_channel_leave_async_cb, self);
 }
 
-static void
-add_members_cb (TpChannel *proxy,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
-{
-  EmpathyTpChat *self = (EmpathyTpChat *) weak_object;
-
-  if (error != NULL)
-    {
-      DEBUG ("Failed to join chat (%s): %s",
-        tp_channel_get_identifier ((TpChannel *) self), error->message);
-    }
-}
-
-void
-empathy_tp_chat_join (EmpathyTpChat *self)
-{
-  TpHandle self_handle;
-  GArray *members;
-
-  self_handle = tp_channel_group_get_self_handle ((TpChannel *) self);
-
-  members = g_array_sized_new (FALSE, FALSE, sizeof (TpHandle), 1);
-  g_array_append_val (members, self_handle);
-
-  tp_cli_channel_interface_group_call_add_members ((TpChannel *) self, -1,
-      members, "", add_members_cb, NULL, NULL, G_OBJECT (self));
-
-  g_array_unref (members);
-}
-
 gboolean
 empathy_tp_chat_is_invited (EmpathyTpChat *self,
     TpHandle *inviter)
