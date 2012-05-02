@@ -1061,46 +1061,22 @@ tp_chat_group_members_changed_cb (TpChannel *channel,
 }
 
 static void
-tp_chat_got_remote_contact_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *chat)
+create_remote_contact (EmpathyTpChat *self,
+    TpContact *contact)
 {
-  EmpathyTpChat *self = (EmpathyTpChat *) chat;
-
-  if (error != NULL)
-    {
-      DEBUG ("Error: %s", error->message);
-      empathy_tp_chat_leave (self, "");
-      return;
-    }
-
-  self->priv->remote_contact = g_object_ref (contact);
-  g_object_notify (chat, "remote-contact");
+  self->priv->remote_contact = empathy_contact_dup_from_tp_contact (contact);
+  g_object_notify (G_OBJECT (self), "remote-contact");
 
   check_almost_ready (self);
 }
 
 static void
-tp_chat_got_self_contact_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *chat)
+create_self_contact (EmpathyTpChat *self,
+    TpContact *contact)
 {
-  EmpathyTpChat *self = (EmpathyTpChat *) chat;
-
-  if (error != NULL)
-    {
-      DEBUG ("Error: %s", error->message);
-      empathy_tp_chat_leave (self, "");
-      return;
-    }
-
-  self->priv->user = g_object_ref (contact);
+  self->priv->user = empathy_contact_dup_from_tp_contact (contact);
   empathy_contact_set_is_user (self->priv->user, TRUE);
-  g_object_notify (chat, "self-contact");
+  g_object_notify (G_OBJECT (self), "self-contact");
   check_almost_ready (self);
 }
 
@@ -1526,13 +1502,11 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
     {
       const TpIntSet *members;
       GArray *handles;
-      TpHandle handle;
+      TpContact *contact;
 
       /* Get self contact from the group's self handle */
-      handle = tp_channel_group_get_self_handle (channel);
-      empathy_tp_contact_factory_get_from_handle (connection,
-        handle, tp_chat_got_self_contact_cb,
-        NULL, NULL, G_OBJECT (self));
+      contact = tp_channel_group_get_self_contact (channel);
+      create_self_contact (self, contact);
 
       /* Get initial member contacts */
       members = tp_channel_group_get_members (channel);
@@ -1551,19 +1525,15 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
       TpCapabilities *caps;
       GPtrArray *classes;
       guint i;
-      TpHandle handle;
+      TpContact *contact;
 
       /* Get the self contact from the connection's self handle */
-      handle = tp_connection_get_self_handle (connection);
-      empathy_tp_contact_factory_get_from_handle (connection,
-        handle, tp_chat_got_self_contact_cb,
-        NULL, NULL, G_OBJECT (self));
+      contact = tp_connection_get_self_contact (connection);
+      create_self_contact (self, contact);
 
       /* Get the remote contact */
-      handle = tp_channel_get_handle (channel, NULL);
-      empathy_tp_contact_factory_get_from_handle (connection,
-        handle, tp_chat_got_remote_contact_cb,
-        NULL, NULL, G_OBJECT (self));
+      contact = tp_channel_get_target_contact (channel);
+      create_remote_contact (self, contact);
 
       caps = tp_connection_get_capabilities (connection);
       g_assert (caps != NULL);
