@@ -815,12 +815,12 @@ display_invite_room_dialog (EventManagerApproval *approval)
   GtkWidget *window = empathy_roster_window_dup ();
   const gchar *invite_msg;
   gchar *msg;
-  TpHandle self_handle;
+  TpContact *self_contact;
   EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
 
-  self_handle = tp_channel_group_get_self_handle (approval->main_channel);
-  tp_channel_group_get_local_pending_info (approval->main_channel, self_handle,
-      NULL, NULL, &invite_msg);
+  self_contact = tp_channel_group_get_self_contact (approval->main_channel);
+  tp_channel_group_get_local_pending_contact_info (approval->main_channel,
+      self_contact, NULL, NULL, &invite_msg);
 
   if (approval->contact != NULL)
     {
