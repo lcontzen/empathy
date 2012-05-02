@@ -33,7 +33,6 @@
 #include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-connection-aggregator.h>
 #include <libempathy/empathy-tp-chat.h>
-#include <libempathy/empathy-tp-streamed-media.h>
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-gsettings.h>
 
@@ -408,11 +407,7 @@ reject_channel_claim_cb (GObject *source,
       goto out;
     }
 
-  if (EMPATHY_IS_TP_STREAMED_MEDIA (user_data))
-    {
-      empathy_tp_streamed_media_close (user_data);
-    }
-  else if (TP_IS_CALL_CHANNEL (user_data))
+  if (TP_IS_CALL_CHANNEL (user_data))
     {
       tp_call_channel_hangup_async (user_data,
           TP_CALL_STATE_CHANGE_REASON_USER_REQUESTED,
@@ -499,13 +494,7 @@ event_channel_process_voip_func (EventPriv *event)
       return;
     }
 
-  if (etype == EMPATHY_EVENT_TYPE_VOIP)
-    {
-      EmpathyTpStreamedMedia *call;
-      call = EMPATHY_TP_STREAMED_MEDIA (event->approval->handler_instance);
-      video = empathy_tp_streamed_media_has_initial_video (call);
-    }
-  else if (etype == EMPATHY_EVENT_TYPE_CALL)
+  if (etype == EMPATHY_EVENT_TYPE_CALL)
     {
       TpCallChannel *call;
       call = TP_CALL_CHANNEL (event->approval->handler_instance);
@@ -745,54 +734,6 @@ event_manager_call_channel_got_contact_cb (TpConnection *connection,
         EMPATHY_SOUND_PHONE_INCOMING, MS_BETWEEN_RING);
 
   g_object_unref (window);
-}
-
-static void
-event_manager_media_channel_got_contact (EventManagerApproval *approval)
-{
-  EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
-  GtkWidget *window = empathy_roster_window_dup ();
-  gchar *header;
-  EmpathyTpStreamedMedia *call;
-  gboolean video;
-
-  call = EMPATHY_TP_STREAMED_MEDIA (approval->handler_instance);
-
-  video = empathy_tp_streamed_media_has_initial_video (call);
-
-  header = g_strdup_printf (
-    video ? _("Incoming video call from %s") :_("Incoming call from %s"),
-    empathy_contact_get_alias (approval->contact));
-
-  event_manager_add (approval->manager, NULL,
-      approval->contact, EMPATHY_EVENT_TYPE_VOIP,
-      video ? EMPATHY_IMAGE_VIDEO_CALL : EMPATHY_IMAGE_VOIP,
-      header, NULL, approval,
-      event_channel_process_voip_func, NULL);
-
-  g_free (header);
-
-  priv->ringing++;
-  if (priv->ringing == 1)
-    empathy_sound_manager_start_playing (priv->sound_mgr, window,
-        EMPATHY_SOUND_PHONE_INCOMING, MS_BETWEEN_RING);
-
-  g_object_unref (window);
-}
-
-static void
-event_manager_media_channel_contact_changed_cb (EmpathyTpStreamedMedia *call,
-  GParamSpec *param, EventManagerApproval *approval)
-{
-  EmpathyContact *contact;
-
-  g_object_get (G_OBJECT (call), "contact", &contact, NULL);
-
-  if (contact == NULL)
-    return;
-
-  approval->contact = contact;
-  event_manager_media_channel_got_contact (approval);
 }
 
 static void
@@ -1079,29 +1020,6 @@ approve_channels (TpSimpleApprover *approver,
 
           event_manager_chat_message_received_cb (tp_chat, msg, approval);
         }
-    }
-  else if (channel_type == TP_IFACE_QUARK_CHANNEL_TYPE_STREAMED_MEDIA)
-    {
-      EmpathyContact *contact;
-      EmpathyTpStreamedMedia *call = empathy_tp_streamed_media_new (account,
-        channel);
-
-      approval->handler_instance = G_OBJECT (call);
-
-      g_object_get (G_OBJECT (call), "contact", &contact, NULL);
-
-      if (contact == NULL)
-        {
-          g_signal_connect (call, "notify::contact",
-            G_CALLBACK (event_manager_media_channel_contact_changed_cb),
-            approval);
-        }
-      else
-        {
-          approval->contact = contact;
-          event_manager_media_channel_got_contact (approval);
-        }
-
     }
   else if (channel_type == TP_IFACE_QUARK_CHANNEL_TYPE_CALL)
     {
