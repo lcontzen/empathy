@@ -66,6 +66,9 @@ empathy_client_factory_dup_channel_features (TpSimpleClientFactory *factory,
 
   features = chainup->dup_channel_features (factory, channel);
 
+  feature = TP_CHANNEL_FEATURE_CONTACTS;
+  g_array_append_val (features, feature);
+
   if (EMPATHY_IS_TP_CHAT (channel))
     {
       feature = TP_CHANNEL_FEATURE_CHAT_STATES;
