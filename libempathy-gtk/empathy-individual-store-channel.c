@@ -139,22 +139,14 @@ group_contacts_changed_cb (TpChannel *channel,
 }
 
 static void
-channel_prepare_cb (GObject *source,
-    GAsyncResult *result,
-    gpointer user_data)
+individual_store_channel_set_individual_channel (
+    EmpathyIndividualStoreChannel *self,
+    TpChannel *channel)
 {
-  EmpathyIndividualStoreChannel *self = user_data;
-  TpChannel *channel = (TpChannel *) source;
-  GError *error = NULL;
   GPtrArray *members;
 
-  if (!tp_proxy_prepare_finish (source, result, &error))
-    {
-      DEBUG ("Failed to prepare %s: %s", tp_proxy_get_object_path (source),
-          error->message);
-
-      g_error_free (error);
-    }
+  g_assert (self->priv->channel == NULL); /* construct only */
+  self->priv->channel = g_object_ref (channel);
 
   /* Add initial members */
   members = tp_channel_group_dup_members_contacts (channel);
@@ -166,19 +158,6 @@ channel_prepare_cb (GObject *source,
 
   tp_g_signal_connect_object (channel, "group-contacts-changed",
       G_CALLBACK (group_contacts_changed_cb), self, 0);
-}
-
-static void
-individual_store_channel_set_individual_channel (
-    EmpathyIndividualStoreChannel *self,
-    TpChannel *channel)
-{
-  GQuark features[] = { TP_CHANNEL_FEATURE_CONTACTS, 0 };
-
-  g_assert (self->priv->channel == NULL); /* construct only */
-  self->priv->channel = g_object_ref (channel);
-
-  tp_proxy_prepare_async (channel, features, channel_prepare_cb, self);
 }
 
 static void
