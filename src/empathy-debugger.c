@@ -74,7 +74,7 @@ command_line_cb (GApplication *application,
   optcontext = g_option_context_new (N_("- Empathy Debugger"));
   g_option_context_add_group (optcontext, gtk_get_option_group (TRUE));
   g_option_context_add_main_entries (optcontext, options, GETTEXT_PACKAGE);
-
+  g_option_context_set_translation_domain (optcontext, GETTEXT_PACKAGE);
   argv = g_application_command_line_get_arguments (command_line, &argc);
 
   if (!g_option_context_parse (optcontext, &argc, &argv, &error))
@@ -103,6 +103,7 @@ main (int argc,
 
   gtk_init (&argc, &argv);
   empathy_gtk_init ();
+  textdomain (GETTEXT_PACKAGE);
 
   app = gtk_application_new (EMPATHY_DEBUGGER_DBUS_NAME,
       G_APPLICATION_HANDLES_COMMAND_LINE);
@@ -114,7 +115,6 @@ main (int argc,
   /* Make empathy and empathy-debugger appear as the same app in gnome-shell */
   gdk_set_program_class ("Empathy");
   gtk_window_set_default_icon_name ("empathy");
-  textdomain (GETTEXT_PACKAGE);
 
   retval = g_application_run (G_APPLICATION (app), argc, argv);
 

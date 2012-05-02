@@ -439,6 +439,7 @@ empathy_app_local_command_line (GApplication *app,
 
   /* We create a group so that GOptionArgFuncs get the user data */
   group = g_option_group_new ("empathy", NULL, NULL, app, NULL);
+  g_option_group_set_translation_domain (group, GETTEXT_PACKAGE);
   g_option_group_add_entries (group, options);
 
   optcontext = g_option_context_new (N_("- Empathy IM Client"));
@@ -734,10 +735,10 @@ empathy_app_constructed (GObject *object)
   EmpathyApp *self = (EmpathyApp *) object;
   gboolean chatroom_manager_ready;
 
+  textdomain (GETTEXT_PACKAGE);
   g_set_application_name (_(PACKAGE_NAME));
 
   gtk_window_set_default_icon_name ("empathy");
-  textdomain (GETTEXT_PACKAGE);
 
 #ifdef ENABLE_DEBUG
   /* Set up debug sender */

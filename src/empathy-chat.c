@@ -106,6 +106,7 @@ main (int argc,
   optcontext = g_option_context_new (N_("- Empathy Chat Client"));
   g_option_context_add_group (optcontext, gtk_get_option_group (TRUE));
   g_option_context_add_main_entries (optcontext, options, GETTEXT_PACKAGE);
+  g_option_context_set_translation_domain (optcontext, GETTEXT_PACKAGE);
 
   if (!g_option_context_parse (optcontext, &argc, &argv, &error))
     {

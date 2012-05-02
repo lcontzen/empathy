@@ -203,6 +203,7 @@ main (int argc,
       clutter_get_option_group_without_init ());
   g_option_context_add_group (optcontext, gtk_clutter_get_option_group ());
   g_option_context_add_main_entries (optcontext, options, GETTEXT_PACKAGE);
+  g_option_context_set_translation_domain (optcontext, GETTEXT_PACKAGE);
 
   if (!g_option_context_parse (optcontext, &argc, &argv, &error)) {
     g_print ("%s\nRun '%s --help' to see a full list of available command "
@@ -217,12 +218,12 @@ main (int argc,
   clutter_gst_init (&argc, &argv);
 
   empathy_gtk_init ();
+  textdomain (GETTEXT_PACKAGE);
   g_set_application_name (_("Empathy Audio/Video Client"));
 
   /* Make empathy and empathy-call appear as the same app in gnome-shell */
   gdk_set_program_class ("Empathy");
   gtk_window_set_default_icon_name ("empathy");
-  textdomain (GETTEXT_PACKAGE);
 
   gtk_settings = gtk_settings_get_default ();
   g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme",
