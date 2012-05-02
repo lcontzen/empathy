@@ -824,44 +824,25 @@ check_almost_ready (EmpathyTpChat *self)
 }
 
 static void
-tp_chat_got_added_contacts_cb (TpConnection *connection,
-    guint n_contacts,
-    EmpathyContact * const * contacts,
-    guint n_failed,
-    const TpHandle *failed,
-    const GError *error,
-    gpointer user_data,
-    GObject *chat)
+add_members_contact (EmpathyTpChat *self,
+    GPtrArray *contacts)
 {
-  EmpathyTpChat *self = (EmpathyTpChat *) chat;
   guint i;
-  const TpIntSet *members;
-  TpHandle handle;
-  EmpathyContact *contact;
 
-  if (error)
+  for (i = 0; i < contacts->len; i++)
     {
-      DEBUG ("Error: %s", error->message);
-      return;
+      EmpathyContact *contact;
+
+      contact = empathy_contact_dup_from_tp_contact (g_ptr_array_index (
+            contacts, i));
+
+      self->priv->members = g_list_prepend (self->priv->members, contact);
+
+      g_signal_emit (self, signals[SIG_MEMBERS_CHANGED], 0,
+                 contact, NULL, 0, NULL, TRUE);
     }
 
-  members = tp_channel_group_get_members ((TpChannel *) self);
-  for (i = 0; i < n_contacts; i++)
-    {
-      contact = contacts[i];
-      handle = empathy_contact_get_handle (contact);
-
-      /* Make sure the contact is still member */
-      if (tp_intset_is_member (members, handle))
-        {
-          self->priv->members = g_list_prepend (self->priv->members,
-            g_object_ref (contact));
-          g_signal_emit (self, signals[SIG_MEMBERS_CHANGED], 0,
-                     contact, NULL, 0, NULL, TRUE);
-        }
-    }
-
-  check_almost_ready (EMPATHY_TP_CHAT (chat));
+  check_almost_ready (self);
 }
 
 static EmpathyContact *
@@ -894,77 +875,25 @@ chat_lookup_contact (EmpathyTpChat *self,
   return NULL;
 }
 
-typedef struct
-{
-  TpHandle old_handle;
-  guint reason;
-  gchar *message;
-} ContactRenameData;
-
-static ContactRenameData *
-contact_rename_data_new (TpHandle handle,
-    guint reason,
-    const gchar* message)
-{
-  ContactRenameData *data = g_new (ContactRenameData, 1);
-  data->old_handle = handle;
-  data->reason = reason;
-  data->message = g_strdup (message);
-
-  return data;
-}
-
 static void
-contact_rename_data_free (ContactRenameData* data)
+contact_renamed (EmpathyTpChat *self,
+    TpContact *old_contact,
+    TpContact *new_contact,
+    TpChannelGroupChangeReason reason,
+    const gchar *message)
 {
-  g_free (data->message);
-  g_free (data);
-}
-
-static void
-tp_chat_got_renamed_contacts_cb (TpConnection *connection,
-    guint n_contacts,
-    EmpathyContact * const * contacts,
-    guint n_failed,
-    const TpHandle *failed,
-    const GError *error,
-    gpointer user_data,
-    GObject *chat)
-{
-  EmpathyTpChat *self = (EmpathyTpChat *) chat;
-  const TpIntSet *members;
-  TpHandle handle;
   EmpathyContact *old = NULL, *new = NULL;
-  ContactRenameData *rename_data = (ContactRenameData *) user_data;
 
-  if (error)
+  old = chat_lookup_contact (self, tp_contact_get_handle (old_contact), TRUE);
+  new = empathy_contact_dup_from_tp_contact (new_contact);
+
+  self->priv->members = g_list_prepend (self->priv->members, new);
+
+  if (old != NULL)
     {
-      DEBUG ("Error: %s", error->message);
-      return;
-    }
-
-  /* renamed members can only be delivered one at a time */
-  g_warn_if_fail (n_contacts == 1);
-
-  new = contacts[0];
-
-  members = tp_channel_group_get_members ((TpChannel *) self);
-  handle = empathy_contact_get_handle (new);
-
-  old = chat_lookup_contact (self, rename_data->old_handle, TRUE);
-
-  /* Make sure the contact is still member */
-  if (tp_intset_is_member (members, handle))
-    {
-      self->priv->members = g_list_prepend (self->priv->members,
-        g_object_ref (new));
-
-      if (old != NULL)
-        {
-          g_signal_emit (self, signals[SIG_MEMBER_RENAMED], 0,
-              old, new, rename_data->reason, rename_data->message);
-          g_object_unref (old);
-        }
+      g_signal_emit (self, signals[SIG_MEMBER_RENAMED], 0, old, new,
+          reason, message);
+      g_object_unref (old);
     }
 
   if (self->priv->user == old)
@@ -972,31 +901,29 @@ tp_chat_got_renamed_contacts_cb (TpConnection *connection,
       /* We change our nick */
       tp_clear_object (&self->priv->user);
       self->priv->user = g_object_ref (new);
-      g_object_notify (chat, "self-contact");
+      g_object_notify (G_OBJECT (self), "self-contact");
     }
 
   check_almost_ready (self);
 }
 
-
 static void
-tp_chat_group_members_changed_cb (TpChannel *channel,
-    gchar *message,
-    GArray *added,
-    GArray *removed,
-    GArray *local_pending,
-    GArray *remote_pending,
-    guint actor,
-    guint reason,
+tp_chat_group_contacts_changed_cb (TpChannel *channel,
+    GPtrArray *added,
+    GPtrArray *removed,
+    GPtrArray *local_pending,
+    GPtrArray *remote_pending,
+    TpContact *actor,
+    GHashTable *details,
     EmpathyTpChat *self)
 {
-  EmpathyContact *contact;
   EmpathyContact *actor_contact = NULL;
   guint i;
-  ContactRenameData *rename_data;
-  TpHandle old_handle;
-  TpConnection *connection = tp_channel_borrow_connection (
-    (TpChannel *) self);
+  TpChannelGroupChangeReason reason;
+  const gchar *message;
+
+  reason = tp_asv_get_uint32 (details, "change-reason", NULL);
+  message = tp_asv_get_string (details, "message");
 
   /* Contact renamed */
   if (reason == TP_CHANNEL_GROUP_CHANGE_REASON_RENAMED)
@@ -1009,35 +936,34 @@ tp_chat_group_members_changed_cb (TpChannel *channel,
           return;
         }
 
-      old_handle = g_array_index (removed, guint, 0);
-
-      rename_data = contact_rename_data_new (old_handle, reason, message);
-      empathy_tp_contact_factory_get_from_handles (connection,
-        added->len, (TpHandle *) added->data,
-        tp_chat_got_renamed_contacts_cb,
-        rename_data, (GDestroyNotify) contact_rename_data_free,
-        G_OBJECT (self));
+      contact_renamed (self, g_ptr_array_index (removed, 0),
+          g_ptr_array_index (added, 0), reason, message);
       return;
     }
 
-  if (actor != 0)
+  if (actor != NULL)
     {
-      actor_contact = chat_lookup_contact (self, actor, FALSE);
+      actor_contact = chat_lookup_contact (self, tp_contact_get_handle (actor),
+          FALSE);
       if (actor_contact == NULL)
         {
           /* FIXME: handle this a tad more gracefully: perhaps
            * the actor was a server op. We could use the
            * contact-ids detail of MembersChangedDetailed.
            */
-          DEBUG ("actor %u not a channel member", actor);
+          DEBUG ("actor %s not a channel member",
+              tp_contact_get_identifier (actor));
         }
     }
 
   /* Remove contacts that are not members anymore */
   for (i = 0; i < removed->len; i++)
     {
-      contact = chat_lookup_contact (self,
-        g_array_index (removed, TpHandle, i), TRUE);
+      TpContact *tp_contact = g_ptr_array_index (removed, i);
+      EmpathyContact *contact;
+
+      contact = chat_lookup_contact (self, tp_contact_get_handle (tp_contact),
+          TRUE);
 
       if (contact != NULL)
         {
@@ -1047,13 +973,9 @@ tp_chat_group_members_changed_cb (TpChannel *channel,
         }
     }
 
-  /* Request added contacts */
   if (added->len > 0)
     {
-      empathy_tp_contact_factory_get_from_handles (connection,
-        added->len, (TpHandle *) added->data,
-        tp_chat_got_added_contacts_cb, NULL, NULL,
-        G_OBJECT (self));
+      add_members_contact (self, added);
     }
 
   if (actor_contact != NULL)
@@ -1500,8 +1422,7 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
   if (tp_proxy_has_interface_by_id (self,
             TP_IFACE_QUARK_CHANNEL_INTERFACE_GROUP))
     {
-      const TpIntSet *members;
-      GArray *handles;
+      GPtrArray *contacts;
       TpContact *contact;
 
       /* Get self contact from the group's self handle */
@@ -1509,16 +1430,14 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
       create_self_contact (self, contact);
 
       /* Get initial member contacts */
-      members = tp_channel_group_get_members (channel);
-      handles = tp_intset_to_array (members);
-      empathy_tp_contact_factory_get_from_handles (connection,
-        handles->len, (TpHandle *) handles->data,
-        tp_chat_got_added_contacts_cb, NULL, NULL, G_OBJECT (self));
+      contacts = tp_channel_group_dup_members_contacts (channel);
+      add_members_contact (self, contacts);
+      g_ptr_array_unref (contacts);
 
       self->priv->can_upgrade_to_muc = FALSE;
 
-      tp_g_signal_connect_object (self, "group-members-changed",
-        G_CALLBACK (tp_chat_group_members_changed_cb), self, 0);
+      tp_g_signal_connect_object (self, "group-contacts-changed",
+        G_CALLBACK (tp_chat_group_contacts_changed_cb), self, 0);
     }
   else
     {
