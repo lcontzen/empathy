@@ -69,38 +69,6 @@ empathy_debugger_SOURCES =						\
 	empathy-debugger.c		 				\
 	$(NULL)
 
-if HAVE_EMPATHY_AV
-empathy_av_SOURCES = \
-	empathy-av.c \
-	empathy-audio-sink.c \
-	empathy-audio-sink.h \
-	empathy-audio-src.c \
-	empathy-audio-src.h \
-	empathy-streamed-media-factory.c \
-	empathy-streamed-media-factory.h \
-	empathy-streamed-media-handler.c \
-	empathy-streamed-media-handler.h \
-	empathy-streamed-media-window-fullscreen.c \
-	empathy-streamed-media-window-fullscreen.h \
-	empathy-streamed-media-window.c \
-	empathy-streamed-media-window.h \
-	empathy-video-src.c \
-	empathy-video-src.h \
-	empathy-video-widget.c \
-	empathy-video-widget.h \
-	ev-sidebar.c \
-	ev-sidebar.h \
-	empathy-mic-monitor.c \
-	empathy-mic-monitor.h
-	$(NULL)
-
-empathy_av_CFLAGS = $(EMPATHY_AV_CFLAGS)
-empathy_av_LDFLAGS = $(EMPATHY_AV_LIBS) $(LIBM)
-
-libexec_PROGRAMS += empathy-av
-
-endif
-
 empathy_auth_client_SOURCES =						\
 	empathy-sanity-cleaning.c empathy-sanity-cleaning.h \
 	empathy-auth-client.c \
@@ -201,7 +169,6 @@ ui_DATA = 					\
 	empathy-accounts-dialog.ui		\
 	empathy-call-window-fullscreen.ui	\
 	empathy-call-window.ui			\
-	empathy-streamed-media-window.ui	\
 	empathy-chat-window.ui			\
 	empathy-chatrooms-window.ui		\
 	empathy-ft-manager.ui			\

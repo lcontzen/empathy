@@ -214,24 +214,6 @@ AC_DEFINE(EMPATHY_GOA_PROVIDER, "org.gnome.OnlineAccounts",
    [Name of provider for accounts imported from GOA])
 
 # -----------------------------------------------------------
-# Build empathy-av?
-# -----------------------------------------------------------
-AC_ARG_ENABLE(empathy-av,
-            AS_HELP_STRING([--enable-empathy-av=@<:@no/yes@:>@],
-            [build empathy-av (legacy call UI)]),,
-            [enable_empathy_av=no])
-if test "x$enable_empathy_av" != "xno" ; then
-   PKG_CHECK_MODULES(EMPATHY_AV,
-   [
-      farstream-0.1
-      telepathy-farstream >= $TELEPATHY_FARSTREAM_REQUIRED
-   ])
-   AC_DEFINE(HAVE_EMPATHY_AV, 1, [Define if you have StreamedMedia channel support])
-   have_empathy_av=yes
-fi
-AM_CONDITIONAL(HAVE_EMPATHY_AV, test "x$have_empathy_av" = "xyes")
-
-# -----------------------------------------------------------
 # evolution-data-server (about-me)
 # -----------------------------------------------------------
 AC_ARG_WITH(eds,
@@ -564,5 +546,4 @@ Configure summary:
 	Nautilus-sendto plugin......:  ${have_nst}
 	GOA MC plugin...............:  ${have_goa}
 	Salut E-D-S support.........:  ${with_eds}
-	empathy-av (legacy).........:  ${enable_empathy_av}
 "
