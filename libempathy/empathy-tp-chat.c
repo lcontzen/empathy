@@ -1462,17 +1462,24 @@ gboolean
 empathy_tp_chat_is_invited (EmpathyTpChat *self,
     TpHandle *inviter)
 {
-  TpHandle self_handle;
+  TpContact *self_contact, *actor;
+  TpChannel *channel = TP_CHANNEL (self);
+  gboolean result;
 
   if (!tp_proxy_has_interface (self, TP_IFACE_CHANNEL_INTERFACE_GROUP))
     return FALSE;
 
-  self_handle = tp_channel_group_get_self_handle ((TpChannel *) self);
-  if (self_handle == 0)
+  self_contact = tp_channel_group_get_self_contact (channel);
+  if (self_contact == NULL)
     return FALSE;
 
-  return tp_channel_group_get_local_pending_info ((TpChannel *) self,
-      self_handle, inviter, NULL, NULL);
+  result = tp_channel_group_get_local_pending_contact_info (channel,
+      self_contact, &actor, NULL, NULL);
+
+  if (inviter != NULL)
+    *inviter = tp_contact_get_handle (actor);
+
+  return result;
 }
 
 TpChannelChatState
