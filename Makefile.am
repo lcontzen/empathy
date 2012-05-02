@@ -17,7 +17,6 @@ endif
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
 DISTCHECK_CONFIGURE_FLAGS =		\
-	--enable-empathy-av		\
 	--disable-scrollkeeper		\
 	--disable-schemas-install
 
