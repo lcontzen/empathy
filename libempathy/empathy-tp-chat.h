@@ -96,7 +96,7 @@ void empathy_tp_chat_leave (EmpathyTpChat *chat,
     const gchar *message);
 
 gboolean empathy_tp_chat_is_invited (EmpathyTpChat *chat,
-    TpHandle *inviter);
+    TpContact **inviter);
 TpChannelChatState empathy_tp_chat_get_chat_state (EmpathyTpChat *chat,
     EmpathyContact *contact);
 

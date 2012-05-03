@@ -1358,11 +1358,10 @@ empathy_tp_chat_leave (EmpathyTpChat *self,
 
 gboolean
 empathy_tp_chat_is_invited (EmpathyTpChat *self,
-    TpHandle *inviter)
+    TpContact **inviter)
 {
-  TpContact *self_contact, *actor;
+  TpContact *self_contact;
   TpChannel *channel = TP_CHANNEL (self);
-  gboolean result;
 
   if (!tp_proxy_has_interface (self, TP_IFACE_CHANNEL_INTERFACE_GROUP))
     return FALSE;
@@ -1371,13 +1370,8 @@ empathy_tp_chat_is_invited (EmpathyTpChat *self,
   if (self_contact == NULL)
     return FALSE;
 
-  result = tp_channel_group_get_local_pending_contact_info (channel,
-      self_contact, &actor, NULL, NULL);
-
-  if (inviter != NULL)
-    *inviter = tp_contact_get_handle (actor);
-
-  return result;
+  return tp_channel_group_get_local_pending_contact_info (channel,
+      self_contact, inviter, NULL, NULL);
 }
 
 TpChannelChatState

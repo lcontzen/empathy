@@ -847,27 +847,6 @@ display_invite_room_dialog (EventManagerApproval *approval)
 }
 
 static void
-event_manager_muc_invite_got_contact_cb (TpConnection *connection,
-                                         EmpathyContact *contact,
-                                         const GError *error,
-                                         gpointer user_data,
-                                         GObject *object)
-{
-  EventManagerApproval *approval = (EventManagerApproval *) user_data;
-
-  if (error != NULL)
-    {
-      DEBUG ("Error: %s", error->message);
-    }
-  else
-    {
-      approval->contact = g_object_ref (contact);
-    }
-
-  display_invite_room_dialog (approval);
-}
-
-static void
 event_manager_ft_got_contact_cb (TpConnection *connection,
                                  EmpathyContact *contact,
                                  const GError *error,
@@ -979,7 +958,7 @@ approve_channels (TpSimpleApprover *approver,
       if (tp_proxy_has_interface (channel, TP_IFACE_CHANNEL_INTERFACE_GROUP))
         {
           /* Are we in local-pending ? */
-          TpHandle inviter;
+          TpContact *inviter;
 
           if (empathy_tp_chat_is_invited (tp_chat, &inviter))
             {
@@ -987,17 +966,13 @@ approve_channels (TpSimpleApprover *approver,
               DEBUG ("Have been invited to %s. Ask user if he wants to accept",
                   tp_channel_get_identifier (channel));
 
-              if (inviter != 0)
+              if (inviter != NULL)
                 {
-                  empathy_tp_contact_factory_get_from_handle (connection,
-                      inviter, event_manager_muc_invite_got_contact_cb,
-                      approval, NULL, G_OBJECT (self));
-                }
-              else
-                {
-                  display_invite_room_dialog (approval);
+                  approval->contact = empathy_contact_dup_from_tp_contact (
+                      inviter);
                 }
 
+              display_invite_room_dialog (approval);
               goto out;
             }
 
