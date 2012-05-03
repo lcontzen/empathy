@@ -229,8 +229,7 @@ contact_constructed (GObject *object)
   EmpathyContact *contact = (EmpathyContact *) object;
   EmpathyContactPriv *priv = GET_PRIV (contact);
   GHashTable *location;
-  TpHandle self_handle;
-  TpHandle handle;
+  TpContact *self_contact;
   const gchar * const *client_types;
 
   if (priv->tp_contact == NULL)
@@ -254,10 +253,9 @@ contact_constructed (GObject *object)
   /* Set is-user property. Note that it could still be the handle is
    * different from the connection's self handle, in the case the handle
    * comes from a group interface. */
-  self_handle = tp_connection_get_self_handle (
+  self_contact = tp_connection_get_self_contact (
       tp_contact_get_connection (priv->tp_contact));
-  handle = tp_contact_get_handle (priv->tp_contact);
-  empathy_contact_set_is_user (contact, self_handle == handle);
+  empathy_contact_set_is_user (contact, self_contact == priv->tp_contact);
 
   g_signal_connect (priv->tp_contact, "notify",
     G_CALLBACK (tp_contact_notify_cb), contact);
