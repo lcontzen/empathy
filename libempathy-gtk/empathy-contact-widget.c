@@ -1533,10 +1533,13 @@ contact_widget_change_contact (EmpathyContactWidget *information)
     }
   else
     {
-      empathy_tp_contact_factory_get_from_handle (connection,
-          tp_connection_get_self_handle (connection),
-          contact_widget_got_contact_cb, information, NULL,
-          G_OBJECT (information->vbox_contact_widget));
+      EmpathyContact *contact;
+
+      contact = empathy_contact_dup_from_tp_contact (
+          tp_connection_get_self_contact (connection));
+
+      contact_widget_set_contact (information, contact);
+      g_object_unref (contact);
     }
 }
 
