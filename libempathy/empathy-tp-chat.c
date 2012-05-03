@@ -845,10 +845,9 @@ add_members_contact (EmpathyTpChat *self,
   check_almost_ready (self);
 }
 
-static EmpathyContact *
-chat_lookup_contact (EmpathyTpChat *self,
-    TpHandle handle,
-    gboolean remove_)
+static void
+remove_member (EmpathyTpChat *self,
+    EmpathyContact *contact)
 {
   GList *l;
 
@@ -856,23 +855,13 @@ chat_lookup_contact (EmpathyTpChat *self,
     {
       EmpathyContact *c = l->data;
 
-      if (empathy_contact_get_handle (c) != handle)
-        continue;
-
-      if (remove_)
+      if (contact == c)
         {
-          /* Caller takes the reference. */
           self->priv->members = g_list_delete_link (self->priv->members, l);
+          g_object_unref (c);
+          break;
         }
-      else
-        {
-          g_object_ref (c);
-        }
-
-      return c;
     }
-
-  return NULL;
 }
 
 static void
@@ -884,13 +873,15 @@ contact_renamed (EmpathyTpChat *self,
 {
   EmpathyContact *old = NULL, *new = NULL;
 
-  old = chat_lookup_contact (self, tp_contact_get_handle (old_contact), TRUE);
+  old = empathy_contact_dup_from_tp_contact (old_contact);
   new = empathy_contact_dup_from_tp_contact (new_contact);
 
   self->priv->members = g_list_prepend (self->priv->members, new);
 
   if (old != NULL)
     {
+      remove_member (self, old);
+
       g_signal_emit (self, signals[SIG_MEMBER_RENAMED], 0, old, new,
           reason, message);
       g_object_unref (old);
@@ -943,8 +934,8 @@ tp_chat_group_contacts_changed_cb (TpChannel *channel,
 
   if (actor != NULL)
     {
-      actor_contact = chat_lookup_contact (self, tp_contact_get_handle (actor),
-          FALSE);
+      actor_contact = empathy_contact_dup_from_tp_contact (actor);
+
       if (actor_contact == NULL)
         {
           /* FIXME: handle this a tad more gracefully: perhaps
@@ -962,11 +953,12 @@ tp_chat_group_contacts_changed_cb (TpChannel *channel,
       TpContact *tp_contact = g_ptr_array_index (removed, i);
       EmpathyContact *contact;
 
-      contact = chat_lookup_contact (self, tp_contact_get_handle (tp_contact),
-          TRUE);
+      contact = empathy_contact_dup_from_tp_contact (tp_contact);
 
       if (contact != NULL)
         {
+          remove_member (self, contact);
+
           g_signal_emit (self, signals[SIG_MEMBERS_CHANGED], 0,
                      contact, actor_contact, reason, message, FALSE);
           g_object_unref (contact);
