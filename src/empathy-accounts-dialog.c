@@ -787,22 +787,15 @@ account_dialog_show_contact_details_failed (EmpathyAccountsDialog *dialog,
 }
 
 static void
-account_dialog_got_self_contact (TpConnection *conn,
-    EmpathyContact *contact,
-    const GError *in_error,
-    gpointer user_data,
-    GObject *dialog)
+create_contact_info_editor (EmpathyAccountsDialog *self,
+    TpConnection *conn)
 {
-  EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
+  EmpathyAccountsDialogPriv *priv = GET_PRIV (self);
   GtkWidget *editor, *alig;
+  EmpathyContact *contact;
 
-  if (in_error != NULL)
-    {
-      DEBUG ("Failed to get self-contact: %s", in_error->message);
-      account_dialog_show_contact_details_failed (
-          EMPATHY_ACCOUNTS_DIALOG (dialog), TRUE);
-      return;
-    }
+  contact = empathy_contact_dup_from_tp_contact (
+      tp_connection_get_self_contact (conn));
 
   alig = gtk_alignment_new (0.5, 0, 1, 1);
 
@@ -818,6 +811,7 @@ account_dialog_got_self_contact (TpConnection *conn,
   gtk_container_add (GTK_CONTAINER (alig), editor);
   gtk_widget_show (alig);
   gtk_widget_show (editor);
+  g_object_unref (contact);
 }
 
 static void
@@ -848,10 +842,7 @@ account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
   if (conn != NULL &&
       tp_proxy_get_invalidated (conn) == NULL)
     {
-      empathy_tp_contact_factory_get_from_handle (conn,
-          tp_connection_get_self_handle (conn),
-          account_dialog_got_self_contact,
-          NULL, NULL, G_OBJECT (dialog));
+      create_contact_info_editor (dialog, conn);
     }
   else
     {
