@@ -150,19 +150,17 @@ filter_individual (EmpathyContactChooser *chooser,
   for (l = members; l != NULL; l = g_list_next (l))
     {
       EmpathyContact *member = l->data;
-      TpHandle handle;
       TpContact *owner;
 
-      /* Try to get the non-channel specific handle. */
+      /* Try to get the non-channel specific contact. */
       owner = tp_channel_group_get_contact_owner (
           TP_CHANNEL (self->priv->tp_chat),
           empathy_contact_get_tp_contact (member));
-      handle = tp_contact_get_handle (owner);
 
-      if (handle == 0)
-        handle = empathy_contact_get_handle (member);
+      if (owner == NULL)
+        owner = empathy_contact_get_tp_contact (member);
 
-      if (handle == tp_contact_get_handle (contact))
+      if (owner == contact)
         {
           display = FALSE;
           break;
