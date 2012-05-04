@@ -137,8 +137,7 @@ empathy_local_xmpp_assistant_widget_constructed (GObject *object)
     object;
   GtkWidget *w;
   GdkPixbuf *pix;
-  GtkWidget *account_widget;
-  EmpathyAccountWidget *widget_object;
+  EmpathyAccountWidget *account_widget;
   gchar *markup;
 
   G_OBJECT_CLASS (empathy_local_xmpp_assistant_widget_parent_class)->
@@ -165,17 +164,15 @@ empathy_local_xmpp_assistant_widget_constructed (GObject *object)
 
   self->priv->settings = create_salut_account_settings ();
 
-  widget_object = empathy_account_widget_new_for_protocol (self->priv->settings,
-      TRUE);
-  empathy_account_widget_hide_buttons (widget_object);
+  account_widget = empathy_account_widget_new_for_protocol (
+      self->priv->settings, TRUE);
+  empathy_account_widget_hide_buttons (account_widget);
 
-  account_widget = empathy_account_widget_get_widget (widget_object);
-
-  g_signal_connect (widget_object, "handle-apply",
+  g_signal_connect (account_widget, "handle-apply",
       G_CALLBACK (handle_apply_cb), self);
 
-  gtk_grid_attach (GTK_GRID (self), account_widget, 0, 1, 2, 1);
-  gtk_widget_show (account_widget);
+  gtk_grid_attach (GTK_GRID (self), GTK_WIDGET (account_widget), 0, 1, 2, 1);
+  gtk_widget_show (GTK_WIDGET (account_widget));
 
   w = gtk_label_new (NULL);
   markup = g_strdup_printf (

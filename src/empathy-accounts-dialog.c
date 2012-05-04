@@ -123,7 +123,7 @@ typedef struct {
    * That's kinda ugly; cf bgo #640417.
    *
    * */
-  EmpathyAccountWidget *setting_widget_object;
+  EmpathyAccountWidget *setting_widget;
 
   gboolean  connecting_show;
   guint connecting_id;
@@ -540,7 +540,7 @@ empathy_account_dialog_cancel (EmpathyAccountsDialog *dialog)
       COL_ACCOUNT_SETTINGS, &settings,
       COL_ACCOUNT, &account, -1);
 
-  empathy_account_widget_discard_pending_changes (priv->setting_widget_object);
+  empathy_account_widget_discard_pending_changes (priv->setting_widget);
 
   if (account == NULL)
     {
@@ -580,7 +580,7 @@ accounts_dialog_has_valid_accounts (EmpathyAccountsDialog *dialog)
   GtkTreeIter iter;
   gboolean creating;
 
-  g_object_get (priv->setting_widget_object,
+  g_object_get (priv->setting_widget,
       "creating-account", &creating, NULL);
 
   if (!creating)
@@ -599,7 +599,7 @@ account_dialog_create_edit_params_dialog (EmpathyAccountsDialog *dialog)
 {
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
   EmpathyAccountSettings *settings;
-  GtkWidget *subdialog, *content, *content_area, *align;
+  GtkWidget *subdialog, *content_area, *align;
 
   settings = accounts_dialog_model_get_selected_settings (dialog);
   if (settings == NULL)
@@ -610,22 +610,20 @@ account_dialog_create_edit_params_dialog (EmpathyAccountsDialog *dialog)
       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
       NULL, NULL);
 
-  priv->setting_widget_object =
+  priv->setting_widget = (EmpathyAccountWidget *)
     empathy_account_widget_new_for_protocol (settings, FALSE);
 
-  g_object_add_weak_pointer (G_OBJECT (priv->setting_widget_object),
-      (gpointer *) &priv->setting_widget_object);
+  g_object_add_weak_pointer (G_OBJECT (priv->setting_widget),
+      (gpointer *) &priv->setting_widget);
 
   if (accounts_dialog_has_valid_accounts (dialog))
     empathy_account_widget_set_other_accounts_exist (
-        priv->setting_widget_object, TRUE);
+        priv->setting_widget, TRUE);
 
-  content = empathy_account_widget_get_widget (priv->setting_widget_object);
-
-  g_signal_connect (priv->setting_widget_object, "cancelled",
+  g_signal_connect (priv->setting_widget, "cancelled",
           G_CALLBACK (empathy_account_dialog_widget_cancelled_cb), dialog);
 
-  g_signal_connect_swapped (priv->setting_widget_object, "close",
+  g_signal_connect_swapped (priv->setting_widget, "close",
       G_CALLBACK (gtk_widget_destroy), subdialog);
 
   content_area = gtk_dialog_get_content_area (GTK_DIALOG (subdialog));
@@ -633,10 +631,10 @@ account_dialog_create_edit_params_dialog (EmpathyAccountsDialog *dialog)
   align = gtk_alignment_new (0.5, 0.5, 1, 1);
   gtk_alignment_set_padding (GTK_ALIGNMENT (align), 6, 0, 6, 6);
 
-  gtk_container_add (GTK_CONTAINER (align), content);
+  gtk_container_add (GTK_CONTAINER (align), GTK_WIDGET (priv->setting_widget));
   gtk_box_pack_start (GTK_BOX (content_area), align, TRUE, TRUE, 0);
 
-  gtk_widget_show (content);
+  gtk_widget_show (GTK_WIDGET (priv->setting_widget));
   gtk_widget_show (align);
   gtk_widget_show (subdialog);
 }
@@ -826,10 +824,6 @@ account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
 
   account = empathy_account_settings_get_account (settings);
 
-  // if (priv->setting_widget_object != NULL)
-  //   g_object_remove_weak_pointer (G_OBJECT (priv->setting_widget_object),
-  //       (gpointer *) &priv->setting_widget_object);
-
   priv->dialog_content = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
   gtk_container_add (GTK_CONTAINER (priv->alignment_settings),
       priv->dialog_content);
@@ -929,9 +923,9 @@ accounts_dialog_has_pending_change (EmpathyAccountsDialog *dialog,
   if (gtk_tree_selection_get_selected (selection, &model, &iter))
     gtk_tree_model_get (model, &iter, COL_ACCOUNT, account, -1);
 
-  return priv->setting_widget_object != NULL
+  return priv->setting_widget != NULL
       && empathy_account_widget_contains_pending_changes (
-          priv->setting_widget_object);
+          priv->setting_widget);
 }
 
 static void
@@ -1475,9 +1469,9 @@ accounts_dialog_model_selection_changed (GtkTreeSelection *selection,
   if (settings != NULL)
     g_object_unref (settings);
 
-  if (priv->setting_widget_object != NULL)
+  if (priv->setting_widget != NULL)
     {
-      g_object_get (priv->setting_widget_object,
+      g_object_get (priv->setting_widget,
           "creating-account", &creating, NULL);
     }
 
@@ -1506,7 +1500,7 @@ accounts_dialog_selection_change_response_cb (GtkDialog *message_dialog,
 
         priv->force_change_row = TRUE;
         empathy_account_widget_discard_pending_changes (
-            priv->setting_widget_object);
+            priv->setting_widget);
 
         path = gtk_tree_row_reference_get_path (priv->destination_row);
         selection = gtk_tree_view_get_selection (
@@ -2043,11 +2037,11 @@ accounts_dialog_accounts_model_row_inserted_cb (GtkTreeModel *model,
 {
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
 
-  if (priv->setting_widget_object != NULL &&
+  if (priv->setting_widget != NULL &&
       accounts_dialog_has_valid_accounts (dialog))
     {
       empathy_account_widget_set_other_accounts_exist (
-          priv->setting_widget_object, TRUE);
+          priv->setting_widget, TRUE);
     }
 }
 
@@ -2058,11 +2052,11 @@ accounts_dialog_accounts_model_row_deleted_cb (GtkTreeModel *model,
 {
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
 
-  if (priv->setting_widget_object != NULL &&
+  if (priv->setting_widget != NULL &&
       !accounts_dialog_has_valid_accounts (dialog))
     {
       empathy_account_widget_set_other_accounts_exist (
-          priv->setting_widget_object, FALSE);
+          priv->setting_widget, FALSE);
     }
 }
 
@@ -2744,10 +2738,10 @@ empathy_accounts_dialog_is_creating (EmpathyAccountsDialog *dialog)
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
   gboolean result = FALSE;
 
-  if (priv->setting_widget_object == NULL)
+  if (priv->setting_widget == NULL)
     goto out;
 
-  g_object_get (priv->setting_widget_object,
+  g_object_get (priv->setting_widget,
       "creating-account", &result, NULL);
 
 out:

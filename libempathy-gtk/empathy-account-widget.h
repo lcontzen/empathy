@@ -46,7 +46,7 @@ typedef struct _EmpathyAccountWidgetPriv EmpathyAccountWidgetPriv;
 typedef struct _EmpathyAccountWidgetUIDetails EmpathyAccountWidgetUIDetails;
 
 typedef struct {
-  GObject parent;
+  GtkBox parent;
 
   EmpathyAccountWidgetUIDetails *ui_details;
 
@@ -54,12 +54,10 @@ typedef struct {
 } EmpathyAccountWidget;
 
 typedef struct {
-  GObjectClass parent_class;
+  GtkBoxClass parent_class;
 } EmpathyAccountWidgetClass;
 
 GType empathy_account_widget_get_type (void);
-
-GtkWidget *empathy_account_widget_get_widget (EmpathyAccountWidget *widget);
 
 EmpathyAccountWidget * empathy_account_widget_new_for_protocol (
     EmpathyAccountSettings *settings,

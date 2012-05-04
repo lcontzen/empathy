@@ -34,11 +34,10 @@ G_DEFINE_TYPE (EmpathyNewAccountDialog, empathy_new_account_dialog, \
 struct _EmpathyNewAccountDialogPrivate
 {
   GtkWidget *chooser;
-  GtkWidget *current_account_widget;
+  EmpathyAccountWidget *current_account_widget;
   GtkWidget *main_vbox;
   GtkWidget *connect_button;
 
-  EmpathyAccountWidget *current_widget_object;
   EmpathyAccountSettings *settings;
 };
 
@@ -62,8 +61,7 @@ protocol_changed_cb (GtkComboBox *chooser,
     EmpathyNewAccountDialog *self)
 {
   EmpathyAccountSettings *settings;
-  GtkWidget *account_widget;
-  EmpathyAccountWidget *widget_object;
+  EmpathyAccountWidget *account_widget;
   gchar *password = NULL, *account = NULL;
 
   settings = empathy_protocol_chooser_create_account_settings (
@@ -84,45 +82,43 @@ protocol_changed_cb (GtkComboBox *chooser,
       g_object_unref (self->priv->settings);
     }
 
-  widget_object = empathy_account_widget_new_for_protocol (settings, TRUE);
-  account_widget = empathy_account_widget_get_widget (widget_object);
+  account_widget = empathy_account_widget_new_for_protocol (settings, TRUE);
 
   if (self->priv->current_account_widget != NULL)
     {
-      g_signal_handlers_disconnect_by_func (self->priv->current_widget_object,
+      g_signal_handlers_disconnect_by_func (self->priv->current_account_widget,
           account_created_cb, self);
-      g_signal_handlers_disconnect_by_func (self->priv->current_widget_object,
+      g_signal_handlers_disconnect_by_func (self->priv->current_account_widget,
           cancelled_cb, self);
 
-      gtk_widget_destroy (self->priv->current_account_widget);
+      gtk_widget_destroy (GTK_WIDGET (self->priv->current_account_widget));
     }
 
   self->priv->current_account_widget = account_widget;
-  self->priv->current_widget_object = widget_object;
 
   self->priv->settings = settings;
 
-  g_signal_connect (self->priv->current_widget_object, "account-created",
+  g_signal_connect (self->priv->current_account_widget, "account-created",
       G_CALLBACK (account_created_cb), self);
-  g_signal_connect (self->priv->current_widget_object, "cancelled",
+  g_signal_connect (self->priv->current_account_widget, "cancelled",
       G_CALLBACK (cancelled_cb), self);
 
   /* Restore "account" and "password" parameters in the new widget */
   if (account != NULL)
     {
-      empathy_account_widget_set_account_param (widget_object, account);
+      empathy_account_widget_set_account_param (account_widget, account);
       g_free (account);
     }
 
   if (password != NULL)
     {
-      empathy_account_widget_set_password_param (widget_object, password);
+      empathy_account_widget_set_password_param (account_widget, password);
       g_free (password);
     }
 
-  gtk_box_pack_start (GTK_BOX (self->priv->main_vbox), account_widget,
-      FALSE, FALSE, 0);
-  gtk_widget_show (account_widget);
+  gtk_box_pack_start (GTK_BOX (self->priv->main_vbox),
+      GTK_WIDGET (account_widget), FALSE, FALSE, 0);
+  gtk_widget_show (GTK_WIDGET (account_widget));
 }
 
 static void

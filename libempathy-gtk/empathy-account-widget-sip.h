@@ -26,7 +26,7 @@
 
 G_BEGIN_DECLS
 
-void empathy_account_widget_sip_build (EmpathyAccountWidget *self,
+GtkWidget * empathy_account_widget_sip_build (EmpathyAccountWidget *self,
     const char *filename,
     GtkWidget **grid_common_settings);
 

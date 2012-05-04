@@ -30,11 +30,13 @@ G_BEGIN_DECLS
 EmpathyIrcNetworkChooser * empathy_account_widget_irc_build (
     EmpathyAccountWidget *self,
     const char *filename,
-    GtkWidget **table_common_settings);
+    GtkWidget **table_common_settings,
+    GtkWidget **box);
 
 EmpathyIrcNetworkChooser * empathy_account_widget_irc_build_simple (
     EmpathyAccountWidget *self,
-    const char *filename);
+    const char *filename,
+    GtkWidget **box);
 
 G_END_DECLS
 

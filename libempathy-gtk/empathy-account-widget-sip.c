@@ -108,7 +108,7 @@ checkbutton_tel_toggled (
   empathy_account_widget_changed (sip_settings->self);
 }
 
-void
+GtkWidget *
 empathy_account_widget_sip_build (EmpathyAccountWidget *self,
     const char *filename,
     GtkWidget **grid_common_settings)
@@ -265,5 +265,5 @@ empathy_account_widget_sip_build (EmpathyAccountWidget *self,
       gtk_widget_show (settings->combobox_keep_alive_mechanism);
     }
 
-  self->ui_details->widget = vbox_settings;
+  return vbox_settings;
 }
