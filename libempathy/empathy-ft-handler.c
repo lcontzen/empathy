@@ -1299,32 +1299,6 @@ out:
 }
 
 static void
-contact_factory_contact_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
-{
-  CallbacksData *cb_data = user_data;
-  EmpathyFTHandler *handler = EMPATHY_FT_HANDLER (weak_object);
-  EmpathyFTHandlerPriv *priv = GET_PRIV (handler);
-
-  if (error != NULL)
-    {
-      if (!g_cancellable_is_cancelled (priv->cancellable))
-        g_cancellable_cancel (priv->cancellable);
-
-      cb_data->callback (handler, (GError *) error, cb_data->user_data);
-      callbacks_data_free (cb_data);
-      return;
-    }
-
-  priv->contact = g_object_ref (contact);
-
-  cb_data->callback (handler, NULL, cb_data->user_data);
-}
-
-static void
 channel_get_all_properties_cb (TpProxy *proxy,
     GHashTable *properties,
     const GError *error,
@@ -1334,7 +1308,7 @@ channel_get_all_properties_cb (TpProxy *proxy,
   CallbacksData *cb_data = user_data;
   EmpathyFTHandler *handler = EMPATHY_FT_HANDLER (weak_object);
   EmpathyFTHandlerPriv *priv = GET_PRIV (handler);
-  TpHandle c_handle;
+  TpContact *contact;
 
   if (error != NULL)
     {
@@ -1353,11 +1327,10 @@ channel_get_all_properties_cb (TpProxy *proxy,
   priv->content_hash_type = g_value_get_uint (
       g_hash_table_lookup (properties, "ContentHashType"));
 
-  c_handle = tp_channel_get_handle (TP_CHANNEL (proxy), NULL);
-  empathy_tp_contact_factory_get_from_handle (
-      tp_channel_borrow_connection (TP_CHANNEL (proxy)), c_handle,
-      contact_factory_contact_cb, cb_data, callbacks_data_free,
-      G_OBJECT (handler));
+  contact = tp_channel_get_target_contact (TP_CHANNEL (proxy));
+  priv->contact = empathy_contact_dup_from_tp_contact (contact);
+
+  cb_data->callback (handler, NULL, cb_data->user_data);
 }
 
 /* public methods */
