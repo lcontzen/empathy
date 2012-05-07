@@ -61,7 +61,6 @@
 #include "empathy-call-window.h"
 #include "empathy-call-window-fullscreen.h"
 #include "empathy-call-factory.h"
-#include "empathy-video-widget.h"
 #include "empathy-about-dialog.h"
 #include "empathy-audio-src.h"
 #include "empathy-audio-sink.h"
@@ -77,6 +76,9 @@
 #define CONTENT_HBOX_SPACING 3
 #define CONTENT_HBOX_CHILDREN_PACKING_PADDING 3
 
+#define REMOTE_VIDEO_DEFAULT_WIDTH 320
+#define REMOTE_VIDEO_DEFAULT_HEIGHT 240
+
 #define SELF_VIDEO_SECTION_WIDTH 120
 #define SELF_VIDEO_SECTION_HEIGHT 90
 #define SELF_VIDEO_SECTION_MARGIN 2
@@ -87,9 +89,8 @@
 
 /* The avatar's default width and height are set to the same value because we
    want a square icon. */
-#define REMOTE_CONTACT_AVATAR_DEFAULT_WIDTH EMPATHY_VIDEO_WIDGET_DEFAULT_HEIGHT
-#define REMOTE_CONTACT_AVATAR_DEFAULT_HEIGHT \
-  EMPATHY_VIDEO_WIDGET_DEFAULT_HEIGHT
+#define REMOTE_CONTACT_AVATAR_DEFAULT_HEIGHT REMOTE_VIDEO_DEFAULT_HEIGHT
+#define REMOTE_CONTACT_AVATAR_DEFAULT_WIDTH REMOTE_VIDEO_DEFAULT_HEIGHT
 
 #define SMALL_TOOLBAR_SIZE 36
 
@@ -1655,7 +1656,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
   priv->video_container = gtk_clutter_embed_new ();
 
   gtk_widget_set_size_request (priv->video_container,
-      EMPATHY_VIDEO_WIDGET_DEFAULT_WIDTH, EMPATHY_VIDEO_WIDGET_DEFAULT_HEIGHT);
+      REMOTE_VIDEO_DEFAULT_WIDTH, REMOTE_VIDEO_DEFAULT_HEIGHT);
 
   /* Set the background color to that of the rest of the window */
   context = gtk_widget_get_style_context (priv->content_hbox);

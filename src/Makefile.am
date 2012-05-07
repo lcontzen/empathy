@@ -101,8 +101,6 @@ empathy_call_SOURCES = \
        empathy-audio-src.h \
        empathy-video-src.c \
        empathy-video-src.h \
-       empathy-video-widget.c \
-       empathy-video-widget.h \
        empathy-preferences.c \
        empathy-preferences.h \
        empathy-camera-menu.c \
