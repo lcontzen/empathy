@@ -30,7 +30,6 @@
 #include <telepathy-glib/simple-approver.h>
 
 #include <libempathy/empathy-presence-manager.h>
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-connection-aggregator.h>
 #include <libempathy/empathy-tp-chat.h>
 #include <libempathy/empathy-utils.h>
@@ -789,36 +788,6 @@ display_invite_room_dialog (EventManagerApproval *approval)
 }
 
 static void
-event_manager_ft_got_contact_cb (TpConnection *connection,
-                                 EmpathyContact *contact,
-                                 const GError *error,
-                                 gpointer user_data,
-                                 GObject *object)
-{
-  EventManagerApproval *approval = (EventManagerApproval *) user_data;
-  GtkWidget *window = empathy_roster_window_dup ();
-  char *header;
-  EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
-
-  approval->contact = g_object_ref (contact);
-
-  header = g_strdup_printf (_("Incoming file transfer from %s"),
-                            empathy_contact_get_alias (approval->contact));
-
-  event_manager_add (approval->manager, NULL,
-      approval->contact, EMPATHY_EVENT_TYPE_TRANSFER,
-      EMPATHY_IMAGE_DOCUMENT_SEND, header, NULL,
-      approval, event_channel_process_func, NULL);
-
-  /* FIXME better sound for incoming file transfers ?*/
-  empathy_sound_manager_play (priv->sound_mgr, window,
-      EMPATHY_SOUND_CONVERSATION_NEW);
-
-  g_free (header);
-  g_object_unref (window);
-}
-
-static void
 event_manager_auth_process_func (EventPriv *event)
 {
   empathy_event_approve ((EmpathyEvent *) event);
@@ -978,18 +947,32 @@ approve_ft_channel (EmpathyEventManager *self,
     TpAddDispatchOperationContext *context,
     TpFileTransferChannel *ft)
 {
-  TpHandle handle;
   TpChannel *channel = TP_CHANNEL (ft);
-  TpConnection *connection = tp_channel_borrow_connection (channel);
+  EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
+  GtkWidget *window;
+  gchar *header;
 
   approval->handler_instance = g_object_ref (ft);
-
-  handle = tp_channel_get_handle (channel, NULL);
-
-  empathy_tp_contact_factory_get_from_handle (connection, handle,
-    event_manager_ft_got_contact_cb, approval, NULL, G_OBJECT (self));
+  approval_set_target_contact (approval, channel);
 
   tp_add_dispatch_operation_context_accept (context);
+
+  window = empathy_roster_window_dup ();
+
+  header = g_strdup_printf (_("Incoming file transfer from %s"),
+      empathy_contact_get_alias (approval->contact));
+
+  event_manager_add (approval->manager, NULL,
+      approval->contact, EMPATHY_EVENT_TYPE_TRANSFER,
+      EMPATHY_IMAGE_DOCUMENT_SEND, header, NULL,
+      approval, event_channel_process_func, NULL);
+
+  /* FIXME better sound for incoming file transfers ?*/
+  empathy_sound_manager_play (priv->sound_mgr, window,
+      EMPATHY_SOUND_CONVERSATION_NEW);
+
+  g_free (header);
+  g_object_unref (window);
 }
 
 static void
