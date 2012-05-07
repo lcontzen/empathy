@@ -30,44 +30,12 @@
 
 G_BEGIN_DECLS
 
-typedef void (*EmpathyTpContactFactoryContactsByIdCb) (TpConnection            *connection,
-						       guint                    n_contacts,
-						       EmpathyContact * const * contacts,
-						       const gchar * const *    requested_ids,
-						       GHashTable              *failed_id_errors,
-						       const GError            *error,
-						       gpointer                 user_data,
-						       GObject                 *weak_object);
-
-typedef void (*EmpathyTpContactFactoryContactsByHandleCb) (TpConnection            *connection,
-							   guint                    n_contacts,
-							   EmpathyContact * const * contacts,
-                                                           guint                    n_failed,
-                                                           const TpHandle          *failed,
-                                                           const GError            *error,
-						           gpointer                 user_data,
-						           GObject                 *weak_object);
-
 typedef void (*EmpathyTpContactFactoryContactCb) (TpConnection            *connection,
 						  EmpathyContact          *contact,
 						  const GError            *error,
 						  gpointer                 user_data,
 						  GObject                 *weak_object);
 
-void                     empathy_tp_contact_factory_get_from_ids     (TpConnection            *connection,
-								      guint                    n_ids,
-								      const gchar * const     *ids,
-								      EmpathyTpContactFactoryContactsByIdCb callback,
-								      gpointer                 user_data,
-								      GDestroyNotify           destroy,
-								      GObject                 *weak_object);
-void                     empathy_tp_contact_factory_get_from_handles (TpConnection            *connection,
-								      guint                    n_handles,
-								      const TpHandle          *handles,
-								      EmpathyTpContactFactoryContactsByHandleCb callback,
-								      gpointer                 user_data,
-								      GDestroyNotify           destroy,
-								      GObject                 *weak_object);
 void                     empathy_tp_contact_factory_get_from_id      (TpConnection            *connection,
 								      const gchar             *id,
 								      EmpathyTpContactFactoryContactCb callback,

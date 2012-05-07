@@ -36,8 +36,6 @@ static TpContactFeature contact_features[] = {
 };
 
 typedef union {
-	EmpathyTpContactFactoryContactsByIdCb ids_cb;
-	EmpathyTpContactFactoryContactsByHandleCb handles_cb;
 	EmpathyTpContactFactoryContactCb contact_cb;
 } GetContactsCb;
 
@@ -59,89 +57,6 @@ get_contacts_data_free (gpointer user_data)
 	g_object_unref (data->connection);
 
 	g_slice_free (GetContactsData, data);
-}
-
-static EmpathyContact **
-contacts_array_new (guint n_contacts,
-		    TpContact * const * contacts)
-{
-	EmpathyContact **ret;
-	guint            i;
-
-	ret = g_new0 (EmpathyContact *, n_contacts);
-	for (i = 0; i < n_contacts; i++) {
-		ret[i] = empathy_contact_dup_from_tp_contact (contacts[i]);
-	}
-
-	return ret;
-}
-
-static void
-contacts_array_free (guint            n_contacts,
-		     EmpathyContact **contacts)
-{
-	guint i;
-
-	for (i = 0; i < n_contacts; i++) {
-		g_object_unref (contacts[i]);
-	}
-	g_free (contacts);
-}
-
-static void
-get_contacts_by_id_cb (TpConnection *connection,
-		       guint n_contacts,
-		       TpContact * const *contacts,
-		       const gchar * const *requested_ids,
-		       GHashTable *failed_id_errors,
-		       const GError *error,
-		       gpointer user_data,
-		       GObject *weak_object)
-{
-	GetContactsData *data = user_data;
-	EmpathyContact **empathy_contacts;
-
-	empathy_contacts = contacts_array_new (n_contacts, contacts);
-	if (data->callback.ids_cb) {
-		data->callback.ids_cb (data->connection,
-				       n_contacts, empathy_contacts,
-				       requested_ids,
-				       failed_id_errors,
-				       error,
-				       data->user_data, weak_object);
-	}
-
-	contacts_array_free (n_contacts, empathy_contacts);
-}
-
-/* The callback is NOT given a reference to the EmpathyContact objects */
-void
-empathy_tp_contact_factory_get_from_ids (TpConnection            *connection,
-					 guint                    n_ids,
-					 const gchar * const     *ids,
-					 EmpathyTpContactFactoryContactsByIdCb callback,
-					 gpointer                 user_data,
-					 GDestroyNotify           destroy,
-					 GObject                 *weak_object)
-{
-	GetContactsData *data;
-
-	g_return_if_fail (TP_IS_CONNECTION (connection));
-	g_return_if_fail (ids != NULL);
-
-	data = g_slice_new (GetContactsData);
-	data->callback.ids_cb = callback;
-	data->user_data = user_data;
-	data->destroy = destroy;
-	data->connection = g_object_ref (connection);
-	tp_connection_get_contacts_by_id (connection,
-					  n_ids, ids,
-					  G_N_ELEMENTS (contact_features),
-					  contact_features,
-					  get_contacts_by_id_cb,
-					  data,
-					  (GDestroyNotify) get_contacts_data_free,
-					  weak_object);
 }
 
 static void
@@ -211,66 +126,6 @@ empathy_tp_contact_factory_get_from_id (TpConnection            *connection,
 					  data,
 					  (GDestroyNotify) get_contacts_data_free,
 					  weak_object);
-}
-
-static void
-get_contacts_by_handle_cb (TpConnection *connection,
-			   guint n_contacts,
-			   TpContact * const *contacts,
-			   guint n_failed,
-			   const TpHandle *failed,
-			   const GError *error,
-			   gpointer user_data,
-			   GObject *weak_object)
-{
-	GetContactsData *data = user_data;
-	EmpathyContact **empathy_contacts;
-
-	empathy_contacts = contacts_array_new (n_contacts, contacts);
-	if (data->callback.handles_cb) {
-		data->callback.handles_cb (data->connection,
-					   n_contacts, empathy_contacts,
-					   n_failed, failed,
-					   error,
-					   data->user_data, weak_object);
-	}
-
-	contacts_array_free (n_contacts, empathy_contacts);
-}
-
-/* The callback is NOT given a reference to the EmpathyContact objects */
-void
-empathy_tp_contact_factory_get_from_handles (TpConnection *connection,
-					     guint n_handles,
-					     const TpHandle *handles,
-					     EmpathyTpContactFactoryContactsByHandleCb callback,
-					     gpointer                 user_data,
-					     GDestroyNotify           destroy,
-					     GObject                 *weak_object)
-{
-	GetContactsData *data;
-
-	if (n_handles == 0) {
-		callback (connection, 0, NULL, 0, NULL, NULL, user_data, weak_object);
-		return;
-	}
-
-	g_return_if_fail (TP_IS_CONNECTION (connection));
-	g_return_if_fail (handles != NULL);
-
-	data = g_slice_new (GetContactsData);
-	data->callback.handles_cb = callback;
-	data->user_data = user_data;
-	data->destroy = destroy;
-	data->connection = g_object_ref (connection);
-	tp_connection_get_contacts_by_handle (connection,
-					      n_handles, handles,
-					      G_N_ELEMENTS (contact_features),
-					      contact_features,
-					      get_contacts_by_handle_cb,
-					      data,
-					      (GDestroyNotify) get_contacts_data_free,
-					      weak_object);
 }
 
 /* The callback is NOT given a reference to the EmpathyContact objects */
