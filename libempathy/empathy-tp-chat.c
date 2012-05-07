@@ -41,8 +41,6 @@ struct _EmpathyTpChatPrivate
   EmpathyContact *user;
   EmpathyContact *remote_contact;
   GList *members;
-  /* Queue of messages not signalled yet */
-  GQueue *messages_queue;
   /* Queue of messages signalled but not acked yet */
   GQueue *pending_messages_queue;
 
@@ -241,56 +239,10 @@ check_ready (EmpathyTpChat *self)
   if (self->priv->ready_result == NULL)
     return;
 
-  if (g_queue_get_length (self->priv->messages_queue) > 0)
-    return;
-
   DEBUG ("Ready");
 
-  g_simple_async_result_complete (self->priv->ready_result);
+  g_simple_async_result_complete_in_idle (self->priv->ready_result);
   tp_clear_object (&self->priv->ready_result);
-}
-
-static void
-tp_chat_emit_queued_messages (EmpathyTpChat *self)
-{
-  EmpathyMessage *message;
-
-  /* Check if we can now emit some queued messages */
-  while ((message = g_queue_peek_head (self->priv->messages_queue)) != NULL)
-    {
-      if (empathy_message_get_sender (message) == NULL)
-        break;
-
-      DEBUG ("Queued message ready");
-      g_queue_pop_head (self->priv->messages_queue);
-      g_queue_push_tail (self->priv->pending_messages_queue, message);
-      g_signal_emit (self, signals[MESSAGE_RECEIVED], 0, message);
-    }
-
-  check_ready (self);
-}
-
-static void
-tp_chat_got_sender_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer message,
-    GObject *chat)
-{
-  EmpathyTpChat *self = (EmpathyTpChat *) chat;
-
-  if (error)
-    {
-      DEBUG ("Error: %s", error->message);
-      /* Do not block the message queue, just drop this message */
-      g_queue_remove (self->priv->messages_queue, message);
-    }
-  else
-    {
-      empathy_message_set_sender (message, contact);
-    }
-
-  tp_chat_emit_queued_messages (EMPATHY_TP_CHAT (self));
 }
 
 static void
@@ -305,26 +257,26 @@ tp_chat_build_message (EmpathyTpChat *self,
   /* FIXME: this is actually a lie for incoming messages. */
   empathy_message_set_receiver (message, self->priv->user);
 
-  g_queue_push_tail (self->priv->messages_queue, message);
-
   sender = tp_signalled_message_get_sender (msg);
   g_assert (sender != NULL);
 
   if (tp_contact_get_handle (sender) == 0)
     {
       empathy_message_set_sender (message, self->priv->user);
-      tp_chat_emit_queued_messages (self);
     }
   else
     {
-      TpConnection *connection = tp_channel_borrow_connection (
-        (TpChannel *) self);
+      EmpathyContact *contact;
 
-      empathy_tp_contact_factory_get_from_handle (connection,
-        tp_contact_get_handle (sender),
-        tp_chat_got_sender_cb,
-        message, NULL, G_OBJECT (self));
+      contact = empathy_contact_dup_from_tp_contact (sender);
+
+      empathy_message_set_sender (message, contact);
+
+      g_object_unref (contact);
     }
+
+  g_queue_push_tail (self->priv->pending_messages_queue, message);
+  g_signal_emit (self, signals[MESSAGE_RECEIVED], 0, message);
 }
 
 static void
@@ -755,9 +707,6 @@ tp_chat_dispose (GObject *object)
   tp_clear_object (&self->priv->remote_contact);
   tp_clear_object (&self->priv->user);
 
-  g_queue_foreach (self->priv->messages_queue, (GFunc) g_object_unref, NULL);
-  g_queue_clear (self->priv->messages_queue);
-
   g_queue_foreach (self->priv->pending_messages_queue,
     (GFunc) g_object_unref, NULL);
   g_queue_clear (self->priv->pending_messages_queue);
@@ -775,7 +724,6 @@ tp_chat_finalize (GObject *object)
 
   DEBUG ("Finalize: %p", object);
 
-  g_queue_free (self->priv->messages_queue);
   g_queue_free (self->priv->pending_messages_queue);
   g_hash_table_unref (self->priv->messages_being_sent);
 
@@ -817,6 +765,8 @@ check_almost_ready (EmpathyTpChat *self)
   tp_g_signal_connect_object (self, "message-sent",
     G_CALLBACK (message_sent_cb), self, 0);
 
+  /* TODO: use the TpContact signal once it's released
+   * (fdo #49215) */
   tp_g_signal_connect_object (self, "chat-state-changed",
     G_CALLBACK (tp_chat_state_changed_cb), self, 0);
 
@@ -1196,7 +1146,6 @@ empathy_tp_chat_init (EmpathyTpChat *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, EMPATHY_TYPE_TP_CHAT,
       EmpathyTpChatPrivate);
 
-  self->priv->messages_queue = g_queue_new ();
   self->priv->pending_messages_queue = g_queue_new ();
   self->priv->messages_being_sent = g_hash_table_new_full (
       g_str_hash, g_str_equal, g_free, NULL);
