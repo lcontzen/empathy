@@ -294,7 +294,7 @@ handle_with_time_cb (GObject *source,
   if (!tp_channel_dispatch_operation_handle_with_time_finish (cdo, result,
         &error))
     {
-      if (g_error_matches (error, TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED))
+      if (g_error_matches (error, TP_ERROR, TP_ERROR_NOT_IMPLEMENTED))
         {
           EventManagerApproval *approval = user_data;
 
@@ -1011,7 +1011,7 @@ approve_channels (TpSimpleApprover *approver,
   channel = find_main_channel (channels);
   if (channel == NULL)
     {
-      GError error = { TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      GError error = { TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Unknown channel type" };
 
       DEBUG ("Failed to find the main channel; ignoring");
@@ -1148,7 +1148,7 @@ approve_channels (TpSimpleApprover *approver,
         }
       else
         {
-          GError error = { TP_ERRORS, TP_ERROR_NOT_IMPLEMENTED,
+          GError error = { TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
               "Support only X-TELEPATHY-PASSWORD auth method" };
 
           tp_add_dispatch_operation_context_fail (context, &error);
@@ -1157,7 +1157,7 @@ approve_channels (TpSimpleApprover *approver,
     }
   else
     {
-      GError error = { TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      GError error = { TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Invalid channel type" };
 
       DEBUG ("Unknown channel type (%s), ignoring..",

@@ -492,7 +492,7 @@ message_sent_cb (TpTextChannel   *channel,
 static TpChannelTextSendError
 error_to_text_send_error (GError *error)
 {
-	if (error->domain != TP_ERRORS)
+	if (error->domain != TP_ERROR)
 		return TP_CHANNEL_TEXT_SEND_ERROR_UNKNOWN;
 
 	switch (error->code) {

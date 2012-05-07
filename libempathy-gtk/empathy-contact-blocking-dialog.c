@@ -256,7 +256,7 @@ contact_blocking_dialog_set_error (EmpathyContactBlockingDialog *self,
 {
   const char *msg = NULL;
 
-  if (error->domain == TP_ERRORS)
+  if (error->domain == TP_ERROR)
     {
       if (error->code == TP_ERROR_INVALID_HANDLE)
         msg = _("Unknown or invalid identifier");
