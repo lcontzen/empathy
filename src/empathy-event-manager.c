@@ -914,6 +914,139 @@ find_main_channel (GList *channels)
 }
 
 static void
+approve_text_channel (EmpathyEventManager *self,
+    EventManagerApproval *approval,
+    TpAddDispatchOperationContext *context,
+    EmpathyTpChat *tp_chat)
+{
+  GList *messages, *l;
+
+  approval->handler_instance = g_object_ref (tp_chat);
+
+  if (tp_proxy_has_interface (tp_chat, TP_IFACE_CHANNEL_INTERFACE_GROUP))
+    {
+      /* Are we in local-pending ? */
+      TpContact *inviter;
+
+      if (empathy_tp_chat_is_invited (tp_chat, &inviter))
+        {
+          /* We are invited to a room */
+          DEBUG ("Have been invited to %s. Ask user if he wants to accept",
+              tp_channel_get_identifier (TP_CHANNEL_GROUP_CHANGE_REASON_NONE));
+
+          if (inviter != NULL)
+            {
+              approval->contact = empathy_contact_dup_from_tp_contact (
+                  inviter);
+            }
+
+          display_invite_room_dialog (approval);
+          tp_add_dispatch_operation_context_accept (context);
+
+          return;
+        }
+
+      /* We are not invited, approve the channel right now */
+      tp_add_dispatch_operation_context_accept (context);
+
+      approval->auto_approved = TRUE;
+      event_manager_approval_approve (approval);
+      return;
+    }
+
+  /* 1-1 text channel, wait for the first message */
+  approval->handler = g_signal_connect (tp_chat, "message-received-empathy",
+    G_CALLBACK (event_manager_chat_message_received_cb), approval);
+
+  messages = (GList *) empathy_tp_chat_get_pending_messages (tp_chat);
+  for (l = messages; l != NULL; l = g_list_next (l))
+    {
+      EmpathyMessage *msg = l->data;
+
+      event_manager_chat_message_received_cb (tp_chat, msg, approval);
+    }
+
+  tp_add_dispatch_operation_context_accept (context);
+}
+
+static void
+approve_call_channel (EmpathyEventManager *self,
+    EventManagerApproval *approval,
+    TpAddDispatchOperationContext *context,
+    TpCallChannel *call)
+{
+  const gchar *id;
+  TpChannel *channel = TP_CHANNEL (call);
+  TpConnection *connection = tp_channel_borrow_connection (channel);
+
+  approval->handler_instance = g_object_ref (call);
+
+  id = tp_channel_get_identifier (channel);
+
+  empathy_tp_contact_factory_get_from_id (connection, id,
+    event_manager_call_channel_got_contact_cb,
+    approval, NULL, G_OBJECT (self));
+
+  tp_add_dispatch_operation_context_accept (context);
+}
+
+static void
+approve_ft_channel (EmpathyEventManager *self,
+    EventManagerApproval *approval,
+    TpAddDispatchOperationContext *context,
+    TpFileTransferChannel *ft)
+{
+  TpHandle handle;
+  TpChannel *channel = TP_CHANNEL (ft);
+  TpConnection *connection = tp_channel_borrow_connection (channel);
+
+  approval->handler_instance = g_object_ref (ft);
+
+  handle = tp_channel_get_handle (channel, NULL);
+
+  empathy_tp_contact_factory_get_from_handle (connection, handle,
+    event_manager_ft_got_contact_cb, approval, NULL, G_OBJECT (self));
+
+  tp_add_dispatch_operation_context_accept (context);
+}
+
+static void
+approve_sasl_channel (EmpathyEventManager *self,
+    TpAccount *account,
+    EventManagerApproval *approval,
+    TpAddDispatchOperationContext *context,
+    TpChannel *channel)
+{
+  GHashTable *props;
+  const gchar * const *available_mechanisms;
+
+  props = tp_channel_borrow_immutable_properties (channel);
+  available_mechanisms = tp_asv_get_boxed (props,
+      TP_PROP_CHANNEL_INTERFACE_SASL_AUTHENTICATION_AVAILABLE_MECHANISMS,
+      G_TYPE_STRV);
+
+  if (tp_strv_contains (available_mechanisms, "X-TELEPATHY-PASSWORD"))
+    {
+      event_manager_add (approval->manager, account, NULL,
+          EMPATHY_EVENT_TYPE_AUTH,
+          GTK_STOCK_DIALOG_AUTHENTICATION,
+          tp_account_get_display_name (account),
+          _("Password required"), approval,
+          event_manager_auth_process_func, NULL);
+    }
+  else
+    {
+      GError error = { TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
+          "Support only X-TELEPATHY-PASSWORD auth method" };
+
+      tp_add_dispatch_operation_context_fail (context, &error);
+      return;
+    }
+
+  tp_add_dispatch_operation_context_accept (context);
+}
+
+static void
 approve_channels (TpSimpleApprover *approver,
     TpAccount *account,
     TpConnection *connection,
@@ -948,105 +1081,22 @@ approve_channels (TpSimpleApprover *approver,
 
   channel_type = tp_channel_get_channel_type_id (channel);
 
-  if (TP_IS_TEXT_CHANNEL (channel))
+  if (EMPATHY_IS_TP_CHAT (channel))
     {
-      EmpathyTpChat *tp_chat = EMPATHY_TP_CHAT (channel);
-      GList *messages, *l;
-
-      approval->handler_instance = g_object_ref (tp_chat);
-
-      if (tp_proxy_has_interface (channel, TP_IFACE_CHANNEL_INTERFACE_GROUP))
-        {
-          /* Are we in local-pending ? */
-          TpContact *inviter;
-
-          if (empathy_tp_chat_is_invited (tp_chat, &inviter))
-            {
-              /* We are invited to a room */
-              DEBUG ("Have been invited to %s. Ask user if he wants to accept",
-                  tp_channel_get_identifier (channel));
-
-              if (inviter != NULL)
-                {
-                  approval->contact = empathy_contact_dup_from_tp_contact (
-                      inviter);
-                }
-
-              display_invite_room_dialog (approval);
-              goto out;
-            }
-
-          /* We are not invited, approve the channel right now */
-          tp_add_dispatch_operation_context_accept (context);
-
-          approval->auto_approved = TRUE;
-          event_manager_approval_approve (approval);
-          return;
-        }
-
-      /* 1-1 text channel, wait for the first message */
-      approval->handler = g_signal_connect (tp_chat, "message-received-empathy",
-        G_CALLBACK (event_manager_chat_message_received_cb), approval);
-
-      messages = (GList *) empathy_tp_chat_get_pending_messages (tp_chat);
-      for (l = messages; l != NULL; l = g_list_next (l))
-        {
-          EmpathyMessage *msg = l->data;
-
-          event_manager_chat_message_received_cb (tp_chat, msg, approval);
-        }
+      approve_text_channel (self, approval, context, EMPATHY_TP_CHAT (channel));
     }
-  else if (channel_type == TP_IFACE_QUARK_CHANNEL_TYPE_CALL)
+  else if (TP_IS_CALL_CHANNEL (channel))
     {
-      TpCallChannel *call = TP_CALL_CHANNEL (channel);
-      const gchar *id;
-
-      approval->handler_instance = g_object_ref (call);
-
-      id = tp_channel_get_identifier (channel);
-
-      empathy_tp_contact_factory_get_from_id (connection, id,
-        event_manager_call_channel_got_contact_cb,
-        approval, NULL, G_OBJECT (self));
+      approve_call_channel (self, approval, context, TP_CALL_CHANNEL (channel));
     }
-  else if (channel_type == TP_IFACE_QUARK_CHANNEL_TYPE_FILE_TRANSFER)
+  else if (TP_IS_FILE_TRANSFER_CHANNEL (channel))
     {
-      TpHandle handle;
-
-      approval->handler_instance = g_object_ref (channel);
-
-      handle = tp_channel_get_handle (channel, NULL);
-
-      empathy_tp_contact_factory_get_from_handle (connection, handle,
-        event_manager_ft_got_contact_cb, approval, NULL, G_OBJECT (self));
+      approve_ft_channel (self, approval, context,
+          TP_FILE_TRANSFER_CHANNEL (channel));
     }
   else if (channel_type == TP_IFACE_QUARK_CHANNEL_TYPE_SERVER_AUTHENTICATION)
     {
-      GHashTable *props;
-      const gchar * const *available_mechanisms;
-
-      props = tp_channel_borrow_immutable_properties (channel);
-      available_mechanisms = tp_asv_get_boxed (props,
-          TP_PROP_CHANNEL_INTERFACE_SASL_AUTHENTICATION_AVAILABLE_MECHANISMS,
-          G_TYPE_STRV);
-
-      if (tp_strv_contains (available_mechanisms, "X-TELEPATHY-PASSWORD"))
-        {
-          event_manager_add (approval->manager, account, NULL,
-              EMPATHY_EVENT_TYPE_AUTH,
-              GTK_STOCK_DIALOG_AUTHENTICATION,
-              tp_account_get_display_name (account),
-              _("Password required"), approval,
-              event_manager_auth_process_func, NULL);
-        }
-      else
-        {
-          GError error = { TP_ERROR, TP_ERROR_NOT_IMPLEMENTED,
-              "Support only X-TELEPATHY-PASSWORD auth method" };
-
-          tp_add_dispatch_operation_context_fail (context, &error);
-          return;
-        }
+      approve_sasl_channel (self, account, approval, context, channel);
     }
   else
     {
@@ -1059,9 +1109,6 @@ approve_channels (TpSimpleApprover *approver,
       tp_add_dispatch_operation_context_fail (context, &error);
       return;
     }
-
-out:
-  tp_add_dispatch_operation_context_accept (context);
 }
 
 static void
