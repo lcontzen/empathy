@@ -679,64 +679,6 @@ event_manager_call_state_changed_cb (TpCallChannel *call,
 }
 
 static void
-event_manager_call_channel_got_contact_cb (TpConnection *connection,
-                                 EmpathyContact *contact,
-                                 const GError *error,
-                                 gpointer user_data,
-                                 GObject *object)
-{
-  EventManagerApproval *approval = (EventManagerApproval *) user_data;
-  EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
-  GtkWidget *window;
-  TpCallChannel *call;
-  gchar *header;
-  gboolean video;
-
-  call = TP_CALL_CHANNEL (approval->handler_instance);
-
-  if (error != NULL)
-    {
-      DEBUG ("Can't get the contact for the call.. Rejecting?");
-      reject_approval (approval);
-      return;
-    }
-
-  if (tp_call_channel_get_state (call, NULL, NULL, NULL) == TP_CALL_STATE_ENDED)
-    {
-      DEBUG ("Call already ended, seems we missed it :/");
-      reject_approval (approval);
-      return;
-    }
-
-  approval->handler = g_signal_connect (call, "state-changed",
-    G_CALLBACK (event_manager_call_state_changed_cb), approval);
-
-  window = empathy_roster_window_dup ();
-  approval->contact = g_object_ref (contact);
-
-  g_object_get (G_OBJECT (call), "initial-video", &video, NULL);
-
-  header = g_strdup_printf (
-    video ? _("Incoming video call from %s") :_("Incoming call from %s"),
-    empathy_contact_get_alias (approval->contact));
-
-  event_manager_add (approval->manager, NULL,
-      approval->contact, EMPATHY_EVENT_TYPE_CALL,
-      video ? EMPATHY_IMAGE_VIDEO_CALL : EMPATHY_IMAGE_VOIP,
-      header, NULL, approval,
-      event_channel_process_voip_func, NULL);
-
-  g_free (header);
-
-  priv->ringing++;
-  if (priv->ringing == 1)
-    empathy_sound_manager_start_playing (priv->sound_mgr, window,
-        EMPATHY_SOUND_PHONE_INCOMING, MS_BETWEEN_RING);
-
-  g_object_unref (window);
-}
-
-static void
 invite_dialog_response_cb (GtkDialog *dialog,
                            gint response,
                            EventManagerApproval *approval)
@@ -970,24 +912,64 @@ approve_text_channel (EmpathyEventManager *self,
 }
 
 static void
+approval_set_target_contact (EventManagerApproval *approval,
+    TpChannel *channel)
+{
+  TpContact *contact;
+
+  contact = tp_channel_get_target_contact (channel);
+  approval->contact = empathy_contact_dup_from_tp_contact (contact);
+}
+
+static void
 approve_call_channel (EmpathyEventManager *self,
     EventManagerApproval *approval,
     TpAddDispatchOperationContext *context,
     TpCallChannel *call)
 {
-  const gchar *id;
   TpChannel *channel = TP_CHANNEL (call);
-  TpConnection *connection = tp_channel_borrow_connection (channel);
+  EmpathyEventManagerPriv *priv = GET_PRIV (approval->manager);
+  GtkWidget *window;
+  gchar *header;
+  gboolean video;
 
   approval->handler_instance = g_object_ref (call);
-
-  id = tp_channel_get_identifier (channel);
-
-  empathy_tp_contact_factory_get_from_id (connection, id,
-    event_manager_call_channel_got_contact_cb,
-    approval, NULL, G_OBJECT (self));
+  approval_set_target_contact (approval, channel);
 
   tp_add_dispatch_operation_context_accept (context);
+
+  if (tp_call_channel_get_state (call, NULL, NULL, NULL) == TP_CALL_STATE_ENDED)
+    {
+      DEBUG ("Call already ended, seems we missed it :/");
+      reject_approval (approval);
+      return;
+    }
+
+  approval->handler = g_signal_connect (call, "state-changed",
+    G_CALLBACK (event_manager_call_state_changed_cb), approval);
+
+  window = empathy_roster_window_dup ();
+
+  g_object_get (G_OBJECT (call), "initial-video", &video, NULL);
+
+  header = g_strdup_printf (
+    video ? _("Incoming video call from %s") :_("Incoming call from %s"),
+    empathy_contact_get_alias (approval->contact));
+
+  event_manager_add (approval->manager, NULL,
+      approval->contact, EMPATHY_EVENT_TYPE_CALL,
+      video ? EMPATHY_IMAGE_VIDEO_CALL : EMPATHY_IMAGE_VOIP,
+      header, NULL, approval,
+      event_channel_process_voip_func, NULL);
+
+  g_free (header);
+
+  priv->ringing++;
+  if (priv->ringing == 1)
+    empathy_sound_manager_start_playing (priv->sound_mgr, window,
+        EMPATHY_SOUND_PHONE_INCOMING, MS_BETWEEN_RING);
+
+  g_object_unref (window);
 }
 
 static void
