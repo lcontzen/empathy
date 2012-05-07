@@ -127,8 +127,7 @@ empathy_video_widget_constructed (GObject *object)
 
   priv->videosink = gst_bin_new (NULL);
 
-  gst_object_ref (priv->videosink);
-  gst_object_sink (priv->videosink);
+  gst_object_ref_sink (priv->videosink);
 
   sink = gst_element_factory_make ("gconfvideosink", NULL);
   g_assert (sink != NULL);
