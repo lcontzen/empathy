@@ -252,7 +252,7 @@ observe_channels (TpSimpleObserver *observer,
   channel = find_main_channel (channels);
   if (channel == NULL)
     {
-      GError err = { TP_ERRORS, TP_ERROR_INVALID_ARGUMENT,
+      GError err = { TP_ERROR, TP_ERROR_INVALID_ARGUMENT,
           "Unknown channel type" };
 
       DEBUG ("Didn't find any Call or StreamedMedia channel; ignoring");

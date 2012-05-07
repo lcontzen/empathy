@@ -268,7 +268,7 @@ approve_channels (TpBaseClient *client,
   EmpathyCallFactory *self = EMPATHY_CALL_FACTORY (client);
   TpCallChannel *channel;
   guint handle;
-  GError error = { TP_ERRORS, TP_ERROR_INVALID_ARGUMENT, "" };
+  GError error = { TP_ERROR, TP_ERROR_INVALID_ARGUMENT, "" };
   gboolean handled = FALSE;
 
   channel = find_call_channel (channels);

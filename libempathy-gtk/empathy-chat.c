@@ -3699,7 +3699,7 @@ provide_password_cb (GObject *tp_chat,
 		DEBUG ("error: %s", error->message);
 		/* FIXME: what should we do if that's another error? Close the channel?
 		 * Display the raw D-Bus error to the user isn't very useful */
-		if (g_error_matches (error, TP_ERRORS, TP_ERROR_AUTHENTICATION_FAILED)) {
+		if (g_error_matches (error, TP_ERROR, TP_ERROR_AUTHENTICATION_FAILED)) {
 			/* entry */
 			gtk_entry_set_text (GTK_ENTRY (data->entry), "");
 			gtk_widget_set_sensitive (data->entry, TRUE);
@@ -3926,7 +3926,7 @@ provide_saved_password_cb (GObject *tp_chat,
 		DEBUG ("error: %s", error->message);
 		/* FIXME: what should we do if that's another error? Close the channel?
 		 * Display the raw D-Bus error to the user isn't very useful */
-		if (g_error_matches (error, TP_ERRORS, TP_ERROR_AUTHENTICATION_FAILED)) {
+		if (g_error_matches (error, TP_ERROR, TP_ERROR_AUTHENTICATION_FAILED)) {
 			display_password_info_bar (self);
 			gtk_widget_set_sensitive (priv->hpaned, FALSE);
 		}

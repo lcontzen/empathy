@@ -298,7 +298,7 @@ get_contact_by_handle_cb (TpConnection *connection,
 			 * so the caller of empathy_tp_contact_factory_get_from_handle can
 			 * rely on the error to check if the operation succeeded or not. */
 
-			err = g_error_new_literal (TP_ERRORS, TP_ERROR_INVALID_HANDLE,
+			err = g_error_new_literal (TP_ERROR, TP_ERROR_INVALID_HANDLE,
 						      "handle is invalid");
 		}
 		else {
