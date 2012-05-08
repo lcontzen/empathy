@@ -42,18 +42,11 @@ struct _EmpathyNewAccountDialogPrivate
 };
 
 static void
-account_created_cb (EmpathyAccountWidget *widget,
-    TpAccount *account,
+close_cb (EmpathyAccountWidget *widget,
+    GtkResponseType response,
     EmpathyNewAccountDialog *self)
 {
-  gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_OK);
-}
-
-static void
-cancelled_cb (EmpathyAccountWidget *widget,
-    EmpathyNewAccountDialog *self)
-{
-  gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_CANCEL);
+  gtk_dialog_response (GTK_DIALOG (self), response);
 }
 
 static void
@@ -87,9 +80,7 @@ protocol_changed_cb (GtkComboBox *chooser,
   if (self->priv->current_account_widget != NULL)
     {
       g_signal_handlers_disconnect_by_func (self->priv->current_account_widget,
-          account_created_cb, self);
-      g_signal_handlers_disconnect_by_func (self->priv->current_account_widget,
-          cancelled_cb, self);
+          close_cb, self);
 
       gtk_widget_destroy (GTK_WIDGET (self->priv->current_account_widget));
     }
@@ -98,10 +89,8 @@ protocol_changed_cb (GtkComboBox *chooser,
 
   self->priv->settings = settings;
 
-  g_signal_connect (self->priv->current_account_widget, "account-created",
-      G_CALLBACK (account_created_cb), self);
-  g_signal_connect (self->priv->current_account_widget, "cancelled",
-      G_CALLBACK (cancelled_cb), self);
+  g_signal_connect (self->priv->current_account_widget, "close",
+      G_CALLBACK (close_cb), self);
 
   /* Restore "account" and "password" parameters in the new widget */
   if (account != NULL)

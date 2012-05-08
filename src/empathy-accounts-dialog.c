@@ -996,7 +996,7 @@ accounts_dialog_button_add_clicked_cb (GtkWidget *button,
 
   response = gtk_dialog_run (GTK_DIALOG (dialog));
 
-  if (response == GTK_RESPONSE_OK)
+  if (response == GTK_RESPONSE_APPLY)
     {
       EmpathyAccountSettings *settings;
       TpAccount *account;
