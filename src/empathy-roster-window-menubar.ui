@@ -1,65 +1,166 @@
 <?xml version="1.0"?>
 <!--*- mode: xml -*-->
 <interface>
-  <menu id='menubar'>
-    <submenu label='_Chat'>
+  <menu id="menubutton">
+    <submenu>
+      <attribute translatable="yes" name="label">_Chat</attribute>
       <section>
-        <item label='_New Conversation...' action='win.chat_new_message' accel='<Primary>n'/>
-        <item label='New _Call...' action='win.chat_new_call' accel='<Primary>m'/>
-        <item label='_Previous Conversations' action='win.view_history' accel='F3'/>
+        <item>
+          <attribute translatable="yes" name="label">_New Conversation...</attribute>
+          <attribute translatable="yes" name="action">win.chat_new_message</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;n</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">New _Call...</attribute>
+          <attribute translatable="yes" name="action">win.chat_new_call</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;m</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">_Previous Conversations</attribute>
+          <attribute translatable="yes" name="action">win.view_history</attribute>
+          <attribute translatable="yes" name="accel">F3</attribute>
+        </item>
       </section>
       <section>
-        <item label='_Add Contacts...' action='win.chat_add_contact'/>
-        <item label='_Search for Contacts...' action='win.chat_search_contacts' accel='<Shift>f'/>
+        <item>
+          <attribute translatable="yes" name="label">_Add Contacts...</attribute>
+          <attribute translatable="yes" name="action">win.chat_add_contact</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">_Search for Contacts...</attribute>
+          <attribute translatable="yes" name="action">win.chat_search_contacts</attribute>
+          <attribute translatable="yes" name="accel">&lt;Shift&gt;f</attribute>
+        </item>
       </section>
-      <item label='_Quit' action='win.chat_quit' accel='<Primary>q'/>
+      <item>
+        <attribute translatable="yes" name="label">_Quit</attribute>
+        <attribute translatable="yes" name="action">win.chat_quit</attribute>
+        <attribute translatable="yes" name="accel">&lt;Primary&gt;q</attribute>
+      </item>
     </submenu>
-    <submenu label='_Edit'>
+    <submenu>
+      <attribute translatable="yes" name="label">_Edit</attribute>
       <section>
-        <item label='_Accounts' action='win.edit_accounts' accel='F4'/>
-        <item label='Find in Contact _List' action='win.edit_search_contacts' accel='<Primary>f'/>
-        <item label='_Blocked Contacts' action='win.edit_blocked_contacts'/>
+        <item>
+          <attribute translatable="yes" name="label">_Accounts</attribute>
+          <attribute translatable="yes" name="action">win.edit_accounts</attribute>
+          <attribute translatable="yes" name="accel">F4</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Find in Contact _List</attribute>
+          <attribute translatable="yes" name="action">win.edit_search_contacts</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;f</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">_Blocked Contacts</attribute>
+          <attribute translatable="yes" name="action">win.edit_blocked_contacts</attribute>
+        </item>
       </section>
       <section>
-        <item label='P_references' action='win.edit_preferences'/>
-      </section>
-    </submenu>
-    <submenu label='_View'>
-      <section>
-        <item label='_Offline Contacts' action='win.view_show_offline' accel='<Primary>f'/>
-        <item label='Show P_rotocol' action='win.view_show_protocols'/>
-      </section>
-      <item><link name='section' id='balance'></link></item>
-      <section>
-        <item label='Sort by _Name' action='win.view_sort_by_name'/>
-        <item label='Sort by _Status' action='win.view_sort_by_status'/>
-      </section>
-      <section>
-        <item label='Normal Size With _Avatars' action='win.view_normal_size_with_avatars' accel='<Primary>1'/>
-        <item label='N_ormal Size' action='win.view_normal_size' accel='<Primary>2'/>
-        <item label='_Compact Size' action='win.view_compact_size' accel='<Primary>3'/>
-      </section>
-      <section>
-        <item label='_Previous Conversations' action='win.view_history' accel='F3'/>
-        <item label='_File Transfers' action='win.view_show_ft_manager'/>
-        <item label='Contacts on a _Map' action='win.view_show_map'/>
+        <item>
+          <attribute translatable="yes" name="label">P_references</attribute>
+          <attribute translatable="yes" name="action">win.edit_preferences</attribute>
+        </item>
       </section>
     </submenu>
-    <submenu label='_Room'>
+    <submenu>
+      <attribute translatable="yes" name="label">_View</attribute>
       <section>
-        <item label='_Join...' action='win.room_join_new'/>
-        <item label='Join _Favorites' action='win.room_join_favorites' accel='F5'/>
+        <item>
+          <attribute translatable="yes" name="label">_Offline Contacts</attribute>
+          <attribute translatable="yes" name="action">win.view_show_offline</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;f</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Show P_rotocol</attribute>
+          <attribute translatable="yes" name="action">win.view_show_protocols</attribute>
+        </item>
       </section>
-      <item><link name='section' id='rooms'></link></item>
+      <item>
+        <link name="section" id="balance"/>
+      </item>
       <section>
-        <item label='_Manage Favorites' action='win.room_manage_favorites'/>
+        <item>
+          <attribute translatable="yes" name="label">Sort by _Name</attribute>
+          <attribute translatable="yes" name="action">win.view_sort_by_name</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Sort by _Status</attribute>
+          <attribute translatable="yes" name="action">win.view_sort_by_status</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute translatable="yes" name="label">Normal Size With _Avatars</attribute>
+          <attribute translatable="yes" name="action">win.view_normal_size_with_avatars</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;1</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">N_ormal Size</attribute>
+          <attribute translatable="yes" name="action">win.view_normal_size</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;2</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">_Compact Size</attribute>
+          <attribute translatable="yes" name="action">win.view_compact_size</attribute>
+          <attribute translatable="yes" name="accel">&lt;Primary&gt;3</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute translatable="yes" name="label">_Previous Conversations</attribute>
+          <attribute translatable="yes" name="action">win.view_history</attribute>
+          <attribute translatable="yes" name="accel">F3</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">_File Transfers</attribute>
+          <attribute translatable="yes" name="action">win.view_show_ft_manager</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Contacts on a _Map</attribute>
+          <attribute translatable="yes" name="action">win.view_show_map</attribute>
+        </item>
       </section>
     </submenu>
-    <submenu label='_Help'>
+    <submenu>
+      <attribute translatable="yes" name="label">_Room</attribute>
       <section>
-        <item label='Contents' action='win.help_contents' accel='F1'/>
-        <item label='Debug' action='win.help_debug'/>
-        <item label='About' action='win.help_about'/>
+        <item>
+          <attribute translatable="yes" name="label">_Join...</attribute>
+          <attribute translatable="yes" name="action">win.room_join_new</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Join _Favorites</attribute>
+          <attribute translatable="yes" name="action">win.room_join_favorites</attribute>
+          <attribute translatable="yes" name="accel">F5</attribute>
+        </item>
+      </section>
+      <item>
+        <link name="section" id="rooms"/>
+      </item>
+      <section>
+        <item>
+          <attribute translatable="yes" name="label">_Manage Favorites</attribute>
+          <attribute translatable="yes" name="action">win.room_manage_favorites</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Help</attribute>
+      <section>
+        <item>
+          <attribute translatable="yes" name="label">Contents</attribute>
+          <attribute translatable="yes" name="action">win.help_contents</attribute>
+          <attribute translatable="yes" name="accel">F1</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">Debug</attribute>
+          <attribute translatable="yes" name="action">win.help_debug</attribute>
+        </item>
+        <item>
+          <attribute translatable="yes" name="label">About</attribute>
+          <attribute translatable="yes" name="action">win.help_about</attribute>
+        </item>
       </section>
     </submenu>
   </menu>
