@@ -423,8 +423,7 @@ create_video_input (EmpathyCallWindow *self)
 
   g_assert (priv->video_input == NULL);
   priv->video_input = empathy_video_src_new ();
-  gst_object_ref (priv->video_input);
-  gst_object_sink (priv->video_input);
+  gst_object_ref_sink (priv->video_input);
 }
 
 static gboolean
@@ -468,8 +467,7 @@ create_audio_input (EmpathyCallWindow *self)
 
   g_assert (priv->audio_input == NULL);
   priv->audio_input = empathy_audio_src_new ();
-  gst_object_ref (priv->audio_input);
-  gst_object_sink (priv->audio_input);
+  gst_object_ref_sink (priv->audio_input);
 
   g_object_bind_property (priv->mic_button, "active",
     priv->audio_input, "mute",
@@ -1333,8 +1331,7 @@ create_pipeline (EmpathyCallWindow *self)
   priv->pipeline_playing = FALSE;
 
   priv->video_tee = gst_element_factory_make ("tee", NULL);
-  gst_object_ref (priv->video_tee);
-  gst_object_sink (priv->video_tee);
+  gst_object_ref_sink (priv->video_tee);
 
   gst_bin_add (GST_BIN (priv->pipeline), priv->video_tee);
 
