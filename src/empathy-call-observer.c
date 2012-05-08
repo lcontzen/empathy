@@ -102,29 +102,16 @@ auto_reject_ctx_free (AutoRejectCtx *ctx)
 }
 
 static void
-get_contact_cb (TpConnection *connection,
-    guint n_contacts,
-    TpContact * const *contacts,
-    guint n_failed,
-    const TpHandle *failed,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+display_reject_notification (EmpathyCallObserver *self,
+    TpChannel *channel)
 {
-  EmpathyCallObserver *self = (EmpathyCallObserver *) weak_object;
-  NotifyNotification *notification;
   TpContact *contact;
+  NotifyNotification *notification;
   gchar *summary, *body;
   EmpathyContact *emp_contact;
   GdkPixbuf *pixbuf;
 
-  if (n_contacts != 1)
-    {
-      DEBUG ("Failed to get TpContact; ignoring notification bubble");
-      return;
-    }
-
-  contact = contacts[0];
+  contact = tp_channel_get_target_contact (channel);
 
   summary = g_strdup_printf (_("Missed call from %s"),
       tp_contact_get_alias (contact));
@@ -150,21 +137,6 @@ get_contact_cb (TpConnection *connection,
   g_free (summary);
   g_free (body);
   g_object_unref (emp_contact);
-}
-
-static void
-display_reject_notification (EmpathyCallObserver *self,
-    TpChannel *channel)
-{
-  TpHandle handle;
-  TpContactFeature features[] = { TP_CONTACT_FEATURE_ALIAS,
-      TP_CONTACT_FEATURE_AVATAR_DATA };
-
-  handle = tp_channel_get_handle (channel, NULL);
-
-  tp_connection_get_contacts_by_handle (tp_channel_borrow_connection (channel),
-      1, &handle, G_N_ELEMENTS (features), features, get_contact_cb,
-      g_object_ref (channel), g_object_unref, G_OBJECT (self));
 }
 
 static TpChannel *
