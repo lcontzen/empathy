@@ -903,6 +903,8 @@ account_widget_account_enabled_cb (GObject *source_object,
       empathy_connect_new_account (account, self->priv->account_manager);
     }
 
+  g_signal_emit (self, signals[CLOSE], 0, GTK_RESPONSE_APPLY);
+
   /* unref self - part of the workaround */
   g_object_unref (self);
 }
@@ -917,6 +919,7 @@ account_widget_applied_cb (GObject *source_object,
   EmpathyAccountSettings *settings = EMPATHY_ACCOUNT_SETTINGS (source_object);
   EmpathyAccountWidget *self = EMPATHY_ACCOUNT_WIDGET (user_data);
   gboolean reconnect_required;
+  gboolean fire_close = TRUE;
 
   empathy_account_settings_apply_finish (settings, res, &reconnect_required,
       &error);
@@ -942,6 +945,9 @@ account_widget_applied_cb (GObject *source_object,
           tp_account_set_enabled_async (account, TRUE,
               account_widget_account_enabled_cb, self);
           g_signal_emit (self, signals[ACCOUNT_CREATED], 0, account);
+
+          /* Will be fired in account_widget_account_enabled_cb */
+          fire_close = FALSE;
         }
       else
         {
@@ -969,8 +975,11 @@ account_widget_applied_cb (GObject *source_object,
 
   self->priv->contains_pending_changes = FALSE;
 
-  /* announce the widget can be closed */
-  g_signal_emit (self, signals[CLOSE], 0, GTK_RESPONSE_APPLY);
+  if (fire_close)
+    {
+      /* announce the widget can be closed */
+      g_signal_emit (self, signals[CLOSE], 0, GTK_RESPONSE_APPLY);
+    }
 
   /* unref the widget - part of the workaround */
   g_object_unref (self);
