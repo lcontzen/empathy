@@ -130,6 +130,12 @@ FolksIndividual * empathy_ensure_individual_from_tp_contact (
 const gchar * const * empathy_individual_get_client_types (
     FolksIndividual *individual);
 
+GVariant * empathy_asv_to_vardict (const GHashTable *asv);
+
+GVariant * empathy_boxed_to_variant (GType gtype,
+    const gchar *variant_type,
+    gpointer boxed);
+
 /* Copied from wocky/wocky-utils.h */
 
 #define empathy_implement_finish_void(source, tag) \
