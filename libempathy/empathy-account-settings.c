@@ -1528,21 +1528,18 @@ empathy_account_settings_created_cb (GObject *source,
 {
   EmpathyAccountSettings *settings = EMPATHY_ACCOUNT_SETTINGS (user_data);
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  TpAccount *account;
   GError *error = NULL;
   GSimpleAsyncResult *r;
 
-  account = tp_account_manager_create_account_finish (
-    TP_ACCOUNT_MANAGER (source), result, &error);
+  priv->account = tp_account_request_create_account_finish (
+      TP_ACCOUNT_REQUEST (source), result, &error);
 
-  if (account == NULL)
+  if (priv->account == NULL)
     {
       g_simple_async_result_set_from_error (priv->apply_result, error);
     }
   else
     {
-      priv->account = g_object_ref (account);
-
       if (priv->supports_sasl && priv->password != NULL)
         {
           /* Save the password before connecting */
@@ -1567,18 +1564,21 @@ empathy_account_settings_created_cb (GObject *source,
   g_object_unref (r);
 }
 
-
 static void
-empathy_account_settings_do_create_account (EmpathyAccountSettings *settings)
+empathy_account_settings_do_create_account (EmpathyAccountSettings *self)
 {
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  GHashTable *properties;
+  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
+  TpAccountRequest *account_req;
   TpConnectionPresenceType type;
   gchar *status;
   gchar *message;
   EmpathyPresenceManager *presence_mgr;
+  GVariant *vardict, *value;
+  GVariantIter iter;
+  const gchar *key;
 
-  properties = tp_asv_new (NULL, NULL);
+  account_req = tp_account_request_new (priv->account_manager, priv->cm_name,
+      priv->protocol, "New Account");
 
   presence_mgr = empathy_presence_manager_dup_singleton ();
   type = empathy_presence_manager_get_requested_presence (presence_mgr, &status,
@@ -1587,65 +1587,29 @@ empathy_account_settings_do_create_account (EmpathyAccountSettings *settings)
 
   if (type != TP_CONNECTION_PRESENCE_TYPE_UNSET)
     {
-      /* Create the account with the requested presence the same as the current
-        * global requested presence, but don't enable it */
-      GValueArray *presence;
-      GValue vtype = { 0, };
-      GValue vstatus = { 0, };
-      GValue vmessage = { 0, };
-
-      presence = g_value_array_new (3);
-
-      g_value_init (&vtype, G_TYPE_UINT);
-      g_value_set_uint (&vtype, type);
-      g_value_array_append (presence, &vtype);
-
-      g_value_init (&vstatus, G_TYPE_STRING);
-      g_value_take_string (&vstatus, status);
-      g_value_array_append (presence, &vstatus);
-
-      g_value_init (&vmessage, G_TYPE_STRING);
-      g_value_take_string (&vmessage, message);
-      g_value_array_append (presence, &vmessage);
-
-      tp_asv_take_boxed (properties, TP_IFACE_ACCOUNT ".RequestedPresence",
-        TP_STRUCT_TYPE_SIMPLE_PRESENCE, presence);
+      tp_account_request_set_requested_presence (account_req, type,
+          status, message);
     }
 
-  tp_asv_set_string (properties, TP_IFACE_ACCOUNT ".Icon",
-      priv->icon_name);
+  tp_account_request_set_icon_name (account_req, priv->icon_name);
+
+  tp_account_request_set_display_name (account_req, priv->display_name);
 
   if (priv->service != NULL)
-    tp_asv_set_string (properties, TP_PROP_ACCOUNT_SERVICE, priv->service);
+    tp_account_request_set_service (account_req, priv->service);
 
-  tp_account_manager_create_account_async (priv->account_manager,
-    priv->cm_name, priv->protocol, priv->display_name,
-    priv->parameters, properties,
-    empathy_account_settings_created_cb,
-    settings);
+  vardict = empathy_asv_to_vardict (priv->parameters);
 
-  g_hash_table_unref (properties);
-}
-
-static void
-empathy_account_settings_manager_ready_cb (GObject *source_object,
-    GAsyncResult *result,
-    gpointer user_data)
-{
-  EmpathyAccountSettings *settings = EMPATHY_ACCOUNT_SETTINGS (user_data);
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  TpAccountManager *account_manager = TP_ACCOUNT_MANAGER (source_object);
-  GError *error = NULL;
-
-  if (!tp_proxy_prepare_finish (account_manager, result, &error))
+  g_variant_iter_init (&iter, vardict);
+  while (g_variant_iter_loop (&iter, "{sv}", &key, &value))
     {
-      DEBUG ("Failed to prepare account manager: %s", error->message);
-      g_error_free (error);
-      return;
+      tp_account_request_set_parameter (account_req, key, value);
     }
 
-  g_assert (priv->apply_result != NULL && priv->account == NULL);
-  empathy_account_settings_do_create_account (settings);
+  g_variant_unref (vardict);
+
+  tp_account_request_create_account_async (account_req,
+      empathy_account_settings_created_cb, self);
 }
 
 void
@@ -1672,8 +1636,9 @@ empathy_account_settings_apply_async (EmpathyAccountSettings *settings,
 
   if (priv->account == NULL)
     {
-      tp_proxy_prepare_async (priv->account_manager, NULL,
-          empathy_account_settings_manager_ready_cb, settings);
+      g_assert (priv->apply_result != NULL && priv->account == NULL);
+
+      empathy_account_settings_do_create_account (settings);
     }
   else
     {
