@@ -131,13 +131,6 @@ struct _EmpathyRosterWindowPriv {
   GtkWidget *button_account_settings;
   GtkWidget *spinner_loading;
 
-  GtkToggleAction *show_protocols;
-  GtkRadioAction *sort_by_name;
-  GtkRadioAction *sort_by_status;
-  GtkRadioAction *normal_with_avatars;
-  GtkRadioAction *normal_size;
-  GtkRadioAction *compact_size;
-
   GtkUIManager *ui_manager;
   GMenu *menubuttonmodel;
   GMenu *rooms_section;
@@ -1596,196 +1589,6 @@ roster_window_view_show_ft_manager (GSimpleAction *action,
 }
 
 static void
-activate_toggle (GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data)
-{
-  GVariant *state;
-
-  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action),
-      g_variant_new_boolean (!g_variant_get_boolean (state)));
-  g_variant_unref (state);
-}
-
-static void
-roster_window_view_show_offline_cb (GSimpleAction *action,
-    GVariant *state,
-    gpointer user_data)
-{
-  EmpathyRosterWindow *self = user_data;
-  gboolean current;
-
-  current = g_variant_get_boolean (state);
-
-  g_settings_set_boolean (self->priv->gsettings_ui,
-      EMPATHY_PREFS_UI_SHOW_OFFLINE,
-      current);
-
-  empathy_individual_view_set_show_offline (self->priv->individual_view,
-      current);
-
-  g_simple_action_set_state (action, state);
-}
-
-#if 0
-static void
-roster_window_notify_sort_contact_cb (GSettings         *gsettings,
-    const gchar *key,
-    EmpathyRosterWindow *self)
-{
-  gchar *str;
-
-  str = g_settings_get_string (gsettings, key);
-
-  if (str != NULL)
-    {
-      GType       type;
-      GEnumClass *enum_class;
-      GEnumValue *enum_value;
-
-      type = empathy_individual_store_sort_get_type ();
-      enum_class = G_ENUM_CLASS (g_type_class_peek (type));
-      enum_value = g_enum_get_value_by_nick (enum_class, str);
-      if (enum_value)
-        {
-          /* By changing the value of the GtkRadioAction,
-             it emits a signal that calls roster_window_view_sort_contacts_cb
-             which updates the contacts list */
-          gtk_radio_action_set_current_value (self->priv->sort_by_name,
-                      enum_value->value);
-        }
-      else
-        {
-          g_warning ("Wrong value for sort_criterium configuration : %s", str);
-        }
-    g_free (str);
-  }
-}
-#endif
-
-#if 0
-static void
-roster_window_view_sort_contacts_cb (GtkRadioAction *action,
-    GtkRadioAction *current,
-    EmpathyRosterWindow *self)
-{
-  EmpathyIndividualStoreSort value;
-  GSList *group;
-  GType type;
-  GEnumClass *enum_class;
-  GEnumValue *enum_value;
-
-  value = gtk_radio_action_get_current_value (action);
-  group = gtk_radio_action_get_group (action);
-
-  /* Get string from index */
-  type = empathy_individual_store_sort_get_type ();
-  enum_class = G_ENUM_CLASS (g_type_class_peek (type));
-  enum_value = g_enum_get_value (enum_class, g_slist_index (group, current));
-
-  if (!enum_value)
-    g_warning ("No GEnumValue for EmpathyContactListSort with GtkRadioAction index:%d",
-        g_slist_index (group, action));
-  else
-    g_settings_set_string (self->priv->gsettings_contacts,
-        EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
-        enum_value->value_nick);
-
-  empathy_individual_store_set_sort_criterium (self->priv->individual_store,
-      value);
-}
-
-static void
-roster_window_view_show_protocols_cb (GtkToggleAction *action,
-    EmpathyRosterWindow *self)
-{
-  gboolean value;
-
-  value = gtk_toggle_action_get_active (action);
-
-  g_settings_set_boolean (self->priv->gsettings_ui,
-      EMPATHY_PREFS_UI_SHOW_PROTOCOLS,
-      value);
-
-  empathy_individual_store_set_show_protocols (self->priv->individual_store,
-      value);
-}
-#endif
-
-/* Matches GtkRadioAction values set in empathy-roster-window.ui */
-#define CONTACT_LIST_NORMAL_SIZE_WITH_AVATARS   0
-#define CONTACT_LIST_NORMAL_SIZE      1
-#define CONTACT_LIST_COMPACT_SIZE     2
-
-#if 0
-static void
-roster_window_view_contacts_list_size_cb (GtkRadioAction *action,
-    GtkRadioAction *current,
-    EmpathyRosterWindow *self)
-{
-  GSettings *gsettings_ui;
-  gint value;
-
-  value = gtk_radio_action_get_current_value (action);
-  /* create a new GSettings, so we can delay the setting until both
-   * values are set */
-  gsettings_ui = g_settings_new (EMPATHY_PREFS_UI_SCHEMA);
-
-  DEBUG ("radio button toggled, value = %i", value);
-
-  g_settings_delay (gsettings_ui);
-  g_settings_set_boolean (gsettings_ui, EMPATHY_PREFS_UI_SHOW_AVATARS,
-      value == CONTACT_LIST_NORMAL_SIZE_WITH_AVATARS);
-
-  g_settings_set_boolean (gsettings_ui, EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST,
-      value == CONTACT_LIST_COMPACT_SIZE);
-  g_settings_apply (gsettings_ui);
-
-  /* FIXME: these enums probably have the wrong namespace */
-  empathy_individual_store_set_show_avatars (self->priv->individual_store,
-      value == CONTACT_LIST_NORMAL_SIZE_WITH_AVATARS);
-  empathy_individual_store_set_is_compact (self->priv->individual_store,
-      value == CONTACT_LIST_COMPACT_SIZE);
-
-  g_object_unref (gsettings_ui);
-}
-
-static void roster_window_notify_show_protocols_cb (GSettings *gsettings,
-    const gchar *key,
-    EmpathyRosterWindow *self)
-{
-  gtk_toggle_action_set_active (self->priv->show_protocols,
-      g_settings_get_boolean (gsettings, EMPATHY_PREFS_UI_SHOW_PROTOCOLS));
-}
-
-
-static void
-roster_window_notify_contact_list_size_cb (GSettings *gsettings,
-    const gchar *key,
-    EmpathyRosterWindow *self)
-{
-  gint value;
-
-  if (g_settings_get_boolean (gsettings,
-      EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST))
-    value = CONTACT_LIST_COMPACT_SIZE;
-  else if (g_settings_get_boolean (gsettings,
-      EMPATHY_PREFS_UI_SHOW_AVATARS))
-    value = CONTACT_LIST_NORMAL_SIZE_WITH_AVATARS;
-  else
-    value = CONTACT_LIST_NORMAL_SIZE;
-
-  DEBUG ("setting changed, value = %i", value);
-
-  /* By changing the value of the GtkRadioAction,
-     it emits a signal that calls roster_window_view_contacts_list_size_cb
-     which updates the contacts list */
-  gtk_radio_action_set_current_value (self->priv->normal_with_avatars, value);
-}
-#endif
-
-static void
 roster_window_edit_search_contacts_cb (GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data)
@@ -2382,17 +2185,6 @@ roster_window_account_validity_changed_cb (TpAccountManager  *manager,
   set_notebook_page (self);
 }
 
-#if 0
-static void
-roster_window_notify_show_offline_cb (GSettings *gsettings,
-    const gchar *key,
-    gpointer toggle_action)
-{
-  gtk_toggle_action_set_active (toggle_action,
-      g_settings_get_boolean (gsettings, key));
-}
-#endif
-
 static void
 roster_window_connection_items_setup (EmpathyRosterWindow *self)
 {
@@ -2516,7 +2308,6 @@ static GActionEntry menubar_entries[] = {
   { "edit_blocked_contacts", roster_window_edit_blocked_contacts_cb, NULL, NULL, NULL },
   { "edit_preferences", roster_window_edit_preferences_cb, NULL, NULL, NULL },
 
-  { "view_show_offline", activate_toggle, NULL, "false", roster_window_view_show_offline_cb },
   /* TODO */
   { "view_history", roster_window_view_history_cb, NULL, NULL, NULL },
   { "view_show_ft_manager", roster_window_view_show_ft_manager, NULL, NULL, NULL },
@@ -2904,54 +2695,21 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   g_signal_connect (self->priv->account_manager, "account-disabled",
       G_CALLBACK (roster_window_account_disabled_cb), self);
 
-  /* Show offline ? */
-  /*
-  show_offline = g_settings_get_boolean (self->priv->gsettings_ui,
-      EMPATHY_PREFS_UI_SHOW_OFFLINE);
-
-  g_signal_connect (self->priv->gsettings_ui,
-      "changed::" EMPATHY_PREFS_UI_SHOW_OFFLINE,
-      G_CALLBACK (roster_window_notify_show_offline_cb), show_offline_widget);
-
-  gtk_toggle_action_set_active (show_offline_widget, show_offline);
-      */
-
-  /* Show protocol ? */
-  /*
-  g_signal_connect (self->priv->gsettings_ui,
-      "changed::" EMPATHY_PREFS_UI_SHOW_PROTOCOLS,
-      G_CALLBACK (roster_window_notify_show_protocols_cb), self);
-
-  roster_window_notify_show_protocols_cb (self->priv->gsettings_ui,
-      EMPATHY_PREFS_UI_SHOW_PROTOCOLS, self);
-      */
-
-  /* Sort by name / by status ? */
-  /*
-  g_signal_connect (self->priv->gsettings_contacts,
-      "changed::" EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
-      G_CALLBACK (roster_window_notify_sort_contact_cb), self);
-
-  roster_window_notify_sort_contact_cb (self->priv->gsettings_contacts,
-      EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM, self);
-      */
-
-  /* Contacts list size */
-  /*
-  g_signal_connect (self->priv->gsettings_ui,
-      "changed::" EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST,
-      G_CALLBACK (roster_window_notify_contact_list_size_cb), self);
-
-  g_signal_connect (self->priv->gsettings_ui,
-      "changed::" EMPATHY_PREFS_UI_SHOW_AVATARS,
-      G_CALLBACK (roster_window_notify_contact_list_size_cb),
-      self);
-      */
-
-  /*
-  roster_window_notify_contact_list_size_cb (self->priv->gsettings_ui,
-      EMPATHY_PREFS_UI_SHOW_AVATARS, self);
-      */
+  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_OFFLINE,
+      self->priv->individual_view, "show-offline",
+      G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_PROTOCOLS,
+      self->priv->individual_store, "show-protocols",
+      G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST,
+      self->priv->individual_store, "is-compact",
+      G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_AVATARS,
+      self->priv->individual_store, "show-avatars",
+      G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_contacts, EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
+      self->priv->individual_store, "sort-criterium",
+      G_SETTINGS_BIND_GET);
 
   g_signal_connect (self->priv->button_account_settings, "clicked",
       G_CALLBACK (button_account_settings_clicked_cb), self);
