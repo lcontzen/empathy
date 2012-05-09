@@ -2570,6 +2570,15 @@ empathy_roster_window_get_property (GObject    *object,
 }
 
 static void
+empathy_roster_window_constructed (GObject *self)
+{
+  G_OBJECT_CLASS (empathy_roster_window_parent_class)->constructed (self);
+
+  gtk_application_window_set_show_menubar (GTK_APPLICATION_WINDOW (self),
+      FALSE);
+}
+
+static void
 empathy_roster_window_class_init (EmpathyRosterWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -2577,6 +2586,7 @@ empathy_roster_window_class_init (EmpathyRosterWindowClass *klass)
 
   object_class->finalize = empathy_roster_window_finalize;
   object_class->constructor = empathy_roster_window_constructor;
+  object_class->constructed = empathy_roster_window_constructed;
 
   object_class->set_property = empathy_roster_window_set_property;
   object_class->get_property = empathy_roster_window_get_property;
