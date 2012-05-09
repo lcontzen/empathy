@@ -104,6 +104,10 @@ present them to the user immediately.</description>
   <schema id="org.gnome.Empathy.contacts" path="/org/gnome/empathy/contacts/">
     <key name="sort-criterium" type="s">
       <default>'state'</default>
+      <choices>
+        <choice value='state'/>
+        <choice value='name'/>
+      </choices>
       <summary>Contact list sort criterion</summary>
       <description>Which criterion to use when sorting the contact list. Default is to sort by the contact's state with the value "state". A value of "name" will sort the contact list by name.</description>
     </key>
