@@ -2,8 +2,6 @@
 <!--*- mode: xml -*-->
 <interface>
   <menu id="menubutton">
-    <submenu>
-      <attribute translatable="yes" name="label">_Chat</attribute>
       <section>
         <item>
           <attribute translatable="yes" name="label">_New Conversation...</attribute>
@@ -14,11 +12,6 @@
           <attribute translatable="yes" name="label">New _Call...</attribute>
           <attribute translatable="yes" name="action">win.chat_new_call</attribute>
           <attribute translatable="yes" name="accel">&lt;Primary&gt;m</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">_Previous Conversations</attribute>
-          <attribute translatable="yes" name="action">win.view_history</attribute>
-          <attribute translatable="yes" name="accel">F3</attribute>
         </item>
       </section>
       <section>
@@ -32,78 +25,15 @@
           <attribute translatable="yes" name="accel">&lt;Shift&gt;f</attribute>
         </item>
       </section>
-      <item>
-        <attribute translatable="yes" name="label">_Quit</attribute>
-        <attribute translatable="yes" name="action">win.chat_quit</attribute>
-        <attribute translatable="yes" name="accel">&lt;Primary&gt;q</attribute>
-      </item>
-    </submenu>
-    <submenu>
-      <attribute translatable="yes" name="label">_Edit</attribute>
       <section>
         <item>
-          <attribute translatable="yes" name="label">_Accounts</attribute>
+          <attribute translatable="yes" name="label">Edit _Accounts</attribute>
           <attribute translatable="yes" name="action">win.edit_accounts</attribute>
           <attribute translatable="yes" name="accel">F4</attribute>
         </item>
         <item>
-          <attribute translatable="yes" name="label">Find in Contact _List</attribute>
-          <attribute translatable="yes" name="action">win.edit_search_contacts</attribute>
-          <attribute translatable="yes" name="accel">&lt;Primary&gt;f</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">_Blocked Contacts</attribute>
+          <attribute translatable="yes" name="label">Edit _Blocked Contacts</attribute>
           <attribute translatable="yes" name="action">win.edit_blocked_contacts</attribute>
-        </item>
-      </section>
-      <section>
-        <item>
-          <attribute translatable="yes" name="label">P_references</attribute>
-          <attribute translatable="yes" name="action">win.edit_preferences</attribute>
-        </item>
-      </section>
-    </submenu>
-    <submenu>
-      <attribute translatable="yes" name="label">_View</attribute>
-      <section>
-        <item>
-          <attribute translatable="yes" name="label">_Offline Contacts</attribute>
-          <attribute translatable="yes" name="action">win.view_show_offline</attribute>
-          <attribute translatable="yes" name="accel">&lt;Primary&gt;f</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">Show P_rotocol</attribute>
-          <attribute translatable="yes" name="action">win.view_show_protocols</attribute>
-        </item>
-      </section>
-      <item>
-        <link name="section" id="balance"/>
-      </item>
-      <section>
-        <item>
-          <attribute translatable="yes" name="label">Sort by _Name</attribute>
-          <attribute translatable="yes" name="action">win.view_sort_by_name</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">Sort by _Status</attribute>
-          <attribute translatable="yes" name="action">win.view_sort_by_status</attribute>
-        </item>
-      </section>
-      <section>
-        <item>
-          <attribute translatable="yes" name="label">Normal Size With _Avatars</attribute>
-          <attribute translatable="yes" name="action">win.view_normal_size_with_avatars</attribute>
-          <attribute translatable="yes" name="accel">&lt;Primary&gt;1</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">N_ormal Size</attribute>
-          <attribute translatable="yes" name="action">win.view_normal_size</attribute>
-          <attribute translatable="yes" name="accel">&lt;Primary&gt;2</attribute>
-        </item>
-        <item>
-          <attribute translatable="yes" name="label">_Compact Size</attribute>
-          <attribute translatable="yes" name="action">win.view_compact_size</attribute>
-          <attribute translatable="yes" name="accel">&lt;Primary&gt;3</attribute>
         </item>
       </section>
       <section>
@@ -121,7 +51,6 @@
           <attribute translatable="yes" name="action">win.view_show_map</attribute>
         </item>
       </section>
-    </submenu>
     <submenu>
       <attribute translatable="yes" name="label">_Room</attribute>
       <section>
@@ -145,11 +74,9 @@
         </item>
       </section>
     </submenu>
-    <submenu>
-      <attribute translatable="yes" name="label">_Help</attribute>
       <section>
         <item>
-          <attribute translatable="yes" name="label">Contents</attribute>
+          <attribute translatable="yes" name="label">Help</attribute>
           <attribute translatable="yes" name="action">win.help_contents</attribute>
           <attribute translatable="yes" name="accel">F1</attribute>
         </item>
@@ -162,6 +89,16 @@
           <attribute translatable="yes" name="action">win.help_about</attribute>
         </item>
       </section>
-    </submenu>
+      <section>
+        <item>
+          <attribute translatable="yes" name="label">P_references</attribute>
+          <attribute translatable="yes" name="action">win.edit_preferences</attribute>
+        </item>
+      	<item>
+      	  <attribute translatable="yes" name="label">Close</attribute>
+      	  <attribute translatable="yes" name="action">win.chat_quit</attribute>
+      	  <attribute translatable="yes" name="accel">&lt;Primary&gt;q</attribute>
+      	</item>
+      </section>
   </menu>
 </interface>
