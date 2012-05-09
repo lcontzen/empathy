@@ -5,13 +5,11 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
-      <object class="GtkToolbar" id="presence_toolbar">
+      <object class="GtkHBox" id="presence_toolbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="toolbar_style">both</property>
-        <style>
-          <class name="primary-toolbar"/>
-        </style>
+        <property name="spacing">3</property>
+        <property name="border-width">3</property>
       </object>
       <packing>
         <property name="expand">False</property>

@@ -121,7 +121,6 @@ struct _EmpathyRosterWindowPriv {
   GtkWidget *preferences;
   GtkWidget *main_vbox;
   GtkWidget *throbber;
-  GtkWidget *throbber_tool_item;
   GtkWidget *presence_toolbar;
   GtkWidget *presence_chooser;
   GtkWidget *errors_vbox;
@@ -140,6 +139,7 @@ struct _EmpathyRosterWindowPriv {
   GtkRadioAction *compact_size;
 
   GtkUIManager *ui_manager;
+  GMenu *menubuttonmodel;
   GMenu *rooms_section;
   GMenu *balance_section;
   GAction *view_credit_action;
@@ -1022,12 +1022,12 @@ roster_window_update_status (EmpathyRosterWindow *self)
   if (connecting)
     {
       gtk_spinner_start (GTK_SPINNER (self->priv->throbber));
-      gtk_widget_show (self->priv->throbber_tool_item);
+      gtk_widget_show (self->priv->throbber);
     }
   else
     {
       gtk_spinner_stop (GTK_SPINNER (self->priv->throbber));
-      gtk_widget_hide (self->priv->throbber_tool_item);
+      gtk_widget_hide (self->priv->throbber);
     }
 
   /* Update widgets sensibility */
@@ -1293,6 +1293,8 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
   if (!tp_proxy_is_prepared (conn, TP_CONNECTION_FEATURE_BALANCE))
     return;
 
+  return; /* FIXME */
+
   DEBUG ("Setting up balance for acct: %s",
       tp_account_get_display_name (account));
 
@@ -1494,15 +1496,14 @@ empathy_roster_window_finalize (GObject *window)
 
   g_object_unref (self->priv->call_observer);
   g_object_unref (self->priv->event_manager);
-  g_object_unref (self->priv->ui_manager);
   g_object_unref (self->priv->chatroom_manager);
 
   g_object_unref (self->priv->gsettings_ui);
   g_object_unref (self->priv->gsettings_contacts);
   g_object_unref (self->priv->individual_manager);
 
+  g_object_unref (self->priv->menubuttonmodel);
   g_object_unref (self->priv->rooms_section);
-  g_object_unref (self->priv->balance_section);
   g_clear_object (&self->priv->view_credit_action);
   g_hash_table_unref (self->priv->topup_menu_items);
 
@@ -2393,8 +2394,7 @@ roster_window_notify_show_offline_cb (GSettings *gsettings,
 #endif
 
 static void
-roster_window_connection_items_setup (EmpathyRosterWindow *self,
-    GtkBuilder *gui)
+roster_window_connection_items_setup (EmpathyRosterWindow *self)
 {
   guint i;
   const gchar *actions_connected[] = {
@@ -2532,75 +2532,6 @@ static GActionEntry menubar_entries[] = {
 };
 
 static void
-empathy_roster_window_constructed (GObject *object)
-{
-  EmpathyRosterWindow *self = EMPATHY_ROSTER_WINDOW (object);
-  gchar *filename;
-  GtkBuilder *builder;
-  GtkApplication *app;
-  GMenu *menubar;
-  /* TODO: <cassidy> desrt, yeah. So I should basically move all my menu code
-   * from gtkappwin to gtkapp, just deal with it in the app itself and stop
-   * caring about the appwin ? */
-
-  G_OBJECT_CLASS (empathy_roster_window_parent_class)->constructed (object);
-
-  app = gtk_window_get_application (GTK_WINDOW (self));
-  g_return_if_fail (app != NULL);
-
-  g_action_map_add_action_entries (G_ACTION_MAP (self),
-      menubar_entries, G_N_ELEMENTS (menubar_entries), self);
-
-  filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
-  builder = empathy_builder_get_file (filename,
-      /*
-      "ui_manager", &self->priv->ui_manager,
-      "view_show_offline", &show_offline_widget,
-      "view_show_protocols", &self->priv->show_protocols,
-      "view_sort_by_name", &self->priv->sort_by_name,
-      "view_sort_by_status", &self->priv->sort_by_status,
-      "view_normal_size_with_avatars", &self->priv->normal_with_avatars,
-      "view_normal_size", &self->priv->normal_size,
-      "view_compact_size", &self->priv->compact_size,
-      "view_history", &self->priv->view_history,
-      "menubar", &menubar,
-      */
-      NULL);
-  g_free (filename);
-
-  menubar = G_MENU (gtk_builder_get_object (builder, "menubar"));
-
-  gtk_application_set_menubar (app, G_MENU_MODEL(menubar));
-
-  /* Disable map if built without champlain */
-#ifndef HAVE_LIBCHAMPLAIN
-    {
-      GAction *view_show_map;
-
-      view_show_map = g_action_map_lookup_action (G_ACTION_MAP (self),
-          "view_show_map");
-      g_simple_action_set_enabled (G_SIMPLE_ACTION (view_show_map), FALSE);
-    }
-#endif
-
-  /* Set up connection related actions. */
-  roster_window_connection_items_setup (self, NULL);
-
-  /* Add rooms to the menu */
-  self->priv->rooms_section = G_MENU (gtk_builder_get_object (builder,
-        "rooms"));
-  g_object_ref (self->priv->rooms_section);
-
-  self->priv->balance_section = G_MENU (gtk_builder_get_object (builder,
-        "balance"));
-  g_object_ref (self->priv->balance_section);
-
-  roster_window_favorite_chatroom_menu_setup (self);
-
-  g_object_unref (builder);
-}
-
-static void
 empathy_roster_window_set_property (GObject *object,
     guint property_id,
     const GValue *value,
@@ -2646,7 +2577,6 @@ empathy_roster_window_class_init (EmpathyRosterWindowClass *klass)
 
   object_class->finalize = empathy_roster_window_finalize;
   object_class->constructor = empathy_roster_window_constructor;
-  object_class->constructed = empathy_roster_window_constructed;
 
   object_class->set_property = empathy_roster_window_set_property;
   object_class->get_property = empathy_roster_window_get_property;
@@ -2685,16 +2615,67 @@ contacts_loaded_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+roster_window_menu_closed_cb (GtkWidget *button,
+    GtkMenu *menu)
+{
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
+}
+
+static void
+roster_window_menu_position_func (GtkMenu *menu,
+    int *x,
+    int *y,
+    gboolean *push_in,
+    gpointer user_data)
+{
+  GtkWidget *button = user_data;
+  GtkAllocation allocation;
+  int w = gtk_widget_get_allocated_width (GTK_WIDGET (menu));
+
+  gtk_widget_get_allocation (button, &allocation);
+  gdk_window_get_root_coords (gtk_widget_get_window (button),
+      allocation.x + allocation.width - w,
+      allocation.y + allocation.height,
+      x, y);
+
+  *push_in = TRUE;
+}
+
+static gboolean
+roster_window_menu_button_press_cb (GtkWidget *button,
+    GdkEventButton *event,
+    EmpathyRosterWindow *self)
+{
+  if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)))
+    {
+      GtkWidget *menu = gtk_menu_new_from_model (
+          G_MENU_MODEL (self->priv->menubuttonmodel));
+
+      g_signal_connect (menu, "selection-done",
+          G_CALLBACK (gtk_widget_destroy), NULL);
+      gtk_menu_attach_to_widget (GTK_MENU (menu), button,
+          roster_window_menu_closed_cb);
+      gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
+          roster_window_menu_position_func, button,
+          event->button, event->time);
+
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
   GtkWidget *sw;
-  //GtkToggleAction *show_offline_widget;
-  GtkToolItem *item;
-  //gboolean show_offline;
   gchar *filename;
   GtkTreeModel *model;
   GtkWidget *search_vbox;
+  GtkWidget *button;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
@@ -2754,15 +2735,38 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   self->priv->topup_menu_items = g_hash_table_new_full (NULL, NULL,
       g_object_unref, g_object_unref);
 
-  /*
-  self->priv->edit_context = gtk_ui_manager_get_widget (self->priv->ui_manager,
-      "/menubar/edit/edit_context");
-  self->priv->edit_context_separator = gtk_ui_manager_get_widget (
-      self->priv->ui_manager,
-      "/menubar/edit/edit_context_separator");
-  gtk_widget_hide (self->priv->edit_context);
-  gtk_widget_hide (self->priv->edit_context_separator);
-      */
+  /* set up menus */
+  g_action_map_add_action_entries (G_ACTION_MAP (self),
+      menubar_entries, G_N_ELEMENTS (menubar_entries), self);
+
+  filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
+  gui = empathy_builder_get_file (filename,
+      "menubutton", &self->priv->menubuttonmodel,
+      "rooms", &self->priv->rooms_section,
+      NULL);
+  g_free (filename);
+
+  g_object_ref (self->priv->rooms_section);
+
+  /* Disable map if built without champlain */
+#ifndef HAVE_LIBCHAMPLAIN
+    {
+      GAction *view_show_map;
+
+      view_show_map = g_action_map_lookup_action (G_ACTION_MAP (self),
+          "view_show_map");
+      g_simple_action_set_enabled (G_SIMPLE_ACTION (view_show_map), FALSE);
+    }
+#endif
+
+  /* Set up connection related actions. */
+  roster_window_connection_items_setup (self);
+  roster_window_favorite_chatroom_menu_setup (self);
+
+  /* FIXME: display accelerators in menu */
+  /* FIXME: make menu appear on <Alt> */
+
+  g_object_unref (gui);
 
   /* Set up contact list. */
   empathy_status_presets_get_all ();
@@ -2770,13 +2774,9 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   /* Set up presence chooser */
   self->priv->presence_chooser = empathy_presence_chooser_new ();
   gtk_widget_show (self->priv->presence_chooser);
-  item = gtk_tool_item_new ();
-  gtk_widget_show (GTK_WIDGET (item));
-  gtk_widget_set_size_request (self->priv->presence_chooser, 10, -1);
-  gtk_container_add (GTK_CONTAINER (item), self->priv->presence_chooser);
-  gtk_tool_item_set_is_important (item, TRUE);
-  gtk_tool_item_set_expand (item, TRUE);
-  gtk_toolbar_insert (GTK_TOOLBAR (self->priv->presence_toolbar), item, -1);
+  gtk_box_pack_start (GTK_BOX (self->priv->presence_toolbar),
+      self->priv->presence_chooser,
+      TRUE, TRUE, 0);
 
   /* Set up the throbber */
   self->priv->throbber = gtk_spinner_new ();
@@ -2785,13 +2785,23 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   g_signal_connect (self->priv->throbber, "button-press-event",
     G_CALLBACK (roster_window_throbber_button_press_event_cb),
     self);
-  gtk_widget_show (self->priv->throbber);
+  gtk_box_pack_start (GTK_BOX (self->priv->presence_toolbar),
+      self->priv->throbber,
+      FALSE, TRUE, 0);
 
-  item = gtk_tool_item_new ();
-  gtk_container_set_border_width (GTK_CONTAINER (item), 6);
-  gtk_toolbar_insert (GTK_TOOLBAR (self->priv->presence_toolbar), item, -1);
-  gtk_container_add (GTK_CONTAINER (item), self->priv->throbber);
-  self->priv->throbber_tool_item = GTK_WIDGET (item);
+  /* Set up the menu */
+
+  button = gtk_toggle_button_new ();
+  gtk_button_set_image (GTK_BUTTON (button),
+      gtk_image_new_from_icon_name ("user-available-symbolic",
+        GTK_ICON_SIZE_SMALL_TOOLBAR));
+  gtk_widget_show (button);
+  gtk_box_pack_start (GTK_BOX (self->priv->presence_toolbar),
+      button,
+      FALSE, TRUE, 0);
+
+  g_signal_connect (button, "button-press-event",
+      G_CALLBACK (roster_window_menu_button_press_cb), self);
 
   /* XXX: this class is designed to live for the duration of the program,
    * so it's got a race condition between its signal handlers and its
