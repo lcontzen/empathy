@@ -140,7 +140,6 @@ struct _EmpathyRosterWindowPriv {
   GtkRadioAction *compact_size;
 
   GtkUIManager *ui_manager;
-  GtkAction *view_history;
   GMenu *rooms_section;
   GMenu *balance_section;
   GAction *view_credit_action;
@@ -2239,15 +2238,6 @@ roster_window_account_removed_cb (TpAccountManager  *manager,
     TpAccount *account,
     EmpathyRosterWindow *self)
 {
-  GList *a;
-
-  a = tp_account_manager_get_valid_accounts (manager);
-
-  gtk_action_set_sensitive (self->priv->view_history,
-    g_list_length (a) > 0);
-
-  g_list_free (a);
-
   /* remove errors if any */
   roster_window_remove_error (self, account);
 
@@ -2479,10 +2469,6 @@ account_manager_prepared_cb (GObject *source_object,
       G_CALLBACK (account_enabled_cb), self, 0);
 
   roster_window_update_status (self);
-
-  /* Disable the "Previous Conversations" menu entry if there is no account */
-  gtk_action_set_sensitive (self->priv->view_history,
-      g_list_length (accounts) > 0);
 
   set_notebook_page (self);
 
