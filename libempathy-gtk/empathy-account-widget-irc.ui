@@ -393,7 +393,6 @@
               <object class="GtkEntry" id="entry_quit_message">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">•</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -420,8 +419,6 @@
               <object class="GtkEntry" id="entry_fullname">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="invisible_char_set">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -465,8 +462,6 @@
               <object class="GtkEntry" id="entry_username">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="invisible_char">●</property>
-                <property name="invisible_char_set">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -560,7 +555,6 @@
           <object class="GtkEntry" id="entry_nick_simple">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">•</property>
           </object>
         </child>
       </object>

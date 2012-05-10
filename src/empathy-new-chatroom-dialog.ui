@@ -19,7 +19,6 @@
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Enter the room name to join here or click on one or more rooms in the list.</property>
             <property name="tooltip_text" translatable="yes">Enter the room name to join here or click on one or more rooms in the list.</property>
-            <property name="invisible_char">●</property>
             <property name="activates_default">True</property>
             <property name="width_chars">25</property>
           </object>
@@ -53,7 +52,6 @@
             <property name="has_tooltip">True</property>
             <property name="tooltip_markup" translatable="yes">Enter the server which hosts the room, or leave it empty if the room is on the current account&amp;apos;s server</property>
             <property name="tooltip_text" translatable="yes">Enter the server which hosts the room, or leave it empty if the room is on the current account's server</property>
-            <property name="invisible_char">●</property>
             <property name="width_chars">25</property>
           </object>
           <packing>

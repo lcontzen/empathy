@@ -118,7 +118,6 @@
           <object class="GtkEntry" id="add-contact-entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="invisible_char">●</property>
           </object>
           <packing>
             <property name="position">0</property>
