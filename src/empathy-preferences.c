@@ -65,32 +65,10 @@ static const gchar * empathy_preferences_tabs[] =
 struct _EmpathyPreferencesPriv {
 	GtkWidget *notebook;
 
-	GtkWidget *checkbutton_show_smileys;
-	GtkWidget *checkbutton_show_contacts_in_rooms;
-	GtkWidget *radiobutton_chats_new_windows;
 	GtkWidget *checkbutton_events_notif_area;
-	GtkWidget *checkbutton_autoconnect;
-	GtkWidget *checkbutton_logging;
 
-	GtkWidget *checkbutton_sounds_enabled;
-	GtkWidget *checkbutton_sounds_disabled_away;
 	GtkWidget *treeview_sounds;
-
-	GtkWidget *checkbutton_notifications_enabled;
-	GtkWidget *checkbutton_notifications_disabled_away;
-	GtkWidget *checkbutton_notifications_focus;
-	GtkWidget *checkbutton_notifications_contact_signin;
-	GtkWidget *checkbutton_notifications_contact_signout;
-
-	GtkWidget *echo_cancellation;
-
 	GtkWidget *treeview_spell_checker;
-
-	GtkWidget *checkbutton_location_publish;
-	GtkWidget *checkbutton_location_reduce_accuracy;
-	GtkWidget *checkbutton_location_resource_network;
-	GtkWidget *checkbutton_location_resource_cell;
-	GtkWidget *checkbutton_location_resource_gps;
 
 	GtkWidget *vbox_chat_theme;
 	GtkWidget *combobox_chat_theme;
@@ -110,7 +88,8 @@ struct _EmpathyPreferencesPriv {
 	GSettings *gsettings_logger;
 };
 
-static void     preferences_setup_widgets                (EmpathyPreferences      *preferences);
+static void     preferences_setup_widgets                (EmpathyPreferences      *preferences,
+							  GtkBuilder		  *gui);
 static void     preferences_languages_setup              (EmpathyPreferences      *preferences);
 static void     preferences_languages_add                (EmpathyPreferences      *preferences);
 static void     preferences_languages_save               (EmpathyPreferences      *preferences);
@@ -173,169 +152,98 @@ static SoundEventEntry sound_entries [] = {
 };
 
 static void
-preferences_setup_widgets (EmpathyPreferences *preferences)
+preferences_setup_widgets (EmpathyPreferences *preferences,
+			   GtkBuilder *gui)
 {
 	EmpathyPreferencesPriv *priv = GET_PRIV (preferences);
-
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_ENABLED,
-			 priv->checkbutton_notifications_enabled,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_DISABLED_AWAY,
-			 priv->checkbutton_notifications_disabled_away,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_FOCUS,
-			 priv->checkbutton_notifications_focus,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_CONTACT_SIGNIN,
-			 priv->checkbutton_notifications_contact_signin,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_CONTACT_SIGNOUT,
-			 priv->checkbutton_notifications_contact_signout,
-			 "active",
+#define BIND_ACTIVE(schema, key, widget) \
+	g_settings_bind (priv->gsettings_##schema, EMPATHY_PREFS_##key, \
+			 gtk_builder_get_object (gui, widget), "active", \
 			 G_SETTINGS_BIND_DEFAULT);
 
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_ENABLED,
-			 priv->checkbutton_notifications_disabled_away,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_ENABLED,
-			 priv->checkbutton_notifications_focus,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_ENABLED,
-			 priv->checkbutton_notifications_contact_signin,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-	g_settings_bind (priv->gsettings_notify,
-			 EMPATHY_PREFS_NOTIFICATIONS_ENABLED,
-			 priv->checkbutton_notifications_contact_signout,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
+	BIND_ACTIVE (notify, NOTIFICATIONS_ENABLED,
+		     "checkbutton_notifications_enabled");
+	BIND_ACTIVE (notify, NOTIFICATIONS_DISABLED_AWAY,
+		     "checkbutton_notifications_disabled_away");
+	BIND_ACTIVE (notify, NOTIFICATIONS_FOCUS,
+		     "checkbutton_notifications_focus");
+	BIND_ACTIVE (notify, NOTIFICATIONS_CONTACT_SIGNIN,
+		     "checkbutton_notifications_contact_signin");
+	BIND_ACTIVE (notify, NOTIFICATIONS_CONTACT_SIGNOUT,
+		     "checkbutton_notifications_contact_signout");
 
-	g_settings_bind (priv->gsettings_sound,
-			 EMPATHY_PREFS_SOUNDS_ENABLED,
-			 priv->checkbutton_sounds_enabled,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_sound,
-			 EMPATHY_PREFS_SOUNDS_DISABLED_AWAY,
-			 priv->checkbutton_sounds_disabled_away,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
+	BIND_ACTIVE (sound, SOUNDS_ENABLED,
+		     "checkbutton_sounds_enabled");
+	BIND_ACTIVE (sound, SOUNDS_DISABLED_AWAY,
+		     "checkbutton_sounds_disabled_away");
 
-	g_settings_bind (priv->gsettings_sound,
-			 EMPATHY_PREFS_SOUNDS_ENABLED,
-			 priv->checkbutton_sounds_disabled_away,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-	g_settings_bind (priv->gsettings_sound,
-			EMPATHY_PREFS_SOUNDS_ENABLED,
-			priv->treeview_sounds,
-			"sensitive",
+	BIND_ACTIVE (ui, UI_SEPARATE_CHAT_WINDOWS,
+		     "radiobutton_chats_new_windows");
+	BIND_ACTIVE (ui, UI_EVENTS_NOTIFY_AREA,
+		     "checkbutton_events_notif_area");
+
+	BIND_ACTIVE (chat, CHAT_SHOW_SMILEYS,
+		     "checkbutton_show_smileys");
+	BIND_ACTIVE (chat, CHAT_SHOW_CONTACTS_IN_ROOMS,
+		     "checkbutton_show_contacts_in_rooms");
+
+	BIND_ACTIVE (call, CALL_ECHO_CANCELLATION,
+		     "call_echo_cancellation");
+
+	BIND_ACTIVE (loc, LOCATION_PUBLISH,
+		     "checkbutton_location_publish");
+	BIND_ACTIVE (loc, LOCATION_RESOURCE_NETWORK,
+		     "checkbutton_location_resource_network");
+	BIND_ACTIVE (loc, LOCATION_RESOURCE_CELL,
+		     "checkbutton_location_resource_cell");
+	BIND_ACTIVE (loc, LOCATION_RESOURCE_GPS,
+		     "checkbutton_location_resource_gps");
+	BIND_ACTIVE (loc, LOCATION_REDUCE_ACCURACY,
+		     "checkbutton_location_reduce_accuracy");
+
+	BIND_ACTIVE (logger, LOGGER_ENABLED,
+		     "checkbutton_logging");
+
+#undef BIND_ACTIVE
+
+#define BIND_SENSITIVE(schema, key, widget) \
+	g_settings_bind (priv->gsettings_##schema, EMPATHY_PREFS_##key, \
+			 gtk_builder_get_object (gui, widget), "sensitive", \
 			G_SETTINGS_BIND_GET);
+	/* N.B. BIND_SENSITIVE() is in addition to the sensitivity setting of
+	 *      BIND_ACTIVE() */
+	BIND_SENSITIVE (notify, NOTIFICATIONS_ENABLED,
+			"checkbutton_notifications_disabled_away");
+	BIND_SENSITIVE (notify, NOTIFICATIONS_ENABLED,
+			"checkbutton_notifications_focus");
+	BIND_SENSITIVE (notify, NOTIFICATIONS_ENABLED,
+			"checkbutton_notifications_contact_signin");
+	BIND_SENSITIVE (notify, NOTIFICATIONS_ENABLED,
+			"checkbutton_notifications_contact_signout");
 
-	g_settings_bind (priv->gsettings_ui,
-			 EMPATHY_PREFS_UI_SEPARATE_CHAT_WINDOWS,
-			 priv->radiobutton_chats_new_windows,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
+	BIND_SENSITIVE (sound, SOUNDS_ENABLED,
+			"checkbutton_sounds_disabled_away");
+	BIND_SENSITIVE (sound, SOUNDS_ENABLED,
+			"treeview_sounds");
 
-	g_settings_bind (priv->gsettings_ui,
-			 EMPATHY_PREFS_UI_EVENTS_NOTIFY_AREA,
-			 priv->checkbutton_events_notif_area,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
+	BIND_SENSITIVE (loc, LOCATION_PUBLISH,
+			"checkbutton_location_resource_network");
+	BIND_SENSITIVE (loc, LOCATION_PUBLISH,
+			"checkbutton_location_resource_cell");
+	BIND_SENSITIVE (loc, LOCATION_PUBLISH,
+			"checkbutton_location_resource_gps");
+	BIND_SENSITIVE (loc, LOCATION_PUBLISH,
+			"checkbutton_location_reduce_accuracy");
 
-	g_settings_bind (priv->gsettings_chat,
-			 EMPATHY_PREFS_CHAT_SHOW_SMILEYS,
-			 priv->checkbutton_show_smileys,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_chat,
-			 EMPATHY_PREFS_CHAT_SHOW_CONTACTS_IN_ROOMS,
-			 priv->checkbutton_show_contacts_in_rooms,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-
-	g_settings_bind (priv->gsettings_call,
-			 EMPATHY_PREFS_CALL_ECHO_CANCELLATION,
-			 priv->echo_cancellation,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
+#undef BIND_SENSITIVE
 
 	g_settings_bind (priv->gsettings,
 			 EMPATHY_PREFS_AUTOCONNECT,
-			 priv->checkbutton_autoconnect,
+			 gtk_builder_get_object (gui,
+				 		 "checkbutton_autoconnect"),
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);
 
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_PUBLISH,
-			 priv->checkbutton_location_publish,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_RESOURCE_NETWORK,
-			 priv->checkbutton_location_resource_network,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_PUBLISH,
-			 priv->checkbutton_location_resource_network,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_RESOURCE_CELL,
-			 priv->checkbutton_location_resource_cell,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_PUBLISH,
-			 priv->checkbutton_location_resource_cell,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_RESOURCE_GPS,
-			 priv->checkbutton_location_resource_gps,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_PUBLISH,
-			 priv->checkbutton_location_resource_gps,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_REDUCE_ACCURACY,
-			 priv->checkbutton_location_reduce_accuracy,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
-	g_settings_bind (priv->gsettings_loc,
-			 EMPATHY_PREFS_LOCATION_PUBLISH,
-			 priv->checkbutton_location_reduce_accuracy,
-			 "sensitive",
-			 G_SETTINGS_BIND_GET);
-
-	g_settings_bind (priv->gsettings_logger,
-			 EMPATHY_PREFS_LOGGER_ENABLED,
-			 priv->checkbutton_logging,
-			 "active",
-			 G_SETTINGS_BIND_DEFAULT);
 }
 
 static void
@@ -1163,39 +1071,19 @@ empathy_preferences_init (EmpathyPreferences *preferences)
 	filename = empathy_file_lookup ("empathy-preferences.ui", "src");
 	gui = empathy_builder_get_file (filename,
 		"notebook", &priv->notebook,
-		"checkbutton_show_smileys", &priv->checkbutton_show_smileys,
-		"checkbutton_show_contacts_in_rooms", &priv->checkbutton_show_contacts_in_rooms,
 		"vbox_chat_theme", &priv->vbox_chat_theme,
 		"combobox_chat_theme", &priv->combobox_chat_theme,
 		"combobox_chat_theme_variant", &priv->combobox_chat_theme_variant,
 		"hbox_chat_theme_variant", &priv->hbox_chat_theme_variant,
 		"sw_chat_theme_preview", &priv->sw_chat_theme_preview,
-		"radiobutton_chats_new_windows", &priv->radiobutton_chats_new_windows,
 		"checkbutton_events_notif_area", &priv->checkbutton_events_notif_area,
-		"checkbutton_autoconnect", &priv->checkbutton_autoconnect,
-		"checkbutton_logging", &priv->checkbutton_logging,
-		"checkbutton_notifications_enabled", &priv->checkbutton_notifications_enabled,
-		"checkbutton_notifications_disabled_away", &priv->checkbutton_notifications_disabled_away,
-		"checkbutton_notifications_focus", &priv->checkbutton_notifications_focus,
-		"checkbutton_notifications_contact_signin", &priv->checkbutton_notifications_contact_signin,
-		"checkbutton_notifications_contact_signout", &priv->checkbutton_notifications_contact_signout,
-		"checkbutton_sounds_enabled", &priv->checkbutton_sounds_enabled,
-		"checkbutton_sounds_disabled_away", &priv->checkbutton_sounds_disabled_away,
 		"treeview_sounds", &priv->treeview_sounds,
 		"treeview_spell_checker", &priv->treeview_spell_checker,
-		"checkbutton_location_publish", &priv->checkbutton_location_publish,
-		"checkbutton_location_reduce_accuracy", &priv->checkbutton_location_reduce_accuracy,
-		"checkbutton_location_resource_network", &priv->checkbutton_location_resource_network,
-		"checkbutton_location_resource_cell", &priv->checkbutton_location_resource_cell,
-		"checkbutton_location_resource_gps", &priv->checkbutton_location_resource_gps,
-		"call_echo_cancellation", &priv->echo_cancellation,
 		NULL);
 	g_free (filename);
 
 	gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (preferences))), priv->notebook);
 	gtk_widget_show (priv->notebook);
-
-	g_object_unref (gui);
 
 	priv->gsettings = g_settings_new (EMPATHY_PREFS_SCHEMA);
 	priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
@@ -1215,7 +1103,7 @@ empathy_preferences_init (EmpathyPreferences *preferences)
 
 	preferences_themes_setup (preferences);
 
-	preferences_setup_widgets (preferences);
+	preferences_setup_widgets (preferences, gui);
 
 	preferences_languages_setup (preferences);
 	preferences_languages_add (preferences);
@@ -1223,6 +1111,8 @@ empathy_preferences_init (EmpathyPreferences *preferences)
 
 	preferences_sound_setup (preferences);
 	preferences_sound_load (preferences);
+
+	g_object_unref (gui);
 
 	if (empathy_spell_supported ()) {
 		page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (priv->notebook), EMPATHY_PREFERENCES_TAB_SPELL);
