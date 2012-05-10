@@ -1344,19 +1344,22 @@ chat_input_text_view_send (EmpathyChat *chat)
 
 static void
 chat_state_changed_cb (EmpathyTpChat      *tp_chat,
-		       EmpathyContact     *contact,
+		       TpContact     *tp_contact,
 		       TpChannelChatState  state,
 		       EmpathyChat        *chat)
 {
 	EmpathyChatPriv *priv;
 	GList          *l;
 	gboolean        was_composing;
+	EmpathyContact *contact;
 
 	priv = GET_PRIV (chat);
 
+	contact = empathy_contact_dup_from_tp_contact (tp_contact);
+
 	if (empathy_contact_is_user (contact)) {
 		/* We don't care about our own chat state */
-		return;
+		goto out;
 	}
 
 	was_composing = (priv->compositors != NULL);
@@ -1401,6 +1404,9 @@ chat_state_changed_cb (EmpathyTpChat      *tp_chat,
 		g_signal_emit (chat, signals[COMPOSING], 0,
 			       priv->compositors != NULL);
 	}
+
+out:
+	g_object_unref (contact);
 }
 
 static GRegex *
@@ -1524,7 +1530,7 @@ chat_message_received (EmpathyChat *chat,
 
 	/* We received a message so the contact is no longer
 	 * composing */
-	chat_state_changed_cb (priv->tp_chat, sender,
+	chat_state_changed_cb (priv->tp_chat, empathy_contact_get_tp_contact (sender),
 			       TP_CHANNEL_CHAT_STATE_ACTIVE,
 			       chat);
 }
@@ -4025,7 +4031,7 @@ empathy_chat_set_tp_chat (EmpathyChat   *chat,
 	g_signal_connect (tp_chat, "send-error",
 			  G_CALLBACK (chat_send_error_cb),
 			  chat);
-	g_signal_connect (tp_chat, "chat-state-changed-empathy",
+	g_signal_connect (tp_chat, "contact-chat-state-changed",
 			  G_CALLBACK (chat_state_changed_cb),
 			  chat);
 	g_signal_connect (tp_chat, "members-changed",
