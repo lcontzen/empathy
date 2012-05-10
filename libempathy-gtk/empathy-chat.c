@@ -44,6 +44,7 @@
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-request-util.h>
 #include <libempathy/empathy-chatroom-manager.h>
+#include <libempathy/empathy-client-factory.h>
 
 #include "empathy-chat.h"
 #include "empathy-spell.h"
@@ -952,65 +953,32 @@ chat_command_say (EmpathyChat *chat,
 }
 
 static void
-whois_got_contact_cb (TpConnection *connection,
-		      guint n_contacts,
-		      TpContact * const *contacts,
-		      const gchar * const *requested_ids,
-		      GHashTable *failed_id_errors,
-		      const GError *error,
-		      gpointer user_data,
-		      GObject *weak_object)
+whois_got_contact_cb (GObject *source,
+		      GAsyncResult *result,
+		      gpointer user_data)
 {
-	EmpathyChat *chat = EMPATHY_CHAT (weak_object);
+	EmpathyChat *chat = user_data;
+	EmpathyContact *contact;
+	GtkWidget *window;
 
-	g_return_if_fail (n_contacts <= 1);
+	contact = empathy_client_factory_dup_contact_by_id_finish (
+		EMPATHY_CLIENT_FACTORY (source), result, NULL);
 
-	if (n_contacts == 0) {
-		GHashTableIter iter;
-		gpointer key = NULL, value = NULL;
-		gchar *id;
-		GError *id_error;
-
-		/* tp-glib guarantees that the contacts you requested will be
-		 * in failed_id_errors regardless of whether the individual
-		 * contact was invalid or the whole operation failed.
-		 */
-		g_hash_table_iter_init (&iter, failed_id_errors);
-		g_hash_table_iter_next (&iter, &key, &value);
-		id = key;
-		id_error = value;
-
-		DEBUG ("Error getting TpContact for '%s': %s %u %s",
-			id, g_quark_to_string (id_error->domain),
-			id_error->code, id_error->message);
-
-		if (error == NULL) {
-			/* The specific ID failed. */
-			gchar *event = g_strdup_printf (
-				_("“%s” is not a valid contact ID"), id);
-			empathy_chat_view_append_event (chat->view, event);
-			g_free (event);
-		}
-		/* Otherwise we're disconnected or something; so the window
-		 * will already say ‘Disconnected’, so let's not show anything.
-		 */
-	} else {
-		EmpathyContact *empathy_contact;
-		GtkWidget *window;
-
-		g_return_if_fail (contacts[0] != NULL);
-		empathy_contact = empathy_contact_dup_from_tp_contact (
-			contacts[0]);
-
-		window = gtk_widget_get_toplevel (GTK_WIDGET (chat));
-		/* If we're alive and this command is running, we'd better be
-		 * in a window. */
-		g_return_if_fail (window != NULL);
-		g_return_if_fail (gtk_widget_is_toplevel (window));
-		empathy_contact_information_dialog_show (empathy_contact,
-			GTK_WINDOW (window));
-		g_object_unref (empathy_contact);
+	if (contact == NULL) {
+		empathy_chat_view_append_event (chat->view, _("Invalid contact ID"));
+		goto out;
 	}
+
+	window = gtk_widget_get_toplevel (GTK_WIDGET (chat));
+	g_return_if_fail (window != NULL);
+	g_return_if_fail (gtk_widget_is_toplevel (window));
+	empathy_contact_information_dialog_show (contact,
+		GTK_WINDOW (window));
+
+	g_object_unref (contact);
+
+out:
+	g_object_unref (chat);
 }
 
 static void
@@ -1019,14 +987,17 @@ chat_command_whois (EmpathyChat *chat,
 {
 	EmpathyChatPriv *priv = GET_PRIV (chat);
 	TpConnection *conn;
+	EmpathyClientFactory *factory;
 
 	conn = tp_channel_borrow_connection ((TpChannel *) priv->tp_chat);
-	tp_connection_get_contacts_by_id (conn,
-		/* Element 0 of 'strv' is "whois"; element 1 is the contact ID
-		 * entered by the user (including spaces, if any). */
-		1, (const gchar * const *) strv + 1,
-		0, NULL,
-		whois_got_contact_cb, NULL, NULL, G_OBJECT (chat));
+	factory = empathy_client_factory_dup ();
+
+	/* Element 0 of 'strv' is "whois"; element 1 is the contact ID
+	 * entered by the user (including spaces, if any). */
+	empathy_client_factory_dup_contact_by_id_async (factory, conn, strv[1],
+		whois_got_contact_cb, g_object_ref (chat));
+
+	g_object_unref (factory);
 }
 
 static void
