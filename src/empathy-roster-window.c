@@ -131,13 +131,9 @@ struct _EmpathyRosterWindowPriv {
   GtkWidget *button_account_settings;
   GtkWidget *spinner_loading;
 
-  GtkUIManager *ui_manager;
   GMenu *menubuttonmodel;
   GMenu *rooms_section;
-  GtkWidget *edit_context;
-  GtkWidget *edit_context_separator;
 
-  GtkActionGroup *balance_action_group;
   GtkWidget *balance_vbox;
 
   guint size_timeout_id;
@@ -1648,58 +1644,6 @@ roster_window_room_manage_favorites_cb (GSimpleAction *action,
   empathy_chatrooms_window_show (GTK_WINDOW (self));
 }
 
-#if 0
-static void
-roster_window_edit_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
-{
-  GtkWidget *submenu;
-
-  /* FIXME: It should use the UIManager to merge the contact/group submenu */
-  submenu = empathy_individual_view_get_individual_menu (
-      self->priv->individual_view);
-  if (submenu)
-    {
-      GtkMenuItem *item;
-      GtkWidget   *label;
-
-      item = GTK_MENU_ITEM (self->priv->edit_context);
-      label = gtk_bin_get_child (GTK_BIN (item));
-      gtk_label_set_text (GTK_LABEL (label), _("Contact"));
-
-      gtk_widget_show (self->priv->edit_context);
-      gtk_widget_show (self->priv->edit_context_separator);
-
-      gtk_menu_item_set_submenu (item, submenu);
-
-      return;
-    }
-
-  submenu = empathy_individual_view_get_group_menu (self->priv->individual_view);
-  if (submenu)
-    {
-      GtkMenuItem *item;
-      GtkWidget   *label;
-
-      item = GTK_MENU_ITEM (self->priv->edit_context);
-      label = gtk_bin_get_child (GTK_BIN (item));
-      gtk_label_set_text (GTK_LABEL (label), _("Group"));
-
-      gtk_widget_show (self->priv->edit_context);
-      gtk_widget_show (self->priv->edit_context_separator);
-
-      gtk_menu_item_set_submenu (item, submenu);
-
-      return;
-    }
-
-  gtk_widget_hide (self->priv->edit_context);
-  gtk_widget_hide (self->priv->edit_context_separator);
-
-  return;
-}
-#endif
-
 static void
 roster_window_edit_accounts_cb (GSimpleAction *action,
     GVariant *parameter,
@@ -2072,7 +2016,6 @@ static GActionEntry menubar_entries[] = {
   { "edit_blocked_contacts", roster_window_edit_blocked_contacts_cb, NULL, NULL, NULL },
   { "edit_preferences", roster_window_edit_preferences_cb, NULL, NULL, NULL },
 
-  /* TODO */
   { "view_history", roster_window_view_history_cb, NULL, NULL, NULL },
   { "view_show_ft_manager", roster_window_view_show_ft_manager, NULL, NULL, NULL },
   { "view_show_map", roster_window_view_show_map_cb, NULL, NULL, NULL },
@@ -2281,7 +2224,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   g_signal_connect (self, "key-press-event",
       G_CALLBACK (roster_window_key_press_event_cb), NULL);
 
-  //g_object_ref (self->priv->ui_manager);
   g_object_unref (gui);
 
   self->priv->account_manager = tp_account_manager_dup ();
@@ -2308,6 +2250,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       NULL);
   g_free (filename);
 
+  g_object_ref (self->priv->menubuttonmodel);
   g_object_ref (self->priv->rooms_section);
 
   /* Disable map if built without champlain */
