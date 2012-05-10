@@ -30,7 +30,6 @@
 
 #include <libempathy/empathy-client-factory.h>
 #include <libempathy/empathy-request-util.h>
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-utils.h>
 
 #include "empathy-call-factory.h"

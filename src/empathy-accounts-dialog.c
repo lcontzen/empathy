@@ -41,7 +41,6 @@
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-connection-managers.h>
 #include <libempathy/empathy-pkg-kit.h>
-#include <libempathy/empathy-tp-contact-factory.h>
 
 #include <libempathy-gtk/empathy-ui-utils.h>
 #include <libempathy-gtk/empathy-protocol-chooser.h>

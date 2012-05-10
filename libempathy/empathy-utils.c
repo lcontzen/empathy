@@ -53,7 +53,6 @@
 #include "empathy-individual-manager.h"
 #include "empathy-presence-manager.h"
 #include "empathy-request-util.h"
-#include "empathy-tp-contact-factory.h"
 
 #include <extensions/extensions.h>
 

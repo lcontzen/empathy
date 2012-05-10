@@ -31,7 +31,6 @@
 #include <telepathy-glib/interfaces.h>
 
 #include "empathy-ft-handler.h"
-#include "empathy-tp-contact-factory.h"
 #include "empathy-time.h"
 #include "empathy-utils.h"
 

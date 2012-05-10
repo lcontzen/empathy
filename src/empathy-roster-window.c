@@ -41,7 +41,6 @@
 #include <libempathy/empathy-individual-manager.h>
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-status-presets.h>
-#include <libempathy/empathy-tp-contact-factory.h>
 
 #include <libempathy-gtk/empathy-contact-dialogs.h>
 #include <libempathy-gtk/empathy-live-search.h>

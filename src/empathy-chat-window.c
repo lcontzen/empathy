@@ -44,7 +44,6 @@
 #include <libempathy/empathy-chatroom-manager.h>
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-utils.h>
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-request-util.h>
 #include <libempathy/empathy-individual-manager.h>
 

@@ -30,7 +30,6 @@
 
 #include <telepathy-glib/account-manager.h>
 
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-utils.h>
 
 #include "empathy-contact-dialogs.h"
