@@ -134,8 +134,6 @@ struct _EmpathyRosterWindowPriv {
   GtkUIManager *ui_manager;
   GMenu *menubuttonmodel;
   GMenu *rooms_section;
-  GMenu *balance_section;
-  GAction *view_credit_action;
   GtkWidget *edit_context;
   GtkWidget *edit_context_separator;
 
@@ -158,9 +156,6 @@ struct _EmpathyRosterWindowPriv {
   GList *actions_connected;
 
   gboolean shell_running;
-
-  /* GAction => GMenuItem */
-  GHashTable *topup_menu_items;
 };
 
 static void
@@ -1028,74 +1023,23 @@ roster_window_update_status (EmpathyRosterWindow *self)
     g_simple_action_set_enabled (l->data, connected);
 }
 
-static char *
-account_to_topup_action_name (TpAccount *account,
-    gboolean prefix)
-{
-  char *r;
-  gchar *result;
-
-  /* action names can't have '/' in them, replace it with '.' */
-  r = g_strdup (tp_account_get_path_suffix (account));
-  r = g_strdelimit (r, "/", '.');
-
-  result = g_strconcat (prefix ? "win." : "", "topup-", r, NULL);
-  g_free (r);
-
-  return result;
-}
-
-static void
-roster_window_balance_activate_cb (GtkAction *action,
-    EmpathyRosterWindow *self)
-{
-  const char *uri;
-
-  uri = g_object_get_data (G_OBJECT (action), "manage-credit-uri");
-
-  if (!tp_str_empty (uri))
-    {
-      DEBUG ("Top-up credit URI: %s", uri);
-      empathy_url_show (GTK_WIDGET (self), uri);
-    }
-  else
-    {
-      DEBUG ("unknown protocol for top-up");
-    }
-}
-
 static void
 roster_window_balance_update_balance (EmpathyRosterWindow *self,
     TpAccount *account)
 {
   TpConnection *conn;
-  GAction *action;
-  GMenuItem *item;
   GtkWidget *label;
   int amount = 0;
   guint scale = G_MAXINT32;
   const gchar *currency = "";
   char *money;
-  gchar *name;
 
-  g_print ("111111111\n");
   conn = tp_account_get_connection (account);
   if (conn == NULL)
     return;
-  g_print ("2222222222\n");
-
-  name = account_to_topup_action_name (account, FALSE);
-
-  action = g_action_map_lookup_action (G_ACTION_MAP (self), name);
-  g_free (name);
-
-  if (action == NULL)
-    return;
-  g_print ("333333333\n");
 
   if (!tp_connection_get_balance (conn, &amount, &scale, &currency))
     return;
-  g_print ("44444444444\n");
 
   if (amount == 0 &&
       scale == G_MAXINT32 &&
@@ -1112,24 +1056,8 @@ roster_window_balance_update_balance (EmpathyRosterWindow *self,
       g_free (tmp);
     }
 
-  item = g_hash_table_lookup (self->priv->topup_menu_items, action);
-  g_print ("5555555 %p\n", item);
-  if (item != NULL)
-    {
-      gchar *str;
-
-      /* Translators: this string will be something like:
-       * Top up My Account ($1.23)..." */
-      str = g_strdup_printf (_("Top up %s (%s)..."),
-        tp_account_get_display_name (account), money);
-
-      g_print ("SET %s\n", str);
-      g_menu_item_set_label (item, str);
-      g_free (str);
-    }
-
   /* update the money label in the roster */
-  label = g_object_get_data (G_OBJECT (action), "money-label");
+  label = g_object_get_data (G_OBJECT (account), "balance-money-label");
 
   gtk_label_set_text (GTK_LABEL (label), money);
   g_free (money);
@@ -1151,62 +1079,31 @@ roster_window_balance_changed_cb (TpConnection *conn,
   roster_window_balance_update_balance (self, account);
 }
 
-static GAction *
-roster_window_setup_balance_create_action (EmpathyRosterWindow *self,
+static void
+roster_window_setup_balance (EmpathyRosterWindow *self,
     TpAccount *account)
 {
-  GAction *action;
-  gchar *name;
-  GMenuItem *item;
-
-  /* create the action */
-  name = account_to_topup_action_name (account, FALSE);
-
-  action = (GAction *) g_simple_action_new (name, NULL);
-
-  g_action_map_add_action (G_ACTION_MAP (self), action);
-  g_free (name);
-
-  /* Add to the menu */
-  name = account_to_topup_action_name (account, TRUE);
-
-  item = g_menu_item_new (_("Top up account credit"), name);
-  g_print ("CREATE %p\n", item);
-
-  g_menu_append_item (self->priv->balance_section, item);
-  g_menu_item_set_label (item, "mushroom");
-
-  /* Pass ownership of action to the hash table */
-  g_hash_table_insert (self->priv->topup_menu_items,
-      action, g_object_ref (item));
-
-  if (0) {
-  g_object_bind_property (account, "icon-name", action, "icon-name",
-      G_BINDING_SYNC_CREATE);
-
-  g_signal_connect (action, "activate",
-      G_CALLBACK (roster_window_balance_activate_cb), self);
-  }
-
-  g_free (name);
-
-  return action;
-}
-
-static GtkWidget *
-roster_window_setup_balance_create_widget (EmpathyRosterWindow *self,
-    GAction *action,
-    TpAccount *account)
-{
-#if 0
+  TpConnection *conn = tp_account_get_connection (account);
   GtkWidget *hbox, *image, *label, *button;
+  const gchar *uri;
 
+
+  if (conn == NULL)
+    return;
+
+  if (!tp_proxy_is_prepared (conn, TP_CONNECTION_FEATURE_BALANCE))
+    return;
+
+  DEBUG ("Setting up balance for acct: %s",
+      tp_account_get_display_name (account));
+
+  /* create the display widget */
   hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
   /* protocol icon */
   image = gtk_image_new ();
   gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, TRUE, 0);
-  g_object_bind_property (action, "icon-name", image, "icon-name",
+  g_object_bind_property (account, "icon-name", image, "icon-name",
       G_BINDING_SYNC_CREATE);
 
   /* account name label */
@@ -1220,94 +1117,24 @@ roster_window_setup_balance_create_widget (EmpathyRosterWindow *self,
   label = gtk_label_new ("");
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
   gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
-  g_object_set_data (G_OBJECT (action), "money-label", label);
 
   /* top up button */
   button = gtk_button_new_with_label (_("Top Up..."));
   gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
-  g_signal_connect_swapped (button, "clicked",
-      G_CALLBACK (gtk_action_activate), action);
+
+  uri = tp_connection_get_balance_uri (conn);
+
+  gtk_widget_set_sensitive (button, !tp_str_empty (uri));
+  if (!tp_str_empty (uri))
+    g_signal_connect_data (button, "clicked",
+        G_CALLBACK (empathy_url_show), g_strdup (uri), (GClosureNotify) g_free,
+        0);
 
   gtk_box_pack_start (GTK_BOX (self->priv->balance_vbox), hbox, FALSE, TRUE, 0);
   gtk_widget_show_all (hbox);
 
-  /* tie the lifetime of the widget to the lifetime of the action */
-  g_object_weak_ref (G_OBJECT (action),
-      (GWeakNotify) gtk_widget_destroy, hbox);
-
-  return hbox;
-#endif
-  return NULL;
-}
-
-#define ACTION_SHOW_CREDIT_BALANCE "show-credit-balance"
-
-static void
-add_view_credit_balance_item (EmpathyRosterWindow *self)
-{
-  GMenuItem *item;
-
-  if (self->priv->view_credit_action != NULL)
-    return;
-
-  self->priv->view_credit_action = (GAction *) g_simple_action_new (
-      ACTION_SHOW_CREDIT_BALANCE, NULL);
-
-  /* TODO: connect sig */
-  /* bind view_balance_show_in_roster */
-  /*
-  g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
-      self->priv->view_balance_show_in_roster, "active",
-      G_SETTINGS_BIND_DEFAULT);
-  g_object_bind_property (self->priv->view_balance_show_in_roster, "active",
-      self->priv->balance_vbox, "visible",
-      G_BINDING_SYNC_CREATE);
-      */
-
-  g_action_map_add_action (G_ACTION_MAP (self), self->priv->view_credit_action);
-
-  item = g_menu_item_new (_("Credit Balance"),
-      "win." ACTION_SHOW_CREDIT_BALANCE);
-
-  g_menu_append_item (self->priv->balance_section, item);
-}
-
-static void
-roster_window_setup_balance (EmpathyRosterWindow *self,
-    TpAccount *account)
-{
-  TpConnection *conn = tp_account_get_connection (account);
-  GAction *action;
-  const gchar *uri;
-
-  if (conn == NULL)
-    return;
-
-  if (!tp_proxy_is_prepared (conn, TP_CONNECTION_FEATURE_BALANCE))
-    return;
-
-  return; /* FIXME */
-
-  DEBUG ("Setting up balance for acct: %s",
-      tp_account_get_display_name (account));
-
-  add_view_credit_balance_item (self);
-
-  /* create the action */
-  action = roster_window_setup_balance_create_action (self, account);
-
-  if (action == NULL)
-    return;
-
-  /* create the display widget */
-  roster_window_setup_balance_create_widget (self, action, account);
-
-  /* check the current balance and monitor for any changes */
-  uri = tp_connection_get_balance_uri (conn);
-
-  g_object_set_data_full (G_OBJECT (action), "manage-credit-uri",
-      g_strdup (uri), g_free);
-  gtk_action_set_sensitive (GTK_ACTION (action), !tp_str_empty (uri));
+  g_object_set_data (G_OBJECT (account), "balance-money-label", label);
+  g_object_set_data (G_OBJECT (account), "balance-money-hbox", hbox);
 
   roster_window_balance_update_balance (self, account);
 
@@ -1316,79 +1143,18 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
 }
 
 static void
-remove_view_credit_balance_item (EmpathyRosterWindow *self)
-{
-  gint i;
-
-  if (self->priv->view_credit_action == NULL)
-    return;
-
-  for (i = 0; i < g_menu_model_get_n_items (
-        G_MENU_MODEL (self->priv->balance_section)); i++)
-    {
-      const gchar *action;
-
-      if (g_menu_model_get_item_attribute (
-            G_MENU_MODEL (self->priv->balance_section), i,
-            G_MENU_ATTRIBUTE_ACTION, "s", &action))
-        {
-          if (!tp_strdiff (action, "win." ACTION_SHOW_CREDIT_BALANCE))
-            {
-              g_menu_remove (self->priv->balance_section, i);
-              break;
-            }
-        }
-    }
-
-  g_action_map_remove_action (G_ACTION_MAP (self),
-      g_action_get_name (self->priv->view_credit_action));
-
-  g_clear_object (&self->priv->view_credit_action);
-}
-
-static void
 roster_window_remove_balance_action (EmpathyRosterWindow *self,
     TpAccount *account)
 {
-  /* Remove the "Credit Balance" entry if we just removed the last account
-   * supporting balance and so that's the last entry in the section. */
-  if (g_menu_model_get_n_items (G_MENU_MODEL (self->priv->balance_section)) <= 1)
-    remove_view_credit_balance_item (self);
-#if 0
-  GtkAction *action;
-  char *name;
-  GList *a;
+  GtkWidget *hbox =
+    g_object_get_data (G_OBJECT (account), "balance-money-hbox");
 
-  name = roster_window_account_to_action_name (account);
+  if (hbox == NULL)
+    return;
 
-  action = gtk_action_group_get_action (
-      self->priv->balance_action_group, name);
+  g_return_if_fail (GTK_IS_BOX (hbox));
 
-  if (action != NULL)
-    {
-      guint merge_id;
-
-      DEBUG ("Removing action");
-
-      merge_id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (action),
-            "merge-id"));
-
-      gtk_ui_manager_remove_ui (self->priv->ui_manager,
-          merge_id);
-      gtk_action_group_remove_action (
-          self->priv->balance_action_group, action);
-    }
-
-  g_free (name);
-
-  a = gtk_action_group_list_actions (
-      self->priv->balance_action_group);
-
-  gtk_action_set_visible (self->priv->view_balance_show_in_roster,
-      g_list_length (a) > 0);
-
-  g_list_free (a);
-#endif
+  gtk_widget_destroy (hbox);
 }
 
 static void
@@ -1497,8 +1263,6 @@ empathy_roster_window_finalize (GObject *window)
 
   g_object_unref (self->priv->menubuttonmodel);
   g_object_unref (self->priv->rooms_section);
-  g_clear_object (&self->priv->view_credit_action);
-  g_hash_table_unref (self->priv->topup_menu_items);
 
   G_OBJECT_CLASS (empathy_roster_window_parent_class)->finalize (window);
 }
@@ -2533,9 +2297,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   self->priv->status_changed_handlers = g_hash_table_new_full (g_direct_hash,
       g_direct_equal, NULL, NULL);
 
-  self->priv->topup_menu_items = g_hash_table_new_full (NULL, NULL,
-      g_object_unref, g_object_unref);
-
   /* set up menus */
   g_action_map_add_action_entries (G_ACTION_MAP (self),
       menubar_entries, G_N_ELEMENTS (menubar_entries), self);
@@ -2709,6 +2470,9 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_SETTINGS_BIND_GET);
   g_settings_bind (self->priv->gsettings_contacts, EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
       self->priv->individual_store, "sort-criterium",
+      G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
+      self->priv->balance_vbox, "visible",
       G_SETTINGS_BIND_GET);
 
   g_signal_connect (self->priv->button_account_settings, "clicked",
