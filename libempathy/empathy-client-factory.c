@@ -213,3 +213,67 @@ empathy_client_factory_dup (void)
 
   return singleton;
 }
+
+static void
+dup_contact_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *my_result = user_data;
+  GError *error = NULL;
+  TpContact *contact;
+
+  contact = tp_connection_dup_contact_by_id_finish (TP_CONNECTION (source),
+      result, &error);
+
+  if (contact == NULL)
+    {
+      g_simple_async_result_take_error (my_result, error);
+    }
+  else
+    {
+      g_simple_async_result_set_op_res_gpointer (my_result,
+          empathy_contact_dup_from_tp_contact (contact), g_object_unref);
+
+      g_object_unref (contact);
+    }
+
+  g_simple_async_result_complete (my_result);
+  g_object_unref (my_result);
+}
+
+void
+empathy_client_factory_dup_contact_by_id_async (
+    EmpathyClientFactory *self,
+    TpConnection *connection,
+    const gchar *id,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *result;
+  GArray *features;
+
+  g_return_if_fail (EMPATHY_IS_CLIENT_FACTORY (self));
+  g_return_if_fail (id != NULL);
+
+  result = g_simple_async_result_new ((GObject *) self, callback, user_data,
+      empathy_client_factory_dup_contact_by_id_async);
+
+  features = empathy_client_factory_dup_contact_features (
+      TP_SIMPLE_CLIENT_FACTORY (self), connection);
+
+  tp_connection_dup_contact_by_id_async (connection, id, features->len,
+      (TpContactFeature * ) features->data, dup_contact_cb, result);
+
+  g_array_unref (features);
+}
+
+EmpathyContact *
+empathy_client_factory_dup_contact_by_id_finish (
+    EmpathyClientFactory *self,
+    GAsyncResult *result,
+    GError **error)
+{
+  empathy_implement_finish_return_copy_pointer (self,
+      empathy_client_factory_dup_contact_by_id_async, g_object_ref);
+}

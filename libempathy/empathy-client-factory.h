@@ -24,6 +24,9 @@
 
 #include <telepathy-glib/telepathy-glib.h>
 
+
+#include "empathy-contact.h"
+
 G_BEGIN_DECLS
 
 #define EMPATHY_TYPE_CLIENT_FACTORY         (empathy_client_factory_get_type ())
@@ -51,6 +54,18 @@ struct _EmpathyClientFactoryClass
 GType empathy_client_factory_get_type (void) G_GNUC_CONST;
 
 EmpathyClientFactory * empathy_client_factory_dup (void);
+
+void empathy_client_factory_dup_contact_by_id_async (
+    EmpathyClientFactory *self,
+    TpConnection *connection,
+    const gchar *id,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+EmpathyContact * empathy_client_factory_dup_contact_by_id_finish (
+    EmpathyClientFactory *self,
+    GAsyncResult *result,
+    GError **error) G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 #endif /* __EMPATHY_CLIENT_FACTORY_H__ */
