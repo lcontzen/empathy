@@ -36,10 +36,10 @@
 #include <telepathy-glib/util.h>
 #include <telepathy-glib/interfaces.h>
 
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-location.h>
 #include <libempathy/empathy-time.h>
 #include <libempathy/empathy-utils.h>
+#include <libempathy/empathy-client-factory.h>
 
 #include "empathy-calendar-button.h"
 #include "empathy-contact-widget.h"
@@ -1492,21 +1492,29 @@ contact_widget_set_contact (EmpathyContactWidget *self,
 }
 
 static void
-contact_widget_got_contact_cb (TpConnection *connection,
-                               EmpathyContact *contact,
-                               const GError *error,
-                               gpointer user_data,
-                               GObject *weak_object)
+contact_widget_got_contact_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
   EmpathyContactWidget *self = user_data;
+  GError *error = NULL;
+  EmpathyContact *contact;
 
-  if (error != NULL)
+  contact = empathy_client_factory_dup_contact_by_id_finish (
+      EMPATHY_CLIENT_FACTORY (source), result, &error);
+
+  if (contact == NULL)
     {
       DEBUG ("Error: %s", error->message);
-      return;
+      g_error_free (error);
+      goto out;
     }
 
   contact_widget_set_contact (self, contact);
+
+  g_object_unref (contact);
+out:
+  g_object_unref (self);
 }
 
 static void
@@ -1526,9 +1534,14 @@ contact_widget_change_contact (EmpathyContactWidget *self)
       id = gtk_entry_get_text (GTK_ENTRY (self->priv->widget_id));
       if (!EMP_STR_EMPTY (id))
         {
-          empathy_tp_contact_factory_get_from_id (connection, id,
-              contact_widget_got_contact_cb, self, NULL,
-              G_OBJECT (self));
+          EmpathyClientFactory *factory;
+
+          factory = empathy_client_factory_dup ();
+
+          empathy_client_factory_dup_contact_by_id_async (factory, connection,
+              id, contact_widget_got_contact_cb, g_object_ref (self));
+
+          g_object_unref (factory);
         }
     }
   else
