@@ -27,7 +27,6 @@
 #include <extensions/extensions.h>
 
 #include "empathy-tp-chat.h"
-#include "empathy-tp-contact-factory.h"
 #include "empathy-request-util.h"
 #include "empathy-time.h"
 #include "empathy-utils.h"
@@ -77,7 +76,6 @@ enum
 {
   MESSAGE_RECEIVED,
   SEND_ERROR,
-  CHAT_STATE_CHANGED,
   MESSAGE_ACKNOWLEDGED,
   SIG_MEMBER_RENAMED,
   SIG_MEMBERS_CHANGED,
@@ -493,48 +491,6 @@ message_send_cb (GObject *source,
   g_free (token);
 }
 
-typedef struct {
-  EmpathyTpChat *chat;
-  TpChannelChatState state;
-} StateChangedData;
-
-static void
-tp_chat_state_changed_got_contact_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *chat)
-{
-  TpChannelChatState state;
-
-  if (error != NULL)
-    {
-      DEBUG ("Error: %s", error->message);
-      return;
-    }
-
-  state = GPOINTER_TO_UINT (user_data);
-  DEBUG ("Chat state changed for %s (%d): %d",
-    empathy_contact_get_alias (contact),
-    empathy_contact_get_handle (contact), state);
-
-  g_signal_emit (chat, signals[CHAT_STATE_CHANGED], 0, contact, state);
-}
-
-static void
-tp_chat_state_changed_cb (TpChannel *channel,
-    TpHandle handle,
-    TpChannelChatState state,
-    EmpathyTpChat *self)
-{
-  TpConnection *connection = tp_channel_borrow_connection (
-    (TpChannel *) self);
-
-  empathy_tp_contact_factory_get_from_handle (connection, handle,
-    tp_chat_state_changed_got_contact_cb, GUINT_TO_POINTER (state),
-    NULL, G_OBJECT (self));
-}
-
 static void
 list_pending_messages (EmpathyTpChat *self)
 {
@@ -764,11 +720,6 @@ check_almost_ready (EmpathyTpChat *self)
 
   tp_g_signal_connect_object (self, "message-sent",
     G_CALLBACK (message_sent_cb), self, 0);
-
-  /* TODO: use the TpContact signal once it's released
-   * (fdo #49215) */
-  tp_g_signal_connect_object (self, "chat-state-changed",
-    G_CALLBACK (tp_chat_state_changed_cb), self, 0);
 
   check_ready (self);
 }
@@ -1102,15 +1053,6 @@ empathy_tp_chat_class_init (EmpathyTpChatClass *klass)
       g_cclosure_marshal_generic,
       G_TYPE_NONE,
       3, G_TYPE_STRING, G_TYPE_UINT, G_TYPE_STRING);
-
-  signals[CHAT_STATE_CHANGED] = g_signal_new ("chat-state-changed-empathy",
-      G_TYPE_FROM_CLASS (klass),
-      G_SIGNAL_RUN_LAST,
-      0,
-      NULL, NULL,
-      g_cclosure_marshal_generic,
-      G_TYPE_NONE,
-      2, EMPATHY_TYPE_CONTACT, G_TYPE_UINT);
 
   signals[MESSAGE_ACKNOWLEDGED] = g_signal_new ("message-acknowledged",
       G_TYPE_FROM_CLASS (klass),
