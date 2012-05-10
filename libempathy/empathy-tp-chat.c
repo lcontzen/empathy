@@ -1261,8 +1261,8 @@ TpChannelChatState
 empathy_tp_chat_get_chat_state (EmpathyTpChat *self,
     EmpathyContact *contact)
 {
-  return tp_channel_get_chat_state ((TpChannel *) self,
-    empathy_contact_get_handle (contact));
+  return tp_text_channel_get_chat_state ((TpTextChannel *) self,
+    empathy_contact_get_tp_contact (contact));
 }
 
 EmpathyContact *
