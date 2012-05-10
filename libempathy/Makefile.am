@@ -57,7 +57,6 @@ libempathy_headers =				\
 	empathy-time.h				\
 	empathy-tls-verifier.h			\
 	empathy-tp-chat.h			\
-	empathy-tp-contact-factory.h		\
 	empathy-types.h				\
 	empathy-utils.h
 
@@ -92,7 +91,6 @@ libempathy_handwritten_source =				\
 	empathy-time.c					\
 	empathy-tls-verifier.c				\
 	empathy-tp-chat.c				\
-	empathy-tp-contact-factory.c			\
 	empathy-utils.c
 
 # these are sources that depend on GOA
