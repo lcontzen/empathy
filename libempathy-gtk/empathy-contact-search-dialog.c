@@ -28,8 +28,8 @@
 
 #include <telepathy-glib/telepathy-glib.h>
 
-#include <libempathy/empathy-tp-contact-factory.h>
 #include <libempathy/empathy-utils.h>
+#include <libempathy/empathy-client-factory.h>
 
 #include <libempathy-gtk/empathy-account-chooser.h>
 #include <libempathy-gtk/empathy-cell-renderer-text.h>
@@ -136,21 +136,28 @@ empathy_contact_search_dialog_do_search (EmpathyContactSearchDialog *self)
 }
 
 static void
-on_get_contact_factory_get_from_id_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *object)
+on_get_contact_factory_get_from_id_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-    const gchar *message = user_data;
+  gchar *message = user_data;
+  GError *error = NULL;
+  EmpathyContact *contact;
 
-    if (error != NULL)
-      {
-        g_warning ("Error while getting the contact: %s", error->message);
-        return;
-      }
+  contact = empathy_client_factory_dup_contact_by_id_finish (
+      EMPATHY_CLIENT_FACTORY (source), result, &error);
+  if (contact == NULL)
+    {
+      g_warning ("Error while getting the contact: %s", error->message);
+      g_error_free (error);
+      goto out;
+    }
 
-    empathy_contact_add_to_contact_list (contact, message);
+  empathy_contact_add_to_contact_list (contact, message);
+  g_object_unref (contact);
+
+out:
+  g_free (message);
 }
 
 static void
@@ -166,6 +173,7 @@ add_selected_contact (EmpathyContactSearchDialog *self)
   gchar *message;
   gboolean sel;
   gchar *id;
+  EmpathyClientFactory *factory;
 
   conn = empathy_account_chooser_get_connection (EMPATHY_ACCOUNT_CHOOSER (priv->chooser));
 
@@ -181,9 +189,12 @@ add_selected_contact (EmpathyContactSearchDialog *self)
   gtk_text_buffer_get_end_iter (buffer, &end);
   message = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
 
-  empathy_tp_contact_factory_get_from_id (conn, id,
-      on_get_contact_factory_get_from_id_cb,
-      message, g_free, NULL);
+  factory = empathy_client_factory_dup ();
+
+  empathy_client_factory_dup_contact_by_id_async (factory, conn, id,
+      on_get_contact_factory_get_from_id_cb, message);
+
+  g_object_unref (factory);
 
   /* Close the dialog */
   gtk_dialog_response (GTK_DIALOG (self), GTK_RESPONSE_CANCEL);
@@ -437,19 +448,25 @@ contact_search_dialog_row_activated_cb (GtkTreeView *tv,
 }
 
 static void
-on_profile_button_got_contact_cb (TpConnection *connection,
-    EmpathyContact *contact,
-    const GError *error,
-    gpointer user_data,
-    GObject *object)
+on_profile_button_got_contact_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
- if (error != NULL)
-   {
-     g_warning ("Error while getting the contact: %s", error->message);
-     return;
-   }
+  GError *error = NULL;
+  EmpathyContact *contact;
+
+  contact = empathy_client_factory_dup_contact_by_id_finish (
+        EMPATHY_CLIENT_FACTORY (source), result, &error);
+  if (contact == NULL)
+    {
+      g_warning ("Error while getting the contact: %s", error->message);
+      g_error_free (error);
+      return;
+    }
 
   empathy_contact_information_dialog_show (contact, NULL);
+
+  g_object_unref (contact);
 }
 
 static void
@@ -463,6 +480,7 @@ on_profile_button_clicked_cb (EmpathyCellRendererActivatable *cell,
   GtkTreeModel *model;
   gboolean valid;
   gchar *id;
+  EmpathyClientFactory *factory;
 
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (priv->tree_view));
 
@@ -476,9 +494,12 @@ on_profile_button_clicked_cb (EmpathyCellRendererActivatable *cell,
 
   DEBUG ("Requested to show profile for contact: %s", id);
 
-  empathy_tp_contact_factory_get_from_id (conn, id,
-      on_profile_button_got_contact_cb, NULL,
-      NULL, NULL);
+  factory = empathy_client_factory_dup ();
+
+  empathy_client_factory_dup_contact_by_id_async (factory, conn, id,
+      on_profile_button_got_contact_cb, self);
+
+  g_object_unref (factory);
 }
 
 static void
