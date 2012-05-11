@@ -690,31 +690,36 @@ contact_is_tpl_entity (gpointer key,
 }
 
 static void
-get_contacts_cb (TpConnection *connection,
-    guint n_contacts,
-    TpContact * const *contacts,
-    const gchar * const *requested_ids,
-    GHashTable *failed_id_errors,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+get_contacts_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  EmpathyContact *self = (EmpathyContact *) weak_object;
-  EmpathyContactPriv *priv = GET_PRIV (self);
-  TpContact *tp_contact;
+  TpWeakRef *wr = user_data;
+  EmpathyContactPriv *priv;
+  EmpathyContact *self;
 
-  if (n_contacts != 1)
-    return;
+  self = tp_weak_ref_dup_object (wr);
+  if (self == NULL)
+    goto out;
 
-  tp_contact = contacts[0];
+  priv = GET_PRIV (self);
 
   g_return_if_fail (priv->tp_contact == NULL);
-  priv->tp_contact = g_object_ref (tp_contact);
+
+  priv->tp_contact = tp_connection_dup_contact_by_id_finish (
+      TP_CONNECTION (source), result, NULL);
+  if (priv->tp_contact == NULL)
+    goto out;
+
   g_object_notify (G_OBJECT (self), "tp-contact");
 
   /* Update capabilities now that we have a TpContact */
   set_capabilities_from_tp_caps (self,
-      tp_contact_get_capabilities (tp_contact));
+      tp_contact_get_capabilities (priv->tp_contact));
+
+out:
+  g_clear_object (&self);
+  tp_weak_ref_destroy (wr);
 }
 
 EmpathyContact *
@@ -770,9 +775,9 @@ empathy_contact_from_tpl_contact (TpAccount *account,
           TpContactFeature features[] = { TP_CONTACT_FEATURE_CAPABILITIES };
           conn = tp_account_get_connection (account);
 
-          tp_connection_get_contacts_by_id (conn, 1, &id,
+          tp_connection_dup_contact_by_id_async (conn, id,
               G_N_ELEMENTS (features), features, get_contacts_cb,
-              NULL, NULL, G_OBJECT (retval));
+              tp_weak_ref_new (retval, NULL, NULL));
         }
     }
 
