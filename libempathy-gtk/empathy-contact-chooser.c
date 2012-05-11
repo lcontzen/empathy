@@ -17,6 +17,7 @@
 #include "empathy-contact-chooser.h"
 
 #include <libempathy/empathy-utils.h>
+#include <libempathy/empathy-client-factory.h>
 
 #include <libempathy-gtk/empathy-individual-store-manager.h>
 #include <libempathy-gtk/empathy-individual-view.h>
@@ -207,33 +208,38 @@ contact_capabilities_changed (TpContact *contact,
 }
 
 static void
-get_contacts_cb (TpConnection *connection,
-    guint n_contacts,
-    TpContact * const *contacts,
-    const gchar * const *requested_ids,
-    GHashTable *failed_id_errors,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+get_contacts_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  EmpathyContactChooser *self =
-    (EmpathyContactChooser *) weak_object;
-  AddTemporaryIndividualCtx *ctx = user_data;
+  TpWeakRef *wr = user_data;
+  AddTemporaryIndividualCtx *ctx;
+  EmpathyContactChooser *self;
+  GError *error = NULL;
   FolksIndividual *individual;
   TpContact *contact;
+  EmpathyContact *emp_contact;
+
+  self = tp_weak_ref_dup_object (wr);
+  if (self == NULL)
+    goto out;
+
+  ctx = tp_weak_ref_get_user_data (wr);
+
+  emp_contact = empathy_client_factory_dup_contact_by_id_finish (
+        EMPATHY_CLIENT_FACTORY (source), result, &error);
+  if (emp_contact == NULL)
+    goto out;
+
+  contact = empathy_contact_get_tp_contact (emp_contact);
 
   if (self->priv->add_temp_ctx != ctx)
     /* another request has been started */
-    return;
-
-  if (n_contacts != 1)
-    return;
-
-  contact = contacts[0];
+    goto out;
 
   individual =  empathy_create_individual_from_tp_contact (contact);
   if (individual == NULL)
-    return;
+    goto out;
 
   /* tp-glib will unref the TpContact once we return from this callback
    * but folks expect us to keep a reference on the TpContact.
@@ -255,6 +261,11 @@ get_contacts_cb (TpConnection *connection,
         gtk_tree_view_get_selection (GTK_TREE_VIEW (self->priv->view)),
         NULL, NULL))
     empathy_individual_view_select_first (self->priv->view);
+
+out:
+  g_clear_object (&emp_contact);
+  g_clear_object (&self);
+  tp_weak_ref_destroy (wr);
 }
 
 static void
@@ -277,18 +288,19 @@ add_temporary_individuals (EmpathyContactChooser *self,
     {
       TpAccount *account = l->data;
       TpConnection *conn;
-      TpContactFeature features[] = { TP_CONTACT_FEATURE_ALIAS,
-          TP_CONTACT_FEATURE_AVATAR_DATA,
-          TP_CONTACT_FEATURE_PRESENCE,
-          TP_CONTACT_FEATURE_CAPABILITIES };
+      EmpathyClientFactory *factory;
 
       conn = tp_account_get_connection (account);
       if (conn == NULL)
         continue;
 
-      tp_connection_get_contacts_by_id (conn, 1, &id, G_N_ELEMENTS (features),
-          features, get_contacts_cb, self->priv->add_temp_ctx, NULL,
-          G_OBJECT (self));
+      factory = empathy_client_factory_dup ();
+
+      empathy_client_factory_dup_contact_by_id_async (factory, conn, id,
+          get_contacts_cb,
+          tp_weak_ref_new (self, self->priv->add_temp_ctx, NULL));
+
+      g_object_unref (factory);
     }
 
   g_list_free (accounts);
