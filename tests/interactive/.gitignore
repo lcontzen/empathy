@@ -10,3 +10,4 @@ test-empathy-status-preset-dialog
 test-empathy-protocol-chooser
 test-empathy-account-chooser
 test-empathy-calendar-button
+test-empathy-roster-view
