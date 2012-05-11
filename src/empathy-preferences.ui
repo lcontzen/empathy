@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
-  <object class="GtkAdjustment" id="call_volume_adjustment">
-    <property name="upper">150</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkNotebook" id="notebook">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
