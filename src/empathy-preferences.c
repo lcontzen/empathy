@@ -86,6 +86,7 @@ struct _EmpathyPreferencesPriv {
 	GSettings *gsettings_sound;
 	GSettings *gsettings_ui;
 	GSettings *gsettings_logger;
+	GSettings *gsettings_contacts;
 };
 
 static void     preferences_setup_widgets                (EmpathyPreferences      *preferences,
@@ -151,6 +152,36 @@ static SoundEventEntry sound_entries [] = {
 	{ N_("Account disconnected"), EMPATHY_PREFS_SOUNDS_SERVICE_LOGOUT }
 };
 
+static gboolean
+sort_criterium_get_mapping (GValue *value,
+			    GVariant *variant,
+			    gpointer user_data)
+{
+	const char *s = g_variant_get_string (variant, NULL);
+
+	if (!tp_strdiff (s, "state"))
+		g_value_set_boolean (value, TRUE);
+	else if (!tp_strdiff (s, "name"))
+		g_value_set_boolean (value, FALSE);
+	else
+		return FALSE;
+
+	return TRUE;
+}
+
+static GVariant *
+sort_criterium_set_mapping (const GValue *value,
+			    const GVariantType *expected_type,
+			    gpointer user_data)
+{
+	gboolean b = g_value_get_boolean (value);
+
+	if (b)
+		return g_variant_new_string ("state");
+	else
+		return g_variant_new_string ("name");
+}
+
 static void
 preferences_setup_widgets (EmpathyPreferences *preferences,
 			   GtkBuilder *gui)
@@ -177,10 +208,18 @@ preferences_setup_widgets (EmpathyPreferences *preferences,
 	BIND_ACTIVE (sound, SOUNDS_DISABLED_AWAY,
 		     "checkbutton_sounds_disabled_away");
 
+	BIND_ACTIVE (ui, UI_SHOW_OFFLINE,
+		     "checkbutton_show_offline");
+	BIND_ACTIVE (ui, UI_SHOW_PROTOCOLS,
+		     "checkbutton_show_protocols");
 	BIND_ACTIVE (ui, UI_SEPARATE_CHAT_WINDOWS,
 		     "radiobutton_chats_new_windows");
 	BIND_ACTIVE (ui, UI_EVENTS_NOTIFY_AREA,
 		     "checkbutton_events_notif_area");
+	BIND_ACTIVE (ui, UI_SHOW_AVATARS,
+		     "radiobutton_normal_size_avatars");
+	BIND_ACTIVE (ui, UI_COMPACT_CONTACT_LIST,
+		     "radiobutton_compact_size");
 
 	BIND_ACTIVE (chat, CHAT_SHOW_SMILEYS,
 		     "checkbutton_show_smileys");
@@ -244,6 +283,15 @@ preferences_setup_widgets (EmpathyPreferences *preferences,
 			 "active",
 			 G_SETTINGS_BIND_DEFAULT);
 
+	g_settings_bind_with_mapping (priv->gsettings_contacts,
+			 EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
+			 gtk_builder_get_object (gui,
+				 		 "radiobutton_sort_by_status"),
+			 "active",
+			 G_SETTINGS_BIND_DEFAULT,
+			 sort_criterium_get_mapping,
+			 sort_criterium_set_mapping,
+			 NULL, NULL);
 }
 
 static void
@@ -1029,6 +1077,7 @@ empathy_preferences_finalize (GObject *self)
 	g_object_unref (priv->gsettings_sound);
 	g_object_unref (priv->gsettings_ui);
 	g_object_unref (priv->gsettings_logger);
+	g_object_unref (priv->gsettings_contacts);
 
 	G_OBJECT_CLASS (empathy_preferences_parent_class)->finalize (self);
 }
@@ -1093,6 +1142,7 @@ empathy_preferences_init (EmpathyPreferences *preferences)
 	priv->gsettings_sound = g_settings_new (EMPATHY_PREFS_SOUNDS_SCHEMA);
 	priv->gsettings_ui = g_settings_new (EMPATHY_PREFS_UI_SCHEMA);
 	priv->gsettings_logger = g_settings_new (EMPATHY_PREFS_LOGGER_SCHEMA);
+	priv->gsettings_contacts = g_settings_new (EMPATHY_PREFS_CONTACTS_SCHEMA);
 
 	/* Create chat theme preview, and track changes */
 	priv->theme_manager = empathy_theme_manager_dup_singleton ();
