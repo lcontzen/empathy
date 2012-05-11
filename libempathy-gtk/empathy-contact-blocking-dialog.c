@@ -299,38 +299,39 @@ block_cb (GObject *source,
 }
 
 static void
-block_contact_got_contact (TpConnection *conn,
-    guint n_contacts,
-    TpContact * const *contacts,
-    const gchar * const *requested_ids,
-    GHashTable *failed_id_errors,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+block_contact_got_contact (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  EmpathyContactBlockingDialog *self =
-    EMPATHY_CONTACT_BLOCKING_DIALOG (weak_object);
-  gchar *id = user_data;
+  EmpathyContactBlockingDialog *self;
+  TpConnection *conn =  TP_CONNECTION (source);
+  TpWeakRef *wr = user_data;
+  TpContact *contact;
+  GError *error = NULL;
 
-  if (error != NULL)
-    goto error;
+  self = tp_weak_ref_dup_object (wr);
+  if (self == NULL)
+    goto finally;
 
-  error = g_hash_table_lookup (failed_id_errors, id);
-  if (error != NULL)
-    goto error;
+  contact = tp_connection_dup_contact_by_id_finish (conn, result, &error);
+  if (contact == NULL)
+    {
+      DEBUG ("Error getting contact on %s: %s",
+          get_pretty_conn_name (conn), error->message);
 
-  tp_contact_block_async (contacts[0], FALSE, block_cb, self);
-  goto finally;
+      contact_blocking_dialog_set_error (
+          EMPATHY_CONTACT_BLOCKING_DIALOG (self), error);
 
-error:
-  DEBUG ("Error getting contact on %s: %s",
-      get_pretty_conn_name (conn), error->message);
+      g_error_free (error);
+      goto finally;
+    }
 
-  contact_blocking_dialog_set_error (
-      EMPATHY_CONTACT_BLOCKING_DIALOG (self), error);
+  tp_contact_block_async (contact, FALSE, block_cb, self);
+  g_object_unref (contact);
 
 finally:
-  g_free (id);
+  g_clear_object (&self);
+  tp_weak_ref_destroy (wr);
 }
 
 static void
@@ -339,17 +340,17 @@ contact_blocking_dialog_add_contact (GtkWidget *widget,
 {
   TpConnection *conn = empathy_account_chooser_get_connection (
       EMPATHY_ACCOUNT_CHOOSER (self->priv->account_chooser));
-  const char *identifiers[2] = { NULL, };
+  const char *identifier;
 
-  identifiers[0] = gtk_entry_get_text (
+  identifier = gtk_entry_get_text (
       GTK_ENTRY (self->priv->add_contact_entry));
 
   DEBUG ("Looking up handle for '%s' on %s",
-      identifiers[0], get_pretty_conn_name (conn));
+      identifier, get_pretty_conn_name (conn));
 
-  tp_connection_get_contacts_by_id (conn, 1, identifiers,
+  tp_connection_dup_contact_by_id_async (conn, identifier,
       0, NULL, block_contact_got_contact,
-      g_strdup (identifiers[0]), NULL, G_OBJECT (self));
+      tp_weak_ref_new (self, NULL, NULL));
 
   gtk_entry_set_text (GTK_ENTRY (self->priv->add_contact_entry), "");
   gtk_widget_hide (self->priv->info_bar);
