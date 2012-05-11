@@ -158,7 +158,7 @@ new_chatroom_dialog_model_add_columns (EmpathyNewChatroomDialog *self)
 {
   GtkTreeView *view;
   GtkTreeViewColumn *column;
-  GtkCellRenderer*cell;
+  GtkCellRenderer *cell;
   gint width, height;
 
   gtk_icon_size_lookup (GTK_ICON_SIZE_MENU, &width, &height);
