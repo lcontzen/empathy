@@ -28,6 +28,7 @@
 #define __EMPATHY_INDIVIDUAL_STORE_H__
 
 #include <gtk/gtk.h>
+#include <folks/folks.h>
 
 G_BEGIN_DECLS
 #define EMPATHY_TYPE_INDIVIDUAL_STORE         (empathy_individual_store_get_type ())
