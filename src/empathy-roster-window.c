@@ -1080,9 +1080,8 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
     TpAccount *account)
 {
   TpConnection *conn = tp_account_get_connection (account);
-  GtkWidget *hbox, *image, *label, *button;
+  GtkWidget *hbox, *image, *label;
   const gchar *uri;
-
 
   if (conn == NULL)
     return;
@@ -1094,7 +1093,8 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
       tp_account_get_display_name (account));
 
   /* create the display widget */
-  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+  hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 3);
+  gtk_container_set_border_width (GTK_CONTAINER (hbox), 3);
 
   /* protocol icon */
   image = gtk_image_new ();
@@ -1105,6 +1105,7 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
   /* account name label */
   label = gtk_label_new ("");
   gtk_misc_set_alignment (GTK_MISC (label), 0.0, 0.5);
+  gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
   gtk_box_pack_start (GTK_BOX (hbox), label, TRUE, TRUE, 0);
   g_object_bind_property (account, "display-name", label, "label",
       G_BINDING_SYNC_CREATE);
@@ -1115,16 +1116,25 @@ roster_window_setup_balance (EmpathyRosterWindow *self,
   gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, TRUE, 0);
 
   /* top up button */
-  button = gtk_button_new_with_label (_("Top Up..."));
-  gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
-
   uri = tp_connection_get_balance_uri (conn);
 
-  gtk_widget_set_sensitive (button, !tp_str_empty (uri));
   if (!tp_str_empty (uri))
-    g_signal_connect_data (button, "clicked",
-        G_CALLBACK (empathy_url_show), g_strdup (uri), (GClosureNotify) g_free,
-        0);
+    {
+      GtkWidget *button;
+
+      button = gtk_button_new ();
+      gtk_container_add (GTK_CONTAINER (button),
+          gtk_image_new_from_icon_name ("emblem-symbolic-link",
+            GTK_ICON_SIZE_SMALL_TOOLBAR));
+      gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+      gtk_widget_set_tooltip_text (button, _("Top up account"));
+      gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, TRUE, 0);
+
+      g_signal_connect_data (button, "clicked",
+          G_CALLBACK (empathy_url_show),
+          g_strdup (uri), (GClosureNotify) g_free,
+          0);
+    }
 
   gtk_box_pack_start (GTK_BOX (self->priv->balance_vbox), hbox, FALSE, TRUE, 0);
   gtk_widget_show_all (hbox);
