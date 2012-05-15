@@ -2188,7 +2188,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
   gui = empathy_builder_get_file (filename,
-      "menubutton", &self->priv->menumodel,
+      "appmenu", &self->priv->menumodel,
       "rooms", &self->priv->rooms_section,
       NULL);
   g_free (filename);
