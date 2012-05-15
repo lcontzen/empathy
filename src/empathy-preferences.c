@@ -216,10 +216,6 @@ preferences_setup_widgets (EmpathyPreferences *preferences,
 		     "radiobutton_chats_new_windows");
 	BIND_ACTIVE (ui, UI_EVENTS_NOTIFY_AREA,
 		     "checkbutton_events_notif_area");
-	BIND_ACTIVE (ui, UI_SHOW_AVATARS,
-		     "radiobutton_normal_size_avatars");
-	BIND_ACTIVE (ui, UI_COMPACT_CONTACT_LIST,
-		     "radiobutton_compact_size");
 	BIND_ACTIVE (ui, UI_SHOW_BALANCES,
 		     "checkbutton_show_balances");
 
