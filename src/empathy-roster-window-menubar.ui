@@ -40,6 +40,7 @@
           <item>
             <attribute translatable="yes" name="label">_Join...</attribute>
             <attribute name="action">win.room_join_new</attribute>
+            <attribute name="accel">&lt;Primary&gt;j</attribute>
           </item>
           <item>
             <attribute translatable="yes" name="label">Join _Favorites</attribute>
