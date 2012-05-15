@@ -60,7 +60,7 @@
       <description>Whether to show protocols for contacts in the contact list.</description>
     </key>
     <key name="show-balance-in-roster" type="b">
-      <default>false</default>
+      <default>true</default>
       <summary>Show Balance in contact list</summary>
       <description>Whether to show account balances in the contact list.</description>
     </key>

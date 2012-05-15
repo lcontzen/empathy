@@ -220,6 +220,8 @@ preferences_setup_widgets (EmpathyPreferences *preferences,
 		     "radiobutton_normal_size_avatars");
 	BIND_ACTIVE (ui, UI_COMPACT_CONTACT_LIST,
 		     "radiobutton_compact_size");
+	BIND_ACTIVE (ui, UI_SHOW_BALANCES,
+		     "checkbutton_show_balances");
 
 	BIND_ACTIVE (chat, CHAT_SHOW_SMILEYS,
 		     "checkbutton_show_smileys");
