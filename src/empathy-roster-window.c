@@ -131,7 +131,7 @@ struct _EmpathyRosterWindowPriv {
   GtkWidget *button_account_settings;
   GtkWidget *spinner_loading;
 
-  GMenu *menubuttonmodel;
+  GMenu *menumodel;
   GMenu *rooms_section;
 
   GtkWidget *balance_vbox;
@@ -1257,7 +1257,7 @@ empathy_roster_window_finalize (GObject *window)
   g_object_unref (self->priv->gsettings_contacts);
   g_object_unref (self->priv->individual_manager);
 
-  g_object_unref (self->priv->menubuttonmodel);
+  g_object_unref (self->priv->menumodel);
   g_object_unref (self->priv->rooms_section);
 
   G_OBJECT_CLASS (empathy_roster_window_parent_class)->finalize (window);
@@ -2071,9 +2071,6 @@ static void
 empathy_roster_window_constructed (GObject *self)
 {
   G_OBJECT_CLASS (empathy_roster_window_parent_class)->constructed (self);
-
-  gtk_application_window_set_show_menubar (GTK_APPLICATION_WINDOW (self),
-      FALSE);
 }
 
 static void
@@ -2123,59 +2120,6 @@ contacts_loaded_cb (EmpathyIndividualManager *manager,
 }
 
 static void
-roster_window_menu_closed_cb (GtkWidget *button,
-    GtkMenu *menu)
-{
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), FALSE);
-}
-
-static void
-roster_window_menu_position_func (GtkMenu *menu,
-    int *x,
-    int *y,
-    gboolean *push_in,
-    gpointer user_data)
-{
-  GtkWidget *button = user_data;
-  GtkAllocation allocation;
-  int w = gtk_widget_get_allocated_width (GTK_WIDGET (menu));
-
-  gtk_widget_get_allocation (button, &allocation);
-  gdk_window_get_root_coords (gtk_widget_get_window (button),
-      allocation.x + allocation.width - w,
-      allocation.y + allocation.height,
-      x, y);
-
-  *push_in = TRUE;
-}
-
-static gboolean
-roster_window_menu_button_press_cb (GtkWidget *button,
-    GdkEventButton *event,
-    EmpathyRosterWindow *self)
-{
-  if (!gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button)))
-    {
-      GtkWidget *menu = gtk_menu_new_from_model (
-          G_MENU_MODEL (self->priv->menubuttonmodel));
-
-      g_signal_connect (menu, "selection-done",
-          G_CALLBACK (gtk_widget_destroy), NULL);
-      gtk_menu_attach_to_widget (GTK_MENU (menu), button,
-          roster_window_menu_closed_cb);
-      gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
-          roster_window_menu_position_func, button,
-          event->button, event->time);
-
-      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
-
-      return TRUE;
-    }
-
-  return FALSE;
-}
-
-static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2183,7 +2127,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   gchar *filename;
   GtkTreeModel *model;
   GtkWidget *search_vbox;
-  GtkWidget *button;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
@@ -2245,31 +2188,17 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
   gui = empathy_builder_get_file (filename,
-      "menubutton", &self->priv->menubuttonmodel,
+      "menubutton", &self->priv->menumodel,
       "rooms", &self->priv->rooms_section,
       NULL);
   g_free (filename);
 
-  g_object_ref (self->priv->menubuttonmodel);
+  g_object_ref (self->priv->menumodel);
   g_object_ref (self->priv->rooms_section);
-
-  /* Disable map if built without champlain */
-#ifndef HAVE_LIBCHAMPLAIN
-    {
-      GAction *view_show_map;
-
-      view_show_map = g_action_map_lookup_action (G_ACTION_MAP (self),
-          "view_show_map");
-      g_simple_action_set_enabled (G_SIMPLE_ACTION (view_show_map), FALSE);
-    }
-#endif
 
   /* Set up connection related actions. */
   roster_window_connection_items_setup (self);
   roster_window_favorite_chatroom_menu_setup (self);
-
-  /* FIXME: display accelerators in menu */
-  /* FIXME: make menu appear on <Alt> */
 
   g_object_unref (gui);
 
@@ -2293,20 +2222,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   gtk_box_pack_start (GTK_BOX (self->priv->presence_toolbar),
       self->priv->throbber,
       FALSE, TRUE, 0);
-
-  /* Set up the menu */
-
-  button = gtk_toggle_button_new ();
-  gtk_button_set_image (GTK_BUTTON (button),
-      gtk_image_new_from_icon_name ("user-available-symbolic",
-        GTK_ICON_SIZE_SMALL_TOOLBAR));
-  gtk_widget_show (button);
-  gtk_box_pack_start (GTK_BOX (self->priv->presence_toolbar),
-      button,
-      FALSE, TRUE, 0);
-
-  g_signal_connect (button, "button-press-event",
-      G_CALLBACK (roster_window_menu_button_press_cb), self);
 
   /* XXX: this class is designed to live for the duration of the program,
    * so it's got a race condition between its signal handlers and its
@@ -2428,4 +2343,12 @@ empathy_roster_window_new (GtkApplication *app)
   return g_object_new (EMPATHY_TYPE_ROSTER_WINDOW,
       "application", app,
       NULL);
+}
+
+GMenuModel *
+empathy_roster_window_get_menu_model (EmpathyRosterWindow *self)
+{
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_WINDOW (self), NULL);
+
+  return G_MENU_MODEL (self->priv->menumodel);
 }

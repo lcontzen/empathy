@@ -332,9 +332,6 @@ empathy_app_command_line (GApplication *app,
     {
       GError *error = NULL;
       TpDBusDaemon *dbus;
-      GtkBuilder *gui;
-      GMenuModel *menu;
-      char *filename;
 
       /* Create the FT factory */
       self->ft_factory = empathy_ft_factory_dup_singleton ();
@@ -352,20 +349,11 @@ empathy_app_command_line (GApplication *app,
 
       self->activated = TRUE;
 
-      /* set up the app menu */
-      filename = empathy_file_lookup (
-          "empathy-roster-window-menubar.ui", "src");
-      gui = empathy_builder_get_file (filename,
-          "menubutton", &menu,
-          NULL);
-
-      gtk_application_set_app_menu (GTK_APPLICATION (self), menu);
-
-      g_free (filename);
-      g_object_unref (gui);
-
       /* Setting up UI */
       self->window = empathy_roster_window_new (GTK_APPLICATION (app));
+      gtk_application_set_app_menu (GTK_APPLICATION (self),
+          empathy_roster_window_get_menu_model (
+            EMPATHY_ROSTER_WINDOW (self->window)));
 
       gtk_application_add_window (GTK_APPLICATION (app),
           GTK_WINDOW (self->window));

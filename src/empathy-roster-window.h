@@ -60,6 +60,8 @@ void empathy_roster_window_show_preferences (EmpathyRosterWindow *self,
 void empathy_roster_window_set_shell_running (EmpathyRosterWindow *self,
     gboolean shell_running);
 
+GMenuModel *empathy_roster_window_get_menu_model (EmpathyRosterWindow *self);
+
 G_END_DECLS
 
 #endif /* __EMPATHY_ROSTER_WINDOW_H__ */
