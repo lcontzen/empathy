@@ -127,7 +127,7 @@ empathy_bad_password_dialog_constructed (GObject *object)
   G_OBJECT_CLASS (empathy_bad_password_dialog_parent_class)->constructed (
       object);
 
-  text = g_strdup_printf (_("Authentification failed for account <b>%s</b>"),
+  text = g_strdup_printf (_("Authentication failed for account <b>%s</b>"),
       tp_account_get_display_name (base->account));
   gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (self), text);
   g_free (text);

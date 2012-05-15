@@ -263,7 +263,7 @@ auth_factory_auth_passsword_failed (EmpathyAuthFactory *factory,
 {
   GtkWidget *dialog;
 
-  DEBUG ("Authentification on %s failed, popup password dialog",
+  DEBUG ("Authentication on %s failed, popup password dialog",
       tp_account_get_path_suffix (account));
 
   dialog = empathy_bad_password_dialog_new (account, password);
