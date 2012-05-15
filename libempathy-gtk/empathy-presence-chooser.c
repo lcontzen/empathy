@@ -107,7 +107,6 @@ typedef struct {
 	PresenceChooserEntryType previous_type;
 
 	TpAccountManager *account_manager;
-	GdkPixbuf *not_favorite_pixbuf;
 } EmpathyPresenceChooserPriv;
 
 /* States to be listed in the menu.
@@ -326,7 +325,6 @@ presence_chooser_is_preset (EmpathyPresenceChooser *self)
 static void
 presence_chooser_set_favorite_icon (EmpathyPresenceChooser *self)
 {
-	EmpathyPresenceChooserPriv *priv = GET_PRIV (self);
 	GtkWidget *entry;
 	PresenceChooserEntryType type;
 
@@ -338,16 +336,16 @@ presence_chooser_set_favorite_icon (EmpathyPresenceChooser *self)
 			/* saved entries can be removed from the list */
 			gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
 				           GTK_ENTRY_ICON_SECONDARY,
-					   "emblem-favorite");
+					   "starred-symbolic");
 			gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry),
 					 GTK_ENTRY_ICON_SECONDARY,
 					 _("Click to remove this status as a favorite"));
 		}
-		else if (priv->not_favorite_pixbuf != NULL) {
+		else {
 			/* custom entries can be favorited */
-			gtk_entry_set_icon_from_pixbuf (GTK_ENTRY (entry),
+			gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
 				           GTK_ENTRY_ICON_SECONDARY,
-					   priv->not_favorite_pixbuf);
+					   "non-starred-symbolic");
 			gtk_entry_set_icon_tooltip_text (GTK_ENTRY (entry),
 					 GTK_ENTRY_ICON_SECONDARY,
 					 _("Click to make this status a favorite"));
@@ -819,40 +817,6 @@ presence_chooser_network_change (GNetworkMonitor *connectivity,
 	presence_chooser_update_sensitivity (chooser);
 }
 
-/* Create a greyed version of the 'favorite' icon */
-static GdkPixbuf *
-create_not_favorite_pixbuf (void)
-{
-	GdkPixbuf *favorite, *result;
-
-	favorite = empathy_pixbuf_from_icon_name ("emblem-favorite",
-						  GTK_ICON_SIZE_MENU);
-
-	if (favorite == NULL)
-		return NULL;
-
-	result = gdk_pixbuf_copy (favorite);
-	gdk_pixbuf_saturate_and_pixelate (favorite, result, 1.0, TRUE);
-
-	g_object_unref (favorite);
-	return result;
-}
-
-static void
-icon_theme_changed_cb (GtkIconTheme *icon_theme,
-		       EmpathyPresenceChooser *self)
-{
-	EmpathyPresenceChooserPriv *priv = GET_PRIV (self);
-
-	/* Theme has changed, recreate the not-favorite icon */
-	if (priv->not_favorite_pixbuf != NULL)
-		g_object_unref (priv->not_favorite_pixbuf);
-	priv->not_favorite_pixbuf = create_not_favorite_pixbuf ();
-
-	/* Update the icon */
-	presence_chooser_set_favorite_icon (self);
-}
-
 static void
 empathy_presence_chooser_init (EmpathyPresenceChooser *chooser)
 {
@@ -860,9 +824,6 @@ empathy_presence_chooser_init (EmpathyPresenceChooser *chooser)
 		EMPATHY_TYPE_PRESENCE_CHOOSER, EmpathyPresenceChooserPriv);
 
 	chooser->priv = priv;
-
-	/* Create the not-favorite icon */
-	priv->not_favorite_pixbuf = create_not_favorite_pixbuf ();
 }
 
 static void
@@ -873,10 +834,6 @@ presence_chooser_constructed (GObject *object)
 	GtkWidget *entry;
 	GtkCellRenderer *renderer;
 	const gchar *status_tooltip;
-
-	tp_g_signal_connect_object (gtk_icon_theme_get_default (), "changed",
-				     G_CALLBACK (icon_theme_changed_cb),
-				     chooser, 0);
 
 	presence_chooser_create_model (chooser);
 
@@ -986,8 +943,6 @@ presence_chooser_finalize (GObject *object)
 	g_object_unref (priv->presence_mgr);
 
 	g_object_unref (priv->connectivity);
-	if (priv->not_favorite_pixbuf != NULL)
-		g_object_unref (priv->not_favorite_pixbuf);
 
 	G_OBJECT_CLASS (empathy_presence_chooser_parent_class)->finalize (object);
 }
