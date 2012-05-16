@@ -67,7 +67,6 @@
 #include "empathy-about-dialog.h"
 #include "empathy-debug-window.h"
 #include "empathy-new-chatroom-dialog.h"
-#include "empathy-map-view.h"
 #include "empathy-chatrooms-window.h"
 #include "empathy-event-manager.h"
 #include "empathy-ft-manager.h"
@@ -1368,16 +1367,6 @@ roster_window_edit_search_contacts_cb (GSimpleAction *action,
 }
 
 static void
-roster_window_view_show_map_cb (GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data)
-{
-#ifdef HAVE_LIBCHAMPLAIN
-  empathy_map_view_show ();
-#endif
-}
-
-static void
 join_chatroom (EmpathyChatroom *chatroom,
     gint64 timestamp)
 {
@@ -2027,7 +2016,6 @@ static GActionEntry menubar_entries[] = {
 
   { "view_history", roster_window_view_history_cb, NULL, NULL, NULL },
   { "view_show_ft_manager", roster_window_view_show_ft_manager, NULL, NULL, NULL },
-  { "view_show_map", roster_window_view_show_map_cb, NULL, NULL, NULL },
 
   { "room_join_new", roster_window_room_join_new_cb, NULL, NULL, NULL },
   { "room_join_favorites", roster_window_room_join_favorites_cb, NULL, NULL, NULL },
@@ -2129,6 +2117,22 @@ contacts_loaded_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+roster_window_setup_actions (EmpathyRosterWindow *self)
+{
+  GAction *action;
+
+#define ADD_GSETTINGS_ACTION(schema, key) \
+  action = g_settings_create_action (self->priv->gsettings_##schema, \
+      EMPATHY_PREFS_##key); \
+  g_action_map_add_action (G_ACTION_MAP (self), action); \
+  g_object_unref (action);
+
+  ADD_GSETTINGS_ACTION (ui, UI_SHOW_OFFLINE);
+
+#undef ADD_GSETTINGS_ACTION
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2194,6 +2198,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   /* set up menus */
   g_action_map_add_action_entries (G_ACTION_MAP (self),
       menubar_entries, G_N_ELEMENTS (menubar_entries), self);
+  roster_window_setup_actions (self);
 
   filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
   gui = empathy_builder_get_file (filename,

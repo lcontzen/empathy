@@ -181,20 +181,6 @@ EXTRA_DIST =			\
 	$(autostart_DATA)	\
 	$(ui_DATA)
 
-if HAVE_LIBCHAMPLAIN
-empathy_handwritten_source += 				\
-	empathy-map-view.c			\
-	empathy-map-view.h
-
-ui_DATA += 					\
-	empathy-map-view.ui
-else
-EXTRA_DIST +=					\
-	empathy-map-view.c			\
-	empathy-map-view.h			\
-	empathy-map-view.ui
-endif
-
 dist_man_MANS =			\
 	empathy.1 \
 	empathy-accounts.1

@@ -357,6 +357,10 @@ empathy_app_command_line (GApplication *app,
 
       gtk_application_add_window (GTK_APPLICATION (app),
           GTK_WINDOW (self->window));
+      gtk_application_add_accelerator (GTK_APPLICATION (app),
+          "<Primary>h",
+          "win." EMPATHY_PREFS_UI_SHOW_OFFLINE,
+          NULL);
 
       /* check if Shell is running */
       dbus = tp_dbus_daemon_dup (&error);
