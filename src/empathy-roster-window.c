@@ -67,7 +67,6 @@
 #include "empathy-about-dialog.h"
 #include "empathy-debug-window.h"
 #include "empathy-new-chatroom-dialog.h"
-#include "empathy-map-view.h"
 #include "empathy-chatrooms-window.h"
 #include "empathy-event-manager.h"
 #include "empathy-ft-manager.h"
@@ -1368,16 +1367,6 @@ roster_window_edit_search_contacts_cb (GSimpleAction *action,
 }
 
 static void
-roster_window_view_show_map_cb (GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data)
-{
-#ifdef HAVE_LIBCHAMPLAIN
-  empathy_map_view_show ();
-#endif
-}
-
-static void
 join_chatroom (EmpathyChatroom *chatroom,
     gint64 timestamp)
 {
@@ -2027,7 +2016,6 @@ static GActionEntry menubar_entries[] = {
 
   { "view_history", roster_window_view_history_cb, NULL, NULL, NULL },
   { "view_show_ft_manager", roster_window_view_show_ft_manager, NULL, NULL, NULL },
-  { "view_show_map", roster_window_view_show_map_cb, NULL, NULL, NULL },
 
   { "room_join_new", roster_window_room_join_new_cb, NULL, NULL, NULL },
   { "room_join_favorites", roster_window_room_join_favorites_cb, NULL, NULL, NULL },
