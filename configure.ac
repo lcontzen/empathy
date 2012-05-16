@@ -83,6 +83,16 @@ CHEESE_GTK_REQUIRED=3.4.0
 #ifelse(empathy_released, 1, [], [enable_maintainer_mode="yes"])
 #GNOME_MAINTAINER_MODE_DEFINES
 
+# egg-list-box
+prev_top_build_prefix=$ac_top_build_prefix
+prev_ac_configure_args=$ac_configure_args
+AX_CONFIG_DIR([libempathy-gtk/egg-list-box])
+ac_top_build_prefix=$prev_top_build_prefix
+ac_configure_args=$prev_ac_configure_args
+
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"$ac_top_build_prefix"libempathy-gtk/egg-list-box
+PKG_CHECK_MODULES(EGGLISTBOX, egg-list-box)
+
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([configure.ac])

@@ -18,4 +18,16 @@ which gnome-autogen.sh || {
     exit 1
 }
 
+# Fetch submodules if needed
+if test ! -f libempathy-gtk/egg-list-box/COPYING;
+then
+  echo "+ Setting up submodules"
+  git submodule init
+fi
+git submodule update
+
+cd libempathy-gtk/egg-list-box
+sh autogen.sh --no-configure
+cd ../..
+
 USE_GNOME2_MACROS=1 USE_COMMON_DOC_BUILD=yes . gnome-autogen.sh

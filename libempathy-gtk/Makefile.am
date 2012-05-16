@@ -1,3 +1,5 @@
+SUBDIRS = egg-list-box
+
 include $(top_srcdir)/tools/flymake.mk
 
 AM_CPPFLAGS =                                           \
@@ -15,6 +17,7 @@ AM_CPPFLAGS =                                           \
 	$(GEOCODE_CFLAGS)				\
 	$(MEEGO_CFLAGS)					\
 	$(CHEESE_CFLAGS)				\
+	$(EGGLISTBOX_CFLAGS)					\
 	$(WARN_CFLAGS)					\
 	$(DISABLE_DEPRECATED)
 
@@ -183,6 +186,7 @@ libempathy_gtk_la_LIBADD =			\
 	$(GCR_LIBS)				\
 	$(MEEGO_LIBS)				\
 	$(CHEESE_LIBS)				\
+	$(top_builddir)/libempathy-gtk/egg-list-box/libegglistbox.la \
 	$(top_builddir)/libempathy/libempathy.la
 
 check_c_sources = \
