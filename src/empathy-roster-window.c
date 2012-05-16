@@ -2129,6 +2129,22 @@ contacts_loaded_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+roster_window_setup_actions (EmpathyRosterWindow *self)
+{
+  GAction *action;
+
+#define ADD_GSETTINGS_ACTION(schema, key) \
+  action = g_settings_create_action (self->priv->gsettings_##schema, \
+      EMPATHY_PREFS_##key); \
+  g_action_map_add_action (G_ACTION_MAP (self), action); \
+  g_object_unref (action);
+
+  ADD_GSETTINGS_ACTION (ui, UI_SHOW_OFFLINE);
+
+#undef ADD_GSETTINGS_ACTION
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2194,6 +2210,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   /* set up menus */
   g_action_map_add_action_entries (G_ACTION_MAP (self),
       menubar_entries, G_N_ELEMENTS (menubar_entries), self);
+  roster_window_setup_actions (self);
 
   filename = empathy_file_lookup ("empathy-roster-window-menubar.ui", "src");
   gui = empathy_builder_get_file (filename,
