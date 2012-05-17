@@ -31,6 +31,8 @@ struct _EmpathyRosterItemPriv
   FolksIndividual *individual;
 
   GtkWidget *avatar;
+  GtkWidget *alias;
+  GtkWidget *presence_msg;
 };
 
 static void
@@ -120,6 +122,44 @@ avatar_changed_cb (FolksIndividual *individual,
 }
 
 static void
+update_alias (EmpathyRosterItem *self)
+{
+  const gchar *alias;
+
+  alias = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (
+        self->priv->individual));
+
+  gtk_label_set_text (GTK_LABEL (self->priv->alias), alias);
+}
+
+static void
+alias_changed_cb (FolksIndividual *individual,
+    GParamSpec *spec,
+    EmpathyRosterItem *self)
+{
+  update_alias (self);
+}
+
+static void
+update_presence_msg (EmpathyRosterItem *self)
+{
+  const gchar *msg;
+
+  msg = folks_presence_details_get_presence_message (
+      FOLKS_PRESENCE_DETAILS (self->priv->individual));
+
+  gtk_label_set_text (GTK_LABEL (self->priv->presence_msg), msg);
+}
+
+static void
+presence_message_changed_cb (FolksIndividual *individual,
+    GParamSpec *spec,
+    EmpathyRosterItem *self)
+{
+  update_presence_msg (self);
+}
+
+static void
 empathy_roster_item_constructed (GObject *object)
 {
   EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
@@ -133,8 +173,15 @@ empathy_roster_item_constructed (GObject *object)
 
   tp_g_signal_connect_object (self->priv->individual, "notify::avatar",
       G_CALLBACK (avatar_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->individual, "notify::alias",
+      G_CALLBACK (alias_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->individual,
+      "notify::presence-message",
+      G_CALLBACK (presence_message_changed_cb), self, 0);
 
   update_avatar (self);
+  update_alias (self);
+  update_presence_msg (self);
 }
 
 static void
@@ -186,6 +233,8 @@ empathy_roster_item_class_init (
 static void
 empathy_roster_item_init (EmpathyRosterItem *self)
 {
+  GtkWidget *box;
+
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_ITEM, EmpathyRosterItemPriv);
 
@@ -196,6 +245,22 @@ empathy_roster_item_init (EmpathyRosterItem *self)
 
   gtk_box_pack_start (GTK_BOX (self), self->priv->avatar, FALSE, FALSE, 0);
   gtk_widget_show (self->priv->avatar);
+
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+
+  /* Alias */
+  self->priv->alias = gtk_label_new (NULL);
+  gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.5);
+  gtk_box_pack_start (GTK_BOX (box), self->priv->alias, TRUE, TRUE, 0);
+
+  gtk_box_pack_start (GTK_BOX (self), box, TRUE, TRUE, 0);
+
+  /* Presence */
+  self->priv->presence_msg = gtk_label_new (NULL);
+  gtk_misc_set_alignment (GTK_MISC (self->priv->presence_msg), 0, 0.5);
+  gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
+
+  gtk_widget_show_all (box);
 }
 
 GtkWidget *
