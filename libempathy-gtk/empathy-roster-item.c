@@ -2,7 +2,14 @@
 
 #include "empathy-roster-item.h"
 
+#include <telepathy-glib/util.h>
+
+#include <libempathy-gtk/empathy-images.h>
+#include <libempathy-gtk/empathy-ui-utils.h>
+
 G_DEFINE_TYPE (EmpathyRosterItem, empathy_roster_item, GTK_TYPE_BOX)
+
+#define AVATAR_SIZE 48
 
 enum
 {
@@ -22,6 +29,8 @@ static guint signals[LAST_SIGNAL];
 struct _EmpathyRosterItemPriv
 {
   FolksIndividual *individual;
+
+  GtkWidget *avatar;
 };
 
 static void
@@ -64,6 +73,53 @@ empathy_roster_item_set_property (GObject *object,
 }
 
 static void
+avatar_loaded_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpWeakRef *wr = user_data;
+  EmpathyRosterItem *self;
+  GdkPixbuf *pixbuf;
+
+  self = tp_weak_ref_dup_object (wr);
+  if (self == NULL)
+    goto out;
+
+  pixbuf = empathy_pixbuf_avatar_from_individual_scaled_finish (
+      FOLKS_INDIVIDUAL (source), result, NULL);
+
+  if (pixbuf == NULL)
+    {
+      pixbuf = empathy_pixbuf_from_icon_name_sized (
+          EMPATHY_IMAGE_AVATAR_DEFAULT, AVATAR_SIZE);
+    }
+
+  gtk_image_set_from_pixbuf (GTK_IMAGE (self->priv->avatar), pixbuf);
+  g_object_unref (pixbuf);
+
+  g_object_unref (self);
+
+out:
+  tp_weak_ref_destroy (wr);
+}
+
+static void
+update_avatar (EmpathyRosterItem *self)
+{
+  empathy_pixbuf_avatar_from_individual_scaled_async (self->priv->individual,
+      AVATAR_SIZE, AVATAR_SIZE, NULL, avatar_loaded_cb,
+      tp_weak_ref_new (self, NULL, NULL));
+}
+
+static void
+avatar_changed_cb (FolksIndividual *individual,
+    GParamSpec *spec,
+    EmpathyRosterItem *self)
+{
+  update_avatar (self);
+}
+
+static void
 empathy_roster_item_constructed (GObject *object)
 {
   EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
@@ -74,6 +130,11 @@ empathy_roster_item_constructed (GObject *object)
     chain_up (object);
 
   g_assert (FOLKS_IS_INDIVIDUAL (self->priv->individual));
+
+  tp_g_signal_connect_object (self->priv->individual, "notify::avatar",
+      G_CALLBACK (avatar_changed_cb), self, 0);
+
+  update_avatar (self);
 }
 
 static void
@@ -129,6 +190,12 @@ empathy_roster_item_init (EmpathyRosterItem *self)
       EMPATHY_TYPE_ROSTER_ITEM, EmpathyRosterItemPriv);
 
   gtk_widget_set_size_request (GTK_WIDGET (self), 300, 64);
+
+  /* Avatar */
+  self->priv->avatar = gtk_image_new ();
+
+  gtk_box_pack_start (GTK_BOX (self), self->priv->avatar, FALSE, FALSE, 0);
+  gtk_widget_show (self->priv->avatar);
 }
 
 GtkWidget *
