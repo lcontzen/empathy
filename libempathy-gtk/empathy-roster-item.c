@@ -33,6 +33,7 @@ struct _EmpathyRosterItemPriv
   GtkWidget *avatar;
   GtkWidget *alias;
   GtkWidget *presence_msg;
+  GtkWidget *presence_icon;
 };
 
 static void
@@ -160,6 +161,25 @@ presence_message_changed_cb (FolksIndividual *individual,
 }
 
 static void
+update_presence_icon (EmpathyRosterItem *self)
+{
+  const gchar *icon;
+
+  icon = empathy_icon_name_for_individual (self->priv->individual);
+
+  gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->presence_icon), icon,
+      GTK_ICON_SIZE_MENU);
+}
+
+static void
+presence_status_changed_cb (FolksIndividual *individual,
+    GParamSpec *spec,
+    EmpathyRosterItem *self)
+{
+  update_presence_icon (self);
+}
+
+static void
 empathy_roster_item_constructed (GObject *object)
 {
   EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
@@ -178,10 +198,13 @@ empathy_roster_item_constructed (GObject *object)
   tp_g_signal_connect_object (self->priv->individual,
       "notify::presence-message",
       G_CALLBACK (presence_message_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->individual, "notify::presence-status",
+      G_CALLBACK (presence_status_changed_cb), self, 0);
 
   update_avatar (self);
   update_alias (self);
   update_presence_msg (self);
+  update_presence_icon (self);
 }
 
 static void
@@ -261,6 +284,13 @@ empathy_roster_item_init (EmpathyRosterItem *self)
   gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
 
   gtk_widget_show_all (box);
+
+  /* Presence icon */
+  self->priv->presence_icon = gtk_image_new ();
+
+  gtk_box_pack_start (GTK_BOX (self), self->priv->presence_icon,
+      FALSE, FALSE, 0);
+  gtk_widget_show (self->priv->presence_icon);
 }
 
 GtkWidget *
