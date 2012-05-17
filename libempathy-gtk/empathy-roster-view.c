@@ -127,6 +127,23 @@ members_changed_cb (EmpathyIndividualManager *manager,
     }
 }
 
+static gint
+roster_view_sort (EmpathyRosterItem *a,
+    EmpathyRosterItem *b,
+    EmpathyRosterView *self)
+{
+  FolksIndividual *ind_a, *ind_b;
+  const gchar *alias_a, *alias_b;
+
+  ind_a = empathy_roster_item_get_individual (a);
+  ind_b = empathy_roster_item_get_individual (b);
+
+  alias_a = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (ind_a));
+  alias_b = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (ind_b));
+
+  return g_ascii_strcasecmp (alias_a, alias_b);
+}
+
 static void
 empathy_roster_view_constructed (GObject *object)
 {
@@ -152,6 +169,9 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (members_changed_cb), self, 0);
 
   g_list_free (individuals);
+
+  egg_list_box_set_sort_func (EGG_LIST_BOX (self),
+      (GCompareDataFunc) roster_view_sort, self, NULL);
 }
 
 static void
