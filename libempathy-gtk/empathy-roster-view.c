@@ -3,6 +3,8 @@
 
 #include "empathy-roster-view.h"
 
+#include <libempathy-gtk/empathy-roster-item.h>
+
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
 enum
@@ -23,6 +25,9 @@ static guint signals[LAST_SIGNAL];
 struct _EmpathyRosterViewPriv
 {
   EmpathyIndividualManager *manager;
+
+  /* FolksIndividual (borrowed) -> EmpathyRosterItem (borrowed) */
+  GHashTable *items;
 };
 
 static void
@@ -65,16 +70,88 @@ empathy_roster_view_set_property (GObject *object,
 }
 
 static void
+individual_added (EmpathyRosterView *self,
+    FolksIndividual *individual)
+{
+  GtkWidget *item;
+
+  item = g_hash_table_lookup (self->priv->items, individual);
+  if (item != NULL)
+    return;
+
+  item = empathy_roster_item_new (individual);
+
+  gtk_widget_show (item);
+  gtk_container_add (GTK_CONTAINER (self), item);
+
+  g_hash_table_insert (self->priv->items, individual, item);
+}
+
+static void
+individual_removed (EmpathyRosterView *self,
+    FolksIndividual *individual)
+{
+  GtkWidget *item;
+
+  item = g_hash_table_lookup (self->priv->items, individual);
+  if (item == NULL)
+    return;
+
+  gtk_container_remove (GTK_CONTAINER (self), item);
+
+  g_hash_table_remove (self->priv->items, individual);
+}
+
+static void
+members_changed_cb (EmpathyIndividualManager *manager,
+    const gchar *message,
+    GList *added,
+    GList *removed,
+    TpChannelGroupChangeReason reason,
+    EmpathyRosterView *self)
+{
+  GList *l;
+
+  for (l = added; l != NULL; l = g_list_next (l))
+    {
+      FolksIndividual *individual = l->data;
+
+      individual_added (self, individual);
+    }
+
+  for (l = removed; l != NULL; l = g_list_next (l))
+    {
+      FolksIndividual *individual = l->data;
+
+      individual_removed (self, individual);
+    }
+}
+
+static void
 empathy_roster_view_constructed (GObject *object)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_view_parent_class)->constructed;
+  GList *individuals, *l;
 
   if (chain_up != NULL)
     chain_up (object);
 
   g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
+
+  individuals = empathy_individual_manager_get_members (self->priv->manager);
+  for (l = individuals; l != NULL; l = g_list_next (l))
+    {
+      FolksIndividual *individual = l->data;
+
+      individual_added (self, individual);
+    }
+
+  tp_g_signal_connect_object (self->priv->manager, "members-changed",
+      G_CALLBACK (members_changed_cb), self, 0);
+
+  g_list_free (individuals);
 }
 
 static void
@@ -93,9 +170,11 @@ empathy_roster_view_dispose (GObject *object)
 static void
 empathy_roster_view_finalize (GObject *object)
 {
-  //EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_view_parent_class)->finalize;
+
+  g_hash_table_unref (self->priv->items);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -128,6 +207,8 @@ empathy_roster_view_init (EmpathyRosterView *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_VIEW, EmpathyRosterViewPriv);
+
+  self->priv->items = g_hash_table_new (NULL, NULL);
 }
 
 GtkWidget *
