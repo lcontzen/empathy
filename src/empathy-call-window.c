@@ -1710,6 +1710,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
   create_video_input (self);
 
   priv->floating_toolbar = gtk_clutter_actor_new ();
+  clutter_actor_set_reactive (priv->floating_toolbar, TRUE);
   make_background_transparent (GTK_CLUTTER_ACTOR (priv->floating_toolbar));
 
   gtk_widget_reparent (priv->bottom_toolbar,
