@@ -73,9 +73,8 @@
 #include "empathy-rounded-texture.h"
 #include "empathy-camera-menu.h"
 
-#define CONTENT_HBOX_BORDER_WIDTH 6
 #define CONTENT_HBOX_SPACING 3
-#define CONTENT_HBOX_CHILDREN_PACKING_PADDING 3
+#define CONTENT_HBOX_CHILDREN_PACKING_PADDING 0
 
 #define SELF_VIDEO_SECTION_WIDTH 120
 #define SELF_VIDEO_SECTION_HEIGHT 90
@@ -1549,10 +1548,8 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gchar *filename;
   ClutterConstraint *constraint;
   ClutterActor *remote_avatar;
-  GtkStyleContext *context;
   GtkCssProvider *provider;
-  GdkRGBA rgba;
-  ClutterColor bg;
+  ClutterColor black = { 0, 0, 0, 0 };
 
   priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
     EMPATHY_TYPE_CALL_WINDOW, EmpathyCallWindowPriv);
@@ -1643,8 +1640,6 @@ empathy_call_window_init (EmpathyCallWindow *self)
 
   priv->content_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL,
       CONTENT_HBOX_SPACING);
-  gtk_container_set_border_width (GTK_CONTAINER (priv->content_hbox),
-                                  CONTENT_HBOX_BORDER_WIDTH);
   gtk_box_pack_start (GTK_BOX (priv->pane), priv->content_hbox,
       TRUE, TRUE, 0);
 
@@ -1659,18 +1654,11 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gtk_widget_set_size_request (priv->video_container,
       EMPATHY_VIDEO_WIDGET_DEFAULT_WIDTH, EMPATHY_VIDEO_WIDGET_DEFAULT_HEIGHT);
 
-  /* Set the background color to that of the rest of the window */
-  context = gtk_widget_get_style_context (priv->content_hbox);
-  gtk_style_context_get_background_color (context,
-      GTK_STATE_FLAG_NORMAL, &rgba);
-  bg.red = CLAMP (rgba.red * 255.0, 0, 255);
-  bg.green = CLAMP (rgba.green * 255.0, 0, 255);
-  bg.blue = CLAMP (rgba.blue * 255.0, 0, 255);
-  bg.alpha = CLAMP (rgba.alpha * 255.0, 0, 255);
+  /* Set the background black */
   clutter_stage_set_color (
       CLUTTER_STAGE (gtk_clutter_embed_get_stage (
           GTK_CLUTTER_EMBED (priv->video_container))),
-      &bg);
+      &black);
 
   clutter_container_add (
       CLUTTER_CONTAINER (gtk_clutter_embed_get_stage (
@@ -1686,6 +1674,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
   priv->remote_user_avatar_widget = gtk_image_new ();
   remote_avatar = gtk_clutter_actor_new_with_contents (
       priv->remote_user_avatar_widget);
+  make_background_transparent (GTK_CLUTTER_ACTOR (remote_avatar));
 
   clutter_container_add_actor (CLUTTER_CONTAINER (priv->video_box),
       remote_avatar);
@@ -3840,8 +3829,6 @@ show_borders (EmpathyCallWindow *window, gboolean set_fullscreen)
 {
   EmpathyCallWindowPriv *priv = GET_PRIV (window);
 
-  gtk_container_set_border_width (GTK_CONTAINER (priv->content_hbox),
-      set_fullscreen ? 0 : CONTENT_HBOX_BORDER_WIDTH);
   gtk_box_set_spacing (GTK_BOX (priv->content_hbox),
       set_fullscreen ? 0 : CONTENT_HBOX_SPACING);
 
