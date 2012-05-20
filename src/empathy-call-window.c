@@ -161,6 +161,7 @@ struct _EmpathyCallWindowPriv
   GtkWidget *remote_user_avatar_widget;
   GtkWidget *remote_user_avatar_toolbar;
   GtkWidget *remote_user_name_toolbar;
+  GtkWidget *remote_user_status_toolbar;
   GtkWidget *status_label;
   GtkWidget *hangup_button;
   GtkWidget *audio_call_button;
@@ -1564,6 +1565,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
     "errors_vbox", &priv->errors_vbox,
     "pane", &priv->pane,
     "remote_user_name_toolbar", &priv->remote_user_name_toolbar,
+    "remote_user_status_toolbar", &priv->remote_user_status_toolbar,
     "remote_user_avatar_toolbar", &priv->remote_user_avatar_toolbar,
     "status_label", &priv->status_label,
     "audiocall", &priv->audio_call_button,
@@ -1873,16 +1875,20 @@ set_remote_user_name (EmpathyCallWindow *self,
 {
   const gchar *alias = empathy_contact_get_alias (contact);
   const gchar *status = empathy_contact_get_status (contact);
-  gchar *label;
 
-  if (status != NULL)
-    label = g_strdup_printf ("%s\n<small>%s</small>", alias, status);
-  else
-    label = g_strdup (alias);
+  gtk_label_set_text (GTK_LABEL (self->priv->remote_user_name_toolbar), alias);
 
-  gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_name_toolbar),
-      label);
-  g_free (label);
+  if (status != NULL) {
+    gchar *markup;
+
+    markup = g_markup_printf_escaped ("<small>%s</small>", status);
+    gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_status_toolbar),
+      markup);
+    g_free (markup);
+  } else {
+    gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_status_toolbar),
+      "");
+  }
 }
 
 static void
