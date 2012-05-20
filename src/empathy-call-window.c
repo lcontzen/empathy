@@ -1875,7 +1875,11 @@ set_remote_user_name (EmpathyCallWindow *self,
   const gchar *status = empathy_contact_get_status (contact);
   gchar *label;
 
-  label = g_strdup_printf ("%s\n<small>%s</small>", alias, status);
+  if (status != NULL)
+    label = g_strdup_printf ("%s\n<small>%s</small>", alias, status);
+  else
+    label = g_strdup (alias);
+
   gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_name_toolbar),
       label);
   g_free (label);
