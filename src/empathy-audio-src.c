@@ -588,11 +588,11 @@ empathy_audio_src_volume_changed (GObject *object,
 {
   EmpathyGstAudioSrc *self = EMPATHY_GST_AUDIO_SRC (user_data);
 
-  g_mutex_lock (self->priv->lock);
+  g_mutex_lock (&self->priv->lock);
   if (self->priv->volume_idle_id == 0)
     self->priv->volume_idle_id = g_idle_add (
       empathy_audio_src_volume_changed_idle, self);
-  g_mutex_unlock (self->priv->lock);
+  g_mutex_unlock (&self->priv->lock);
 
   return FALSE;
 }
