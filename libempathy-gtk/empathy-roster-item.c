@@ -149,7 +149,22 @@ update_presence_msg (EmpathyRosterItem *self)
   msg = folks_presence_details_get_presence_message (
       FOLKS_PRESENCE_DETAILS (self->priv->individual));
 
-  gtk_label_set_text (GTK_LABEL (self->priv->presence_msg), msg);
+  if (tp_str_empty (msg))
+    {
+      /* Just display the alias in the center of the row */
+      gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.5);
+
+      gtk_widget_hide (self->priv->presence_msg);
+    }
+  else
+    {
+      gtk_label_set_text (GTK_LABEL (self->priv->presence_msg), msg);
+
+      gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.75);
+      gtk_misc_set_alignment (GTK_MISC (self->priv->presence_msg), 0, 0.25);
+
+      gtk_widget_show (self->priv->presence_msg);
+    }
 }
 
 static void
@@ -273,14 +288,12 @@ empathy_roster_item_init (EmpathyRosterItem *self)
 
   /* Alias */
   self->priv->alias = gtk_label_new (NULL);
-  gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.5);
   gtk_box_pack_start (GTK_BOX (box), self->priv->alias, TRUE, TRUE, 0);
 
   gtk_box_pack_start (GTK_BOX (self), box, TRUE, TRUE, 0);
 
   /* Presence */
   self->priv->presence_msg = gtk_label_new (NULL);
-  gtk_misc_set_alignment (GTK_MISC (self->priv->presence_msg), 0, 0.5);
   gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
 
   gtk_widget_show_all (box);
