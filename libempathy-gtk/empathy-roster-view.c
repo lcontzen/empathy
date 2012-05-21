@@ -145,6 +145,26 @@ roster_view_sort (EmpathyRosterItem *a,
 }
 
 static void
+update_separator (GtkWidget **separator,
+    GtkWidget *child,
+    GtkWidget *before,
+    gpointer user_data)
+{
+  if (before == NULL)
+    {
+      /* No separator before the first row */
+      g_clear_object (separator);
+      return;
+    }
+
+  if (*separator != NULL)
+    return;
+
+  *separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+  g_object_ref_sink (*separator);
+}
+
+static void
 empathy_roster_view_constructed (GObject *object)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
@@ -172,6 +192,9 @@ empathy_roster_view_constructed (GObject *object)
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       (GCompareDataFunc) roster_view_sort, self, NULL);
+
+  egg_list_box_set_separator_funcs (EGG_LIST_BOX (self), update_separator,
+      self, NULL);
 }
 
 static void
