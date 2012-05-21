@@ -75,6 +75,7 @@
 
 #define CONTENT_HBOX_SPACING 3
 #define CONTENT_HBOX_CHILDREN_PACKING_PADDING 0
+#define OVERLAY_MARGIN 6
 
 #define SELF_VIDEO_SECTION_WIDTH 120
 #define SELF_VIDEO_SECTION_HEIGHT 90
@@ -1550,6 +1551,8 @@ empathy_call_window_init (EmpathyCallWindow *self)
   ClutterActor *remote_avatar;
   GtkCssProvider *provider;
   ClutterColor black = { 0, 0, 0, 0 };
+  ClutterMargin overlay_margin = { OVERLAY_MARGIN, OVERLAY_MARGIN,
+    OVERLAY_MARGIN, OVERLAY_MARGIN };
 
   priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
     EMPATHY_TYPE_CALL_WINDOW, EmpathyCallWindowPriv);
@@ -1683,7 +1686,10 @@ empathy_call_window_init (EmpathyCallWindow *self)
   priv->overlay_layout = clutter_box_layout_new ();
   clutter_box_layout_set_vertical (
       CLUTTER_BOX_LAYOUT (priv->overlay_layout), TRUE);
-  priv->overlay_box = clutter_box_new (priv->overlay_layout);
+  priv->overlay_box = clutter_actor_new ();
+  clutter_actor_set_layout_manager (priv->overlay_box, priv->overlay_layout);
+
+  clutter_actor_set_margin (priv->overlay_box, &overlay_margin);
 
   clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->video_layout),
       priv->overlay_box,
