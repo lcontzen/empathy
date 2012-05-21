@@ -71,9 +71,9 @@
 #include "empathy-rounded-texture.h"
 #include "empathy-camera-menu.h"
 
-#define CONTENT_HBOX_BORDER_WIDTH 6
 #define CONTENT_HBOX_SPACING 3
-#define CONTENT_HBOX_CHILDREN_PACKING_PADDING 3
+#define CONTENT_HBOX_CHILDREN_PACKING_PADDING 0
+#define OVERLAY_MARGIN 6
 
 #define REMOTE_VIDEO_DEFAULT_WIDTH 320
 #define REMOTE_VIDEO_DEFAULT_HEIGHT 240
@@ -161,6 +161,7 @@ struct _EmpathyCallWindowPriv
   GtkWidget *remote_user_avatar_widget;
   GtkWidget *remote_user_avatar_toolbar;
   GtkWidget *remote_user_name_toolbar;
+  GtkWidget *remote_user_status_toolbar;
   GtkWidget *status_label;
   GtkWidget *hangup_button;
   GtkWidget *audio_call_button;
@@ -182,9 +183,9 @@ struct _EmpathyCallWindowPriv
   ClutterActor *video_box;
   ClutterLayoutManager *video_layout;
 
-  /* A Box layout manager containing a bin for previews
+  /* A bin layout manager containing a bin for previews
    * and the floating toolbar */
-  ClutterActor *overlay_box;
+  ClutterActor *overlay_bin;
   ClutterLayoutManager *overlay_layout;
 
   /* Bin layout for the previews */
@@ -274,6 +275,8 @@ struct _EmpathyCallWindowPriv
   GSettings *settings;
   EmpathyMicMenu *mic_menu;
   EmpathyCameraMenu *camera_menu;
+
+  gboolean muted;
 };
 
 #define GET_PRIV(o) (EMPATHY_CALL_WINDOW (o)->priv)
@@ -322,6 +325,8 @@ static void empathy_call_window_status_message (EmpathyCallWindow *window,
 
 static gboolean empathy_call_window_bus_message (GstBus *bus,
   GstMessage *message, gpointer user_data);
+
+static gboolean empathy_call_window_update_timer (gpointer user_data);
 
 static void
 make_background_transparent (GtkClutterActor *actor)
@@ -385,7 +390,7 @@ empathy_call_window_show_video_output (EmpathyCallWindow *self,
 
   gtk_widget_set_visible (self->priv->remote_user_avatar_widget, !show);
 
-  clutter_actor_raise_top (self->priv->overlay_box);
+  clutter_actor_raise_top (self->priv->overlay_bin);
 }
 
 static void
@@ -461,6 +466,20 @@ element_volume_to_audio_control (GBinding *binding,
 }
 
 static void
+audio_input_mute_notify_cb (GObject *obj, GParamSpec *spec,
+  EmpathyCallWindow *self)
+{
+  gboolean muted;
+  g_object_get (obj, "mute", &muted, NULL);
+
+  self->priv->muted = muted;
+  if (muted && self->priv->transitions)
+    clutter_state_set_state (self->priv->transitions, "fade-in");
+
+  empathy_call_window_update_timer (self);
+}
+
+static void
 create_audio_input (EmpathyCallWindow *self)
 {
   EmpathyCallWindowPriv *priv = GET_PRIV (self);
@@ -469,10 +488,14 @@ create_audio_input (EmpathyCallWindow *self)
   priv->audio_input = empathy_audio_src_new ();
   gst_object_ref_sink (priv->audio_input);
 
+  g_signal_connect (priv->audio_input, "notify::mute",
+    G_CALLBACK (audio_input_mute_notify_cb), self);
+
   g_object_bind_property (priv->mic_button, "active",
     priv->audio_input, "mute",
     G_BINDING_BIDIRECTIONAL |
       G_BINDING_INVERT_BOOLEAN | G_BINDING_SYNC_CREATE);
+
 }
 
 static void
@@ -653,9 +676,9 @@ empathy_call_window_create_preview_rectangles (EmpathyCallWindow *self)
       CLUTTER_BIN_ALIGNMENT_CENTER, CLUTTER_BIN_ALIGNMENT_CENTER);
   self->priv->preview_box = box = clutter_box_new (self->priv->preview_layout);
 
-  clutter_box_layout_pack (CLUTTER_BOX_LAYOUT (self->priv->overlay_layout),
-      box, TRUE, TRUE, TRUE,
-      CLUTTER_BOX_ALIGNMENT_CENTER, CLUTTER_BOX_ALIGNMENT_START);
+  clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (self->priv->overlay_layout),
+      box,
+      CLUTTER_BIN_ALIGNMENT_FILL, CLUTTER_BIN_ALIGNMENT_FILL);
 
   self->priv->preview_rectangle1 =
       empathy_call_window_create_preview_rectangle (self,
@@ -844,50 +867,27 @@ empathy_call_window_move_video_preview (EmpathyCallWindow *self,
 }
 
 static void
-_clutter_color_from_rgba (ClutterColor *color,
-                          const GdkRGBA *rgba)
-{
-  color->red = (guint8) floor (rgba->red * 255);
-  color->green = (guint8) floor (rgba->green * 255);
-  color->blue = (guint8) floor (rgba->blue * 255);
-  color->alpha = (guint8) floor (rgba->alpha * 255);
-}
-
-static void
 empathy_call_window_highlight_preview_rectangle (EmpathyCallWindow *self,
     PreviewPosition pos)
 {
   ClutterActor *rectangle;
-  GtkStyleContext *context;
-  GdkRGBA rgba;
-  ClutterColor color, highlight;
+  ClutterColor white = { 0xff, 0xff, 0xff, 0xff};
 
   rectangle = empathy_call_window_get_preview_rectangle (self, pos);
-  context = gtk_widget_get_style_context (GTK_WIDGET (self));
-  gtk_style_context_get_color (context, 0, &rgba);
-
-  _clutter_color_from_rgba (&color, &rgba);
-  clutter_color_shade (&color, 1.4, &highlight);
 
   empathy_rounded_rectangle_set_border_width (
       EMPATHY_ROUNDED_RECTANGLE (rectangle), 2 * SELF_VIDEO_SECTION_MARGIN);
   empathy_rounded_rectangle_set_border_color (
-      EMPATHY_ROUNDED_RECTANGLE (rectangle), &highlight);
+      EMPATHY_ROUNDED_RECTANGLE (rectangle), &white);
 }
 
 static void
 empathy_call_window_darken_preview_rectangle (EmpathyCallWindow *self,
     ClutterActor *rectangle)
 {
-  GtkStyleContext *context;
-  GdkRGBA rgba;
-  ClutterColor color, darker;
+  ClutterColor white = { 0xff, 0xff, 0xff, 0xff}, darker;
 
-  context = gtk_widget_get_style_context (GTK_WIDGET (self));
-  gtk_style_context_get_background_color (context, 0, &rgba);
-
-  _clutter_color_from_rgba (&color, &rgba);
-  clutter_color_shade (&color, 0.55, &darker);
+  clutter_color_shade (&white, 0.55, &darker);
 
   empathy_rounded_rectangle_set_border_width (
       EMPATHY_ROUNDED_RECTANGLE (rectangle), 1);
@@ -1381,9 +1381,11 @@ empathy_call_window_toolbar_timeout (gpointer data)
   EmpathyCallWindow *self = data;
 
   /* We don't want to hide the toolbar if we're not in a call, as
-   * to show the call status all the time. */
+   * to show the call status all the time. Also don't hide if we're muted
+   * to prevent the awkward, talking when muted situation */
   if (self->priv->call_state != CONNECTING &&
-      self->priv->call_state != DISCONNECTED)
+      self->priv->call_state != DISCONNECTED &&
+      !self->priv->muted)
     clutter_state_set_state (self->priv->transitions, "fade-out");
 
   return TRUE;
@@ -1548,15 +1550,16 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gchar *filename;
   ClutterConstraint *constraint;
   ClutterActor *remote_avatar;
-  GtkStyleContext *context;
   GtkCssProvider *provider;
-  GdkRGBA rgba;
-  ClutterColor bg;
+  ClutterColor black = { 0, 0, 0, 0 };
+  ClutterMargin overlay_margin = { OVERLAY_MARGIN, OVERLAY_MARGIN,
+    OVERLAY_MARGIN, OVERLAY_MARGIN };
 
   priv = self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
     EMPATHY_TYPE_CALL_WINDOW, EmpathyCallWindowPriv);
 
   priv->settings = g_settings_new (EMPATHY_PREFS_CALL_SCHEMA);
+  priv->timer = g_timer_new ();
 
   filename = empathy_file_lookup ("empathy-call-window.ui", "src");
   gui = empathy_builder_get_file (filename,
@@ -1564,6 +1567,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
     "errors_vbox", &priv->errors_vbox,
     "pane", &priv->pane,
     "remote_user_name_toolbar", &priv->remote_user_name_toolbar,
+    "remote_user_status_toolbar", &priv->remote_user_status_toolbar,
     "remote_user_avatar_toolbar", &priv->remote_user_avatar_toolbar,
     "status_label", &priv->status_label,
     "audiocall", &priv->audio_call_button,
@@ -1641,14 +1645,12 @@ empathy_call_window_init (EmpathyCallWindow *self)
 
   priv->content_hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL,
       CONTENT_HBOX_SPACING);
-  gtk_container_set_border_width (GTK_CONTAINER (priv->content_hbox),
-                                  CONTENT_HBOX_BORDER_WIDTH);
   gtk_box_pack_start (GTK_BOX (priv->pane), priv->content_hbox,
       TRUE, TRUE, 0);
 
   /* main contents remote avatar/video box */
-  priv->video_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_CENTER,
-      CLUTTER_BIN_ALIGNMENT_CENTER);
+  priv->video_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_FILL,
+      CLUTTER_BIN_ALIGNMENT_FILL);
 
   priv->video_box = clutter_box_new (priv->video_layout);
 
@@ -1657,18 +1659,11 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gtk_widget_set_size_request (priv->video_container,
       REMOTE_VIDEO_DEFAULT_WIDTH, REMOTE_VIDEO_DEFAULT_HEIGHT);
 
-  /* Set the background color to that of the rest of the window */
-  context = gtk_widget_get_style_context (priv->content_hbox);
-  gtk_style_context_get_background_color (context,
-      GTK_STATE_FLAG_NORMAL, &rgba);
-  bg.red = CLAMP (rgba.red * 255.0, 0, 255);
-  bg.green = CLAMP (rgba.green * 255.0, 0, 255);
-  bg.blue = CLAMP (rgba.blue * 255.0, 0, 255);
-  bg.alpha = CLAMP (rgba.alpha * 255.0, 0, 255);
+  /* Set the background black */
   clutter_stage_set_color (
       CLUTTER_STAGE (gtk_clutter_embed_get_stage (
           GTK_CLUTTER_EMBED (priv->video_container))),
-      &bg);
+      &black);
 
   clutter_container_add (
       CLUTTER_CONTAINER (gtk_clutter_embed_get_stage (
@@ -1684,18 +1679,21 @@ empathy_call_window_init (EmpathyCallWindow *self)
   priv->remote_user_avatar_widget = gtk_image_new ();
   remote_avatar = gtk_clutter_actor_new_with_contents (
       priv->remote_user_avatar_widget);
+  make_background_transparent (GTK_CLUTTER_ACTOR (remote_avatar));
 
   clutter_container_add_actor (CLUTTER_CONTAINER (priv->video_box),
       remote_avatar);
 
-  /* create the overlay box */
-  priv->overlay_layout = clutter_box_layout_new ();
-  clutter_box_layout_set_vertical (
-      CLUTTER_BOX_LAYOUT (priv->overlay_layout), TRUE);
-  priv->overlay_box = clutter_box_new (priv->overlay_layout);
+  /* create the overlay bin */
+  priv->overlay_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_CENTER,
+    CLUTTER_BIN_ALIGNMENT_CENTER);
+  priv->overlay_bin = clutter_actor_new ();
+  clutter_actor_set_layout_manager (priv->overlay_bin, priv->overlay_layout);
+
+  clutter_actor_set_margin (priv->overlay_bin, &overlay_margin);
 
   clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->video_layout),
-      priv->overlay_box,
+      priv->overlay_bin,
       CLUTTER_BIN_ALIGNMENT_FILL, CLUTTER_BIN_ALIGNMENT_FILL);
 
   empathy_call_window_create_preview_rectangles (self);
@@ -1716,9 +1714,9 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gtk_widget_reparent (priv->bottom_toolbar,
       gtk_clutter_actor_get_widget (GTK_CLUTTER_ACTOR (priv->floating_toolbar)));
 
-  clutter_box_layout_pack (CLUTTER_BOX_LAYOUT (priv->overlay_layout),
-      priv->floating_toolbar, FALSE, FALSE, FALSE,
-      CLUTTER_BOX_ALIGNMENT_CENTER, CLUTTER_BOX_ALIGNMENT_END);
+  clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->overlay_layout),
+      priv->floating_toolbar,
+      CLUTTER_BIN_ALIGNMENT_CENTER, CLUTTER_BIN_ALIGNMENT_END);
 
   clutter_actor_set_opacity (priv->floating_toolbar, FLOATING_TOOLBAR_OPACITY);
 
@@ -1792,8 +1790,6 @@ empathy_call_window_init (EmpathyCallWindow *self)
 
   g_signal_connect (self, "motion-notify-event",
       G_CALLBACK (empathy_call_window_motion_notify_cb), self);
-
-  priv->timer = g_timer_new ();
 
   g_object_ref (priv->ui_manager);
   g_object_unref (gui);
@@ -1873,12 +1869,20 @@ set_remote_user_name (EmpathyCallWindow *self,
 {
   const gchar *alias = empathy_contact_get_alias (contact);
   const gchar *status = empathy_contact_get_status (contact);
-  gchar *label;
 
-  label = g_strdup_printf ("%s\n<small>%s</small>", alias, status);
-  gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_name_toolbar),
-      label);
-  g_free (label);
+  gtk_label_set_text (GTK_LABEL (self->priv->remote_user_name_toolbar), alias);
+
+  if (status != NULL) {
+    gchar *markup;
+
+    markup = g_markup_printf_escaped ("<small>%s</small>", status);
+    gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_status_toolbar),
+      markup);
+    g_free (markup);
+  } else {
+    gtk_label_set_markup (GTK_LABEL (self->priv->remote_user_status_toolbar),
+      "");
+  }
 }
 
 static void
@@ -3221,7 +3225,7 @@ empathy_call_window_show_video_output_cb (gpointer user_data)
     {
       gtk_widget_hide (self->priv->remote_user_avatar_widget);
       clutter_actor_show (self->priv->video_output);
-      clutter_actor_raise_top (self->priv->overlay_box);
+      clutter_actor_raise_top (self->priv->overlay_bin);
     }
 
   return FALSE;
@@ -3830,8 +3834,6 @@ show_borders (EmpathyCallWindow *window, gboolean set_fullscreen)
 {
   EmpathyCallWindowPriv *priv = GET_PRIV (window);
 
-  gtk_container_set_border_width (GTK_CONTAINER (priv->content_hbox),
-      set_fullscreen ? 0 : CONTENT_HBOX_BORDER_WIDTH);
   gtk_box_set_spacing (GTK_BOX (priv->content_hbox),
       set_fullscreen ? 0 : CONTENT_HBOX_SPACING);
 

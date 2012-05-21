@@ -164,27 +164,37 @@
                 <property name="draw">False</property>
                 <property name="visible">True</property>
               </object>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
+
               <object class="GtkToolItem" id="toolitem2">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkLabel" id="remote_user_name_toolbar">
-                    <property name="visible">True</property>
+                  <object class="GtkVBox" id="uservbox">
+                  <child>
+                    <object class="GtkLabel" id="remote_user_name_toolbar">
+                      <property name="visible">True</property>
+                      <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
+                      <property name="xalign">0</property>
+                    </object>
+                    <packing>
+                      <property name="fill">False</property>
+                    </packing>
+                  </child>
+                  <child>
+                    <object class="GtkLabel" id="remote_user_status_toolbar">
+                      <property name="visible">True</property>
+                      <property name="ellipsize">PANGO_ELLIPSIZE_END</property>
+                      <property name="xalign">0</property>
+                    </object>
+                    <packing>
+                      <property name="fill">False</property>
+                    </packing>
+                  </child>
                   </object>
                 </child>
               </object>
-            </child>
-            <child>
-              <object class="GtkToolItem" id="toolbar_space1">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-              </packing>
+              <packing> <property name="expand">True</property></packing>
             </child>
             <child>
               <object class="GtkToolButton" id="hangup">
@@ -193,9 +203,6 @@
                 <property name="icon_name">call-stop</property>
                 <property name="tooltip_text" translatable="yes">Hang up current call</property>
               </object>
-              <packing>
-                <property name="homogeneous">False</property>
-              </packing>
             </child>
             <child>
               <object class="GtkToolButton" id="videocall">
@@ -203,9 +210,6 @@
                 <property name="icon_name">camera-web</property>
                 <property name="tooltip_text" translatable="yes">Start a video call</property>
               </object>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
               <object class="GtkToolButton" id="audiocall">
@@ -213,9 +217,6 @@
                 <property name="icon_name">call-start</property>
                 <property name="tooltip_text" translatable="yes">Start an audio call</property>
               </object>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
             <child>
               <object class="GtkToggleToolButton" id="dialpad">
@@ -224,9 +225,6 @@
                 <property name="icon_name">input-dialpad</property>
                 <property name="tooltip_text" translatable="yes">Display the dialpad</property>
               </object>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
             </child>
           </object>
           <packing>

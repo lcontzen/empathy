@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <gst/interfaces/mixer.h>
+#include <gst/interfaces/streamvolume.h>
 
 #include <libempathy/empathy-utils.h>
 #include <libempathy-gtk/empathy-call-utils.h>
@@ -61,6 +61,7 @@ struct _EmpathyGstAudioSrcPrivate
   gboolean dispose_has_run;
   GstElement *src;
   GstElement *level;
+  GstElement *volume_element;
 
   EmpathyMicMonitor *mic_monitor;
 
@@ -74,8 +75,7 @@ struct _EmpathyGstAudioSrcPrivate
 
   gdouble volume;
   gboolean mute;
-  /* the mixer track on src we follow and adjust */
-  GstMixerTrack *track;
+  gboolean have_stream_volume;
 
   GMutex lock;
   guint level_idle_id;
@@ -86,37 +86,35 @@ struct _EmpathyGstAudioSrcPrivate
   (G_TYPE_INSTANCE_GET_PRIVATE ((o), EMPATHY_TYPE_GST_AUDIO_SRC, \
   EmpathyGstAudioSrcPrivate))
 
-/* There is no predefined maximum channels by gstreamer, just pick 32, which is
- * the same as the pulseaudio maximum */
-#define MAX_MIC_CHANNELS 32
+
+static gboolean
+empathy_audio_src_volume_changed (GObject *object,
+  GParamSpec *pspec,
+  gpointer user_data);
 
 static void
 empathy_audio_set_hw_mute (EmpathyGstAudioSrc *self, gboolean mute)
 {
-  g_mutex_lock (&self->priv->lock);
-  /* If there is no mixer available ignore the setting */
-  if (self->priv->track == NULL)
-    goto out;
+  if (mute == self->priv->mute)
+    return;
 
-  gst_mixer_set_mute (GST_MIXER (self->priv->src), self->priv->track, mute);
+  if (self->priv->have_stream_volume)
+    g_object_set (self->priv->src, "mute", mute, NULL);
 
-out:
-  g_mutex_unlock (&self->priv->lock);
+  /* Belt and braces: If for some reason the underlying src doesn't mute
+   * correctly or doesn't update us when it unmutes correctly enforce it using
+   * our own volume element. Our UI can in no circumstances be made to think
+   * the input is muted while it's not */
+  g_object_set (self->priv->volume_element, "mute", mute, NULL);
+
   self->priv->mute = mute;
 }
 
 static gboolean
 empathy_audio_src_get_hw_mute (EmpathyGstAudioSrc *self)
 {
-  gboolean result = self->priv->mute;
-
-  g_mutex_lock (&self->priv->lock);
-  if (self->priv->track == NULL)
-    goto out;
-
-  result = GST_MIXER_TRACK_HAS_FLAG (self->priv->track, GST_MIXER_TRACK_MUTE);
-out:
-  g_mutex_unlock (&self->priv->lock);
+  gboolean result;
+  g_object_get (self->priv->src, "mute", &result, NULL);
 
   return result;
 }
@@ -125,42 +123,19 @@ static void
 empathy_audio_src_set_hw_volume (EmpathyGstAudioSrc *self,
     gdouble volume)
 {
-  gint volumes[MAX_MIC_CHANNELS];
-  int i;
+  if (volume == self->priv->volume)
+    return;
 
-  g_mutex_lock (&self->priv->lock);
-  /* If there is no mixer available ignore the setting */
-  if (self->priv->track == NULL)
-    goto out;
-
-  for (i = 0; i < MAX_MIC_CHANNELS; i++)
-    volumes[i] = self->priv->track->max_volume * volume;
-
-  gst_mixer_set_volume (GST_MIXER (self->priv->src),
-    self->priv->track, volumes);
-
-out:
-   g_mutex_unlock (&self->priv->lock);
-
+  if (self->priv->have_stream_volume)
+    g_object_set (self->priv->src, "volume", volume, NULL);
   self->priv->volume = volume;
 }
 
 static gdouble
 empathy_audio_src_get_hw_volume (EmpathyGstAudioSrc *self)
 {
-  gint volumes[MAX_MIC_CHANNELS];
-  gdouble result = self->priv->volume;
-
-  g_mutex_lock (&self->priv->lock);
-  if (self->priv->track == NULL)
-    goto out;
-
-  gst_mixer_get_volume (GST_MIXER (self->priv->src),
-    self->priv->track, volumes);
-  result = volumes[0]/(gdouble)self->priv->track->max_volume;
-
-out:
-  g_mutex_unlock (&self->priv->lock);
+  gdouble result;
+  g_object_get (self->priv->src, "volume", &result, NULL);
 
   return result;
 }
@@ -265,43 +240,6 @@ empathy_audio_src_source_output_index_notify (GObject *object,
       source_output_idx, empathy_audio_src_get_current_mic_cb, self);
 }
 
-static GstMixerTrack *
-empathy_audio_src_get_track (GstElement *src)
-{
-  const GList *t;
-  GstMixerTrack *track = NULL;
-
-  if (!gst_element_implements_interface (src, GST_TYPE_MIXER))
-    {
-      g_warning ("No mixer interface implementation, can't control volume");
-      return NULL;
-    }
-
-  for (t = gst_mixer_list_tracks (GST_MIXER (src));
-      t != NULL; t = g_list_next (t))
-    {
-      GstMixerTrack *tr = t->data;
-      if (!tp_strdiff (tr->label, "Master"))
-        {
-          track = tr;
-          break;
-        }
-    }
-
-  if (track == NULL)
-    {
-      g_warning ("No suitable track found");
-    }
-  else if (track->num_channels > MAX_MIC_CHANNELS)
-    {
-      g_warning ("Microphones with more then %d channels not supported ",
-        MAX_MIC_CHANNELS);
-      track = NULL;
-    }
-
-  return track;
-}
-
 static GstElement *
 create_src (void)
 {
@@ -355,6 +293,38 @@ empathy_audio_src_init (EmpathyGstAudioSrc *obj)
   if (priv->src == NULL)
     return;
 
+  if (GST_IS_STREAM_VOLUME (priv->src))
+    {
+      gdouble volume;
+      gboolean mute;
+
+      priv->have_stream_volume = TRUE;
+      /* We can't do a bidirection bind as the ::notify comes from another
+       * thread, for other bits of empathy it's most simpler if it comes from
+       * the main thread */
+      g_object_bind_property (obj, "volume", priv->src, "volume",
+        G_BINDING_DEFAULT);
+      g_object_bind_property (obj, "mute", priv->src, "mute",
+        G_BINDING_DEFAULT);
+
+      /* sync and callback for bouncing */
+      g_object_get (priv->src, "volume", &volume, NULL);
+      g_object_set (obj, "volume", volume, NULL);
+
+      g_object_get (priv->src, "mute", &mute, NULL);
+      g_object_set (obj, "mute", mute, NULL);
+
+      g_signal_connect (priv->src, "notify::volume",
+        G_CALLBACK (empathy_audio_src_volume_changed), obj);
+      g_signal_connect (priv->src, "notify::mute",
+        G_CALLBACK (empathy_audio_src_volume_changed), obj);
+    }
+  else
+    {
+      g_message ("No stream volume available :(, mute will work though");
+      priv->have_stream_volume = FALSE;
+    }
+
   gst_bin_add (GST_BIN (obj), priv->src);
 
   /* Explicitly state what format we want from pulsesrc. This pushes resampling
@@ -373,9 +343,13 @@ empathy_audio_src_init (EmpathyGstAudioSrc *obj)
   gst_bin_add (GST_BIN (obj), capsfilter);
   gst_element_link (priv->src, capsfilter);
 
+  priv->volume_element = gst_element_factory_make ("volume", NULL);
+  gst_bin_add (GST_BIN (obj), priv->volume_element);
+  gst_element_link (capsfilter, priv->volume_element);
+
   priv->level = gst_element_factory_make ("level", NULL);
   gst_bin_add (GST_BIN (obj), priv->level);
-  gst_element_link (capsfilter, priv->level);
+  gst_element_link (priv->volume_element, priv->level);
 
   src = gst_element_get_static_pad (priv->level, "src");
 
@@ -576,7 +550,7 @@ empathy_audio_src_levels_updated (gpointer user_data)
 }
 
 static gboolean
-empathy_audio_src_volume_changed (gpointer user_data)
+empathy_audio_src_volume_changed_idle (gpointer user_data)
 {
   EmpathyGstAudioSrc *self = EMPATHY_GST_AUDIO_SRC (user_data);
   EmpathyGstAudioSrcPrivate *priv = EMPATHY_GST_AUDIO_SRC_GET_PRIVATE (self);
@@ -599,8 +573,26 @@ empathy_audio_src_volume_changed (gpointer user_data)
   if (mute != priv->mute)
     {
       priv->mute = mute;
+      /* hw mute changed, follow with own volume */
+      g_object_set (self->priv->volume_element, "mute", mute, NULL);
       g_object_notify (G_OBJECT (self), "mute");
     }
+
+  return FALSE;
+}
+
+static gboolean
+empathy_audio_src_volume_changed (GObject *object,
+  GParamSpec *pspec,
+  gpointer user_data)
+{
+  EmpathyGstAudioSrc *self = EMPATHY_GST_AUDIO_SRC (user_data);
+
+  g_mutex_lock (self->priv->lock);
+  if (self->priv->volume_idle_id == 0)
+    self->priv->volume_idle_id = g_idle_add (
+      empathy_audio_src_volume_changed_idle, self);
+  g_mutex_unlock (self->priv->lock);
 
   return FALSE;
 }
@@ -663,58 +655,6 @@ empathy_audio_src_handle_message (GstBin *bin, GstMessage *message)
 
       g_mutex_unlock (&priv->lock);
     }
-  else if (GST_MESSAGE_TYPE (message) == GST_MESSAGE_ELEMENT &&
-        GST_MESSAGE_SRC (message) == GST_OBJECT (priv->src))
-    {
-      GstMixerTrack *track = NULL;
-
-      /* Listen for mute or volume changes on the src element */
-      if (gst_mixer_message_get_type (message) ==
-          GST_MIXER_MESSAGE_VOLUME_CHANGED)
-        gst_mixer_message_parse_volume_changed (message, &track,
-            NULL, NULL);
-
-      if (gst_mixer_message_get_type (message) ==
-          GST_MIXER_MESSAGE_MUTE_TOGGLED)
-        gst_mixer_message_parse_mute_toggled (message, &track, NULL);
-
-      g_mutex_lock (&priv->lock);
-
-      if (track != NULL && track == priv->track && priv->volume_idle_id == 0)
-        priv->volume_idle_id = g_idle_add (
-            empathy_audio_src_volume_changed, self);
-
-      g_mutex_unlock (&priv->lock);
-    }
-  else if  (GST_MESSAGE_TYPE (message) == GST_MESSAGE_STATE_CHANGED &&
-      GST_MESSAGE_SRC (message) == GST_OBJECT (priv->src))
-    {
-      GstState old, new;
-
-      gst_message_parse_state_changed (message, &old, &new, NULL);
-
-      /* GstMixer is only available in state >= READY, so only start
-       * controlling the source element when going to ready state and stop
-       * doing so when going below ready. Furthermore once we have mixer read
-       * the current volume level from it and remove the settings done by
-       * Empathy. We want to pick up the level pulseaudio saved */
-      if (old == GST_STATE_NULL && new == GST_STATE_READY)
-        {
-          g_mutex_lock (&priv->lock);
-          priv->track = empathy_audio_src_get_track (priv->src);
-          if (priv->track != NULL)
-            priv->volume_idle_id = g_idle_add (
-              empathy_audio_src_volume_changed, self);
-          g_mutex_unlock (&priv->lock);
-        }
-      else if (old == GST_STATE_READY && new == GST_STATE_NULL)
-        {
-          g_mutex_lock (&priv->lock);
-          priv->track = NULL;
-          g_mutex_unlock (&priv->lock);
-        }
-    }
-
 out:
    GST_BIN_CLASS (empathy_audio_src_parent_class)->handle_message (bin,
     message);
