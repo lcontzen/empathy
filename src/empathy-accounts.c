@@ -32,6 +32,10 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#ifdef HAVE_CHEESE
+#include <cheese-gtk.h>
+#endif
+
 #include <telepathy-glib/account-manager.h>
 #include <telepathy-glib/defs.h>
 #include <telepathy-glib/util.h>
@@ -223,6 +227,13 @@ main (int argc, char *argv[])
   gint retval;
 
   g_thread_init (NULL);
+  g_type_init ();
+
+#ifdef HAVE_CHEESE
+  /* Used by the avatar chooser */
+  g_return_val_if_fail (cheese_gtk_init (&argc, &argv), 1);
+#endif
+
   empathy_init ();
 
   gtk_init (&argc, &argv);
