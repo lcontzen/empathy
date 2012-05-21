@@ -1559,6 +1559,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
     EMPATHY_TYPE_CALL_WINDOW, EmpathyCallWindowPriv);
 
   priv->settings = g_settings_new (EMPATHY_PREFS_CALL_SCHEMA);
+  priv->timer = g_timer_new ();
 
   filename = empathy_file_lookup ("empathy-call-window.ui", "src");
   gui = empathy_builder_get_file (filename,
@@ -1789,8 +1790,6 @@ empathy_call_window_init (EmpathyCallWindow *self)
 
   g_signal_connect (self, "motion-notify-event",
       G_CALLBACK (empathy_call_window_motion_notify_cb), self);
-
-  priv->timer = g_timer_new ();
 
   g_object_ref (priv->ui_manager);
   g_object_unref (gui);
