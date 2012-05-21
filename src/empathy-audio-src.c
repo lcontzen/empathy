@@ -75,6 +75,7 @@ struct _EmpathyGstAudioSrcPrivate
 
   gdouble volume;
   gboolean mute;
+  gboolean have_stream_volume;
 
   GMutex *lock;
   guint level_idle_id;
@@ -97,7 +98,8 @@ empathy_audio_set_hw_mute (EmpathyGstAudioSrc *self, gboolean mute)
   if (mute == self->priv->mute)
     return;
 
-  g_object_set (self->priv->src, "mute", mute, NULL);
+  if (self->priv->have_stream_volume)
+    g_object_set (self->priv->src, "mute", mute, NULL);
 
   /* Belt and braces: If for some reason the underlying src doesn't mute
    * correctly or doesn't update us when it unmutes correctly enforce it using
@@ -124,7 +126,8 @@ empathy_audio_src_set_hw_volume (EmpathyGstAudioSrc *self,
   if (volume == self->priv->volume)
     return;
 
-  g_object_set (self->priv->src, "volume", volume, NULL);
+  if (self->priv->have_stream_volume)
+    g_object_set (self->priv->src, "volume", volume, NULL);
   self->priv->volume = volume;
 }
 
@@ -293,6 +296,8 @@ empathy_audio_src_init (EmpathyGstAudioSrc *obj)
     {
       gdouble volume;
       gboolean mute;
+
+      priv->have_stream_volume = TRUE;
       /* We can't do a bidirection bind as the ::notify comes from another
        * thread, for other bits of empathy it's most simpler if it comes from
        * the main thread */
@@ -312,6 +317,11 @@ empathy_audio_src_init (EmpathyGstAudioSrc *obj)
         G_CALLBACK (empathy_audio_src_volume_changed), obj);
       g_signal_connect (priv->src, "notify::mute",
         G_CALLBACK (empathy_audio_src_volume_changed), obj);
+    }
+  else
+    {
+      g_message ("No stream volume available :(, mute will work though");
+      priv->have_stream_volume = FALSE;
     }
 
   gst_bin_add (GST_BIN (obj), priv->src);
