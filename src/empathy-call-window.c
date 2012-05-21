@@ -845,50 +845,27 @@ empathy_call_window_move_video_preview (EmpathyCallWindow *self,
 }
 
 static void
-_clutter_color_from_rgba (ClutterColor *color,
-                          const GdkRGBA *rgba)
-{
-  color->red = (guint8) floor (rgba->red * 255);
-  color->green = (guint8) floor (rgba->green * 255);
-  color->blue = (guint8) floor (rgba->blue * 255);
-  color->alpha = (guint8) floor (rgba->alpha * 255);
-}
-
-static void
 empathy_call_window_highlight_preview_rectangle (EmpathyCallWindow *self,
     PreviewPosition pos)
 {
   ClutterActor *rectangle;
-  GtkStyleContext *context;
-  GdkRGBA rgba;
-  ClutterColor color, highlight;
+  ClutterColor white = { 0xff, 0xff, 0xff, 0xff};
 
   rectangle = empathy_call_window_get_preview_rectangle (self, pos);
-  context = gtk_widget_get_style_context (GTK_WIDGET (self));
-  gtk_style_context_get_color (context, 0, &rgba);
-
-  _clutter_color_from_rgba (&color, &rgba);
-  clutter_color_shade (&color, 1.4, &highlight);
 
   empathy_rounded_rectangle_set_border_width (
       EMPATHY_ROUNDED_RECTANGLE (rectangle), 2 * SELF_VIDEO_SECTION_MARGIN);
   empathy_rounded_rectangle_set_border_color (
-      EMPATHY_ROUNDED_RECTANGLE (rectangle), &highlight);
+      EMPATHY_ROUNDED_RECTANGLE (rectangle), &white);
 }
 
 static void
 empathy_call_window_darken_preview_rectangle (EmpathyCallWindow *self,
     ClutterActor *rectangle)
 {
-  GtkStyleContext *context;
-  GdkRGBA rgba;
-  ClutterColor color, darker;
+  ClutterColor white = { 0xff, 0xff, 0xff, 0xff}, darker;
 
-  context = gtk_widget_get_style_context (GTK_WIDGET (self));
-  gtk_style_context_get_background_color (context, 0, &rgba);
-
-  _clutter_color_from_rgba (&color, &rgba);
-  clutter_color_shade (&color, 0.55, &darker);
+  clutter_color_shade (&white, 0.55, &darker);
 
   empathy_rounded_rectangle_set_border_width (
       EMPATHY_ROUNDED_RECTANGLE (rectangle), 1);
