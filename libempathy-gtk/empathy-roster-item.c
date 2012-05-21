@@ -272,6 +272,7 @@ static void
 empathy_roster_item_init (EmpathyRosterItem *self)
 {
   GtkWidget *box;
+  GtkStyleContext *context;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_ITEM, EmpathyRosterItemPriv);
@@ -295,6 +296,9 @@ empathy_roster_item_init (EmpathyRosterItem *self)
   /* Presence */
   self->priv->presence_msg = gtk_label_new (NULL);
   gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
+
+  context = gtk_widget_get_style_context (self->priv->presence_msg);
+  gtk_style_context_add_class (context, GTK_STYLE_CLASS_DIM_LABEL);
 
   gtk_widget_show_all (box);
 
