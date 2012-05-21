@@ -183,9 +183,9 @@ struct _EmpathyCallWindowPriv
   ClutterActor *video_box;
   ClutterLayoutManager *video_layout;
 
-  /* A Box layout manager containing a bin for previews
+  /* A bin layout manager containing a bin for previews
    * and the floating toolbar */
-  ClutterActor *overlay_box;
+  ClutterActor *overlay_bin;
   ClutterLayoutManager *overlay_layout;
 
   /* Bin layout for the previews */
@@ -386,7 +386,7 @@ empathy_call_window_show_video_output (EmpathyCallWindow *self,
 
   gtk_widget_set_visible (self->priv->remote_user_avatar_widget, !show);
 
-  clutter_actor_raise_top (self->priv->overlay_box);
+  clutter_actor_raise_top (self->priv->overlay_bin);
 }
 
 static void
@@ -654,9 +654,9 @@ empathy_call_window_create_preview_rectangles (EmpathyCallWindow *self)
       CLUTTER_BIN_ALIGNMENT_CENTER, CLUTTER_BIN_ALIGNMENT_CENTER);
   self->priv->preview_box = box = clutter_box_new (self->priv->preview_layout);
 
-  clutter_box_layout_pack (CLUTTER_BOX_LAYOUT (self->priv->overlay_layout),
-      box, TRUE, TRUE, TRUE,
-      CLUTTER_BOX_ALIGNMENT_CENTER, CLUTTER_BOX_ALIGNMENT_START);
+  clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (self->priv->overlay_layout),
+      box,
+      CLUTTER_BIN_ALIGNMENT_FILL, CLUTTER_BIN_ALIGNMENT_FILL);
 
   self->priv->preview_rectangle1 =
       empathy_call_window_create_preview_rectangle (self,
@@ -1647,8 +1647,8 @@ empathy_call_window_init (EmpathyCallWindow *self)
       TRUE, TRUE, 0);
 
   /* main contents remote avatar/video box */
-  priv->video_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_CENTER,
-      CLUTTER_BIN_ALIGNMENT_CENTER);
+  priv->video_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_FILL,
+      CLUTTER_BIN_ALIGNMENT_FILL);
 
   priv->video_box = clutter_box_new (priv->video_layout);
 
@@ -1682,17 +1682,16 @@ empathy_call_window_init (EmpathyCallWindow *self)
   clutter_container_add_actor (CLUTTER_CONTAINER (priv->video_box),
       remote_avatar);
 
-  /* create the overlay box */
-  priv->overlay_layout = clutter_box_layout_new ();
-  clutter_box_layout_set_vertical (
-      CLUTTER_BOX_LAYOUT (priv->overlay_layout), TRUE);
-  priv->overlay_box = clutter_actor_new ();
-  clutter_actor_set_layout_manager (priv->overlay_box, priv->overlay_layout);
+  /* create the overlay bin */
+  priv->overlay_layout = clutter_bin_layout_new (CLUTTER_BIN_ALIGNMENT_CENTER,
+    CLUTTER_BIN_ALIGNMENT_CENTER);
+  priv->overlay_bin = clutter_actor_new ();
+  clutter_actor_set_layout_manager (priv->overlay_bin, priv->overlay_layout);
 
-  clutter_actor_set_margin (priv->overlay_box, &overlay_margin);
+  clutter_actor_set_margin (priv->overlay_bin, &overlay_margin);
 
   clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->video_layout),
-      priv->overlay_box,
+      priv->overlay_bin,
       CLUTTER_BIN_ALIGNMENT_FILL, CLUTTER_BIN_ALIGNMENT_FILL);
 
   empathy_call_window_create_preview_rectangles (self);
@@ -1713,9 +1712,9 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gtk_widget_reparent (priv->bottom_toolbar,
       gtk_clutter_actor_get_widget (GTK_CLUTTER_ACTOR (priv->floating_toolbar)));
 
-  clutter_box_layout_pack (CLUTTER_BOX_LAYOUT (priv->overlay_layout),
-      priv->floating_toolbar, FALSE, FALSE, FALSE,
-      CLUTTER_BOX_ALIGNMENT_CENTER, CLUTTER_BOX_ALIGNMENT_END);
+  clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->overlay_layout),
+      priv->floating_toolbar,
+      CLUTTER_BIN_ALIGNMENT_CENTER, CLUTTER_BIN_ALIGNMENT_END);
 
   clutter_actor_set_opacity (priv->floating_toolbar, FLOATING_TOOLBAR_OPACITY);
 
@@ -3226,7 +3225,7 @@ empathy_call_window_show_video_output_cb (gpointer user_data)
     {
       gtk_widget_hide (self->priv->remote_user_avatar_widget);
       clutter_actor_show (self->priv->video_output);
-      clutter_actor_raise_top (self->priv->overlay_box);
+      clutter_actor_raise_top (self->priv->overlay_bin);
     }
 
   return FALSE;
