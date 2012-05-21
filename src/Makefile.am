@@ -59,6 +59,11 @@ empathy_accounts_SOURCES =						\
 	empathy-accounts.c empathy-accounts.h				\
 	$(NULL)
 
+empathy_accounts_CPPFLAGS =						\
+	$(AM_CPPFLAGS) \
+	$(CHEESE_CFLAGS) \
+	$(NULL)
+
 empathy_accounts_LDADD =						\
 	$(LDADD)							\
 	libempathy-accounts-common.la					\

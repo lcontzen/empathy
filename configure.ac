@@ -73,6 +73,7 @@ ISO_CODES_REQUIRED=0.35
 NAUTILUS_SENDTO_REQUIRED=2.90.0
 NETWORK_MANAGER_REQUIRED=0.7.0
 CHAMPLAIN_REQUIRED=0.12.1
+CHEESE_GTK_REQUIRED=3.4.0
 
 # Use --enable-maintainer-mode to disable deprecated symbols,
 # disable single include and enable GSEAL. If this is not a released empathy,
@@ -477,7 +478,7 @@ AC_ARG_WITH([cheese],
             with_cheese=auto)
 
 if test x"$with_cheese" != x"no" ; then
-   PKG_CHECK_MODULES(CHEESE, gstreamer-0.10 cheese-gtk >= 2.91.91.1, [have_cheese=yes], [have_cheese=no])
+   PKG_CHECK_MODULES(CHEESE, gstreamer-0.10 cheese-gtk >= CHEESE_GTK_REQUIRED, [have_cheese=yes], [have_cheese=no])
    if test x${have_cheese} = xyes; then
      AC_DEFINE(HAVE_CHEESE, 1, [Define to 1 to enable cheese webcam support])
    fi
