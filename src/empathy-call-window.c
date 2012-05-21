@@ -275,6 +275,8 @@ struct _EmpathyCallWindowPriv
   GSettings *settings;
   EmpathyMicMenu *mic_menu;
   EmpathyCameraMenu *camera_menu;
+
+  gboolean muted;
 };
 
 #define GET_PRIV(o) (EMPATHY_CALL_WINDOW (o)->priv)
@@ -323,6 +325,8 @@ static void empathy_call_window_status_message (EmpathyCallWindow *window,
 
 static gboolean empathy_call_window_bus_message (GstBus *bus,
   GstMessage *message, gpointer user_data);
+
+static gboolean empathy_call_window_update_timer (gpointer user_data);
 
 static void
 make_background_transparent (GtkClutterActor *actor)
@@ -462,6 +466,20 @@ element_volume_to_audio_control (GBinding *binding,
 }
 
 static void
+audio_input_mute_notify_cb (GObject *obj, GParamSpec *spec,
+  EmpathyCallWindow *self)
+{
+  gboolean muted;
+  g_object_get (obj, "mute", &muted, NULL);
+
+  self->priv->muted = muted;
+  if (muted && self->priv->transitions)
+    clutter_state_set_state (self->priv->transitions, "fade-in");
+
+  empathy_call_window_update_timer (self);
+}
+
+static void
 create_audio_input (EmpathyCallWindow *self)
 {
   EmpathyCallWindowPriv *priv = GET_PRIV (self);
@@ -470,10 +488,14 @@ create_audio_input (EmpathyCallWindow *self)
   priv->audio_input = empathy_audio_src_new ();
   gst_object_ref_sink (priv->audio_input);
 
+  g_signal_connect (priv->audio_input, "notify::mute",
+    G_CALLBACK (audio_input_mute_notify_cb), self);
+
   g_object_bind_property (priv->mic_button, "active",
     priv->audio_input, "mute",
     G_BINDING_BIDIRECTIONAL |
       G_BINDING_INVERT_BOOLEAN | G_BINDING_SYNC_CREATE);
+
 }
 
 static void
@@ -1359,9 +1381,11 @@ empathy_call_window_toolbar_timeout (gpointer data)
   EmpathyCallWindow *self = data;
 
   /* We don't want to hide the toolbar if we're not in a call, as
-   * to show the call status all the time. */
+   * to show the call status all the time. Also don't hide if we're muted
+   * to prevent the awkward, talking when muted situation */
   if (self->priv->call_state != CONNECTING &&
-      self->priv->call_state != DISCONNECTED)
+      self->priv->call_state != DISCONNECTED &&
+      !self->priv->muted)
     clutter_state_set_state (self->priv->transitions, "fade-out");
 
   return TRUE;
