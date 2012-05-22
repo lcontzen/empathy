@@ -100,48 +100,6 @@ static void individual_store_contact_update (EmpathyIndividualStore *self,
 G_DEFINE_TYPE (EmpathyIndividualStore, empathy_individual_store,
     GTK_TYPE_TREE_STORE);
 
-static const gchar * const *
-individual_get_client_types (FolksIndividual *individual)
-{
-  GeeSet *personas;
-  GeeIterator *iter;
-  const gchar * const *types = NULL;
-  FolksPresenceType presence_type = FOLKS_PRESENCE_TYPE_UNSET;
-
-  personas = folks_individual_get_personas (individual);
-  iter = gee_iterable_iterator (GEE_ITERABLE (personas));
-  while (gee_iterator_next (iter))
-    {
-      FolksPresenceDetails *presence;
-      FolksPersona *persona = gee_iterator_get (iter);
-
-      /* We only want personas which have presence and a TpContact */
-      if (!empathy_folks_persona_is_interesting (persona))
-        goto while_finish;
-
-      presence = FOLKS_PRESENCE_DETAILS (persona);
-
-      if (folks_presence_details_typecmp (
-              folks_presence_details_get_presence_type (presence),
-              presence_type) > 0)
-        {
-          TpContact *tp_contact;
-
-          presence_type = folks_presence_details_get_presence_type (presence);
-
-          tp_contact = tpf_persona_get_contact (TPF_PERSONA (persona));
-          if (tp_contact != NULL)
-            types = tp_contact_get_client_types (tp_contact);
-        }
-
-while_finish:
-      g_clear_object (&persona);
-    }
-  g_clear_object (&iter);
-
-  return types;
-}
-
 static void
 add_individual_to_store (GtkTreeStore *store,
     GtkTreeIter *iter,
@@ -156,7 +114,7 @@ add_individual_to_store (GtkTreeStore *store,
   empathy_individual_can_audio_video_call (individual, &can_audio_call,
       &can_video_call, NULL);
 
-  types = individual_get_client_types (individual);
+  types = empathy_individual_get_client_types (individual);
 
   gtk_tree_store_insert_with_values (store, iter, parent, 0,
       EMPATHY_INDIVIDUAL_STORE_COL_NAME,
@@ -703,7 +661,7 @@ individual_store_contact_update (EmpathyIndividualStore *self,
       empathy_individual_can_audio_video_call (individual, &can_audio_call,
           &can_video_call, NULL);
 
-      types = individual_get_client_types (individual);
+      types = empathy_individual_get_client_types (individual);
 
       gtk_tree_store_set (GTK_TREE_STORE (self), l->data,
           EMPATHY_INDIVIDUAL_STORE_COL_ICON_STATUS, pixbuf_status,

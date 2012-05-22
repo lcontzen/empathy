@@ -127,6 +127,9 @@ FolksIndividual * empathy_create_individual_from_tp_contact (
 FolksIndividual * empathy_ensure_individual_from_tp_contact (
     TpContact *contact);
 
+const gchar * const * empathy_individual_get_client_types (
+    FolksIndividual *individual);
+
 /* Copied from wocky/wocky-utils.h */
 
 #define empathy_implement_finish_void(source, tag) \
