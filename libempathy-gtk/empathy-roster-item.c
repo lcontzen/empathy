@@ -4,6 +4,8 @@
 
 #include <telepathy-glib/util.h>
 
+#include <libempathy/empathy-utils.h>
+
 #include <libempathy-gtk/empathy-images.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
@@ -31,9 +33,11 @@ struct _EmpathyRosterItemPriv
   FolksIndividual *individual;
 
   GtkWidget *avatar;
+  GtkWidget *first_line_alig;
   GtkWidget *alias;
   GtkWidget *presence_msg;
   GtkWidget *presence_icon;
+  GtkWidget *phone_icon;
 };
 
 static void
@@ -141,6 +145,21 @@ alias_changed_cb (FolksIndividual *individual,
   update_alias (self);
 }
 
+static gboolean
+is_phone (FolksIndividual *individual)
+{
+  const gchar * const *types;
+
+  types = empathy_individual_get_client_types (individual);
+  if (types == NULL)
+    return FALSE;
+
+  if (g_strv_length ((GStrv) types) <= 0)
+    return FALSE;
+
+  return !tp_strdiff (types[0], "phone");
+}
+
 static void
 update_presence_msg (EmpathyRosterItem *self)
 {
@@ -152,7 +171,8 @@ update_presence_msg (EmpathyRosterItem *self)
   if (tp_str_empty (msg))
     {
       /* Just display the alias in the center of the row */
-      gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.5);
+      gtk_alignment_set (GTK_ALIGNMENT (self->priv->first_line_alig),
+          0, 0.5, 1, 1);
 
       gtk_widget_hide (self->priv->presence_msg);
     }
@@ -160,11 +180,15 @@ update_presence_msg (EmpathyRosterItem *self)
     {
       gtk_label_set_text (GTK_LABEL (self->priv->presence_msg), msg);
 
-      gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.75);
+      gtk_alignment_set (GTK_ALIGNMENT (self->priv->first_line_alig),
+          0, 0.75, 1, 1);
       gtk_misc_set_alignment (GTK_MISC (self->priv->presence_msg), 0, 0.25);
 
       gtk_widget_show (self->priv->presence_msg);
     }
+
+  gtk_widget_set_visible (self->priv->phone_icon,
+      is_phone (self->priv->individual));
 }
 
 static void
@@ -271,7 +295,7 @@ empathy_roster_item_class_init (
 static void
 empathy_roster_item_init (EmpathyRosterItem *self)
 {
-  GtkWidget *box;
+  GtkWidget *box, *first_line_box;
   GtkStyleContext *context;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -287,20 +311,39 @@ empathy_roster_item_init (EmpathyRosterItem *self)
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 
-  /* Alias */
+  /* Alias and phone icon */
+  self->priv->first_line_alig = gtk_alignment_new (0, 0.5, 1, 1);
+  first_line_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+
   self->priv->alias = gtk_label_new (NULL);
-  gtk_box_pack_start (GTK_BOX (box), self->priv->alias, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (first_line_box), self->priv->alias,
+      FALSE, FALSE, 0);
+  gtk_widget_show (self->priv->alias);
+
+  self->priv->phone_icon = gtk_image_new_from_icon_name ("phone-symbolic",
+      GTK_ICON_SIZE_MENU);
+  gtk_misc_set_alignment (GTK_MISC (self->priv->phone_icon), 0, 0.5);
+  gtk_box_pack_start (GTK_BOX (first_line_box), self->priv->phone_icon,
+      TRUE, TRUE, 0);
+
+  gtk_container_add (GTK_CONTAINER (self->priv->first_line_alig),
+      first_line_box);
+  gtk_widget_show (self->priv->first_line_alig);
+
+  gtk_box_pack_start (GTK_BOX (box), self->priv->first_line_alig,
+      TRUE, TRUE, 0);
+  gtk_widget_show (first_line_box);
 
   gtk_box_pack_start (GTK_BOX (self), box, TRUE, TRUE, 0);
+  gtk_widget_show (box);
 
   /* Presence */
   self->priv->presence_msg = gtk_label_new (NULL);
   gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
+  gtk_widget_show (self->priv->presence_msg);
 
   context = gtk_widget_get_style_context (self->priv->presence_msg);
   gtk_style_context_add_class (context, GTK_STYLE_CLASS_DIM_LABEL);
-
-  gtk_widget_show_all (box);
 
   /* Presence icon */
   self->priv->presence_icon = gtk_image_new ();
