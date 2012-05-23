@@ -34,10 +34,13 @@
           <object class="GtkLabel" id="label_password">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Pass_word:</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Pass_word</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">entry_password</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
             <property name="top_attach">2</property>
@@ -56,10 +59,13 @@
           <object class="GtkLabel" id="label_userid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">_Username:</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">_Username</property>
             <property name="use_underline">True</property>
-            <property name="mnemonic_widget">entry_password</property>
+            <property name="mnemonic_widget">entry_userid</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -143,6 +149,7 @@
         <property name="can_focus">True</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="height_request">200</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="hscrollbar_policy">never</property>
@@ -158,8 +165,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
-                    <property name="top_padding">6</property>
-                    <property name="left_padding">12</property>
+                    <property name="border_width">6</property>
                     <child>
                       <object class="GtkGrid" id="grid_advanced_sip_settings">
                         <property name="visible">True</property>
@@ -272,7 +278,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">STUN Server:</property>
+                                <property name="label" translatable="yes">STUN Server</property>
                                 <property name="mnemonic_widget">entry_stun-server</property>
                               </object>
                             </child>
@@ -337,7 +343,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Server:</property>
+                                <property name="label" translatable="yes">Server</property>
                               </object>
                             </child>
                           </object>
@@ -371,7 +377,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Mechanism:</property>
+                                <property name="label" translatable="yes">Mechanism</property>
                               </object>
                             </child>
                           </object>
@@ -409,7 +415,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Authentication username:</property>
+                                <property name="label" translatable="yes">Authentication username</property>
                               </object>
                             </child>
                           </object>
@@ -428,7 +434,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Transport:</property>
+                                <property name="label" translatable="yes">Transport</property>
                               </object>
                             </child>
                           </object>
@@ -486,7 +492,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">Port:</property>
+                            <property name="label" translatable="yes">Port</property>
                             <property name="mnemonic_widget">spinbutton_stun-port</property>
                           </object>
                           <packing>
@@ -511,7 +517,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">Port:</property>
+                            <property name="label" translatable="yes">Port</property>
                           </object>
                           <packing>
                             <property name="left_attach">2</property>
@@ -540,7 +546,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Local IP Address:</property>
+                                <property name="label" translatable="yes">Local IP Address</property>
                                 <property name="mnemonic_widget">entry_local-ip-address</property>
                               </object>
                             </child>
@@ -555,7 +561,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="xalign">0</property>
-                            <property name="label" translatable="yes">Port:</property>
+                            <property name="label" translatable="yes">Port</property>
                             <property name="mnemonic_widget">spinbutton_local-port</property>
                           </object>
                           <packing>
