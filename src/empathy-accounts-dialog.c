@@ -785,14 +785,13 @@ account_dialog_show_contact_details_failed (EmpathyAccountsDialog *dialog,
 
 static void
 create_contact_info_editor (EmpathyAccountsDialog *self,
-    TpConnection *conn)
+    TpContact *tp_contact)
 {
   EmpathyAccountsDialogPriv *priv = GET_PRIV (self);
   GtkWidget *editor, *alig;
   EmpathyContact *contact;
 
-  contact = empathy_contact_dup_from_tp_contact (
-      tp_connection_get_self_contact (conn));
+  contact = empathy_contact_dup_from_tp_contact (tp_contact);
 
   alig = gtk_alignment_new (0.5, 0, 1, 1);
 
@@ -819,6 +818,7 @@ account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
   const gchar *icon_name;
   TpAccount *account;
   TpConnection *conn = NULL;
+  TpContact *contact = NULL;
   GtkWidget *bbox, *button;
 
   account = empathy_account_settings_get_account (settings);
@@ -835,7 +835,12 @@ account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
   if (conn != NULL &&
       tp_proxy_get_invalidated (conn) == NULL)
     {
-      create_contact_info_editor (dialog, conn);
+      contact = tp_connection_get_self_contact (conn);
+    }
+
+  if (contact != NULL)
+    {
+      create_contact_info_editor (dialog, contact);
     }
   else
     {
