@@ -2343,6 +2343,9 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   g_settings_bind (self->priv->gsettings_contacts, EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
       self->priv->individual_store, "sort-criterium",
       G_SETTINGS_BIND_GET);
+  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_GROUPS,
+      self->priv->individual_store, "show-groups",
+      G_SETTINGS_BIND_GET);
   g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
       self->priv->balance_vbox, "visible",
       G_SETTINGS_BIND_GET);
