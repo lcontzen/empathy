@@ -85,7 +85,6 @@ empathy_chat_SOURCES =						\
 	empathy-chat-window.c empathy-chat-window.h		\
 	empathy-invite-participant-dialog.c empathy-invite-participant-dialog.h \
 	empathy-chat.c \
-	gedit-close-button.c gedit-close-button.h \
 	$(NULL)
 
 empathy_call_SOURCES = \
@@ -138,7 +137,6 @@ empathy_handwritten_source = \
 	empathy-preferences.c empathy-preferences.h			\
 	empathy-status-icon.c empathy-status-icon.h			\
 	empathy-chat-manager.c empathy-chat-manager.h			\
-	gedit-close-button.c gedit-close-button.h \
 	empathy.c
 
 empathy_SOURCES =							\
