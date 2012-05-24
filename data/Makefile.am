@@ -56,6 +56,11 @@ html_DATA = \
 	empathy-log-window.html \
 	$(NULL)
 
+cssdir = $(datadir)/empathy
+css_DATA = \
+	empathy.css \
+	$(NULL)
+
 EXTRA_DIST = 				\
 	$(convert_DATA)			\
 	$(desktop_in_files)		\

@@ -2307,3 +2307,36 @@ empathy_move_to_window_desktop (GtkWindow *window,
 out:
   gtk_window_present_with_time (window, timestamp);
 }
+
+void
+empathy_set_css_provider (GtkWidget *widget)
+{
+  GtkCssProvider *provider;
+  gchar *filename;
+  GError *error = NULL;
+  GdkScreen *screen;
+
+  filename = empathy_file_lookup ("empathy.css", "data");
+
+  provider = gtk_css_provider_new ();
+
+  if (!gtk_css_provider_load_from_path (provider, filename, &error))
+    {
+      g_warning ("Failed to load css file '%s': %s", filename, error->message);
+      g_error_free (error);
+      goto out;
+    }
+
+  if (widget != NULL)
+    screen = gtk_widget_get_screen (widget);
+  else
+    screen = gdk_screen_get_default ();
+
+  gtk_style_context_add_provider_for_screen (screen,
+      GTK_STYLE_PROVIDER (provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+out:
+  g_free (filename);
+  g_object_unref (provider);
+}

@@ -161,6 +161,8 @@ void empathy_launch_program (const gchar *dir,
     const gchar *name,
     const gchar *args);
 
+void empathy_set_css_provider (GtkWidget *widget);
+
 G_END_DECLS
 
 #endif /*  __EMPATHY_UI_UTILS_H__ */
