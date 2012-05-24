@@ -310,7 +310,7 @@ main (int argc,
   textdomain (GETTEXT_PACKAGE);
 
   /* There is no 'main' UI window so just use the default GdkScreen */
-  empathy_set_rss_provider (NULL);
+  empathy_set_css_provider (NULL);
 
 #ifdef ENABLE_DEBUG
   /* Set up debug sender */

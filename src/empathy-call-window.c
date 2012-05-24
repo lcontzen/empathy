@@ -1615,7 +1615,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
     "menupreviewswap", "activate", empathy_call_window_swap_camera_cb,
     NULL);
 
-  empathy_set_rss_provider (GTK_WIDGET (self));
+  empathy_set_css_provider (GTK_WIDGET (self));
 
   /* FIXME: we should use a stock "OSD" style class for the toolbar,
    * once it's available in GTK+/Adwaita.
