@@ -9,7 +9,7 @@
 #include <libempathy-gtk/empathy-images.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
-G_DEFINE_TYPE (EmpathyRosterItem, empathy_roster_item, GTK_TYPE_BOX)
+G_DEFINE_TYPE (EmpathyRosterItem, empathy_roster_item, GTK_TYPE_ALIGNMENT)
 
 #define AVATAR_SIZE 48
 
@@ -295,7 +295,7 @@ empathy_roster_item_class_init (
 static void
 empathy_roster_item_init (EmpathyRosterItem *self)
 {
-  GtkWidget *box, *first_line_box;
+  GtkWidget *main_box, *box, *first_line_box;
   GtkStyleContext *context;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -303,10 +303,12 @@ empathy_roster_item_init (EmpathyRosterItem *self)
 
   gtk_widget_set_size_request (GTK_WIDGET (self), 300, 64);
 
+  main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
+
   /* Avatar */
   self->priv->avatar = gtk_image_new ();
 
-  gtk_box_pack_start (GTK_BOX (self), self->priv->avatar, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (main_box), self->priv->avatar, FALSE, FALSE, 0);
   gtk_widget_show (self->priv->avatar);
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -334,7 +336,7 @@ empathy_roster_item_init (EmpathyRosterItem *self)
       TRUE, TRUE, 0);
   gtk_widget_show (first_line_box);
 
-  gtk_box_pack_start (GTK_BOX (self), box, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (main_box), box, TRUE, TRUE, 0);
   gtk_widget_show (box);
 
   /* Presence */
@@ -348,9 +350,12 @@ empathy_roster_item_init (EmpathyRosterItem *self)
   /* Presence icon */
   self->priv->presence_icon = gtk_image_new ();
 
-  gtk_box_pack_start (GTK_BOX (self), self->priv->presence_icon,
+  gtk_box_pack_start (GTK_BOX (main_box), self->priv->presence_icon,
       FALSE, FALSE, 0);
   gtk_widget_show (self->priv->presence_icon);
+
+  gtk_container_add (GTK_CONTAINER (self), main_box);
+  gtk_widget_show (main_box);
 }
 
 GtkWidget *
@@ -360,7 +365,10 @@ empathy_roster_item_new (FolksIndividual *individual)
 
   return g_object_new (EMPATHY_TYPE_ROSTER_ITEM,
       "individual", individual,
-      "spacing", 8,
+      "bottom-padding", 8,
+      "top-padding", 8,
+      "left-padding", 8,
+      "right-padding", 8,
       NULL);
 }
 
