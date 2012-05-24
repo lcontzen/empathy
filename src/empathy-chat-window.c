@@ -2307,6 +2307,8 @@ empathy_chat_window_init (EmpathyChatWindow *window)
 	g_object_ref (priv->ui_manager);
 	g_object_unref (gui);
 
+	empathy_set_rss_provider (GTK_WIDGET (priv->dialog));
+
 	priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
 	priv->gsettings_notif = g_settings_new (EMPATHY_PREFS_NOTIFICATIONS_SCHEMA);
 	priv->gsettings_ui = g_settings_new (EMPATHY_PREFS_UI_SCHEMA);

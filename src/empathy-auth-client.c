@@ -309,6 +309,9 @@ main (int argc,
   gtk_window_set_default_icon_name ("empathy");
   textdomain (GETTEXT_PACKAGE);
 
+  /* There is no 'main' UI window so just use the default GdkScreen */
+  empathy_set_rss_provider (NULL);
+
 #ifdef ENABLE_DEBUG
   /* Set up debug sender */
   debug_sender = tp_debug_sender_dup ();

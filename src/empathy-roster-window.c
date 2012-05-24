@@ -2144,6 +2144,8 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
 
+  empathy_set_rss_provider (GTK_WIDGET (self));
+
   self->priv->gsettings_ui = g_settings_new (EMPATHY_PREFS_UI_SCHEMA);
   self->priv->gsettings_contacts = g_settings_new (EMPATHY_PREFS_CONTACTS_SCHEMA);
 

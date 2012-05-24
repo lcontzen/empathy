@@ -1855,6 +1855,8 @@ am_prepared_cb (GObject *am,
       g_clear_error (&error);
     }
 
+  empathy_set_rss_provider (GTK_WIDGET (object));
+
   gtk_window_set_title (GTK_WINDOW (object), _("Debug Window"));
   gtk_window_set_default_size (GTK_WINDOW (object), 800, 400);
   empathy_geometry_bind (GTK_WINDOW (object), "debug-window");
