@@ -10,6 +10,7 @@ G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 enum
 {
   PROP_MANAGER = 1,
+  PROP_SHOW_OFFLINE,
   N_PROPS
 };
 
@@ -28,6 +29,8 @@ struct _EmpathyRosterViewPriv
 
   /* FolksIndividual (borrowed) -> EmpathyRosterItem (borrowed) */
   GHashTable *items;
+
+  gboolean show_offline;
 };
 
 static void
@@ -42,6 +45,9 @@ empathy_roster_view_get_property (GObject *object,
     {
       case PROP_MANAGER:
         g_value_set_object (value, self->priv->manager);
+        break;
+      case PROP_SHOW_OFFLINE:
+        g_value_set_boolean (value, self->priv->show_offline);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -63,10 +69,21 @@ empathy_roster_view_set_property (GObject *object,
         g_assert (self->priv->manager == NULL); /* construct only */
         self->priv->manager = g_value_dup_object (value);
         break;
+      case PROP_SHOW_OFFLINE:
+        empathy_roster_view_show_offline (self, g_value_get_boolean (value));
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
         break;
     }
+}
+
+static void
+item_changed_cb (GtkWidget *item,
+    GParamSpec *spec,
+    EmpathyRosterView *self)
+{
+  egg_list_box_child_changed (EGG_LIST_BOX (self), item);
 }
 
 static void
@@ -80,6 +97,10 @@ individual_added (EmpathyRosterView *self,
     return;
 
   item = empathy_roster_item_new (individual);
+
+  /* Need to refilter if online is changed */
+  g_signal_connect (item, "notify::online",
+      G_CALLBACK (item_changed_cb), self);
 
   gtk_widget_show (item);
   gtk_container_add (GTK_CONTAINER (self), item);
@@ -164,6 +185,19 @@ update_separator (GtkWidget **separator,
   g_object_ref_sink (*separator);
 }
 
+static gboolean
+filter_list (GtkWidget *child,
+    gpointer user_data)
+{
+  EmpathyRosterView *self = user_data;
+  EmpathyRosterItem *item = EMPATHY_ROSTER_ITEM (child);
+
+  if (self->priv->show_offline)
+    return TRUE;
+
+  return empathy_roster_item_is_online (item);
+}
+
 static void
 empathy_roster_view_constructed (GObject *object)
 {
@@ -195,6 +229,8 @@ empathy_roster_view_constructed (GObject *object)
 
   egg_list_box_set_separator_funcs (EGG_LIST_BOX (self), update_separator,
       self, NULL);
+
+  egg_list_box_set_filter_func (EGG_LIST_BOX (self), filter_list, self, NULL);
 }
 
 static void
@@ -242,6 +278,12 @@ empathy_roster_view_class_init (
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_MANAGER, spec);
 
+  spec = g_param_spec_boolean ("show-offline", "Show Offline",
+      "Show offline contacts",
+      FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_SHOW_OFFLINE, spec);
+
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }
 
@@ -268,4 +310,17 @@ EmpathyIndividualManager *
 empathy_roster_view_get_manager (EmpathyRosterView *self)
 {
   return self->priv->manager;
+}
+
+void
+empathy_roster_view_show_offline (EmpathyRosterView *self,
+    gboolean show)
+{
+  if (self->priv->show_offline == show)
+    return;
+
+  self->priv->show_offline = show;
+  egg_list_box_refilter (EGG_LIST_BOX (self));
+
+  g_object_notify (G_OBJECT (self), "show-offline");
 }
