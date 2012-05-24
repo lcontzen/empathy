@@ -51,6 +51,8 @@ GtkWidget * empathy_roster_item_new (FolksIndividual *individual);
 
 FolksIndividual * empathy_roster_item_get_individual (EmpathyRosterItem *self);
 
+gboolean empathy_roster_item_is_online (EmpathyRosterItem *self);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_ITEM_H__*/

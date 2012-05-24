@@ -16,6 +16,7 @@ G_DEFINE_TYPE (EmpathyRosterItem, empathy_roster_item, GTK_TYPE_ALIGNMENT)
 enum
 {
   PROP_INDIVIDIUAL = 1,
+  PROP_ONLINE,
   N_PROPS
 };
 
@@ -38,6 +39,8 @@ struct _EmpathyRosterItemPriv
   GtkWidget *presence_msg;
   GtkWidget *presence_icon;
   GtkWidget *phone_icon;
+
+  gboolean online;
 };
 
 static void
@@ -52,6 +55,9 @@ empathy_roster_item_get_property (GObject *object,
     {
       case PROP_INDIVIDIUAL:
         g_value_set_object (value, self->priv->individual);
+        break;
+      case PROP_ONLINE:
+        g_value_set_boolean (value, self->priv->online);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -211,11 +217,50 @@ update_presence_icon (EmpathyRosterItem *self)
 }
 
 static void
+update_online (EmpathyRosterItem *self)
+{
+  FolksPresenceType presence;
+  gboolean online;
+
+  presence = folks_presence_details_get_presence_type (
+      FOLKS_PRESENCE_DETAILS (self->priv->individual));
+
+  switch (presence)
+    {
+      case FOLKS_PRESENCE_TYPE_UNSET:
+      case FOLKS_PRESENCE_TYPE_OFFLINE:
+      case FOLKS_PRESENCE_TYPE_UNKNOWN:
+      case FOLKS_PRESENCE_TYPE_ERROR:
+        online = FALSE;
+        break;
+
+      case FOLKS_PRESENCE_TYPE_AVAILABLE:
+      case FOLKS_PRESENCE_TYPE_AWAY:
+      case FOLKS_PRESENCE_TYPE_EXTENDED_AWAY:
+      case FOLKS_PRESENCE_TYPE_HIDDEN:
+      case FOLKS_PRESENCE_TYPE_BUSY:
+        online = TRUE;
+        break;
+
+      default:
+        g_warning ("Unknown FolksPresenceType: %d", presence);
+        online = FALSE;
+    }
+
+  if (self->priv->online == online)
+    return;
+
+  self->priv->online = online;
+  g_object_notify (G_OBJECT (self), "online");
+}
+
+static void
 presence_status_changed_cb (FolksIndividual *individual,
     GParamSpec *spec,
     EmpathyRosterItem *self)
 {
   update_presence_icon (self);
+  update_online (self);
 }
 
 static void
@@ -244,6 +289,8 @@ empathy_roster_item_constructed (GObject *object)
   update_alias (self);
   update_presence_msg (self);
   update_presence_icon (self);
+
+  update_online (self);
 }
 
 static void
@@ -288,6 +335,12 @@ empathy_roster_item_class_init (
       FOLKS_TYPE_INDIVIDUAL,
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_INDIVIDIUAL, spec);
+
+  spec = g_param_spec_boolean ("online", "Online",
+      "TRUE if Individual is online",
+      FALSE,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_ONLINE, spec);
 
   g_type_class_add_private (klass, sizeof (EmpathyRosterItemPriv));
 }
@@ -376,4 +429,10 @@ FolksIndividual *
 empathy_roster_item_get_individual (EmpathyRosterItem *self)
 {
   return self->priv->individual;
+}
+
+gboolean
+empathy_roster_item_is_online (EmpathyRosterItem *self)
+{
+  return self->priv->online;
 }
