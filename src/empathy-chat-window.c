@@ -60,7 +60,6 @@
 #include "empathy-chat-window.h"
 #include "empathy-about-dialog.h"
 #include "empathy-invite-participant-dialog.h"
-#include "gedit-close-button.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_CHAT
 #include <libempathy/empathy-debug.h>
@@ -413,6 +412,33 @@ chat_tab_style_updated_cb (GtkWidget *hbox,
 }
 
 static GtkWidget *
+create_close_button (void)
+{
+	GtkWidget *button, *image;
+
+	button = gtk_button_new ();
+
+	gtk_widget_set_name (button, "empathy-tab-close-button");
+
+	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
+	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+
+	/* We don't want focus/keynav for the button to avoid clutter, and
+	 * Ctrl-W works anyway.
+	 */
+	gtk_widget_set_can_focus (button, FALSE);
+	gtk_widget_set_can_default (button, FALSE);
+
+	image = gtk_image_new_from_stock (GTK_STOCK_CLOSE,
+	                                  GTK_ICON_SIZE_MENU);
+	gtk_widget_show (image);
+
+	gtk_container_add (GTK_CONTAINER (button), image);
+
+	return button;
+}
+
+static GtkWidget *
 chat_window_create_label (EmpathyChatWindow *window,
 			  EmpathyChat       *chat,
 			  gboolean           is_tab_label)
@@ -479,14 +505,8 @@ chat_window_create_label (EmpathyChatWindow *window,
 			"chat-window-tab-sending-spinner",
 			sending_spinner);
 
-		close_button = gedit_close_button_new ();
+		close_button = create_close_button ();
 		g_object_set_data (G_OBJECT (chat), "chat-window-tab-close-button", close_button);
-
-		/* We don't want focus/keynav for the button to avoid clutter, and
-		 * Ctrl-W works anyway.
-		 */
-		gtk_widget_set_can_focus (close_button, FALSE);
-		gtk_widget_set_can_default (close_button, FALSE);
 
 		gtk_box_pack_end (GTK_BOX (hbox), close_button, FALSE, FALSE, 0);
 
