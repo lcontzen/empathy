@@ -94,15 +94,11 @@ roster_contact_changed_cb (GtkWidget *child,
   egg_list_box_child_changed (EGG_LIST_BOX (self), child);
 }
 
-static void
-individual_added (EmpathyRosterView *self,
+static GtkWidget *
+add_roster_contact (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
   GtkWidget *contact;
-
-  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
-  if (contact != NULL)
-    return;
 
   contact = empathy_roster_contact_new (individual);
 
@@ -116,6 +112,21 @@ individual_added (EmpathyRosterView *self,
 
   gtk_widget_show (contact);
   gtk_container_add (GTK_CONTAINER (self), contact);
+
+  return contact;
+}
+
+static void
+individual_added (EmpathyRosterView *self,
+    FolksIndividual *individual)
+{
+  GtkWidget *contact;
+
+  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contact != NULL)
+    return;
+
+  contact = add_roster_contact (self, individual);
 
   g_hash_table_insert (self->priv->roster_contacts, individual, contact);
 }
