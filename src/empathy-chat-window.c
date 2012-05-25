@@ -415,10 +415,12 @@ static GtkWidget *
 create_close_button (void)
 {
 	GtkWidget *button, *image;
+	GtkStyleContext *context;
 
 	button = gtk_button_new ();
 
-	gtk_widget_set_name (button, "empathy-tab-close-button");
+	context = gtk_widget_get_style_context (button);
+	gtk_style_context_add_class (context, "empathy-tab-close-button");
 
 	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
