@@ -102,6 +102,10 @@ individual_added (EmpathyRosterView *self,
   g_signal_connect (item, "notify::online",
       G_CALLBACK (item_changed_cb), self);
 
+  /* Need to resort if alias is changed */
+  g_signal_connect (item, "notify::alias",
+      G_CALLBACK (item_changed_cb), self);
+
   gtk_widget_show (item);
   gtk_container_add (GTK_CONTAINER (self), item);
 
