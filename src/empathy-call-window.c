@@ -539,8 +539,8 @@ empathy_call_window_disable_camera_cb (GtkAction *action,
 {
   clutter_actor_destroy (self->priv->preview_hidden_button);
 
-  gtk_toggle_tool_button_set_active (
-      GTK_TOGGLE_TOOL_BUTTON (self->priv->camera_button), FALSE);
+  gtk_toggle_button_set_active (
+      GTK_TOGGLE_BUTTON (self->priv->camera_button), FALSE);
 }
 
 static void
@@ -2195,8 +2195,8 @@ empathy_call_window_constructed (GObject *object)
 
   if (!empathy_call_handler_has_initial_video (priv->handler))
     {
-      gtk_toggle_tool_button_set_active (
-          GTK_TOGGLE_TOOL_BUTTON (priv->camera_button), FALSE);
+      gtk_toggle_button_set_active (
+          GTK_TOGGLE_BUTTON (priv->camera_button), FALSE);
     }
   /* If call has InitialVideo, the preview will be started once the call has
    * been started (start_call()). */
@@ -2557,8 +2557,8 @@ empathy_call_window_disconnected (EmpathyCallWindow *self,
       gtk_widget_set_sensitive (priv->mic_button, FALSE);
 
       /* Be sure that the mic button is enabled */
-      gtk_toggle_tool_button_set_active (
-          GTK_TOGGLE_TOOL_BUTTON (priv->mic_button), TRUE);
+      gtk_toggle_button_set_active (
+          GTK_TOGGLE_BUTTON (priv->mic_button), TRUE);
 
       if (priv->camera_state == CAMERA_STATE_ON)
         {
@@ -2847,8 +2847,8 @@ empathy_call_window_update_timer (gpointer user_data)
 
   if (priv->call_state == HELD)
     status = _("On hold");
-  else if (!gtk_toggle_tool_button_get_active (
-      GTK_TOGGLE_TOOL_BUTTON (priv->mic_button)))
+  else if (!gtk_toggle_button_get_active (
+      GTK_TOGGLE_BUTTON (priv->mic_button)))
     status = _("Mute");
   else
     status = _("Duration");
@@ -3537,13 +3537,13 @@ start_call (EmpathyCallWindow *self)
           s == TP_SENDING_STATE_SENDING)
         {
           /* Enable 'send video' buttons and display the preview */
-          gtk_toggle_tool_button_set_active (
-            GTK_TOGGLE_TOOL_BUTTON (priv->camera_button), TRUE);
+          gtk_toggle_button_set_active (
+            GTK_TOGGLE_BUTTON (priv->camera_button), TRUE);
         }
       else
         {
-          gtk_toggle_tool_button_set_active (
-            GTK_TOGGLE_TOOL_BUTTON (priv->camera_button), FALSE);
+          gtk_toggle_button_set_active (
+            GTK_TOGGLE_BUTTON (priv->camera_button), FALSE);
 
           if (priv->video_preview == NULL)
             {

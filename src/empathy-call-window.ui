@@ -254,34 +254,53 @@
           <object class="GtkToolbar" id="bottom_toolbar">
             <property name="visible">True</property>
             <property name="show_arrow">False</property>
-            <property name="name">CallFloatingToolbar</property>
             <child>
-              <object class="GtkToggleToolButton" id="camera">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Send Video</property>
-                <property name="icon_name">camera-web</property>
-                <property name="sensitive">False</property>
-                <property name="tooltip_text" translatable="yes">Toggle video transmission</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkToolItem" id="toolitem3">
+              <object class="GtkToolItem" id="toolitem_group">
                 <property name="visible">True</property>
                 <child>
-                  <object class="GtkVolumeButton" id="volume">
+                  <object class="GtkBox" id="button_group">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">0</property>
                     <property name="visible">True</property>
-                    <property name="value">1.0</property>
+                    <child>
+                      <object class="GtkToggleButton" id="camera">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="tooltip_text" translatable="yes">Toggle video transmission</property>
+                        <child>
+                          <object class="GtkImage" id="camera_icon">
+                            <property name="visible">True</property>
+                            <property name="icon_name">camera-web-symbolic</property>
+                            <property name="icon_size">1</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkVolumeButton" id="volume">
+                        <property name="visible">True</property>
+                        <property name="value">1.0</property>
+                        <property name="relief">normal</property>
+                        <property name="use_symbolic">True</property>
+                        <property name="size">1</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkToggleButton" id="microphone">
+                        <property name="visible">True</property>
+                        <property name="active">True</property>
+                        <property name="tooltip_text" translatable="yes">Toggle audio transmission</property>
+                        <child>
+                          <object class="GtkImage" id="microphone_icon">
+                            <property name="visible">True</property>
+                            <property name="icon_name">audio-input-microphone-symbolic</property>
+                            <property name="icon_size">1</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkToggleToolButton" id="microphone">
-                <property name="visible">True</property>
-                <property name="active">True</property>
-                <property name="label" translatable="yes">Send Audio</property>
-                <property name="icon_name">gnome-stock-mic</property>
-                <property name="tooltip_text" translatable="yes">Toggle audio transmission</property>
               </object>
             </child>
             <child>
