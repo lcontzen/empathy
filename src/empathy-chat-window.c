@@ -431,8 +431,8 @@ create_close_button (void)
 	gtk_widget_set_can_focus (button, FALSE);
 	gtk_widget_set_can_default (button, FALSE);
 
-	image = gtk_image_new_from_stock (GTK_STOCK_CLOSE,
-	                                  GTK_ICON_SIZE_MENU);
+	image = gtk_image_new_from_icon_name ("window-close-symbolic",
+	                                      GTK_ICON_SIZE_MENU);
 	gtk_widget_show (image);
 
 	gtk_container_add (GTK_CONTAINER (button), image);
