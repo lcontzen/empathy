@@ -4,10 +4,12 @@
 #include <libempathy-gtk/empathy-ui-utils.h>
 
 static gboolean show_offline = FALSE;
+static gboolean show_groups = FALSE;
 
 static GOptionEntry entries[] =
 {
   { "offline", 0, 0, G_OPTION_ARG_NONE, &show_offline, "Show offline contacts", NULL },
+  { "groups", 0, 0, G_OPTION_ARG_NONE, &show_groups, "Show groups", NULL },
   { NULL }
 };
 
@@ -41,6 +43,7 @@ main (int argc,
   view = empathy_roster_view_new (mgr);
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
+  empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
 
   g_object_unref (mgr);
 
