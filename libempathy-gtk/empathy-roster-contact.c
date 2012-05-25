@@ -16,6 +16,7 @@ G_DEFINE_TYPE (EmpathyRosterContact, empathy_roster_contact, GTK_TYPE_ALIGNMENT)
 enum
 {
   PROP_INDIVIDIUAL = 1,
+  PROP_GROUP,
   PROP_ONLINE,
   PROP_ALIAS,
   N_PROPS
@@ -33,6 +34,7 @@ static guint signals[LAST_SIGNAL];
 struct _EmpathyRosterContactPriv
 {
   FolksIndividual *individual;
+  gchar *group;
 
   GtkWidget *avatar;
   GtkWidget *first_line_alig;
@@ -64,6 +66,9 @@ empathy_roster_contact_get_property (GObject *object,
       case PROP_INDIVIDIUAL:
         g_value_set_object (value, self->priv->individual);
         break;
+      case PROP_GROUP:
+        g_value_set_string (value, self->priv->group);
+        break;
       case PROP_ONLINE:
         g_value_set_boolean (value, self->priv->online);
         break;
@@ -89,6 +94,10 @@ empathy_roster_contact_set_property (GObject *object,
       case PROP_INDIVIDIUAL:
         g_assert (self->priv->individual == NULL); /* construct only */
         self->priv->individual = g_value_dup_object (value);
+        break;
+      case PROP_GROUP:
+        g_assert (self->priv->group == NULL); /* construct only */
+        self->priv->group = g_value_dup_string (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -317,9 +326,11 @@ empathy_roster_contact_dispose (GObject *object)
 static void
 empathy_roster_contact_finalize (GObject *object)
 {
-  //EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
+  EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_contact_parent_class)->finalize;
+
+  g_free (self->priv->group);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -343,6 +354,12 @@ empathy_roster_contact_class_init (
       FOLKS_TYPE_INDIVIDUAL,
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_INDIVIDIUAL, spec);
+
+  spec = g_param_spec_string ("group", "Group",
+      "Group of this widget, or NULL",
+      NULL,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_GROUP, spec);
 
   spec = g_param_spec_boolean ("online", "Online",
       "TRUE if Individual is online",
@@ -426,12 +443,14 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
 }
 
 GtkWidget *
-empathy_roster_contact_new (FolksIndividual *individual)
+empathy_roster_contact_new (FolksIndividual *individual,
+    const gchar *group)
 {
   g_return_val_if_fail (FOLKS_IS_INDIVIDUAL (individual), NULL);
 
   return g_object_new (EMPATHY_TYPE_ROSTER_CONTACT,
       "individual", individual,
+      "group", group,
       "bottom-padding", 8,
       "top-padding", 8,
       "left-padding", 8,
@@ -449,4 +468,10 @@ gboolean
 empathy_roster_contact_is_online (EmpathyRosterContact *self)
 {
   return self->priv->online;
+}
+
+const gchar *
+empathy_roster_contact_get_group (EmpathyRosterContact *self)
+{
+  return self->priv->group;
 }

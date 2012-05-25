@@ -47,9 +47,12 @@ GType empathy_roster_contact_get_type (void);
     EMPATHY_TYPE_ROSTER_CONTACT, \
     EmpathyRosterContactClass))
 
-GtkWidget * empathy_roster_contact_new (FolksIndividual *individual);
+GtkWidget * empathy_roster_contact_new (FolksIndividual *individual,
+    const gchar *group);
 
 FolksIndividual * empathy_roster_contact_get_individual (EmpathyRosterContact *self);
+
+const gchar * empathy_roster_contact_get_group (EmpathyRosterContact *self);
 
 gboolean empathy_roster_contact_is_online (EmpathyRosterContact *self);
 

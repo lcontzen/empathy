@@ -101,7 +101,7 @@ add_roster_contact (EmpathyRosterView *self,
 {
   GtkWidget *contact;
 
-  contact = empathy_roster_contact_new (individual);
+  contact = empathy_roster_contact_new (individual, NULL);
 
   /* Need to refilter if online is changed */
   g_signal_connect (contact, "notify::online",
