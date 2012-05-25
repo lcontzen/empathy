@@ -203,17 +203,9 @@ filter_list (GtkWidget *child,
 }
 
 static void
-empathy_roster_view_constructed (GObject *object)
+populate_view (EmpathyRosterView *self)
 {
-  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
-  void (*chain_up) (GObject *) =
-      ((GObjectClass *) empathy_roster_view_parent_class)->constructed;
   GList *individuals, *l;
-
-  if (chain_up != NULL)
-    chain_up (object);
-
-  g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
 
   individuals = empathy_individual_manager_get_members (self->priv->manager);
   for (l = individuals; l != NULL; l = g_list_next (l))
@@ -223,10 +215,25 @@ empathy_roster_view_constructed (GObject *object)
       individual_added (self, individual);
     }
 
+  g_list_free (individuals);
+}
+
+static void
+empathy_roster_view_constructed (GObject *object)
+{
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
+  void (*chain_up) (GObject *) =
+      ((GObjectClass *) empathy_roster_view_parent_class)->constructed;
+
+  if (chain_up != NULL)
+    chain_up (object);
+
+  g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
+
+  populate_view (self);
+
   tp_g_signal_connect_object (self->priv->manager, "members-changed",
       G_CALLBACK (members_changed_cb), self, 0);
-
-  g_list_free (individuals);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       (GCompareDataFunc) roster_view_sort, self, NULL);
