@@ -28,7 +28,8 @@ struct _EmpathyRosterViewPriv
 {
   EmpathyIndividualManager *manager;
 
-  /* FolksIndividual (borrowed) -> EmpathyRosterContact (borrowed) */
+  /* FolksIndividual (borrowed) -> GHashTable (used as a set) of
+   * EmpathyRosterContact (borrowed) */
   GHashTable *roster_contacts;
 
   gboolean show_offline;
@@ -121,27 +122,39 @@ individual_added (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
   GtkWidget *contact;
+  GHashTable *contacts;
 
-  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
-  if (contact != NULL)
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts != NULL)
     return;
 
-  contact = add_roster_contact (self, individual);
+  contacts = g_hash_table_new (NULL, NULL);
 
-  g_hash_table_insert (self->priv->roster_contacts, individual, contact);
+  contact = add_roster_contact (self, individual);
+  g_hash_table_add (contacts, contact);
+
+  g_hash_table_insert (self->priv->roster_contacts, individual, contacts);
 }
 
 static void
 individual_removed (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
-  GtkWidget *contact;
+  GHashTable *contacts;
+  GHashTableIter iter;
+  gpointer key;
 
-  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
-  if (contact == NULL)
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
     return;
 
-  gtk_container_remove (GTK_CONTAINER (self), contact);
+  g_hash_table_iter_init (&iter, contacts);
+  while (g_hash_table_iter_next (&iter, &key, NULL))
+    {
+      GtkWidget *contact = key;
+
+      gtk_container_remove (GTK_CONTAINER (self), contact);
+    }
 
   g_hash_table_remove (self->priv->roster_contacts, individual);
 }
@@ -329,7 +342,8 @@ empathy_roster_view_init (EmpathyRosterView *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_VIEW, EmpathyRosterViewPriv);
 
-  self->priv->roster_contacts = g_hash_table_new (NULL, NULL);
+  self->priv->roster_contacts = g_hash_table_new_full (NULL, NULL,
+      NULL, (GDestroyNotify) g_hash_table_unref);
 }
 
 GtkWidget *
