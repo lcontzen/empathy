@@ -1,7 +1,8 @@
-
 #include "config.h"
 
 #include "empathy-roster-view.h"
+
+#include <glib/gi18n-lib.h>
 
 #include <libempathy-gtk/empathy-roster-contact.h>
 
@@ -24,12 +25,20 @@ enum
 static guint signals[LAST_SIGNAL];
 */
 
+#define NO_GROUP "X-no-group"
+#define UNGROUPPED _("Ungroupped")
+
 struct _EmpathyRosterViewPriv
 {
   EmpathyIndividualManager *manager;
 
-  /* FolksIndividual (borrowed) -> GHashTable (used as a set) of
-   * EmpathyRosterContact (borrowed) */
+  /* FolksIndividual (borrowed) -> GHashTable (
+   * (gchar * group_name) -> EmpathyRosterContact (borrowed))
+   *
+   * When not using groups, this hash just have one element mapped
+   * from the special NO_GROUP key. We could use it as a set but
+   * I prefer to stay coherent in the way this hash is managed.
+   */
   GHashTable *roster_contacts;
 
   gboolean show_offline;
@@ -97,11 +106,12 @@ roster_contact_changed_cb (GtkWidget *child,
 
 static GtkWidget *
 add_roster_contact (EmpathyRosterView *self,
-    FolksIndividual *individual)
+    FolksIndividual *individual,
+    const gchar *group)
 {
   GtkWidget *contact;
 
-  contact = empathy_roster_contact_new (individual, NULL);
+  contact = empathy_roster_contact_new (individual, group);
 
   /* Need to refilter if online is changed */
   g_signal_connect (contact, "notify::online",
@@ -118,22 +128,68 @@ add_roster_contact (EmpathyRosterView *self,
 }
 
 static void
+add_to_group (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    const gchar *group)
+{
+  GtkWidget *contact;
+  GHashTable *contacts;
+
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
+    return;
+
+  /* TODO: ensure group widget */
+  contact = add_roster_contact (self, individual, group);
+  g_hash_table_insert (contacts, g_strdup (group), contact);
+}
+
+static void
 individual_added (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
-  GtkWidget *contact;
   GHashTable *contacts;
 
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts != NULL)
     return;
 
-  contacts = g_hash_table_new (NULL, NULL);
-
-  contact = add_roster_contact (self, individual);
-  g_hash_table_add (contacts, contact);
+  contacts = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
   g_hash_table_insert (self->priv->roster_contacts, individual, contacts);
+
+  if (!self->priv->show_groups)
+    {
+      add_to_group (self, individual, NO_GROUP);
+    }
+  else
+    {
+      GeeSet *groups;
+
+      groups = folks_group_details_get_groups (
+          FOLKS_GROUP_DETAILS (individual));
+
+      if (gee_collection_get_size (GEE_COLLECTION (groups)) > 0)
+        {
+          GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (groups));
+
+          while (iter != NULL && gee_iterator_next (iter))
+            {
+              gchar *group = gee_iterator_get (iter);
+
+              add_to_group (self, individual, group);
+
+              g_free (group);
+            }
+
+          g_clear_object (&iter);
+        }
+      else
+        {
+          /* No group, adds to Ungroupped */
+          add_to_group (self, individual, UNGROUPPED);
+        }
+    }
 }
 
 static void
@@ -142,16 +198,16 @@ individual_removed (EmpathyRosterView *self,
 {
   GHashTable *contacts;
   GHashTableIter iter;
-  gpointer key;
+  gpointer value;
 
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts == NULL)
     return;
 
   g_hash_table_iter_init (&iter, contacts);
-  while (g_hash_table_iter_next (&iter, &key, NULL))
+  while (g_hash_table_iter_next (&iter, NULL, &value))
     {
-      GtkWidget *contact = key;
+      GtkWidget *contact = value;
 
       gtk_container_remove (GTK_CONTAINER (self), contact);
     }
@@ -251,6 +307,51 @@ populate_view (EmpathyRosterView *self)
 }
 
 static void
+remove_from_group (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    const gchar *group)
+{
+  GHashTable *contacts;
+  GtkWidget *contact;
+
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
+    return;
+
+  contact = g_hash_table_lookup (contacts, group);
+  if (contact == NULL)
+    return;
+
+  gtk_container_remove (GTK_CONTAINER (self), contact);
+  g_hash_table_remove (contacts, group);
+
+  if (g_hash_table_size (contacts) == 0)
+    {
+      add_to_group (self, individual, UNGROUPPED);
+    }
+}
+
+static void
+groups_changed_cb (EmpathyIndividualManager *manager,
+    FolksIndividual *individual,
+    gchar *group,
+    gboolean is_member,
+    EmpathyRosterView *self)
+{
+  if (!self->priv->show_groups)
+    return;
+
+  if (is_member)
+    {
+      add_to_group (self, individual, group);
+    }
+  else
+    {
+      remove_from_group (self, individual, group);
+    }
+}
+
+static void
 empathy_roster_view_constructed (GObject *object)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
@@ -266,6 +367,8 @@ empathy_roster_view_constructed (GObject *object)
 
   tp_g_signal_connect_object (self->priv->manager, "members-changed",
       G_CALLBACK (members_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "groups-changed",
+      G_CALLBACK (groups_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       (GCompareDataFunc) roster_view_sort, self, NULL);
@@ -393,6 +496,7 @@ empathy_roster_view_show_groups (EmpathyRosterView *self,
 
   self->priv->show_groups = show;
 
+  /* TODO: block sort/filter? */
   clear_view (self);
   populate_view (self);
 
