@@ -29,7 +29,7 @@ struct _EmpathyRosterViewPriv
   EmpathyIndividualManager *manager;
 
   /* FolksIndividual (borrowed) -> EmpathyRosterContact (borrowed) */
-  GHashTable *items;
+  GHashTable *roster_contacts;
 
   gboolean show_offline;
   gboolean show_groups;
@@ -87,52 +87,52 @@ empathy_roster_view_set_property (GObject *object,
 }
 
 static void
-item_changed_cb (GtkWidget *item,
+roster_contact_changed_cb (GtkWidget *child,
     GParamSpec *spec,
     EmpathyRosterView *self)
 {
-  egg_list_box_child_changed (EGG_LIST_BOX (self), item);
+  egg_list_box_child_changed (EGG_LIST_BOX (self), child);
 }
 
 static void
 individual_added (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
-  GtkWidget *item;
+  GtkWidget *contact;
 
-  item = g_hash_table_lookup (self->priv->items, individual);
-  if (item != NULL)
+  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contact != NULL)
     return;
 
-  item = empathy_roster_contact_new (individual);
+  contact = empathy_roster_contact_new (individual);
 
   /* Need to refilter if online is changed */
-  g_signal_connect (item, "notify::online",
-      G_CALLBACK (item_changed_cb), self);
+  g_signal_connect (contact, "notify::online",
+      G_CALLBACK (roster_contact_changed_cb), self);
 
   /* Need to resort if alias is changed */
-  g_signal_connect (item, "notify::alias",
-      G_CALLBACK (item_changed_cb), self);
+  g_signal_connect (contact, "notify::alias",
+      G_CALLBACK (roster_contact_changed_cb), self);
 
-  gtk_widget_show (item);
-  gtk_container_add (GTK_CONTAINER (self), item);
+  gtk_widget_show (contact);
+  gtk_container_add (GTK_CONTAINER (self), contact);
 
-  g_hash_table_insert (self->priv->items, individual, item);
+  g_hash_table_insert (self->priv->roster_contacts, individual, contact);
 }
 
 static void
 individual_removed (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
-  GtkWidget *item;
+  GtkWidget *contact;
 
-  item = g_hash_table_lookup (self->priv->items, individual);
-  if (item == NULL)
+  contact = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contact == NULL)
     return;
 
-  gtk_container_remove (GTK_CONTAINER (self), item);
+  gtk_container_remove (GTK_CONTAINER (self), contact);
 
-  g_hash_table_remove (self->priv->items, individual);
+  g_hash_table_remove (self->priv->roster_contacts, individual);
 }
 
 static void
@@ -202,12 +202,12 @@ filter_list (GtkWidget *child,
     gpointer user_data)
 {
   EmpathyRosterView *self = user_data;
-  EmpathyRosterContact *item = EMPATHY_ROSTER_CONTACT (child);
+  EmpathyRosterContact *contact = EMPATHY_ROSTER_CONTACT (child);
 
   if (self->priv->show_offline)
     return TRUE;
 
-  return empathy_roster_contact_is_online (item);
+  return empathy_roster_contact_is_online (contact);
 }
 
 static void
@@ -272,7 +272,7 @@ empathy_roster_view_finalize (GObject *object)
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_view_parent_class)->finalize;
 
-  g_hash_table_unref (self->priv->items);
+  g_hash_table_unref (self->priv->roster_contacts);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -318,7 +318,7 @@ empathy_roster_view_init (EmpathyRosterView *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_VIEW, EmpathyRosterViewPriv);
 
-  self->priv->items = g_hash_table_new (NULL, NULL);
+  self->priv->roster_contacts = g_hash_table_new (NULL, NULL);
 }
 
 GtkWidget *
@@ -356,7 +356,7 @@ clear_view (EmpathyRosterView *self)
   gtk_container_foreach (GTK_CONTAINER (self),
       (GtkCallback) gtk_widget_destroy, NULL);
 
-  g_hash_table_remove_all (self->priv->items);
+  g_hash_table_remove_all (self->priv->roster_contacts);
 }
 
 void
