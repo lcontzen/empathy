@@ -17,6 +17,7 @@ enum
 {
   PROP_INDIVIDIUAL = 1,
   PROP_ONLINE,
+  PROP_ALIAS,
   N_PROPS
 };
 
@@ -43,6 +44,13 @@ struct _EmpathyRosterItemPriv
   gboolean online;
 };
 
+static const gchar *
+get_alias (EmpathyRosterItem *self)
+{
+  return folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (
+        self->priv->individual));
+}
+
 static void
 empathy_roster_item_get_property (GObject *object,
     guint property_id,
@@ -58,6 +66,9 @@ empathy_roster_item_get_property (GObject *object,
         break;
       case PROP_ONLINE:
         g_value_set_boolean (value, self->priv->online);
+        break;
+      case PROP_ALIAS:
+        g_value_set_string (value, get_alias (self));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -135,12 +146,9 @@ avatar_changed_cb (FolksIndividual *individual,
 static void
 update_alias (EmpathyRosterItem *self)
 {
-  const gchar *alias;
+  gtk_label_set_text (GTK_LABEL (self->priv->alias), get_alias (self));
 
-  alias = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (
-        self->priv->individual));
-
-  gtk_label_set_text (GTK_LABEL (self->priv->alias), alias);
+  g_object_notify (G_OBJECT (self), "alias");
 }
 
 static void
@@ -341,6 +349,12 @@ empathy_roster_item_class_init (
       FALSE,
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_ONLINE, spec);
+
+  spec = g_param_spec_string ("alias", "Alias",
+      "The Alias of the individual displayed in the widget",
+      NULL,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_ALIAS, spec);
 
   g_type_class_add_private (klass, sizeof (EmpathyRosterItemPriv));
 }
