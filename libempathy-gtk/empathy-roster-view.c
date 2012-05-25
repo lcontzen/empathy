@@ -11,6 +11,7 @@ enum
 {
   PROP_MANAGER = 1,
   PROP_SHOW_OFFLINE,
+  PROP_SHOW_GROUPS,
   N_PROPS
 };
 
@@ -31,6 +32,7 @@ struct _EmpathyRosterViewPriv
   GHashTable *items;
 
   gboolean show_offline;
+  gboolean show_groups;
 };
 
 static void
@@ -48,6 +50,9 @@ empathy_roster_view_get_property (GObject *object,
         break;
       case PROP_SHOW_OFFLINE:
         g_value_set_boolean (value, self->priv->show_offline);
+        break;
+      case PROP_SHOW_GROUPS:
+        g_value_set_boolean (value, self->priv->show_groups);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -71,6 +76,9 @@ empathy_roster_view_set_property (GObject *object,
         break;
       case PROP_SHOW_OFFLINE:
         empathy_roster_view_show_offline (self, g_value_get_boolean (value));
+        break;
+      case PROP_SHOW_GROUPS:
+        empathy_roster_view_show_groups (self, g_value_get_boolean (value));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -295,6 +303,12 @@ empathy_roster_view_class_init (
       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_SHOW_OFFLINE, spec);
 
+  spec = g_param_spec_boolean ("show-groups", "Show Groups",
+      "Show groups",
+      FALSE,
+      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_SHOW_GROUPS, spec);
+
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }
 
@@ -334,4 +348,28 @@ empathy_roster_view_show_offline (EmpathyRosterView *self,
   egg_list_box_refilter (EGG_LIST_BOX (self));
 
   g_object_notify (G_OBJECT (self), "show-offline");
+}
+
+static void
+clear_view (EmpathyRosterView *self)
+{
+  gtk_container_foreach (GTK_CONTAINER (self),
+      (GtkCallback) gtk_widget_destroy, NULL);
+
+  g_hash_table_remove_all (self->priv->items);
+}
+
+void
+empathy_roster_view_show_groups (EmpathyRosterView *self,
+    gboolean show)
+{
+  if (self->priv->show_groups == show)
+    return;
+
+  self->priv->show_groups = show;
+
+  clear_view (self);
+  populate_view (self);
+
+  g_object_notify (G_OBJECT (self), "show-groups");
 }

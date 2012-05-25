@@ -56,6 +56,9 @@ EmpathyIndividualManager * empathy_roster_view_get_manager (
 void empathy_roster_view_show_offline (EmpathyRosterView *self,
     gboolean show);
 
+void empathy_roster_view_show_groups (EmpathyRosterView *self,
+    gboolean show);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_VIEW_H__*/
