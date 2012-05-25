@@ -1,6 +1,6 @@
 #include "config.h"
 
-#include "empathy-roster-item.h"
+#include "empathy-roster-contact.h"
 
 #include <telepathy-glib/util.h>
 
@@ -9,7 +9,7 @@
 #include <libempathy-gtk/empathy-images.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
-G_DEFINE_TYPE (EmpathyRosterItem, empathy_roster_item, GTK_TYPE_ALIGNMENT)
+G_DEFINE_TYPE (EmpathyRosterContact, empathy_roster_contact, GTK_TYPE_ALIGNMENT)
 
 #define AVATAR_SIZE 48
 
@@ -30,7 +30,7 @@ enum
 static guint signals[LAST_SIGNAL];
 */
 
-struct _EmpathyRosterItemPriv
+struct _EmpathyRosterContactPriv
 {
   FolksIndividual *individual;
 
@@ -45,19 +45,19 @@ struct _EmpathyRosterItemPriv
 };
 
 static const gchar *
-get_alias (EmpathyRosterItem *self)
+get_alias (EmpathyRosterContact *self)
 {
   return folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (
         self->priv->individual));
 }
 
 static void
-empathy_roster_item_get_property (GObject *object,
+empathy_roster_contact_get_property (GObject *object,
     guint property_id,
     GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
+  EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
 
   switch (property_id)
     {
@@ -77,12 +77,12 @@ empathy_roster_item_get_property (GObject *object,
 }
 
 static void
-empathy_roster_item_set_property (GObject *object,
+empathy_roster_contact_set_property (GObject *object,
     guint property_id,
     const GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
+  EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
 
   switch (property_id)
     {
@@ -102,7 +102,7 @@ avatar_loaded_cb (GObject *source,
     gpointer user_data)
 {
   TpWeakRef *wr = user_data;
-  EmpathyRosterItem *self;
+  EmpathyRosterContact *self;
   GdkPixbuf *pixbuf;
 
   self = tp_weak_ref_dup_object (wr);
@@ -128,7 +128,7 @@ out:
 }
 
 static void
-update_avatar (EmpathyRosterItem *self)
+update_avatar (EmpathyRosterContact *self)
 {
   empathy_pixbuf_avatar_from_individual_scaled_async (self->priv->individual,
       AVATAR_SIZE, AVATAR_SIZE, NULL, avatar_loaded_cb,
@@ -138,13 +138,13 @@ update_avatar (EmpathyRosterItem *self)
 static void
 avatar_changed_cb (FolksIndividual *individual,
     GParamSpec *spec,
-    EmpathyRosterItem *self)
+    EmpathyRosterContact *self)
 {
   update_avatar (self);
 }
 
 static void
-update_alias (EmpathyRosterItem *self)
+update_alias (EmpathyRosterContact *self)
 {
   gtk_label_set_text (GTK_LABEL (self->priv->alias), get_alias (self));
 
@@ -154,7 +154,7 @@ update_alias (EmpathyRosterItem *self)
 static void
 alias_changed_cb (FolksIndividual *individual,
     GParamSpec *spec,
-    EmpathyRosterItem *self)
+    EmpathyRosterContact *self)
 {
   update_alias (self);
 }
@@ -175,7 +175,7 @@ is_phone (FolksIndividual *individual)
 }
 
 static void
-update_presence_msg (EmpathyRosterItem *self)
+update_presence_msg (EmpathyRosterContact *self)
 {
   const gchar *msg;
 
@@ -208,13 +208,13 @@ update_presence_msg (EmpathyRosterItem *self)
 static void
 presence_message_changed_cb (FolksIndividual *individual,
     GParamSpec *spec,
-    EmpathyRosterItem *self)
+    EmpathyRosterContact *self)
 {
   update_presence_msg (self);
 }
 
 static void
-update_presence_icon (EmpathyRosterItem *self)
+update_presence_icon (EmpathyRosterContact *self)
 {
   const gchar *icon;
 
@@ -225,7 +225,7 @@ update_presence_icon (EmpathyRosterItem *self)
 }
 
 static void
-update_online (EmpathyRosterItem *self)
+update_online (EmpathyRosterContact *self)
 {
   FolksPresenceType presence;
   gboolean online;
@@ -265,18 +265,18 @@ update_online (EmpathyRosterItem *self)
 static void
 presence_status_changed_cb (FolksIndividual *individual,
     GParamSpec *spec,
-    EmpathyRosterItem *self)
+    EmpathyRosterContact *self)
 {
   update_presence_icon (self);
   update_online (self);
 }
 
 static void
-empathy_roster_item_constructed (GObject *object)
+empathy_roster_contact_constructed (GObject *object)
 {
-  EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
+  EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
   void (*chain_up) (GObject *) =
-      ((GObjectClass *) empathy_roster_item_parent_class)->constructed;
+      ((GObjectClass *) empathy_roster_contact_parent_class)->constructed;
 
   if (chain_up != NULL)
     chain_up (object);
@@ -302,11 +302,11 @@ empathy_roster_item_constructed (GObject *object)
 }
 
 static void
-empathy_roster_item_dispose (GObject *object)
+empathy_roster_contact_dispose (GObject *object)
 {
-  EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
+  EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
   void (*chain_up) (GObject *) =
-      ((GObjectClass *) empathy_roster_item_parent_class)->dispose;
+      ((GObjectClass *) empathy_roster_contact_parent_class)->dispose;
 
   g_clear_object (&self->priv->individual);
 
@@ -315,28 +315,28 @@ empathy_roster_item_dispose (GObject *object)
 }
 
 static void
-empathy_roster_item_finalize (GObject *object)
+empathy_roster_contact_finalize (GObject *object)
 {
-  //EmpathyRosterItem *self = EMPATHY_ROSTER_ITEM (object);
+  //EmpathyRosterContact *self = EMPATHY_ROSTER_CONTACT (object);
   void (*chain_up) (GObject *) =
-      ((GObjectClass *) empathy_roster_item_parent_class)->finalize;
+      ((GObjectClass *) empathy_roster_contact_parent_class)->finalize;
 
   if (chain_up != NULL)
     chain_up (object);
 }
 
 static void
-empathy_roster_item_class_init (
-    EmpathyRosterItemClass *klass)
+empathy_roster_contact_class_init (
+    EmpathyRosterContactClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
   GParamSpec *spec;
 
-  oclass->get_property = empathy_roster_item_get_property;
-  oclass->set_property = empathy_roster_item_set_property;
-  oclass->constructed = empathy_roster_item_constructed;
-  oclass->dispose = empathy_roster_item_dispose;
-  oclass->finalize = empathy_roster_item_finalize;
+  oclass->get_property = empathy_roster_contact_get_property;
+  oclass->set_property = empathy_roster_contact_set_property;
+  oclass->constructed = empathy_roster_contact_constructed;
+  oclass->dispose = empathy_roster_contact_dispose;
+  oclass->finalize = empathy_roster_contact_finalize;
 
   spec = g_param_spec_object ("individual", "Individual",
       "FolksIndividual",
@@ -356,17 +356,17 @@ empathy_roster_item_class_init (
       G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_ALIAS, spec);
 
-  g_type_class_add_private (klass, sizeof (EmpathyRosterItemPriv));
+  g_type_class_add_private (klass, sizeof (EmpathyRosterContactPriv));
 }
 
 static void
-empathy_roster_item_init (EmpathyRosterItem *self)
+empathy_roster_contact_init (EmpathyRosterContact *self)
 {
   GtkWidget *main_box, *box, *first_line_box;
   GtkStyleContext *context;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
-      EMPATHY_TYPE_ROSTER_ITEM, EmpathyRosterItemPriv);
+      EMPATHY_TYPE_ROSTER_CONTACT, EmpathyRosterContactPriv);
 
   gtk_widget_set_size_request (GTK_WIDGET (self), 300, 64);
 
@@ -426,11 +426,11 @@ empathy_roster_item_init (EmpathyRosterItem *self)
 }
 
 GtkWidget *
-empathy_roster_item_new (FolksIndividual *individual)
+empathy_roster_contact_new (FolksIndividual *individual)
 {
   g_return_val_if_fail (FOLKS_IS_INDIVIDUAL (individual), NULL);
 
-  return g_object_new (EMPATHY_TYPE_ROSTER_ITEM,
+  return g_object_new (EMPATHY_TYPE_ROSTER_CONTACT,
       "individual", individual,
       "bottom-padding", 8,
       "top-padding", 8,
@@ -440,13 +440,13 @@ empathy_roster_item_new (FolksIndividual *individual)
 }
 
 FolksIndividual *
-empathy_roster_item_get_individual (EmpathyRosterItem *self)
+empathy_roster_contact_get_individual (EmpathyRosterContact *self)
 {
   return self->priv->individual;
 }
 
 gboolean
-empathy_roster_item_is_online (EmpathyRosterItem *self)
+empathy_roster_contact_is_online (EmpathyRosterContact *self)
 {
   return self->priv->online;
 }

@@ -3,7 +3,7 @@
 
 #include "empathy-roster-view.h"
 
-#include <libempathy-gtk/empathy-roster-item.h>
+#include <libempathy-gtk/empathy-roster-contact.h>
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
@@ -28,7 +28,7 @@ struct _EmpathyRosterViewPriv
 {
   EmpathyIndividualManager *manager;
 
-  /* FolksIndividual (borrowed) -> EmpathyRosterItem (borrowed) */
+  /* FolksIndividual (borrowed) -> EmpathyRosterContact (borrowed) */
   GHashTable *items;
 
   gboolean show_offline;
@@ -104,7 +104,7 @@ individual_added (EmpathyRosterView *self,
   if (item != NULL)
     return;
 
-  item = empathy_roster_item_new (individual);
+  item = empathy_roster_contact_new (individual);
 
   /* Need to refilter if online is changed */
   g_signal_connect (item, "notify::online",
@@ -161,15 +161,15 @@ members_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static gint
-roster_view_sort (EmpathyRosterItem *a,
-    EmpathyRosterItem *b,
+roster_view_sort (EmpathyRosterContact *a,
+    EmpathyRosterContact *b,
     EmpathyRosterView *self)
 {
   FolksIndividual *ind_a, *ind_b;
   const gchar *alias_a, *alias_b;
 
-  ind_a = empathy_roster_item_get_individual (a);
-  ind_b = empathy_roster_item_get_individual (b);
+  ind_a = empathy_roster_contact_get_individual (a);
+  ind_b = empathy_roster_contact_get_individual (b);
 
   alias_a = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (ind_a));
   alias_b = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (ind_b));
@@ -202,12 +202,12 @@ filter_list (GtkWidget *child,
     gpointer user_data)
 {
   EmpathyRosterView *self = user_data;
-  EmpathyRosterItem *item = EMPATHY_ROSTER_ITEM (child);
+  EmpathyRosterContact *item = EMPATHY_ROSTER_CONTACT (child);
 
   if (self->priv->show_offline)
     return TRUE;
 
-  return empathy_roster_item_is_online (item);
+  return empathy_roster_contact_is_online (item);
 }
 
 static void
