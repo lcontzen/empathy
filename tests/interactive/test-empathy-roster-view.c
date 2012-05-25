@@ -3,15 +3,34 @@
 #include <libempathy-gtk/empathy-roster-view.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
+static gboolean show_offline = FALSE;
+
+static GOptionEntry entries[] =
+{
+  { "offline", 0, 0, G_OPTION_ARG_NONE, &show_offline, "Show offline contacts", NULL },
+  { NULL }
+};
+
 int
 main (int argc,
     char **argv)
 {
   GtkWidget *window, *view, *scrolled;
   EmpathyIndividualManager *mgr;
+  GError *error = NULL;
+  GOptionContext *context;
 
   gtk_init (&argc, &argv);
   empathy_gtk_init ();
+
+  context = g_option_context_new ("- test tree model performance");
+  g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
+  g_option_context_add_group (context, gtk_get_option_group (TRUE));
+  if (!g_option_context_parse (context, &argc, &argv, &error))
+    {
+      g_print ("option parsing failed: %s\n", error->message);
+      return 1;
+    }
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
@@ -20,6 +39,8 @@ main (int argc,
   mgr = empathy_individual_manager_dup_singleton ();
 
   view = empathy_roster_view_new (mgr);
+
+  empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
 
   g_object_unref (mgr);
 
