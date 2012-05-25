@@ -83,9 +83,6 @@
 #define SELF_VIDEO_SECTION_MARGIN 2
 #define SELF_VIDEO_SECTION_BORDER SELF_VIDEO_SECTION_MARGIN*2
 
-#define FLOATING_TOOLBAR_OPACITY 192
-#define FLOATING_TOOLBAR_SPACING 20
-
 /* The avatar's default width and height are set to the same value because we
    want a square icon. */
 #define REMOTE_CONTACT_AVATAR_DEFAULT_HEIGHT REMOTE_VIDEO_DEFAULT_HEIGHT
@@ -1550,7 +1547,6 @@ empathy_call_window_init (EmpathyCallWindow *self)
   gchar *filename;
   ClutterConstraint *constraint;
   ClutterActor *remote_avatar;
-  GtkCssProvider *provider;
   ClutterColor black = { 0, 0, 0, 0 };
   ClutterMargin overlay_margin = { OVERLAY_MARGIN, OVERLAY_MARGIN,
     OVERLAY_MARGIN, OVERLAY_MARGIN };
@@ -1616,18 +1612,6 @@ empathy_call_window_init (EmpathyCallWindow *self)
     NULL);
 
   empathy_set_css_provider (GTK_WIDGET (self));
-
-  /* FIXME: we should use a stock "OSD" style class for the toolbar,
-   * once it's available in GTK+/Adwaita.
-   */
-  provider = gtk_css_provider_new ();
-  gtk_css_provider_load_from_data (provider,
-      "#CallFloatingToolbar { border-radius: 6px; }", -1, NULL);
-  gtk_style_context_add_provider (
-      gtk_widget_get_style_context (priv->bottom_toolbar),
-      GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-  g_object_unref (provider);
-
   gtk_action_set_sensitive (priv->menu_fullscreen, FALSE);
 
   priv->camera_monitor = empathy_camera_monitor_dup_singleton ();
@@ -1713,14 +1697,15 @@ empathy_call_window_init (EmpathyCallWindow *self)
   clutter_actor_set_reactive (priv->floating_toolbar, TRUE);
   make_background_transparent (GTK_CLUTTER_ACTOR (priv->floating_toolbar));
 
+  gtk_style_context_add_class (
+      gtk_widget_get_style_context (GTK_WIDGET (priv->bottom_toolbar)),
+      GTK_STYLE_CLASS_OSD);
   gtk_widget_reparent (priv->bottom_toolbar,
       gtk_clutter_actor_get_widget (GTK_CLUTTER_ACTOR (priv->floating_toolbar)));
 
   clutter_bin_layout_add (CLUTTER_BIN_LAYOUT (priv->overlay_layout),
       priv->floating_toolbar,
       CLUTTER_BIN_ALIGNMENT_CENTER, CLUTTER_BIN_ALIGNMENT_END);
-
-  clutter_actor_set_opacity (priv->floating_toolbar, FLOATING_TOOLBAR_OPACITY);
 
   clutter_actor_raise_top (priv->floating_toolbar);
 
@@ -1739,7 +1724,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
   /* transition from any state to "fade-in" state */
   clutter_state_set (priv->transitions, NULL, "fade-in",
       priv->floating_toolbar,
-      "opacity", CLUTTER_EASE_OUT_QUAD, FLOATING_TOOLBAR_OPACITY,
+      "opacity", CLUTTER_EASE_OUT_QUAD, 255,
       NULL);
 
   /* put the actor into the "fade-in" state with no animation */
