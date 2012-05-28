@@ -5,6 +5,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libempathy-gtk/empathy-roster-contact.h>
+#include <libempathy-gtk/empathy-roster-group.h>
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
@@ -40,6 +41,8 @@ struct _EmpathyRosterViewPriv
    * I prefer to stay coherent in the way this hash is managed.
    */
   GHashTable *roster_contacts;
+  /* (gchar *group_name) -> EmpathyRosterGroup (borrowed) */
+  GHashTable *roster_groups;
 
   gboolean show_offline;
   gboolean show_groups;
