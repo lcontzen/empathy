@@ -131,6 +131,51 @@ add_roster_contact (EmpathyRosterView *self,
 }
 
 static void
+group_expanded_cb (EmpathyRosterGroup *group,
+    GParamSpec *spec,
+    EmpathyRosterView *self)
+{
+  GList *widgets, *l;
+
+  widgets = empathy_roster_group_get_widgets (group);
+  for (l = widgets; l != NULL; l = g_list_next (l))
+    {
+      egg_list_box_child_changed (EGG_LIST_BOX (self), l->data);
+    }
+
+  g_list_free (widgets);
+}
+
+static EmpathyRosterGroup *
+lookup_roster_group (EmpathyRosterView *self,
+    const gchar *group)
+{
+  return g_hash_table_lookup (self->priv->roster_groups, group);
+}
+
+static void
+ensure_roster_group (EmpathyRosterView *self,
+    const gchar *group)
+{
+  GtkWidget *roster_group;
+
+  roster_group = (GtkWidget *) lookup_roster_group (self, group);
+  if (roster_group != NULL)
+    return;
+
+  roster_group = empathy_roster_group_new (group);
+
+  g_signal_connect (roster_group, "notify::expanded",
+      G_CALLBACK (group_expanded_cb), self);
+
+  gtk_widget_show (roster_group);
+  gtk_container_add (GTK_CONTAINER (self), roster_group);
+
+  g_hash_table_insert (self->priv->roster_groups, g_strdup (group),
+      roster_group);
+}
+
+static void
 add_to_group (EmpathyRosterView *self,
     FolksIndividual *individual,
     const gchar *group)
@@ -142,7 +187,9 @@ add_to_group (EmpathyRosterView *self,
   if (contacts == NULL)
     return;
 
-  /* TODO: ensure group widget */
+  if (tp_strdiff (group, NO_GROUP))
+    ensure_roster_group (self, group);
+
   contact = add_roster_contact (self, individual, group);
   g_hash_table_insert (contacts, g_strdup (group), contact);
 }
@@ -196,21 +243,54 @@ individual_added (EmpathyRosterView *self,
 }
 
 static void
+update_group_widgets_count (EmpathyRosterView *self,
+    EmpathyRosterGroup *group,
+    EmpathyRosterContact *contact,
+    gboolean displayed)
+{
+  if (displayed)
+    {
+      if (empathy_roster_group_add_widget (group, GTK_WIDGET (contact)) == 1)
+        {
+          egg_list_box_child_changed (EGG_LIST_BOX (self),
+              GTK_WIDGET (group));
+        }
+    }
+  else
+    {
+      if (empathy_roster_group_remove_widget (group, GTK_WIDGET (contact)) == 0)
+        {
+          egg_list_box_child_changed (EGG_LIST_BOX (self),
+              GTK_WIDGET (group));
+        }
+    }
+}
+
+static void
 individual_removed (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
   GHashTable *contacts;
   GHashTableIter iter;
-  gpointer value;
+  gpointer key, value;
 
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts == NULL)
     return;
 
   g_hash_table_iter_init (&iter, contacts);
-  while (g_hash_table_iter_next (&iter, NULL, &value))
+  while (g_hash_table_iter_next (&iter, &key, &value))
     {
+      const gchar *group_name = key;
       GtkWidget *contact = value;
+      EmpathyRosterGroup *group;
+
+      group = lookup_roster_group (self, group_name);
+      if (group != NULL)
+        {
+          update_group_widgets_count (self, group,
+              EMPATHY_ROSTER_CONTACT (contact), FALSE);
+        }
 
       gtk_container_remove (GTK_CONTAINER (self), contact);
     }
@@ -244,9 +324,8 @@ members_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static gint
-roster_view_sort (EmpathyRosterContact *a,
-    EmpathyRosterContact *b,
-    EmpathyRosterView *self)
+compare_roster_contacts_by_alias (EmpathyRosterContact *a,
+    EmpathyRosterContact *b)
 {
   FolksIndividual *ind_a, *ind_b;
   const gchar *alias_a, *alias_b;
@@ -258,6 +337,102 @@ roster_view_sort (EmpathyRosterContact *a,
   alias_b = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (ind_b));
 
   return g_ascii_strcasecmp (alias_a, alias_b);
+}
+
+static gint
+compare_roster_contacts_no_group (EmpathyRosterView *self,
+    EmpathyRosterContact *a,
+    EmpathyRosterContact *b)
+{
+  return compare_roster_contacts_by_alias (a, b);
+}
+
+static gint
+compare_group_names (const gchar *group_a,
+    const gchar *group_b)
+{
+  return g_ascii_strcasecmp (group_a, group_b);
+}
+
+static gint
+compare_roster_contacts_with_groups (EmpathyRosterView *self,
+    EmpathyRosterContact *a,
+    EmpathyRosterContact *b)
+{
+  const gchar *group_a, *group_b;
+
+  group_a = empathy_roster_contact_get_group (a);
+  group_b = empathy_roster_contact_get_group (b);
+
+  if (!tp_strdiff (group_a, group_b))
+    /* Same group, compare the contacts */
+    return compare_roster_contacts_by_alias (a, b);
+
+  /* Sort by group */
+  return compare_group_names (group_a, group_b);
+}
+
+static gint
+compare_roster_contacts (EmpathyRosterView *self,
+    EmpathyRosterContact *a,
+    EmpathyRosterContact *b)
+{
+  if (!self->priv->show_groups)
+    return compare_roster_contacts_no_group (self, a, b);
+  else
+    return compare_roster_contacts_with_groups (self, a, b);
+}
+
+static gint
+compare_roster_groups (EmpathyRosterGroup *a,
+    EmpathyRosterGroup *b)
+{
+  const gchar *name_a, *name_b;
+
+  name_a = empathy_roster_group_get_name (a);
+  name_b = empathy_roster_group_get_name (b);
+
+  return compare_group_names (name_a, name_b);
+}
+
+static gint
+compare_contact_group (EmpathyRosterContact *contact,
+    EmpathyRosterGroup *group)
+{
+  const char *contact_group, *group_name;
+
+  contact_group = empathy_roster_contact_get_group (contact);
+  group_name = empathy_roster_group_get_name (group);
+
+  if (!tp_strdiff (contact_group, group_name))
+    /* @contact is in @group, @group has to be displayed first */
+    return 1;
+
+  /* @contact is in a different group, sort by group name */
+  return compare_group_names (contact_group, group_name);
+}
+
+static gint
+roster_view_sort (gconstpointer a,
+    gconstpointer b,
+    gpointer user_data)
+{
+  EmpathyRosterView *self = user_data;
+
+  if (EMPATHY_IS_ROSTER_CONTACT (a) && EMPATHY_IS_ROSTER_CONTACT (b))
+    return compare_roster_contacts (self, EMPATHY_ROSTER_CONTACT (a),
+        EMPATHY_ROSTER_CONTACT (b));
+  else if (EMPATHY_IS_ROSTER_GROUP (a) && EMPATHY_IS_ROSTER_GROUP (b))
+    return compare_roster_groups (EMPATHY_ROSTER_GROUP (a),
+        EMPATHY_ROSTER_GROUP (b));
+  else if (EMPATHY_IS_ROSTER_CONTACT (a) && EMPATHY_IS_ROSTER_GROUP (b))
+    return compare_contact_group (EMPATHY_ROSTER_CONTACT (a),
+        EMPATHY_ROSTER_GROUP (b));
+  else if (EMPATHY_IS_ROSTER_GROUP (a) && EMPATHY_IS_ROSTER_CONTACT (b))
+    return -1 * compare_contact_group (EMPATHY_ROSTER_CONTACT (b),
+        EMPATHY_ROSTER_GROUP (a));
+
+  g_return_val_if_reached (0);
 }
 
 static void
@@ -281,16 +456,60 @@ update_separator (GtkWidget **separator,
 }
 
 static gboolean
+filter_contact (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
+{
+  gboolean displayed;
+
+  if (self->priv->show_offline)
+    {
+      displayed = TRUE;
+    }
+  else
+    {
+      displayed = empathy_roster_contact_is_online (contact);
+    }
+
+  if (self->priv->show_groups)
+    {
+      const gchar *group_name;
+      EmpathyRosterGroup *group;
+
+      group_name = empathy_roster_contact_get_group (contact);
+      group = lookup_roster_group (self, group_name);
+
+      if (group != NULL)
+        {
+          update_group_widgets_count (self, group, contact, displayed);
+
+          if (!gtk_expander_get_expanded (GTK_EXPANDER (group)))
+            return FALSE;
+        }
+    }
+
+  return displayed;
+}
+
+static gboolean
+filter_group (EmpathyRosterView *self,
+    EmpathyRosterGroup *group)
+{
+  return empathy_roster_group_get_widgets_count (group);
+}
+
+static gboolean
 filter_list (GtkWidget *child,
     gpointer user_data)
 {
   EmpathyRosterView *self = user_data;
-  EmpathyRosterContact *contact = EMPATHY_ROSTER_CONTACT (child);
 
-  if (self->priv->show_offline)
-    return TRUE;
+  if (EMPATHY_IS_ROSTER_CONTACT (child))
+    return filter_contact (self, EMPATHY_ROSTER_CONTACT (child));
 
-  return empathy_roster_contact_is_online (contact);
+  else if (EMPATHY_IS_ROSTER_GROUP (child))
+    return filter_group (self, EMPATHY_ROSTER_GROUP (child));
+
+  g_return_val_if_reached (FALSE);
 }
 
 static void
@@ -316,6 +535,7 @@ remove_from_group (EmpathyRosterView *self,
 {
   GHashTable *contacts;
   GtkWidget *contact;
+  EmpathyRosterGroup *roster_group;
 
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts == NULL)
@@ -325,13 +545,22 @@ remove_from_group (EmpathyRosterView *self,
   if (contact == NULL)
     return;
 
-  gtk_container_remove (GTK_CONTAINER (self), contact);
   g_hash_table_remove (contacts, group);
 
   if (g_hash_table_size (contacts) == 0)
     {
       add_to_group (self, individual, UNGROUPPED);
     }
+
+  roster_group = lookup_roster_group (self, group);
+
+  if (roster_group != NULL)
+    {
+      update_group_widgets_count (self, roster_group,
+          EMPATHY_ROSTER_CONTACT (contact), FALSE);
+    }
+
+  gtk_container_remove (GTK_CONTAINER (self), contact);
 }
 
 static void
@@ -374,7 +603,7 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (groups_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
-      (GCompareDataFunc) roster_view_sort, self, NULL);
+      roster_view_sort, self, NULL);
 
   egg_list_box_set_separator_funcs (EGG_LIST_BOX (self), update_separator,
       self, NULL);
@@ -403,6 +632,7 @@ empathy_roster_view_finalize (GObject *object)
       ((GObjectClass *) empathy_roster_view_parent_class)->finalize;
 
   g_hash_table_unref (self->priv->roster_contacts);
+  g_hash_table_unref (self->priv->roster_groups);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -450,6 +680,8 @@ empathy_roster_view_init (EmpathyRosterView *self)
 
   self->priv->roster_contacts = g_hash_table_new_full (NULL, NULL,
       NULL, (GDestroyNotify) g_hash_table_unref);
+  self->priv->roster_groups = g_hash_table_new_full (g_str_hash, g_str_equal,
+      g_free, NULL);
 }
 
 GtkWidget *
