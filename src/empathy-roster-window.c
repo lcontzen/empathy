@@ -2239,10 +2239,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       self->priv->throbber,
       FALSE, TRUE, 0);
 
-  /* XXX: this class is designed to live for the duration of the program,
-   * so it's got a race condition between its signal handlers and its
-   * finalization. The class is planned to be removed, so we won't fix
-   * this before then. */
   self->priv->individual_manager = empathy_individual_manager_dup_singleton ();
 
   if (!empathy_individual_manager_get_contacts_loaded (
