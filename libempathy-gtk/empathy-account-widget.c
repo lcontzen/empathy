@@ -762,9 +762,11 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
         {
           gchar *str;
 
-          str = g_strdup_printf (_("%s:"), param_name_formatted);
+          str = g_strdup_printf (_("%s"), param_name_formatted);
           widget = gtk_label_new (str);
-          gtk_misc_set_alignment (GTK_MISC (widget), 0, 0.5);
+          gtk_misc_set_alignment (GTK_MISC (widget), 1., 0.5);
+          gtk_style_context_add_class (gtk_widget_get_style_context (widget),
+              GTK_STYLE_CLASS_DIM_LABEL);
           g_free (str);
 
           gtk_grid_attach (GTK_GRID (grid_settings),
