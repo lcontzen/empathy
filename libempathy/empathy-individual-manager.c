@@ -24,6 +24,7 @@
 
 #include <string.h>
 
+#include <telepathy-glib/telepathy-glib.h>
 #include <telepathy-glib/account-manager.h>
 #include <telepathy-glib/enums.h>
 #include <telepathy-glib/proxy-subclass.h>
@@ -251,9 +252,6 @@ individual_manager_dispose (GObject *object)
   EmpathyIndividualManagerPriv *priv = GET_PRIV (object);
 
   g_hash_table_unref (priv->individuals);
-
-  g_signal_handlers_disconnect_by_func (priv->aggregator,
-      aggregator_individuals_changed_cb, object);
   tp_clear_object (&priv->aggregator);
 
   G_OBJECT_CLASS (empathy_individual_manager_parent_class)->dispose (object);
@@ -382,10 +380,10 @@ empathy_individual_manager_init (EmpathyIndividualManager *self)
       g_free, g_object_unref);
 
   priv->aggregator = folks_individual_aggregator_new ();
-  g_signal_connect (priv->aggregator, "individuals-changed-detailed",
-      G_CALLBACK (aggregator_individuals_changed_cb), self);
-  g_signal_connect (priv->aggregator, "notify::is-quiescent",
-      G_CALLBACK (aggregator_is_quiescent_notify_cb), self);
+  tp_g_signal_connect_object (priv->aggregator, "individuals-changed-detailed",
+      G_CALLBACK (aggregator_individuals_changed_cb), self, 0);
+  tp_g_signal_connect_object (priv->aggregator, "notify::is-quiescent",
+      G_CALLBACK (aggregator_is_quiescent_notify_cb), self, 0);
   folks_individual_aggregator_prepare (priv->aggregator, NULL, NULL);
 }
 
