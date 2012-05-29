@@ -6,6 +6,7 @@
 
 #include <libempathy-gtk/empathy-roster-contact.h>
 #include <libempathy-gtk/empathy-roster-group.h>
+#include <libempathy-gtk/empathy-ui-utils.h>
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
@@ -46,6 +47,8 @@ struct _EmpathyRosterViewPriv
 
   gboolean show_offline;
   gboolean show_groups;
+
+  EmpathyLiveSearch *search;
 };
 
 static void
@@ -456,18 +459,40 @@ update_separator (GtkWidget **separator,
 }
 
 static gboolean
+is_searching (EmpathyRosterView *self)
+{
+  if (self->priv->search == NULL)
+    return FALSE;
+
+  return gtk_widget_get_visible (GTK_WIDGET (self->priv->search));
+}
+
+static gboolean
 filter_contact (EmpathyRosterView *self,
     EmpathyRosterContact *contact)
 {
   gboolean displayed;
 
-  if (self->priv->show_offline)
+  if (is_searching (self))
     {
-      displayed = TRUE;
+      FolksIndividual *individual;
+
+      individual = empathy_roster_contact_get_individual (contact);
+
+      displayed = empathy_individual_match_string (individual,
+          empathy_live_search_get_text (self->priv->search),
+          empathy_live_search_get_words (self->priv->search));
     }
   else
     {
-      displayed = empathy_roster_contact_is_online (contact);
+      if (self->priv->show_offline)
+        {
+          displayed = TRUE;
+        }
+      else
+        {
+          displayed = empathy_roster_contact_is_online (contact);
+        }
     }
 
   if (self->priv->show_groups)
@@ -482,7 +507,9 @@ filter_contact (EmpathyRosterView *self,
         {
           update_group_widgets_count (self, group, contact, displayed);
 
-          if (!gtk_expander_get_expanded (GTK_EXPANDER (group)))
+          /* When searching, always display even if the group is closed */
+          if (!is_searching (self) &&
+              !gtk_expander_get_expanded (GTK_EXPANDER (group)))
             return FALSE;
         }
     }
@@ -618,6 +645,7 @@ empathy_roster_view_dispose (GObject *object)
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_view_parent_class)->dispose;
 
+  empathy_roster_view_set_live_search (self, NULL);
   g_clear_object (&self->priv->manager);
 
   if (chain_up != NULL)
@@ -736,4 +764,69 @@ empathy_roster_view_show_groups (EmpathyRosterView *self,
   populate_view (self);
 
   g_object_notify (G_OBJECT (self), "show-groups");
+}
+
+static void
+select_first_contact (EmpathyRosterView *self)
+{
+  GList *children, *l;
+
+  children = gtk_container_get_children (GTK_CONTAINER (self));
+  for (l = children; l != NULL; l = g_list_next (l))
+    {
+      GtkWidget *child = l->data;
+
+      if (!gtk_widget_get_child_visible (child))
+        continue;
+
+      if (!EMPATHY_IS_ROSTER_CONTACT (child))
+        continue;
+
+      egg_list_box_select_child (EGG_LIST_BOX (self), child);
+      break;
+    }
+
+  g_list_free (children);
+}
+
+static void
+search_text_notify_cb (EmpathyLiveSearch *search,
+    GParamSpec *pspec,
+    EmpathyRosterView *self)
+{
+  egg_list_box_refilter (EGG_LIST_BOX (self));
+
+  select_first_contact (self);
+}
+
+static void
+search_activate_cb (GtkWidget *search,
+  EmpathyRosterView *self)
+{
+  /* TODO */
+}
+
+void
+empathy_roster_view_set_live_search (EmpathyRosterView *self,
+    EmpathyLiveSearch *search)
+{
+  if (self->priv->search != NULL)
+    {
+      g_signal_handlers_disconnect_by_func (self->priv->search,
+          search_text_notify_cb, self);
+      g_signal_handlers_disconnect_by_func (self->priv->search,
+          search_activate_cb, self);
+
+      g_clear_object (&self->priv->search);
+    }
+
+  if (search == NULL)
+    return;
+
+  self->priv->search = g_object_ref (search);
+
+  g_signal_connect (self->priv->search, "notify::text",
+      G_CALLBACK (search_text_notify_cb), self);
+  g_signal_connect (self->priv->search, "activate",
+      G_CALLBACK (search_activate_cb), self);
 }

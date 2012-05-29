@@ -17,7 +17,7 @@ int
 main (int argc,
     char **argv)
 {
-  GtkWidget *window, *view, *scrolled;
+  GtkWidget *window, *view, *scrolled, *box, *search;
   EmpathyIndividualManager *mgr;
   GError *error = NULL;
   GOptionContext *context;
@@ -38,6 +38,8 @@ main (int argc,
 
   empathy_set_css_provider (window);
 
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
+
   mgr = empathy_individual_manager_dup_singleton ();
 
   view = empathy_roster_view_new (mgr);
@@ -47,13 +49,20 @@ main (int argc,
 
   g_object_unref (mgr);
 
+  search = empathy_live_search_new (view);
+  empathy_roster_view_set_live_search (EMPATHY_ROSTER_VIEW (view),
+      EMPATHY_LIVE_SEARCH (search));
+
   scrolled = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
   egg_list_box_add_to_scrolled (EGG_LIST_BOX (view),
       GTK_SCROLLED_WINDOW (scrolled));
-  gtk_container_add (GTK_CONTAINER (window), scrolled);
+
+  gtk_box_pack_start (GTK_BOX (box), search, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
+  gtk_container_add (GTK_CONTAINER (window), box);
 
   gtk_window_set_default_size (GTK_WINDOW (window), 300, 600);
   gtk_widget_show_all (window);
