@@ -20,10 +20,13 @@
         <child>
           <object class="GtkLabel" id="label_password">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">Pass_word:</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">Pass_word</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">entry_password</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
             <property name="top_attach">2</property>
@@ -32,10 +35,13 @@
         <child>
           <object class="GtkLabel" id="label_uin">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">ICQ _UIN:</property>
+            <property name="xalign">1</property>
+            <property name="label" translatable="yes">ICQ _UIN</property>
             <property name="use_underline">True</property>
             <property name="mnemonic_widget">entry_uin</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
           </packing>
@@ -115,10 +121,13 @@
             <child>
               <object class="GtkLabel" id="label_charset">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">Ch_aracter set:</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">Ch_aracter set</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">entry_charset</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
               </packing>
@@ -149,10 +158,13 @@
             <child>
               <object class="GtkLabel" id="label_port">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">_Port:</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">_Port</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">spinbutton_port</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="top_attach">2</property>
@@ -162,10 +174,13 @@
             <child>
               <object class="GtkLabel" id="label_server">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">_Server:</property>
+                <property name="xalign">1</property>
+                <property name="label" translatable="yes">_Server</property>
                 <property name="use_underline">True</property>
                 <property name="mnemonic_widget">entry_server</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="top_attach">1</property>

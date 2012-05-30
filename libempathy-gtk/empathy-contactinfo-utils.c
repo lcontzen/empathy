@@ -227,9 +227,9 @@ empathy_contact_info_field_label (const char *field_name,
     join = build_parameters_string (parameters);
 
   if (join != NULL)
-    ret = g_strdup_printf ("%s (%s):", title, join);
+    ret = g_strdup_printf ("%s (%s)", title, join);
   else
-    ret = g_strdup_printf ("%s:", title);
+    ret = g_strdup_printf ("%s", title);
 
   g_free (join);
 
