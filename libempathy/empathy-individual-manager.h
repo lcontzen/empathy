@@ -86,5 +86,8 @@ void empathy_individual_manager_set_blocked (EmpathyIndividualManager *self,
 gboolean empathy_individual_manager_get_contacts_loaded (
     EmpathyIndividualManager *self);
 
+GList * empathy_individual_manager_get_top_individuals (
+    EmpathyIndividualManager *self);
+
 G_END_DECLS
 #endif /* __EMPATHY_INDIVIDUAL_MANAGER_H__ */

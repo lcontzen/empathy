@@ -43,6 +43,11 @@
 
 #define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyIndividualManager)
 
+/* We just expose the $TOP_INDIVIDUALS_LEN more popular individuals as that's
+ * what the view actually care about. We just want to notify it when this list
+ * changes, not when the position of every single individual is updated. */
+#define TOP_INDIVIDUALS_LEN 5
+
 /* This class only stores and refs Individuals who contain an EmpathyContact.
  *
  * This class merely forwards along signals from the aggregator and individuals
@@ -52,7 +57,19 @@ typedef struct
   FolksIndividualAggregator *aggregator;
   GHashTable *individuals; /* Individual.id -> Individual */
   gboolean contacts_loaded;
+
+  /* FolksIndividual sorted by popularity (most popular first) */
+  GSequence *individuals_pop;
+  /* The TOP_INDIVIDUALS_LEN first FolksIndividual (borrowed) from
+   * individuals_pop */
+  GList *top_individuals;
 } EmpathyIndividualManagerPriv;
+
+enum
+{
+  PROP_TOP_INDIVIDUALS = 1,
+  N_PROPS
+};
 
 enum
 {
@@ -69,6 +86,25 @@ G_DEFINE_TYPE (EmpathyIndividualManager, empathy_individual_manager,
     G_TYPE_OBJECT);
 
 static EmpathyIndividualManager *manager_singleton = NULL;
+
+static void
+individual_manager_get_property (GObject *object,
+    guint property_id,
+    GValue *value,
+    GParamSpec *pspec)
+{
+  EmpathyIndividualManager *self = EMPATHY_INDIVIDUAL_MANAGER (object);
+  EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
+
+  switch (property_id)
+    {
+      case PROP_TOP_INDIVIDUALS:
+        g_value_set_pointer (value, priv->top_individuals);
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+        break;
+    }
+}
 
 static void
 individual_group_changed_cb (FolksIndividual *individual,
@@ -91,6 +127,103 @@ individual_notify_is_favourite_cb (FolksIndividual *individual,
       is_favourite);
 }
 
+static guint
+compute_popularity (FolksIndividual *individual)
+{
+  /* TODO: we should have a better heuristic using the last time we interacted
+   * with the contact as well. */
+  return folks_interaction_details_get_im_interaction_count (
+      FOLKS_INTERACTION_DETAILS (individual));
+}
+
+static void
+check_top_individuals (EmpathyIndividualManager *self)
+{
+  EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
+  GSequenceIter *iter;
+  GList *l, *new_list = NULL;
+  gboolean modified = FALSE;
+  guint i;
+
+  iter = g_sequence_get_begin_iter (priv->individuals_pop);
+  l = priv->top_individuals;
+
+  /* Check if the TOP_INDIVIDUALS_LEN first individuals in individuals_pop are
+   * still the same as the ones in top_individuals */
+  for (i = 0; i < TOP_INDIVIDUALS_LEN && !g_sequence_iter_is_end (iter); i++)
+    {
+      FolksIndividual *individual = g_sequence_get (iter);
+      guint pop;
+
+      /* Don't include individual having 0 as pop */
+      pop = compute_popularity (individual);
+      if (pop <= 0)
+        break;
+
+      if (!modified)
+        {
+          if (l == NULL)
+            {
+              /* Old list is shorter than the new one */
+              modified = TRUE;
+            }
+          else
+            {
+              modified = (individual != l->data);
+
+              l = g_list_next (l);
+            }
+        }
+
+      new_list = g_list_prepend (new_list, individual);
+
+      iter = g_sequence_iter_next (iter);
+    }
+
+  g_list_free (priv->top_individuals);
+  priv->top_individuals = g_list_reverse (new_list);
+
+  if (modified)
+    {
+      DEBUG ("Top individuals changed:");
+
+      for (l = priv->top_individuals; l != NULL; l = g_list_next (l))
+        {
+          FolksIndividual *individual = l->data;
+
+          DEBUG ("  %s (%u)",
+              folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual)),
+              compute_popularity (individual));
+        }
+
+      g_object_notify (G_OBJECT (self), "top-individuals");
+    }
+}
+
+static gint
+compare_individual_by_pop (gconstpointer a,
+    gconstpointer b,
+    gpointer user_data)
+{
+  guint pop_a, pop_b;
+
+  pop_a = compute_popularity (FOLKS_INDIVIDUAL (a));
+  pop_b = compute_popularity (FOLKS_INDIVIDUAL (b));
+
+  return pop_b - pop_a;
+}
+
+static void
+individual_notify_im_interaction_count (FolksIndividual *individual,
+    GParamSpec *pspec,
+    EmpathyIndividualManager *self)
+{
+  EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
+
+  g_sequence_sort (priv->individuals_pop, compare_individual_by_pop, NULL);
+  check_top_individuals (self);
+}
+
 static void
 add_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
 {
@@ -100,21 +233,38 @@ add_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
       g_strdup (folks_individual_get_id (individual)),
       g_object_ref (individual));
 
+  g_sequence_insert_sorted (priv->individuals_pop, g_object_ref (individual),
+      compare_individual_by_pop, NULL);
+  check_top_individuals (self);
+
   g_signal_connect (individual, "group-changed",
       G_CALLBACK (individual_group_changed_cb), self);
   g_signal_connect (individual, "notify::is-favourite",
       G_CALLBACK (individual_notify_is_favourite_cb), self);
+  g_signal_connect (individual, "notify::im-interaction-count",
+      G_CALLBACK (individual_notify_im_interaction_count), self);
 }
 
 static void
 remove_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
 {
   EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
+  GSequenceIter *iter;
+
+  iter = g_sequence_lookup (priv->individuals_pop, individual,
+      compare_individual_by_pop, NULL);
+  if (iter != NULL)
+    {
+      g_sequence_remove (iter);
+      check_top_individuals (self);
+    }
 
   g_signal_handlers_disconnect_by_func (individual,
       individual_group_changed_cb, self);
   g_signal_handlers_disconnect_by_func (individual,
       individual_notify_is_favourite_cb, self);
+  g_signal_handlers_disconnect_by_func (individual,
+      individual_notify_im_interaction_count, self);
 
   g_hash_table_remove (priv->individuals, folks_individual_get_id (individual));
 }
@@ -257,6 +407,16 @@ individual_manager_dispose (GObject *object)
   G_OBJECT_CLASS (empathy_individual_manager_parent_class)->dispose (object);
 }
 
+static void
+individual_manager_finalize (GObject *object)
+{
+  EmpathyIndividualManagerPriv *priv = GET_PRIV (object);
+
+  g_sequence_free (priv->individuals_pop);
+
+  G_OBJECT_CLASS (empathy_individual_manager_parent_class)->finalize (object);
+}
+
 static GObject *
 individual_manager_constructor (GType type,
     guint n_props,
@@ -302,9 +462,17 @@ static void
 empathy_individual_manager_class_init (EmpathyIndividualManagerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GParamSpec *spec;
 
+  object_class->get_property = individual_manager_get_property;
   object_class->dispose = individual_manager_dispose;
+  object_class->finalize = individual_manager_finalize;
   object_class->constructor = individual_manager_constructor;
+
+  spec = g_param_spec_pointer ("top-individuals", "top individuals",
+      "Top Individuals",
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (object_class, PROP_TOP_INDIVIDUALS, spec);
 
   signals[GROUPS_CHANGED] =
       g_signal_new ("groups-changed",
@@ -378,6 +546,8 @@ empathy_individual_manager_init (EmpathyIndividualManager *self)
   self->priv = priv;
   priv->individuals = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, g_object_unref);
+
+  priv->individuals_pop = g_sequence_new (g_object_unref);
 
   priv->aggregator = folks_individual_aggregator_new ();
   tp_g_signal_connect_object (priv->aggregator, "individuals-changed-detailed",
@@ -691,4 +861,12 @@ empathy_individual_manager_get_contacts_loaded (EmpathyIndividualManager *self)
   EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
 
   return priv->contacts_loaded;
+}
+
+GList *
+empathy_individual_manager_get_top_individuals (EmpathyIndividualManager *self)
+{
+  EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
+
+  return priv->top_individuals;
 }
