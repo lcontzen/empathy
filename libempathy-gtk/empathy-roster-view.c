@@ -29,6 +29,7 @@ static guint signals[LAST_SIGNAL];
 
 #define NO_GROUP "X-no-group"
 #define UNGROUPPED _("Ungroupped")
+#define TOP_GROUP _("Most Used")
 
 struct _EmpathyRosterViewPriv
 {
@@ -343,10 +344,45 @@ compare_roster_contacts_by_alias (EmpathyRosterContact *a,
 }
 
 static gint
+compare_individual_top_position (EmpathyRosterView *self,
+    EmpathyRosterContact *a,
+    EmpathyRosterContact *b)
+{
+  FolksIndividual *ind_a, *ind_b;
+  GList *tops;
+  gint index_a, index_b;
+
+  ind_a = empathy_roster_contact_get_individual (a);
+  ind_b = empathy_roster_contact_get_individual (b);
+
+  tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
+
+  index_a = g_list_index (tops, ind_a);
+  index_b = g_list_index (tops, ind_b);
+
+  if (index_a == index_b)
+    return 0;
+
+  if (index_a == -1)
+    return 1;
+
+  if (index_b == -1)
+    return -1;
+
+  return index_a - index_b;
+}
+
+static gint
 compare_roster_contacts_no_group (EmpathyRosterView *self,
     EmpathyRosterContact *a,
     EmpathyRosterContact *b)
 {
+  gint top;
+
+  top = compare_individual_top_position (self, a, b);
+  if (top != 0)
+    return top;
+
   return compare_roster_contacts_by_alias (a, b);
 }
 
@@ -354,6 +390,12 @@ static gint
 compare_group_names (const gchar *group_a,
     const gchar *group_b)
 {
+  if (!tp_strdiff (group_a, TOP_GROUP))
+    return -1;
+
+  if (!tp_strdiff (group_b, TOP_GROUP))
+    return 1;
+
   return g_ascii_strcasecmp (group_a, group_b);
 }
 
@@ -539,6 +581,27 @@ filter_list (GtkWidget *child,
   g_return_val_if_reached (FALSE);
 }
 
+/* @list: GList of EmpathyRosterContact
+ *
+ * Returns: %TRUE if @list contains an EmpathyRosterContact associated with
+ * @individual */
+static gboolean
+individual_in_list (FolksIndividual *individual,
+    GList *list)
+{
+  GList *l;
+
+  for (l = list; l != NULL; l = g_list_next (l))
+    {
+      EmpathyRosterContact *contact = l->data;
+
+      if (empathy_roster_contact_get_individual (contact) == individual)
+        return TRUE;
+    }
+
+  return FALSE;
+}
+
 static void
 populate_view (EmpathyRosterView *self)
 {
@@ -591,6 +654,64 @@ remove_from_group (EmpathyRosterView *self,
 }
 
 static void
+update_top_contacts (EmpathyRosterView *self)
+{
+  GList *tops, *l;
+  GList *to_add = NULL, *to_remove = NULL;
+  EmpathyRosterGroup *group;
+
+  if (!self->priv->show_groups)
+    {
+      egg_list_box_resort (EGG_LIST_BOX (self));
+      return;
+    }
+
+  tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
+
+  group = g_hash_table_lookup (self->priv->roster_groups, TOP_GROUP);
+  if (group == NULL)
+    {
+      to_add = g_list_copy (tops);
+    }
+  else
+    {
+      GList *contacts;
+
+      contacts = empathy_roster_group_get_widgets (group);
+
+      /* Check which EmpathyRosterContact have to be removed */
+      for (l = contacts; l != NULL; l = g_list_next (l))
+        {
+          EmpathyRosterContact *contact = l->data;
+          FolksIndividual *individual;
+
+          individual = empathy_roster_contact_get_individual (contact);
+
+          if (g_list_find (tops, individual) == NULL)
+            to_remove = g_list_prepend (to_remove, individual);
+        }
+
+      /* Check which EmpathyRosterContact have to be added */
+      for (l = tops; l != NULL; l = g_list_next (l))
+        {
+          FolksIndividual *individual = l->data;
+
+          if (!individual_in_list (individual, contacts))
+            to_add = g_list_prepend (to_add, individual);
+        }
+    }
+
+  for (l = to_add; l != NULL; l = g_list_next (l))
+    add_to_group (self, l->data, TOP_GROUP);
+
+  for (l = to_remove; l != NULL; l = g_list_next (l))
+    remove_from_group (self, l->data, TOP_GROUP);
+
+  g_list_free (to_add);
+  g_list_free (to_remove);
+}
+
+static void
 groups_changed_cb (EmpathyIndividualManager *manager,
     FolksIndividual *individual,
     gchar *group,
@@ -611,6 +732,14 @@ groups_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+top_individuals_changed_cb (EmpathyIndividualManager *manager,
+    GParamSpec *spec,
+    EmpathyRosterView *self)
+{
+  update_top_contacts (self);
+}
+
+static void
 empathy_roster_view_constructed (GObject *object)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
@@ -628,6 +757,8 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (members_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
+      G_CALLBACK (top_individuals_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       roster_view_sort, self, NULL);
