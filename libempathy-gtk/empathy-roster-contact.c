@@ -385,7 +385,7 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_CONTACT, EmpathyRosterContactPriv);
 
-  gtk_widget_set_size_request (GTK_WIDGET (self), 300, 64);
+  gtk_widget_set_size_request (GTK_WIDGET (self), 300, -1);
 
   main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
@@ -451,10 +451,10 @@ empathy_roster_contact_new (FolksIndividual *individual,
   return g_object_new (EMPATHY_TYPE_ROSTER_CONTACT,
       "individual", individual,
       "group", group,
-      "bottom-padding", 8,
-      "top-padding", 8,
-      "left-padding", 8,
-      "right-padding", 8,
+      "bottom-padding", 4,
+      "top-padding", 4,
+      "left-padding", 4,
+      "right-padding", 12,
       NULL);
 }
 
