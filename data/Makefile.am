@@ -76,6 +76,5 @@ DISTCLEANFILES = 		\
 	$(desktop_DATA)		\
 	$(schemas_DATA)		\
 	$(servicefile_DATA)	\
-	$(gsettings_SCHEMAS)	\
 	gschemas.compiled	\
 	$(NULL)
