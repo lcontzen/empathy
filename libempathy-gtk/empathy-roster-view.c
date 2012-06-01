@@ -18,14 +18,13 @@ enum
   N_PROPS
 };
 
-/*
 enum
 {
+  SIG_INDIVIDUAL_ACTIVATED,
   LAST_SIGNAL
 };
 
 static guint signals[LAST_SIGNAL];
-*/
 
 #define NO_GROUP "X-no-group"
 #define UNGROUPPED _("Ungroupped")
@@ -767,6 +766,8 @@ empathy_roster_view_constructed (GObject *object)
       self, NULL);
 
   egg_list_box_set_filter_func (EGG_LIST_BOX (self), filter_list, self, NULL);
+
+  egg_list_box_set_activate_on_single_click (EGG_LIST_BOX (self), FALSE);
 }
 
 static void
@@ -798,10 +799,27 @@ empathy_roster_view_finalize (GObject *object)
 }
 
 static void
+empathy_roster_view_child_activated (EggListBox *box,
+    GtkWidget *child)
+{
+  EmpathyRosterContact *contact;
+  FolksIndividual *individual;
+
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+    return;
+
+  contact = EMPATHY_ROSTER_CONTACT (child);
+  individual = empathy_roster_contact_get_individual (contact);
+
+  g_signal_emit (box, signals[SIG_INDIVIDUAL_ACTIVATED], 0, individual);
+}
+
+static void
 empathy_roster_view_class_init (
     EmpathyRosterViewClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
+  EggListBoxClass *box_class = EGG_LIST_BOX_CLASS (klass);
   GParamSpec *spec;
 
   oclass->get_property = empathy_roster_view_get_property;
@@ -809,6 +827,8 @@ empathy_roster_view_class_init (
   oclass->constructed = empathy_roster_view_constructed;
   oclass->dispose = empathy_roster_view_dispose;
   oclass->finalize = empathy_roster_view_finalize;
+
+  box_class->child_activated = empathy_roster_view_child_activated;
 
   spec = g_param_spec_object ("manager", "Manager",
       "EmpathyIndividualManager",
@@ -827,6 +847,13 @@ empathy_roster_view_class_init (
       FALSE,
       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_SHOW_GROUPS, spec);
+
+  signals[SIG_INDIVIDUAL_ACTIVATED] = g_signal_new ("individual-activated",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL,
+      G_TYPE_NONE,
+      1, FOLKS_TYPE_INDIVIDUAL);
 
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }
@@ -934,7 +961,14 @@ static void
 search_activate_cb (GtkWidget *search,
   EmpathyRosterView *self)
 {
-  /* TODO */
+  EggListBox *box = EGG_LIST_BOX (self);
+  GtkWidget *child;
+
+  child = egg_list_box_get_selected_child (box);
+  if (child == NULL)
+    return;
+
+  empathy_roster_view_child_activated (box, child);
 }
 
 void

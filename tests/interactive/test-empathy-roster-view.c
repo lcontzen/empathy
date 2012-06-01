@@ -13,6 +13,17 @@ static GOptionEntry entries[] =
   { NULL }
 };
 
+static void
+individual_activated_cb (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    gpointer user_data)
+{
+  g_assert (FOLKS_IS_INDIVIDUAL (individual));
+
+  g_print ("'%s' activated\n",
+      folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual)));
+}
+
 int
 main (int argc,
     char **argv)
@@ -43,6 +54,9 @@ main (int argc,
   mgr = empathy_individual_manager_dup_singleton ();
 
   view = empathy_roster_view_new (mgr);
+
+  g_signal_connect (view, "individual-activated",
+      G_CALLBACK (individual_activated_cb), NULL);
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
