@@ -21,6 +21,7 @@ enum
 enum
 {
   SIG_INDIVIDUAL_ACTIVATED,
+  SIG_POPUP_INDIVIDUAL_MENU,
   LAST_SIGNAL
 };
 
@@ -815,11 +816,73 @@ empathy_roster_view_child_activated (EggListBox *box,
 }
 
 static void
+fire_popup_individual_menu (EmpathyRosterView *self,
+    GtkWidget *child,
+    guint button,
+    guint time)
+{
+  EmpathyRosterContact *contact;
+  FolksIndividual *individual;
+
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+    return;
+
+  contact = EMPATHY_ROSTER_CONTACT (child);
+  individual = empathy_roster_contact_get_individual (contact);
+
+  g_signal_emit (self, signals[SIG_POPUP_INDIVIDUAL_MENU], 0,
+      individual, button, time);
+}
+
+static gboolean
+empathy_roster_view_button_press_event (GtkWidget *widget,
+    GdkEventButton *event)
+{
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (widget);
+  gboolean (*chain_up) (GtkWidget *, GdkEventButton *) =
+      ((GtkWidgetClass *) empathy_roster_view_parent_class)->button_press_event;
+
+  if (event->button == 3)
+    {
+      GtkWidget *child;
+
+      child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), event->y);
+
+      if (child != NULL)
+        fire_popup_individual_menu (self, child, event->button, event->time);
+    }
+
+  return chain_up (widget, event);
+}
+
+static gboolean
+empathy_roster_view_key_press_event (GtkWidget *widget,
+    GdkEventKey *event)
+{
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (widget);
+  gboolean (*chain_up) (GtkWidget *, GdkEventKey *) =
+      ((GtkWidgetClass *) empathy_roster_view_parent_class)->key_press_event;
+
+  if (event->keyval == GDK_KEY_Menu)
+    {
+      GtkWidget *child;
+
+      child = egg_list_box_get_selected_child (EGG_LIST_BOX (self));
+
+      if (child != NULL)
+        fire_popup_individual_menu (self, child, 0, event->time);
+    }
+
+  return chain_up (widget, event);
+}
+
+static void
 empathy_roster_view_class_init (
     EmpathyRosterViewClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
   EggListBoxClass *box_class = EGG_LIST_BOX_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GParamSpec *spec;
 
   oclass->get_property = empathy_roster_view_get_property;
@@ -827,6 +890,9 @@ empathy_roster_view_class_init (
   oclass->constructed = empathy_roster_view_constructed;
   oclass->dispose = empathy_roster_view_dispose;
   oclass->finalize = empathy_roster_view_finalize;
+
+  widget_class->button_press_event = empathy_roster_view_button_press_event;
+  widget_class->key_press_event = empathy_roster_view_key_press_event;
 
   box_class->child_activated = empathy_roster_view_child_activated;
 
@@ -854,6 +920,13 @@ empathy_roster_view_class_init (
       0, NULL, NULL, NULL,
       G_TYPE_NONE,
       1, FOLKS_TYPE_INDIVIDUAL);
+
+  signals[SIG_POPUP_INDIVIDUAL_MENU] = g_signal_new ("popup-individual-menu",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL,
+      G_TYPE_NONE,
+      3, FOLKS_TYPE_INDIVIDUAL, G_TYPE_UINT, G_TYPE_UINT);
 
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }

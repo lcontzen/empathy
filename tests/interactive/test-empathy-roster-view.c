@@ -24,6 +24,34 @@ individual_activated_cb (EmpathyRosterView *self,
       folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual)));
 }
 
+static void
+popup_individual_menu_cb (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    guint button,
+    guint time,
+    gpointer user_data)
+{
+  GtkWidget *menu, *item;
+
+  g_print ("'%s' popup menu\n",
+      folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual)));
+
+  menu = gtk_menu_new ();
+
+  g_signal_connect (menu, "deactivate",
+      G_CALLBACK (gtk_widget_destroy), NULL);
+
+  item = gtk_menu_item_new_with_label (folks_alias_details_get_alias (
+          FOLKS_ALIAS_DETAILS (individual)));
+  gtk_widget_show (item);
+
+  gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+
+  gtk_menu_attach_to_widget (GTK_MENU (menu), GTK_WIDGET (self), NULL);
+
+  gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, button, time);
+}
+
 int
 main (int argc,
     char **argv)
@@ -57,6 +85,8 @@ main (int argc,
 
   g_signal_connect (view, "individual-activated",
       G_CALLBACK (individual_activated_cb), NULL);
+  g_signal_connect (view, "popup-individual-menu",
+      G_CALLBACK (popup_individual_menu_cb), NULL);
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
