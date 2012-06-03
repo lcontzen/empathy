@@ -59,7 +59,6 @@ typedef struct {
   guint handle;
   EmpathyCapabilities capabilities;
   gboolean is_user;
-  guint hash;
   /* Location is composed of string keys and GValues.
    * Example: a "city" key would have "Helsinki" as string GValue,
    *          a "latitude" would have 65.0 as double GValue.
