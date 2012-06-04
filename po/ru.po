@@ -8,20 +8,22 @@
 # Alexander Saprykin <xelfium@gmail.com>, 2010.
 # Yuri Kozlov <yuray@komyakino.ru>, 2010, 2012.
 # Mikhail Zabaluev <mikhail.zabaluev@gmail.com>, 2011.
+# Yuri Myasoedov <omerta13@yandex.ru>, 2012.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: empathy trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-05-31 20:25+0000\n"
-"PO-Revision-Date: 2012-03-17 13:02+0300\n"
+"PO-Revision-Date: 2012-06-04 17:27+0400\n"
 "Last-Translator: Yuri Myasoedov <omerta13@yandex.ru>\n"
-"Language-Team: Russian <gnome-cyr@gnome.org>\n"
+"Language-Team: русский <gnome-cyr@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 "X-Generator: Lokalize 1.0\n"
@@ -500,8 +502,8 @@ msgid ""
 "Whether to show the message dialog about closing the main window with the "
 "'x' button in the title bar."
 msgstr ""
-"Показывать ли диалоговое окно при закрытии главного окна с помощью кнопки «x» "
-"в строке заголовка."
+"Показывать ли диалоговое окно при закрытии главного окна с помощью кнопки "
+"«x» в строке заголовка."
 
 #: ../data/org.gnome.Empathy.gschema.xml.h:98
 msgid "Empathy can publish the user's location"
@@ -923,16 +925,14 @@ msgstr "Новая учётная запись"
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:14
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:1
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:1
-#, fuzzy
 #| msgid "Pass_word:"
 msgid "Pass_word"
-msgstr "_Пароль:"
+msgstr "_Пароль"
 
 #: ../libempathy-gtk/empathy-account-widget-aim.ui.h:2
-#, fuzzy
 #| msgid "Screen _Name:"
 msgid "Screen _Name"
-msgstr "_Имя:"
+msgstr "_Имя"
 
 #: ../libempathy-gtk/empathy-account-widget-aim.ui.h:3
 msgid "<b>Example:</b> MyScreenName"
@@ -955,20 +955,18 @@ msgstr "Запомнить пароль"
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:6
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:21
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:5
-#, fuzzy
 #| msgid "_Port:"
 msgid "_Port"
-msgstr "П_орт:"
+msgstr "П_орт"
 
 #: ../libempathy-gtk/empathy-account-widget-aim.ui.h:6
 #: ../libempathy-gtk/empathy-account-widget-groupwise.ui.h:6
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:20
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:6
-#, fuzzy
 #| msgid "_Server:"
 msgid "_Server"
-msgstr "_Сервер:"
+msgstr "_Сервер"
 
 #: ../libempathy-gtk/empathy-account-widget-aim.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-generic.ui.h:1
@@ -1003,10 +1001,9 @@ msgstr "Запомнить пароль"
 #: ../libempathy-gtk/empathy-account-widget-groupwise.ui.h:2
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:13
 #: ../libempathy-gtk/empathy-account-widget-msn.ui.h:2
-#, fuzzy
 #| msgid "Login I_D:"
 msgid "Login I_D"
-msgstr "_Идентификатор:"
+msgstr "_Идентификатор"
 
 #: ../libempathy-gtk/empathy-account-widget-groupwise.ui.h:3
 #: ../libempathy-gtk/empathy-account-widget-yahoo.ui.h:3
@@ -1022,20 +1019,18 @@ msgid "What is your GroupWise password?"
 msgstr "Какой у вас пароль GroupWise?"
 
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:2
-#, fuzzy
 #| msgid "ICQ _UIN:"
 msgid "ICQ _UIN"
-msgstr "ICQ _UIN:"
+msgstr "ICQ _UIN"
 
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:3
 msgid "<b>Example:</b> 123456789"
 msgstr "<b>Пример:</b> 123456789"
 
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:5
-#, fuzzy
 #| msgid "Ch_aracter set:"
 msgid "Ch_aracter set"
-msgstr "_Кодировка:"
+msgstr "_Кодировка"
 
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:9
 msgid "What is your ICQ UIN?"
@@ -1079,10 +1074,9 @@ msgid "Network"
 msgstr "Сеть"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:2
-#, fuzzy
 #| msgid "Character set:"
 msgid "Character set"
-msgstr "Кодировка:"
+msgstr "Кодировка"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:3
 #: ../src/empathy-accounts-dialog.ui.h:1
@@ -1120,28 +1114,24 @@ msgstr ""
 "вводите пароль."
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:11
-#, fuzzy
 #| msgid "Nickname:"
 msgid "Nickname"
-msgstr "Псевдоним:"
+msgstr "Псевдоним"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:13
-#, fuzzy
 #| msgid "Quit message:"
 msgid "Quit message"
-msgstr "Сообщение при выходе:"
+msgstr "Сообщение при выходе"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:14
-#, fuzzy
 #| msgid "Real name:"
 msgid "Real name"
-msgstr "Настоящее имя:"
+msgstr "Настоящее имя"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:15
-#, fuzzy
 #| msgid "Username:"
 msgid "Username"
-msgstr "Имя пользователя:"
+msgstr "Имя пользователя"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:17
 msgid "Which IRC network?"
@@ -1193,16 +1183,14 @@ msgid "I_gnore SSL certificate errors"
 msgstr "_Игнорировать ошибки сертификатов SSL"
 
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:16
-#, fuzzy
 #| msgid "Priori_ty:"
 msgid "Priori_ty"
-msgstr "При_оритет:"
+msgstr "При_оритет"
 
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:17
-#, fuzzy
 #| msgid "Reso_urce:"
 msgid "Reso_urce"
-msgstr "Ре_сурс:"
+msgstr "Ре_сурс"
 
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:18
 msgid "Encr_yption required (TLS/SSL)"
@@ -1245,46 +1233,39 @@ msgid "What is your Windows Live password?"
 msgstr "Какой у вас пароль Windows Live?"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:1
-#, fuzzy
 #| msgid "Nic_kname:"
 msgid "Nic_kname"
-msgstr "_Псевдоним:"
+msgstr "_Псевдоним"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:2
-#, fuzzy
 #| msgid "_Last Name:"
 msgid "_Last Name"
-msgstr "_Фамилия:"
+msgstr "_Фамилия"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:3
-#, fuzzy
 #| msgid "_First Name:"
 msgid "_First Name"
-msgstr "_Имя:"
+msgstr "_Имя"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:4
-#, fuzzy
 #| msgid "_Published Name:"
 msgid "_Published Name"
-msgstr "_Имя:"
+msgstr "_Имя"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:5
-#, fuzzy
 #| msgid "_Jabber ID:"
 msgid "_Jabber ID"
-msgstr "_Jabber ID:"
+msgstr "_Jabber ID"
 
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:6
-#, fuzzy
 #| msgid "E-_mail address:"
 msgid "E-_mail address"
-msgstr "А_дрес эл. почты:"
+msgstr "А_дрес эл. почты"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:2
-#, fuzzy
 #| msgid "_Username:"
 msgid "_Username"
-msgstr "_Имя:"
+msgstr "_Имя пользователя"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:3
 msgid "<b>Example:</b> user@my.sip.server"
@@ -1308,10 +1289,9 @@ msgid "Miscellaneous Options"
 msgstr "Различные параметры"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:9
-#, fuzzy
 #| msgid "STUN Server:"
 msgid "STUN Server"
-msgstr "Сервер STUN:"
+msgstr "Сервер STUN"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:10
 msgid "Discover the STUN server automatically"
@@ -1326,26 +1306,23 @@ msgid "Keep-Alive Options"
 msgstr "Параметры Keep-Alive"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:14
-#, fuzzy
 #| msgid "Mechanism:"
 msgid "Mechanism"
-msgstr "Механизм:"
+msgstr "Механизм"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:15
 msgid "Interval (seconds)"
 msgstr "Интервал (в секундах)"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:16
-#, fuzzy
 #| msgid "Authentication username:"
 msgid "Authentication username"
-msgstr "Имя пользователя для аутентификации:"
+msgstr "Имя пользователя для аутентификации"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:17
-#, fuzzy
 #| msgid "Transport:"
 msgid "Transport"
-msgstr "Транспорт:"
+msgstr "Транспорт"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:18
 msgid "Loose Routing"
@@ -1356,10 +1333,9 @@ msgid "Ignore TLS Errors"
 msgstr "Игнорировать ошибки TLS"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:21
-#, fuzzy
 #| msgid "E-mail address"
 msgid "Local IP Address"
-msgstr "Адрес эл. почты:"
+msgstr "Локальный IP-адрес"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:23
 msgid "What is your SIP login ID?"
@@ -1477,10 +1453,9 @@ msgid "You are not allowed to change the topic"
 msgstr "Вы не можете менять тему"
 
 #: ../libempathy-gtk/empathy-chat.c:968
-#, fuzzy
 #| msgid "invalid contact"
 msgid "Invalid contact ID"
-msgstr "неверный собеседник"
+msgstr "Неверный ID собеседника"
 
 #: ../libempathy-gtk/empathy-chat.c:1056
 msgid "/clear: clear all messages from the current conversation"
@@ -2133,16 +2108,14 @@ msgstr "посылка"
 
 #. Identifier to connect to Instant Messaging network
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:3
-#, fuzzy
 #| msgid "Identifier:"
 msgid "Identifier"
-msgstr "Идентификатор:"
+msgstr "Идентификатор"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:4
-#, fuzzy
 #| msgid "Alias:"
 msgid "Alias"
-msgstr "Псевдоним:"
+msgstr "Псевдоним"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:6
 #: ../libempathy-gtk/empathy-individual-widget.ui.h:4
@@ -2158,22 +2131,19 @@ msgid "Client Information"
 msgstr "Информация о клиенте"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:9
-#, fuzzy
 #| msgid "OS:"
 msgid "OS"
-msgstr "Операционная система:"
+msgstr "ОС"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:10
-#, fuzzy
 #| msgid "Version:"
 msgid "Version"
-msgstr "Версия:"
+msgstr "Версия"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:11
-#, fuzzy
 #| msgid "Client:"
 msgid "Client"
-msgstr "Программа-клиент:"
+msgstr "Программа-клиент"
 
 #: ../libempathy-gtk/empathy-groups-widget.c:327
 msgid "Groups"
@@ -2343,10 +2313,9 @@ msgid "Removing group"
 msgstr "Удаление группы"
 
 #: ../libempathy-gtk/empathy-individual-view.c:2470
-#, fuzzy
 #| msgid "Real name:"
 msgid "Re_name"
-msgstr "Настоящее имя:"
+msgstr "Пере_именовать"
 
 #. Remove
 #: ../libempathy-gtk/empathy-individual-view.c:2479
@@ -2662,10 +2631,10 @@ msgid "New Call"
 msgstr "Новый вызов"
 
 #: ../libempathy-gtk/empathy-bad-password-dialog.c:130
-#, fuzzy, c-format
+#, c-format
 #| msgid "Authentification failed for account <b>%s</b>"
 msgid "Authentication failed for account <b>%s</b>"
-msgstr "Сбой при прохождении проверки подлинности учётной записи <b>%s</b>"
+msgstr "Сбой проверки подлинности учётной записи <b>%s</b>"
 
 #: ../libempathy-gtk/empathy-base-password-dialog.c:224
 #: ../libempathy-gtk/empathy-password-dialog.c:134
@@ -2708,6 +2677,9 @@ msgid ""
 "<b>Current message: %s</b>\n"
 "<small><i>Press Enter to set the new message or Esc to cancel.</i></small>"
 msgstr ""
+"<b>Текущее сообщение: %s</b>\n"
+"<small><i>Чтобы установить сообщение, нажмите Enter или Esc, чтобы отменить."
+"</i></small>"
 
 #: ../libempathy-gtk/empathy-presence-chooser.c:394
 msgid "Set status"
@@ -3235,7 +3207,7 @@ msgstr "Сбой при получении персональных данных
 
 #: ../src/empathy-accounts-dialog.c:776
 msgid "Go online to edit your personal information."
-msgstr "Выйти в онлайн, чтобы изменить персональные данные"
+msgstr "Выйдите в онлайн, чтобы изменить личные данные."
 
 #: ../src/empathy-accounts-dialog.c:855
 msgid "_Edit Connection Parameters..."
@@ -3260,17 +3232,15 @@ msgstr ""
 
 #. Menu item: to enabled/disable the account
 #: ../src/empathy-accounts-dialog.c:1751
-#, fuzzy
 #| msgid "_Enable"
 msgid "_Enabled"
-msgstr "_Включить"
+msgstr "_Включено"
 
 #. Menu item: Rename
 #: ../src/empathy-accounts-dialog.c:1774
-#, fuzzy
 #| msgid "Real name:"
 msgid "Rename"
-msgstr "Настоящее имя:"
+msgstr "Переименовать"
 
 #: ../src/empathy-accounts-dialog.c:2190
 msgid "_Skip"
@@ -3905,31 +3875,26 @@ msgid "Account settings"
 msgstr "Настроить учётную запись"
 
 #: ../src/empathy-roster-window-menubar.ui.h:1
-#, fuzzy
 #| msgid "New Conversation"
 msgid "_New Conversation..."
-msgstr "Новая беседа"
+msgstr "Новая _беседа…"
 
 #: ../src/empathy-roster-window-menubar.ui.h:2
-#, fuzzy
 #| msgid "New Call"
 msgid "New _Call..."
-msgstr "Новый вызов"
+msgstr "Новый _вызов…"
 
 #: ../src/empathy-roster-window-menubar.ui.h:3
-#, fuzzy
 #| msgid "Contact"
 msgid "Contacts"
-msgstr "Собеседник"
+msgstr "Собеседники"
 
 #: ../src/empathy-roster-window-menubar.ui.h:4
-#, fuzzy
 #| msgid "_Add Contact"
 msgid "_Add Contacts..."
-msgstr "_Добавить собеседника"
+msgstr "_Добавить собеседника…"
 
 #: ../src/empathy-roster-window-menubar.ui.h:5
-#, fuzzy
 #| msgid "_Search for Contacts…"
 msgid "_Search for Contacts..."
 msgstr "_Поиск собеседников…"
@@ -3939,26 +3904,23 @@ msgid "_Blocked Contacts"
 msgstr "_Заблокированные собеседники"
 
 #: ../src/empathy-roster-window-menubar.ui.h:7
-#, fuzzy
 #| msgid "_Room"
 msgid "_Rooms"
-msgstr "_Комната"
+msgstr "_Комнаты"
 
 #: ../src/empathy-roster-window-menubar.ui.h:8
-#, fuzzy
 #| msgid "_Join"
 msgid "_Join..."
-msgstr "_Войти"
+msgstr "_Войти…"
 
 #: ../src/empathy-roster-window-menubar.ui.h:9
 msgid "Join _Favorites"
 msgstr "П_одключить избранные"
 
 #: ../src/empathy-roster-window-menubar.ui.h:10
-#, fuzzy
 #| msgid "Manage Favorites"
 msgid "_Manage Favorites"
-msgstr "Настроить избранные"
+msgstr "_Настроить избранные"
 
 #: ../src/empathy-roster-window-menubar.ui.h:12
 msgid "_File Transfers"
@@ -3973,16 +3935,14 @@ msgid "P_references"
 msgstr "_Параметры"
 
 #: ../src/empathy-roster-window-menubar.ui.h:15
-#, fuzzy
 #| msgid "_Help"
 msgid "Help"
-msgstr "_Справка"
+msgstr "Справка"
 
 #: ../src/empathy-roster-window-menubar.ui.h:16
-#, fuzzy
 #| msgid "Empathy"
 msgid "About Empathy"
-msgstr "Empathy"
+msgstr "Об Empathy"
 
 #: ../src/empathy-roster-window-menubar.ui.h:17
 #: ../src/empathy-status-icon.ui.h:5
@@ -3998,10 +3958,9 @@ msgid "Members"
 msgstr "Участники"
 
 #: ../src/empathy-new-chatroom-dialog.c:410
-#, fuzzy
 #| msgid "Failed to retrieve recent logs"
 msgid "Failed to list rooms"
-msgstr "Не удалось получить последние журналы"
+msgstr "Не удалось получить список комнат"
 
 #: ../src/empathy-new-chatroom-dialog.c:439
 #, c-format
@@ -4150,34 +4109,29 @@ msgid "Preferences"
 msgstr "Параметры"
 
 #: ../src/empathy-preferences.ui.h:2
-#, fuzzy
 #| msgid "Show protocols"
 msgid "Show protocol in avatar"
-msgstr "Показывать протоколы"
+msgstr "Показывать протоколы в аватарах"
 
 #: ../src/empathy-preferences.ui.h:3
-#, fuzzy
 #| msgid "Show account assistant"
 msgid "Show account balances"
-msgstr "Показывать баланс в списке собеседников"
+msgstr "Показывать баланс учётных записей"
 
 #: ../src/empathy-preferences.ui.h:4
-#, fuzzy
 #| msgid "Search contacts"
 msgid "Sort contacts by:"
-msgstr "Поиск собеседников"
+msgstr "Упорядочить собеседников по:"
 
 #: ../src/empathy-preferences.ui.h:5
-#, fuzzy
 #| msgid "Status"
 msgid "status"
-msgstr "Состояние"
+msgstr "состояние"
 
 #: ../src/empathy-preferences.ui.h:6
-#, fuzzy
 #| msgid "Name"
 msgid "name"
-msgstr "Имя"
+msgstr "имя"
 
 #: ../src/empathy-preferences.ui.h:8
 msgid "Start chats in:"
