@@ -385,8 +385,6 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_CONTACT, EmpathyRosterContactPriv);
 
-  gtk_widget_set_size_request (GTK_WIDGET (self), 300, -1);
-
   main_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 8);
 
   /* Avatar */
@@ -402,8 +400,10 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
   first_line_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
   self->priv->alias = gtk_label_new (NULL);
+  gtk_label_set_ellipsize (GTK_LABEL (self->priv->alias), PANGO_ELLIPSIZE_END);
   gtk_box_pack_start (GTK_BOX (first_line_box), self->priv->alias,
       FALSE, FALSE, 0);
+  gtk_misc_set_alignment (GTK_MISC (self->priv->alias), 0, 0.5);
   gtk_widget_show (self->priv->alias);
 
   self->priv->phone_icon = gtk_image_new_from_icon_name ("phone-symbolic",
@@ -425,6 +425,8 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
 
   /* Presence */
   self->priv->presence_msg = gtk_label_new (NULL);
+  gtk_label_set_ellipsize (GTK_LABEL (self->priv->presence_msg),
+      PANGO_ELLIPSIZE_END);
   gtk_box_pack_start (GTK_BOX (box), self->priv->presence_msg, TRUE, TRUE, 0);
   gtk_widget_show (self->priv->presence_msg);
 
