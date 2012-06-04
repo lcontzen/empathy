@@ -264,7 +264,8 @@ live_search_entry_key_pressed_cb (GtkEntry *entry,
 
   /* emit key navigation signal, so other widgets can respond to it properly */
   if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down
-      || event->keyval == GDK_KEY_Page_Up || event->keyval == GDK_KEY_Page_Down)
+      || event->keyval == GDK_KEY_Page_Up || event->keyval == GDK_KEY_Page_Down
+      || event->keyval == GDK_KEY_Menu)
      {
        return fire_key_navigation_sig (self, event);
      }
@@ -345,7 +346,8 @@ live_search_key_press_event_cb (GtkWidget *widget,
    * they are needed for navigation in the treeview and are not needed in
    * the search entry */
    if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_Down ||
-       event->keyval == GDK_KEY_Page_Up || event->keyval == GDK_KEY_Page_Down)
+       event->keyval == GDK_KEY_Page_Up || event->keyval == GDK_KEY_Page_Down ||
+       event->keyval == GDK_KEY_Menu)
      return FALSE;
 
    if (event->keyval == GDK_KEY_Home || event->keyval == GDK_KEY_End ||
