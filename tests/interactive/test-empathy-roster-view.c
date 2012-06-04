@@ -52,6 +52,19 @@ popup_individual_menu_cb (EmpathyRosterView *self,
   gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, button, time);
 }
 
+static gboolean
+individual_tooltip_cb (EmpathyRosterView *view,
+    FolksIndividual *individual,
+    gboolean keyboard_mode,
+    GtkTooltip *tooltip,
+    gpointer user_data)
+{
+  gtk_tooltip_set_text (tooltip,
+      folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual)));
+
+  return TRUE;
+}
+
 int
 main (int argc,
     char **argv)
@@ -90,6 +103,9 @@ main (int argc,
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
+
+  empathy_roster_view_set_individual_tooltip_cb (EMPATHY_ROSTER_VIEW (view),
+      individual_tooltip_cb, NULL);
 
   g_object_unref (mgr);
 

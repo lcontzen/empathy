@@ -50,6 +50,9 @@ struct _EmpathyRosterViewPriv
   gboolean show_groups;
 
   EmpathyLiveSearch *search;
+
+  EmpathyRosterViewIndividualTooltipCb individual_tooltip_cb;
+  gpointer individual_tooltip_data;
 };
 
 static void
@@ -876,6 +879,43 @@ empathy_roster_view_key_press_event (GtkWidget *widget,
   return chain_up (widget, event);
 }
 
+static gboolean
+empathy_roster_view_query_tooltip (GtkWidget *widget,
+    gint x,
+    gint y,
+    gboolean keyboard_mode,
+    GtkTooltip *tooltip)
+{
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (widget);
+  GtkWidget *child;
+  EmpathyRosterContact *contact;
+  FolksIndividual *individual;
+
+  if (self->priv->individual_tooltip_cb == NULL)
+    return FALSE;
+
+  child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), y);
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+    return FALSE;
+
+  contact = EMPATHY_ROSTER_CONTACT (child);
+  individual = empathy_roster_contact_get_individual (contact);
+
+  return self->priv->individual_tooltip_cb (self, individual, keyboard_mode,
+      tooltip, self->priv->individual_tooltip_data);
+}
+
+void
+empathy_roster_view_set_individual_tooltip_cb (EmpathyRosterView *self,
+    EmpathyRosterViewIndividualTooltipCb callback,
+    gpointer user_data)
+{
+  self->priv->individual_tooltip_cb = callback;
+  self->priv->individual_tooltip_data = user_data;
+
+  gtk_widget_set_has_tooltip (GTK_WIDGET (self), callback != NULL);
+}
+
 static void
 empathy_roster_view_class_init (
     EmpathyRosterViewClass *klass)
@@ -893,6 +933,7 @@ empathy_roster_view_class_init (
 
   widget_class->button_press_event = empathy_roster_view_button_press_event;
   widget_class->key_press_event = empathy_roster_view_key_press_event;
+  widget_class->query_tooltip = empathy_roster_view_query_tooltip;
 
   box_class->child_activated = empathy_roster_view_child_activated;
 
