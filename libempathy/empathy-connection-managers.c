@@ -208,41 +208,53 @@ empathy_connection_managers_is_ready (EmpathyConnectionManagers *self)
 }
 
 static void
-empathy_connection_managers_listed_cb (TpConnectionManager * const *cms,
-    gsize n_cms,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+empathy_connection_managers_listed_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  EmpathyConnectionManagers *self =
-    EMPATHY_CONNECTION_MANAGERS (weak_object);
-  EmpathyConnectionManagersPriv *priv = GET_PRIV (self);
-  TpConnectionManager * const *iter;
+  TpWeakRef *wr = user_data;
+  GError *error = NULL;
+  EmpathyConnectionManagers *self = tp_weak_ref_dup_object (wr);
+  GList *cms, *l;
+  EmpathyConnectionManagersPriv *priv;
+
+  if (self == NULL)
+    {
+      tp_weak_ref_destroy (wr);
+      return;
+    }
+
+  priv = GET_PRIV (self);
 
   empathy_connection_managers_free_cm_list (self);
 
+  cms = tp_list_connection_managers_finish (result, &error);
   if (error != NULL)
     {
       DEBUG ("Failed to get connection managers: %s", error->message);
+      g_error_free (error);
       goto out;
     }
 
-  for (iter = cms ; iter != NULL && *iter != NULL; iter++)
+  for (l = cms ; l != NULL; l = g_list_next (l))
     {
+      TpConnectionManager *cm = l->data;
+
       /* only list cms that didn't hit errors */
-      if (tp_proxy_is_prepared (*iter, TP_CONNECTION_MANAGER_FEATURE_CORE))
-        priv->cms = g_list_prepend (priv->cms, g_object_ref (*iter));
+      if (tp_proxy_is_prepared (cm, TP_CONNECTION_MANAGER_FEATURE_CORE))
+        priv->cms = g_list_prepend (priv->cms, g_object_ref (cm));
     }
 
 out:
-  g_object_ref (weak_object);
   if (!priv->ready)
     {
       priv->ready = TRUE;
-      g_object_notify (weak_object, "ready");
+      g_object_notify (G_OBJECT (self), "ready");
     }
-  g_signal_emit (weak_object, signals[UPDATED], 0);
-  g_object_unref (weak_object);
+
+  g_signal_emit (self, signals[UPDATED], 0);
+  g_object_unref (self);
+  tp_weak_ref_destroy (wr);
 }
 
 void
@@ -250,9 +262,9 @@ empathy_connection_managers_update (EmpathyConnectionManagers *self)
 {
   EmpathyConnectionManagersPriv *priv = GET_PRIV (self);
 
-  tp_list_connection_managers (priv->dbus,
+  tp_list_connection_managers_async (priv->dbus,
     empathy_connection_managers_listed_cb,
-    NULL, NULL, G_OBJECT (self));
+    tp_weak_ref_new (self, NULL, NULL));
 }
 
 GList *
