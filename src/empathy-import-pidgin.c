@@ -144,7 +144,7 @@ import_dialog_pidgin_parse_setting (EmpathyImportAccountData *data,
   else if (!tp_strdiff (type, "int"))
     {
       TpConnectionManager *cm = NULL;
-      const TpConnectionManagerProtocol *proto;
+      TpProtocol *proto;
       const TpConnectionManagerParam *param;
       const gchar *signature;
       int signature_i;
@@ -152,8 +152,8 @@ import_dialog_pidgin_parse_setting (EmpathyImportAccountData *data,
       if (!empathy_import_protocol_is_supported (data->protocol, &cm))
         return;
 
-      proto = tp_connection_manager_get_protocol (cm, data->protocol);
-      param = tp_connection_manager_protocol_get_param (proto, item->cm_name);
+      proto = tp_connection_manager_get_protocol_object (cm, data->protocol);
+      param = tp_protocol_get_param (proto, item->cm_name);
       signature = tp_connection_manager_param_get_dbus_signature (param);
       signature_i = (int) (*signature);
 
