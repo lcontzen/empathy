@@ -70,11 +70,13 @@ EXTRA_DIST = 				\
 	$(clientfile_DATA)		\
 	$(servicefile_in_files)		\
 	$(gsettings_SCHEMAS)		\
+	$(css_DATA)		\
 	$(NULL)
 
 DISTCLEANFILES = 		\
 	$(desktop_DATA)		\
 	$(schemas_DATA)		\
 	$(servicefile_DATA)	\
+	$(css_DATA)		\
 	gschemas.compiled	\
 	$(NULL)
