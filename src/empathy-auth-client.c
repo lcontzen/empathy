@@ -100,14 +100,14 @@ tls_dialog_response_cb (GtkDialog *dialog,
   gboolean remember = FALSE;
   EmpathyTLSVerifier *verifier = EMPATHY_TLS_VERIFIER (user_data);
 
-  DEBUG ("Response %d", response_id);
-
   g_object_get (tls_dialog,
       "certificate", &certificate,
       "reason", &reason,
       "remember", &remember,
       "details", &details,
       NULL);
+
+  DEBUG ("Response %d (remember: %d)", response_id, remember);
 
   gtk_widget_destroy (GTK_WIDGET (dialog));
 
