@@ -1,3 +1,56 @@
+NEW in 3.5.2 (05/06/2012)
+============
+
+The contact list menu bar has been removed and replaced by the application
+global menu. empathy-av, the legacy audio/video client has been removed,
+empathy-call replaces it completely.
+
+Dependencies:
+ • GTK+ ≥ 3.5.1
+ • clutter-gtk ≥ 1.1.2
+ • telepathy-glib ≥ 0.19.0
+ • GOA ≥ 3.5.1 (optional)
+ • cheese-gtk ≥ 3.4.0 (optional)
+
+Bugs fixed:
+ - Fixed #667619, Port to GtkApplication and GtkApplicationWindow (Danielle Madeley)
+ - Fixed #672043, Remove ':' from labels (Danielle Madeley)
+ - Fixed #640417, EmpathyAccountWidget should be a proper GtkWidget (Guillaume Desmottes)
+ - Fixed #669473, Use CSS for style properties (Guillaume Desmottes)
+ - Fixed #670874, floating toolbar not working (Sjoerd Simons)
+ - Fixed #673263, goa-mc-plugin: support enabling or disabling accounts (Debarshi Ray)
+ - Fixed #673846, Use tp_capabilities_supports_sms() (Guillaume Desmottes)
+ - Fixed #673989, Use TpRoomList (Guillaume Desmottes)
+ - Fixed #674182, Use TpDebugClient (Guillaume Desmottes)
+ - Fixed #674318, Use TpTLSCertificate (Guillaume Desmottes)
+ - Fixed #674553, Take picture button in image change doesn't work. (Guillaume Desmottes)
+ - Fixed #674774, tp-chat: use the GVariant version of TpCapabilities classes (Guillaume Desmottes)
+ - Fixed #674860, Modernize EmpathyNewChatroomDialog (Guillaume Desmottes)
+ - Fixed #674864, Missing tp-chat signals (Guillaume Desmottes)
+ - Fixed #675229, Stop using deprecated tp-glib API (Guillaume Desmottes)
+ - Fixed #675246, Strings appear untranslated (Gabor Kelemen)
+ - Fixed #675296, Remove empathy-av (Guillaume Desmottes)
+ - Fixed #675590, [patch] Use gst_object_ref_sink() (Javier Jardón)
+ - Fixed #675597, Consider removing EmpathyTpContactFactory (Guillaume Desmottes)
+ - Fixed #675647, video-widget: Remove as it is now unused (Olivier Crête)
+ - Fixed #675667, Crash when trying to add an account (Guillaume Desmottes)
+ - Fixed #675803, EmpathyContactWidget should be a proper GtkWidget (Guillaume Desmottes)
+ - Fixed #675807, use new TpTextChannel chat state API (Guillaume Desmottes)
+ - Fixed #675808, Stop using tp_connection_get_contacts_by_id() (Guillaume Desmottes)
+ - Fixed #676027, Spelling error Authentification → Authentication (Guillaume Desmottes)
+ - Fixed #676569, Use GTK_STYLE_CLASS_OSD (Cosimo Cecchi)
+ - Fixed #676637, Crash when account is connecting (Guillaume Desmottes)
+
+Translations:
+ - Updated es Translation (Daniel Mustieles)
+ - Updated fr Translation (Bruno Brouard)
+ - Updated gl Translation (Fran Diéguez)
+ - Updated he Translation (Yaron Shahrabani)
+ - Updated nb Translation (Kjartan Maraas)
+ - Updated ru Translation (Yuri Myasoedov)
+ - Updated zh_HK Translation (Cheng-Chia Tseng)
+ - Updated zh_TW Translation (Cheng-Chia Tseng)
+
 NEW in 3.5.1 (30/04/2012)
 ============
 
