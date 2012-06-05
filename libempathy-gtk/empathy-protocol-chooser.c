@@ -434,10 +434,9 @@ protocol_chooser_filter_visible_func (GtkTreeModel *model,
 
   if (cm != NULL && protocol_name != NULL)
     {
-      TpConnectionManagerProtocol *protocol;
+      TpProtocol *protocol;
 
-      protocol = (TpConnectionManagerProtocol *)
-        tp_connection_manager_get_protocol (cm, protocol_name);
+      protocol = tp_connection_manager_get_protocol_object (cm, protocol_name);
 
       if (protocol != NULL)
         {
@@ -467,7 +466,7 @@ protocol_chooser_filter_visible_func (GtkTreeModel *model,
 TpConnectionManager *
 empathy_protocol_chooser_dup_selected (
     EmpathyProtocolChooser *protocol_chooser,
-    TpConnectionManagerProtocol **protocol,
+    TpProtocol **protocol,
     gchar **service)
 {
   GtkTreeIter iter;
@@ -495,8 +494,8 @@ empathy_protocol_chooser_dup_selected (
               COL_PROTOCOL_NAME, &protocol_name,
               -1);
 
-          *protocol = (TpConnectionManagerProtocol *)
-            tp_connection_manager_get_protocol (cm, protocol_name);
+          *protocol = tp_connection_manager_get_protocol_object (cm,
+              protocol_name);
 
           g_free (protocol_name);
 
@@ -569,7 +568,7 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
   gchar *str;
   const gchar *display_name;
   TpConnectionManager *cm;
-  TpConnectionManagerProtocol *proto;
+  TpProtocol *proto;
   gchar *service = NULL;
 
   cm = empathy_protocol_chooser_dup_selected (self, &proto, &service);
@@ -579,14 +578,16 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
   if (service != NULL)
     display_name = empathy_service_name_to_display_name (service);
   else
-    display_name = empathy_protocol_name_to_display_name (proto->name);
+    display_name = empathy_protocol_name_to_display_name (
+        tp_protocol_get_name (proto));
 
   /* Create account */
   /* To translator: %s is the name of the protocol, such as "Google Talk" or
    * "Yahoo!"
    */
   str = g_strdup_printf (_("New %s account"), display_name);
-  settings = empathy_account_settings_new (cm->name, proto->name, service, str);
+  settings = empathy_account_settings_new (cm->name,
+      tp_protocol_get_name (proto), service, str);
 
   g_free (str);
 

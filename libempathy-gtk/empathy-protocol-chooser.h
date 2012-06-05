@@ -61,7 +61,7 @@ struct _EmpathyProtocolChooserClass
 };
 
 typedef gboolean (*EmpathyProtocolChooserFilterFunc) (TpConnectionManager *cm,
-    TpConnectionManagerProtocol *protocol,
+    TpProtocol *protocol,
     const gchar *service,
     gpointer user_data);
 
@@ -69,7 +69,7 @@ GType empathy_protocol_chooser_get_type (void) G_GNUC_CONST;
 GtkWidget * empathy_protocol_chooser_new (void);
 TpConnectionManager *empathy_protocol_chooser_dup_selected (
     EmpathyProtocolChooser *protocol_chooser,
-    TpConnectionManagerProtocol **protocol,
+    TpProtocol **protocol,
     gchar **service);
 
 void empathy_protocol_chooser_set_visible (
