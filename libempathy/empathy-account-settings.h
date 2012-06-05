@@ -87,7 +87,7 @@ TpAccount *empathy_account_settings_get_account (
 gboolean empathy_account_settings_has_account (
     EmpathyAccountSettings *settings, TpAccount *account);
 
-TpConnectionManagerParam *empathy_account_settings_get_tp_params (
+GList * empathy_account_settings_dup_tp_params (
     EmpathyAccountSettings *settings);
 
 gboolean empathy_account_settings_have_tp_param (

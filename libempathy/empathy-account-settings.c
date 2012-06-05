@@ -689,25 +689,14 @@ empathy_account_settings_new_for_account (TpAccount *account)
       NULL);
 }
 
-TpConnectionManagerParam *
-empathy_account_settings_get_tp_params (EmpathyAccountSettings *settings)
+GList *
+empathy_account_settings_dup_tp_params (EmpathyAccountSettings *settings)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  const TpConnectionManagerProtocol *tp_protocol;
 
-  g_return_val_if_fail (priv->manager != NULL, NULL);
-  g_return_val_if_fail (priv->protocol != NULL, NULL);
+  g_return_val_if_fail (priv->protocol_obj != NULL, NULL);
 
-  tp_protocol = tp_connection_manager_get_protocol (priv->manager,
-     priv->protocol);
-  if (tp_protocol == NULL)
-    {
-      DEBUG ("Can't retrieve TpConnectionManagerProtocol for protocol '%s'",
-          priv->protocol);
-      return NULL;
-    }
-
-  return tp_protocol->params;
+  return tp_protocol_dup_params (priv->protocol_obj);
 }
 
 gboolean
@@ -800,23 +789,13 @@ empathy_account_settings_is_unset (EmpathyAccountSettings *settings,
   return FALSE;
 }
 
-static TpConnectionManagerParam *
+static const TpConnectionManagerParam *
 empathy_account_settings_get_tp_param (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  TpConnectionManagerParam *tp_params =
-      empathy_account_settings_get_tp_params (settings);
-  TpConnectionManagerParam *p;
+  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
 
-  for (p = tp_params; p != NULL && p->name != NULL; p++)
-    {
-      if (tp_strdiff (p->name, param))
-        continue;
-
-      return p;
-    }
-
-  return NULL;
+  return tp_protocol_get_param (priv->protocol_obj, param);
 }
 
 gboolean
@@ -853,7 +832,7 @@ const GValue *
 empathy_account_settings_get_default (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  TpConnectionManagerParam *p;
+  const TpConnectionManagerParam *p;
 
   p = empathy_account_settings_get_tp_param (settings, param);
 
@@ -867,7 +846,7 @@ const gchar *
 empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  TpConnectionManagerParam *p;
+  const TpConnectionManagerParam *p;
 
   p = empathy_account_settings_get_tp_param (settings, param);
 

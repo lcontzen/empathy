@@ -728,13 +728,14 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
     GtkWidget *grid_common_settings,
     GtkWidget *grid_advanced_settings)
 {
-  TpConnectionManagerParam *params, *param;
+  GList *params, *l;
   guint row_common = 0, row_advanced = 0;
 
-  params = empathy_account_settings_get_tp_params (self->priv->settings);
+  params = empathy_account_settings_dup_tp_params (self->priv->settings);
 
-  for (param = params; param != NULL && param->name != NULL; param++)
+  for (l = params; l != NULL; l = g_list_next (l))
     {
+      TpConnectionManagerParam *param = l->data;
       GtkWidget       *grid_settings;
       guint           row;
       GtkWidget       *widget = NULL;
@@ -848,6 +849,8 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
 
       g_free (param_name_formatted);
     }
+
+  g_list_free_full (params, (GDestroyNotify) tp_connection_manager_param_free);
 }
 
 static void
