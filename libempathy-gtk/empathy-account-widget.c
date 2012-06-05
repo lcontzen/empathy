@@ -747,7 +747,7 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
         }
       else if (self->priv->simple)
         {
-          return;
+          continue;
         }
       else
         {
