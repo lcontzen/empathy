@@ -536,7 +536,6 @@ static void
 empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
-  const TpConnectionManagerProtocol *tp_protocol;
   GQuark features[] = { TP_PROTOCOL_FEATURE_CORE, 0 };
 
   if (priv->ready)
@@ -573,34 +572,11 @@ empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
       priv->uri_scheme_tel = empathy_account_has_uri_scheme_tel (priv->account);
     }
 
-  tp_protocol = tp_connection_manager_get_protocol (priv->manager,
-    priv->protocol);
-
-  if (tp_protocol == NULL)
-    {
-      tp_clear_object (&priv->manager);
-      return;
-    }
-
-  if (priv->required_params == NULL)
-    {
-      TpConnectionManagerParam *cur;
-
-      for (cur = tp_protocol->params; cur->name != NULL; cur++)
-        {
-          if (tp_connection_manager_param_is_required (cur))
-            {
-              priv->required_params = g_list_append (priv->required_params,
-                                                     g_strdup (cur->name));
-            }
-        }
-    }
-
   if (priv->protocol_obj == NULL)
     {
       priv->protocol_obj = g_object_ref (
           tp_connection_manager_get_protocol_object (priv->manager,
-              priv->protocol));
+            priv->protocol));
     }
 
   if (!tp_proxy_is_prepared (priv->protocol_obj, TP_PROTOCOL_FEATURE_CORE)
@@ -619,6 +595,26 @@ empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
         {
           priv->supports_sasl = TRUE;
         }
+    }
+
+  if (priv->required_params == NULL)
+    {
+      GList *params, *l;
+
+      params = tp_protocol_dup_params (priv->protocol_obj);
+      for (l = params; l != NULL; l = g_list_next (l))
+        {
+          TpConnectionManagerParam *cur = l->data;
+
+          if (tp_connection_manager_param_is_required (cur))
+            {
+              priv->required_params = g_list_append (priv->required_params,
+                                                     g_strdup (cur->name));
+            }
+        }
+
+       g_list_free_full (params,
+           (GDestroyNotify) tp_connection_manager_param_free);
     }
 
   /* NOTE: When removing MC migration code, remove this call, and the
