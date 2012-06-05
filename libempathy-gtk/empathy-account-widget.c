@@ -1819,7 +1819,7 @@ static void
 add_register_buttons (EmpathyAccountWidget *self,
     TpAccount *account)
 {
-  const TpConnectionManagerProtocol *protocol;
+  TpProtocol *protocol;
   GtkWidget *radiobutton_register;
 
   if (!self->priv->creating_account)
@@ -1829,7 +1829,7 @@ add_register_buttons (EmpathyAccountWidget *self,
   if (protocol == NULL)
     return;
 
-  if (!tp_connection_manager_protocol_can_register (protocol))
+  if (!tp_protocol_can_register (protocol))
     return;
 
   if (account_widget_get_service (self) != NO_SERVICE)

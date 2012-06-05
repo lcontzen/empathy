@@ -194,7 +194,7 @@ gboolean empathy_account_settings_parameter_is_valid (
 
 gboolean empathy_account_settings_is_valid (EmpathyAccountSettings *settings);
 
-const TpConnectionManagerProtocol * empathy_account_settings_get_tp_protocol (
+TpProtocol * empathy_account_settings_get_tp_protocol (
     EmpathyAccountSettings *settings);
 
 gboolean empathy_account_settings_supports_sasl (EmpathyAccountSettings *self);
