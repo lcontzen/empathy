@@ -155,40 +155,47 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
     TpConnectionManager *cm)
 {
   EmpathyProtocolChooserPriv *priv = GET_PRIV (chooser);
-  const TpConnectionManagerProtocol * const *iter;
+  GList *protocols, *l;
+  const gchar *cm_name;
 
-  for (iter = cm->protocols; iter != NULL && *iter != NULL; iter++)
+  cm_name = tp_connection_manager_get_name (cm);
+
+  protocols = tp_connection_manager_dup_protocols (cm);
+
+  for (l = protocols; l != NULL; l = g_list_next (l))
     {
-      const TpConnectionManagerProtocol *proto = *iter;
+      TpProtocol *protocol = l->data;
       gchar *icon_name;
       const gchar *display_name;
       const gchar *saved_cm_name;
+      const gchar *proto_name;
 
-      saved_cm_name = g_hash_table_lookup (priv->protocols, proto->name);
+      proto_name = tp_protocol_get_name (protocol);
+      saved_cm_name = g_hash_table_lookup (priv->protocols, proto_name);
 
-      if (!tp_strdiff (cm->name, "haze") && saved_cm_name != NULL &&
+      if (!tp_strdiff (cm_name, "haze") && saved_cm_name != NULL &&
           tp_strdiff (saved_cm_name, "haze"))
         /* the CM we're adding is a haze implementation of something we already
          * have; drop it.
          */
         continue;
 
-      if (!tp_strdiff (cm->name, "haze") &&
-          !tp_strdiff (proto->name, "facebook"))
+      if (!tp_strdiff (cm_name, "haze") &&
+          !tp_strdiff (proto_name, "facebook"))
         /* Facebook now supports XMPP so drop the purple facebook plugin; user
          * should use Gabble */
         continue;
 
-      if (!tp_strdiff (cm->name, "haze") &&
-          !tp_strdiff (proto->name, "sip"))
+      if (!tp_strdiff (cm_name, "haze") &&
+          !tp_strdiff (proto_name, "sip"))
         /* Haze's SIP implementation is pretty useless (bgo #629736) */
         continue;
 
-      if (!tp_strdiff (cm->name, "butterfly"))
+      if (!tp_strdiff (cm_name, "butterfly"))
         /* Butterfly isn't supported any more */
         continue;
 
-      if (tp_strdiff (cm->name, "haze") && !tp_strdiff (saved_cm_name, "haze"))
+      if (tp_strdiff (cm_name, "haze") && !tp_strdiff (saved_cm_name, "haze"))
         {
           GtkTreeIter titer;
           gboolean valid;
@@ -209,8 +216,8 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
               if (haze_cm == NULL)
                 continue;
 
-              if (!tp_strdiff (haze_cm->name, "haze") &&
-                  !tp_strdiff (haze_proto_name, proto->name))
+              if (!tp_strdiff (tp_connection_manager_get_name (haze_cm), "haze")
+                  && !tp_strdiff (haze_proto_name, proto_name))
                 {
                   gtk_list_store_remove (priv->store, &titer);
                   g_object_unref (haze_cm);
@@ -226,22 +233,22 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
         }
 
       g_hash_table_insert (priv->protocols,
-          g_strdup (proto->name), g_strdup (cm->name));
+          g_strdup (proto_name), g_strdup (cm_name));
 
-      icon_name = empathy_protocol_icon_name (proto->name);
+      icon_name = empathy_protocol_icon_name (proto_name);
 
-      display_name = empathy_protocol_name_to_display_name (proto->name);
+      display_name = empathy_protocol_name_to_display_name (proto_name);
 
       gtk_list_store_insert_with_values (priv->store,
           NULL, 0,
           COL_ICON, icon_name,
           COL_LABEL, display_name,
           COL_CM, cm,
-          COL_PROTOCOL_NAME, proto->name,
+          COL_PROTOCOL_NAME, proto_name,
           -1);
 
-      if (!tp_strdiff (proto->name, "jabber") &&
-          !tp_strdiff (cm->name, "gabble"))
+      if (!tp_strdiff (proto_name, "jabber") &&
+          !tp_strdiff (cm_name, "gabble"))
         {
           display_name = empathy_service_name_to_display_name ("google-talk");
           gtk_list_store_insert_with_values (priv->store,
@@ -249,7 +256,7 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
              COL_ICON, "im-google-talk",
              COL_LABEL, display_name,
              COL_CM, cm,
-             COL_PROTOCOL_NAME, proto->name,
+             COL_PROTOCOL_NAME, proto_name,
              COL_SERVICE, "google-talk",
              -1);
 
@@ -259,13 +266,15 @@ protocol_choosers_add_cm (EmpathyProtocolChooser *chooser,
              COL_ICON, "im-facebook",
              COL_LABEL, display_name,
              COL_CM, cm,
-             COL_PROTOCOL_NAME, proto->name,
+             COL_PROTOCOL_NAME, proto_name,
              COL_SERVICE, "facebook",
              -1);
         }
 
       g_free (icon_name);
     }
+
+  g_list_free_full (protocols, g_object_unref);
 }
 
 static void
@@ -586,7 +595,8 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
    * "Yahoo!"
    */
   str = g_strdup_printf (_("New %s account"), display_name);
-  settings = empathy_account_settings_new (cm->name,
+
+  settings = empathy_account_settings_new (tp_connection_manager_get_name (cm),
       tp_protocol_get_name (proto), service, str);
 
   g_free (str);
