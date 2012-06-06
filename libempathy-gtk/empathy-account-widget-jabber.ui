@@ -449,8 +449,6 @@ Use &lt;a href="http://www.facebook.com/username/"&gt;this page&lt;/a&gt; to cho
                     <property name="border_width">6</property>
                     <property name="row_spacing">6</property>
                     <property name="column_spacing">12</property>
-                    <property name="n_rows">8</property>
-                    <property name="n_columns">2</property>
                     <child>
                       <object class="GtkEntry" id="entry_resource">
                         <property name="visible">True</property>
