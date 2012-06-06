@@ -97,7 +97,7 @@ empathy_import_protocol_is_supported (const gchar *protocol,
           (const gchar*) protocol))
         {
           if (!tp_strdiff (protocol, "irc")
-              && !tp_strdiff (tp_cm->name, "haze"))
+              && !tp_strdiff (tp_connection_manager_get_name (tp_cm), "haze"))
               continue;
 
           if (!proto_is_supported)
@@ -111,7 +111,7 @@ empathy_import_protocol_is_supported (const gchar *protocol,
           /* we have more than one CM for this protocol,
            * select the one which is not haze.
            */
-          if (!tp_strdiff ((*cm)->name, "haze"))
+          if (!tp_strdiff (tp_connection_manager_get_name ((*cm)), "haze"))
             {
               *cm = tp_cm;
               break;
