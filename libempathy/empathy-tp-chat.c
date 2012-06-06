@@ -1100,8 +1100,6 @@ empathy_tp_chat_new (TpSimpleClientFactory *factory,
     const gchar *object_path,
     const GHashTable *immutable_properties)
 {
-  TpProxy *conn_proxy = (TpProxy *) conn;
-
   g_return_val_if_fail (TP_IS_ACCOUNT (account), NULL);
   g_return_val_if_fail (TP_IS_CONNECTION (conn), NULL);
   g_return_val_if_fail (immutable_properties != NULL, NULL);
@@ -1110,8 +1108,8 @@ empathy_tp_chat_new (TpSimpleClientFactory *factory,
       "factory", factory,
        "account", account,
        "connection", conn,
-       "dbus-daemon", conn_proxy->dbus_daemon,
-       "bus-name", conn_proxy->bus_name,
+       "dbus-daemon", tp_proxy_get_dbus_daemon (conn),
+       "bus-name", tp_proxy_get_bus_name (conn),
        "object-path", object_path,
        "channel-properties", immutable_properties,
        NULL);
