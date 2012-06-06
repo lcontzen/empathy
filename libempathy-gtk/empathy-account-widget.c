@@ -740,8 +740,9 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
       guint           row;
       GtkWidget       *widget = NULL;
       gchar           *param_name_formatted;
+      const gchar *dbus_signature;
 
-      if (param->flags & TP_CONN_MGR_PARAM_FLAG_REQUIRED)
+      if (tp_connection_manager_param_is_required (param))
         {
           grid_settings = grid_common_settings;
           row = row_common++;
@@ -756,10 +757,12 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
           row = row_advanced++;
         }
 
-      param_name_formatted = account_widget_generic_format_param_name
-        (param->name);
+      param_name_formatted = account_widget_generic_format_param_name (
+          tp_connection_manager_param_get_name (param));
 
-      if (param->dbus_signature[0] == 's')
+      dbus_signature = tp_connection_manager_param_get_dbus_signature (param);
+
+      if (dbus_signature[0] == 's')
         {
           gchar *str;
 
@@ -776,7 +779,8 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
           gtk_widget_show (widget);
 
           widget = gtk_entry_new ();
-          if (strcmp (param->name, "account") == 0)
+          if (strcmp (tp_connection_manager_param_get_name (param),
+                "account") == 0)
             {
               g_signal_connect (widget, "realize",
                   G_CALLBACK (gtk_widget_grab_focus),
@@ -789,21 +793,21 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
           gtk_widget_show (widget);
         }
       /* int types: ynqiuxt. double type is 'd' */
-      else if (param->dbus_signature[0] == 'y' ||
-          param->dbus_signature[0] == 'n' ||
-          param->dbus_signature[0] == 'q' ||
-          param->dbus_signature[0] == 'i' ||
-          param->dbus_signature[0] == 'u' ||
-          param->dbus_signature[0] == 'x' ||
-          param->dbus_signature[0] == 't' ||
-          param->dbus_signature[0] == 'd')
+      else if (dbus_signature[0] == 'y' ||
+          dbus_signature[0] == 'n' ||
+          dbus_signature[0] == 'q' ||
+          dbus_signature[0] == 'i' ||
+          dbus_signature[0] == 'u' ||
+          dbus_signature[0] == 'x' ||
+          dbus_signature[0] == 't' ||
+          dbus_signature[0] == 'd')
         {
           gchar   *str = NULL;
           gdouble  minint = 0;
           gdouble  maxint = 0;
           gdouble  step = 1;
 
-          switch (param->dbus_signature[0])
+          switch (dbus_signature[0])
             {
             case 'y': minint = G_MININT8;  maxint = G_MAXINT8;   break;
             case 'n': minint = G_MININT16; maxint = G_MAXINT16;  break;
@@ -831,7 +835,7 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
               widget, 1, row, 1, 1);
           gtk_widget_show (widget);
         }
-      else if (param->dbus_signature[0] == 'b')
+      else if (dbus_signature[0] == 'b')
         {
           widget = gtk_check_button_new_with_label (param_name_formatted);
           gtk_grid_attach (GTK_GRID (grid_settings),
@@ -841,11 +845,12 @@ accounts_widget_generic_setup (EmpathyAccountWidget *self,
       else
         {
           DEBUG ("Unknown signature for param %s: %s",
-              param_name_formatted, param->dbus_signature);
+              param_name_formatted, dbus_signature);
         }
 
       if (widget)
-        empathy_account_widget_setup_widget (self, widget, param->name);
+        empathy_account_widget_setup_widget (self, widget,
+            tp_connection_manager_param_get_name (param));
 
       g_free (param_name_formatted);
     }
