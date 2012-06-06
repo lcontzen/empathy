@@ -286,7 +286,7 @@ empathy_connection_managers_get_cm (EmpathyConnectionManagers *self,
     {
       TpConnectionManager *c = TP_CONNECTION_MANAGER (l->data);
 
-      if (!tp_strdiff (c->name, cm))
+      if (!tp_strdiff (tp_connection_manager_get_name (c), cm))
         return c;
     }
 
