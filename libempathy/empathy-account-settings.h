@@ -100,9 +100,6 @@ void empathy_account_settings_unset (EmpathyAccountSettings *settings,
 void empathy_account_settings_discard_changes (
     EmpathyAccountSettings *settings);
 
-const GValue *empathy_account_settings_get (EmpathyAccountSettings *settings,
-  const gchar *param);
-
 const gchar *
 empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *setting,
   const gchar *param);

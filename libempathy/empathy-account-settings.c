@@ -492,6 +492,10 @@ empathy_account_settings_migrate_password_cb (GObject *source,
   g_hash_table_unref (empty);
 }
 
+static const GValue * empathy_account_settings_get (
+    EmpathyAccountSettings *settings,
+    const gchar *param);
+
 static void
 empathy_account_settings_try_migrating_password (EmpathyAccountSettings *self)
 {
@@ -856,7 +860,7 @@ empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *settings,
   return tp_connection_manager_param_get_dbus_signature (p);
 }
 
-const GValue *
+static const GValue *
 empathy_account_settings_get (EmpathyAccountSettings *settings,
     const gchar *param)
 {
