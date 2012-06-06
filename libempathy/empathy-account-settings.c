@@ -609,7 +609,7 @@ empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
           if (tp_connection_manager_param_is_required (cur))
             {
               priv->required_params = g_list_append (priv->required_params,
-                                                     g_strdup (cur->name));
+                  g_strdup (tp_connection_manager_param_get_name (cur)));
             }
         }
 
@@ -853,7 +853,7 @@ empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *settings,
   if (p == NULL)
     return NULL;
 
-  return p->dbus_signature;
+  return tp_connection_manager_param_get_dbus_signature (p);
 }
 
 const GValue *
