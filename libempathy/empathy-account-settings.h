@@ -104,14 +104,14 @@ const gchar *
 empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *setting,
   const gchar *param);
 
-const GValue *
-empathy_account_settings_get_default (EmpathyAccountSettings *settings,
+GVariant *
+empathy_account_settings_dup_default (EmpathyAccountSettings *settings,
   const gchar *param);
 
-const gchar *empathy_account_settings_get_string (
+gchar * empathy_account_settings_dup_string (
     EmpathyAccountSettings *settings,
     const gchar *param);
-const gchar * const * empathy_account_settings_get_strv (
+GStrv empathy_account_settings_dup_strv (
     EmpathyAccountSettings *settings,
     const gchar *param);
 

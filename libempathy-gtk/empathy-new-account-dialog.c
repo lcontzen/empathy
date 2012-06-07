@@ -66,11 +66,11 @@ protocol_changed_cb (GtkComboBox *chooser,
   /* Save "account" and "password" parameters */
   if (self->priv->settings != NULL)
     {
-      account = g_strdup (empathy_account_settings_get_string (
-            self->priv->settings, "account"));
+      account = empathy_account_settings_dup_string (
+            self->priv->settings, "account");
 
-      password = g_strdup (empathy_account_settings_get_string (
-            self->priv->settings, "password"));
+      password = empathy_account_settings_dup_string (
+            self->priv->settings, "password");
 
       g_object_unref (self->priv->settings);
     }

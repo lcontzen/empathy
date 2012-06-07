@@ -288,16 +288,18 @@ account_widget_entry_changed_common (EmpathyAccountWidget *self,
 
   if (EMP_STR_EMPTY (str))
     {
-      const gchar *value = NULL;
-
       empathy_account_settings_unset (self->priv->settings, param_name);
 
       if (focus)
         {
-          value = empathy_account_settings_get_string (self->priv->settings,
+          gchar *value;
+
+          value = empathy_account_settings_dup_string (self->priv->settings,
               param_name);
+
           DEBUG ("Unset %s and restore to %s", param_name, value);
           gtk_entry_set_text (entry, value ? value : "");
+          g_free (value);
         }
     }
   else
@@ -450,7 +452,7 @@ account_widget_combobox_changed_cb (GtkWidget *widget,
   GtkTreeIter iter;
   GtkTreeModel *model;
   const gchar *value;
-  const GValue *v;
+  GVariant *v;
   const gchar *default_value = NULL;
   const gchar *param_name;
 
@@ -463,9 +465,9 @@ account_widget_combobox_changed_cb (GtkWidget *widget,
 
   param_name = g_object_get_data (G_OBJECT (widget), "param_name");
 
-  v = empathy_account_settings_get_default (self->priv->settings, param_name);
-  if (v != NULL)
-    default_value = g_value_get_string (v);
+  v = empathy_account_settings_dup_default (self->priv->settings, param_name);
+  if (v != NULL && g_variant_is_of_type (v, G_VARIANT_TYPE_STRING))
+    default_value = g_variant_get_string (v, NULL);
 
   if (!tp_strdiff (value, default_value))
     {
@@ -480,6 +482,8 @@ account_widget_combobox_changed_cb (GtkWidget *widget,
     }
 
   empathy_account_widget_changed (self);
+
+  tp_clear_pointer (&v, g_variant_unref);
 }
 
 static void
@@ -576,9 +580,9 @@ empathy_account_widget_setup_widget (EmpathyAccountWidget *self,
     }
   else if (GTK_IS_ENTRY (widget))
     {
-      const gchar *str = NULL;
+      gchar *str;
 
-      str = empathy_account_settings_get_string (self->priv->settings,
+      str = empathy_account_settings_dup_string (self->priv->settings,
           param_name);
       gtk_entry_set_text (GTK_ENTRY (widget), str ? str : "");
 
@@ -609,11 +613,12 @@ empathy_account_widget_setup_widget (EmpathyAccountWidget *self,
         g_signal_connect (widget, "activate",
             G_CALLBACK (account_entry_activated_cb), self);
 
-
       g_signal_connect (widget, "changed",
           G_CALLBACK (account_widget_entry_changed_cb), self);
       g_signal_connect (widget, "map",
           G_CALLBACK (account_widget_entry_map_cb), self);
+
+      g_free (str);
     }
   else if (GTK_IS_TOGGLE_BUTTON (widget))
     {
@@ -631,12 +636,12 @@ empathy_account_widget_setup_widget (EmpathyAccountWidget *self,
     {
       /* The combo box's model has to contain the param value in its first
        * column (as a string) */
-      const gchar *str;
+      gchar *str;
       GtkTreeModel *model;
       GtkTreeIter iter;
       gboolean valid;
 
-      str = empathy_account_settings_get_string (self->priv->settings,
+      str = empathy_account_settings_dup_string (self->priv->settings,
           param_name);
       model = gtk_combo_box_get_model (GTK_COMBO_BOX (widget));
 
@@ -658,6 +663,8 @@ empathy_account_widget_setup_widget (EmpathyAccountWidget *self,
 
           g_free (name);
         }
+
+      g_free (str);
 
       g_signal_connect (widget, "changed",
           G_CALLBACK (account_widget_combobox_changed_cb),
@@ -1225,14 +1232,15 @@ static void
 suffix_id_widget_changed_cb (GtkWidget *entry,
     EmpathyAccountWidget *self)
 {
-  const gchar *account;
+  gchar *account;
 
   g_assert (self->priv->jid_suffix != NULL);
 
   account_widget_entry_changed_common (self, GTK_ENTRY (entry), FALSE);
 
-  account = empathy_account_settings_get_string (self->priv->settings,
+  account = empathy_account_settings_dup_string (self->priv->settings,
       "account");
+
   if (!EMP_STR_EMPTY (account) &&
       !g_str_has_suffix (account, self->priv->jid_suffix))
     {
@@ -1248,6 +1256,8 @@ suffix_id_widget_changed_cb (GtkWidget *entry,
     }
 
   empathy_account_widget_changed (self);
+
+  g_free (account);
 }
 
 static gchar *
@@ -1267,7 +1277,7 @@ setup_id_widget_with_suffix (EmpathyAccountWidget *self,
     GtkWidget *widget,
     const gchar *suffix)
 {
-  const gchar *str = NULL;
+  gchar *str = NULL;
 
   g_object_set_data_full (G_OBJECT (widget), "param_name",
       g_strdup ("account"), g_free);
@@ -1275,7 +1285,7 @@ setup_id_widget_with_suffix (EmpathyAccountWidget *self,
   g_assert (self->priv->jid_suffix == NULL);
   self->priv->jid_suffix = g_strdup (suffix);
 
-  str = empathy_account_settings_get_string (self->priv->settings, "account");
+  str = empathy_account_settings_dup_string (self->priv->settings, "account");
   if (str != NULL)
     {
       gchar *tmp;
@@ -1283,6 +1293,7 @@ setup_id_widget_with_suffix (EmpathyAccountWidget *self,
       tmp = remove_jid_suffix (self, str);
       gtk_entry_set_text (GTK_ENTRY (widget), tmp);
       g_free (tmp);
+      g_free (str);
     }
 
   self->priv->param_account_widget = widget;
@@ -1883,7 +1894,9 @@ account_settings_password_retrieved_cb (GObject *object,
     gpointer user_data)
 {
   EmpathyAccountWidget *self = user_data;
-  const gchar *password = empathy_account_settings_get_string (
+  gchar *password;
+
+  password = empathy_account_settings_dup_string (
       self->priv->settings, "password");
 
   if (password != NULL)
@@ -1900,6 +1913,8 @@ account_settings_password_retrieved_cb (GObject *object,
   gtk_toggle_button_set_active (
       GTK_TOGGLE_BUTTON (self->priv->remember_password_widget),
       !EMP_STR_EMPTY (password));
+
+  g_free (password);
 }
 
 static void
@@ -1984,10 +1999,14 @@ do_constructed (GObject *obj)
         }
       else
         {
+          gchar *password;
+
+          password = empathy_account_settings_dup_string (self->priv->settings,
+              "password");
+
           gtk_toggle_button_set_active (
               GTK_TOGGLE_BUTTON (self->priv->remember_password_widget),
-              !EMP_STR_EMPTY (empathy_account_settings_get_string (
-                      self->priv->settings, "password")));
+              !EMP_STR_EMPTY (password));
 
           /* The password might not have been retrieved from the
            * keyring yet. We should update the remember password
@@ -1995,6 +2014,8 @@ do_constructed (GObject *obj)
           tp_g_signal_connect_object (self->priv->settings,
               "password-retrieved",
               G_CALLBACK (account_settings_password_retrieved_cb), self, 0);
+
+          g_free (password);
         }
 
       g_signal_connect (self->priv->remember_password_widget, "toggled",
@@ -2232,12 +2253,12 @@ empathy_account_widget_new_for_protocol (EmpathyAccountSettings *settings,
 gchar *
 empathy_account_widget_get_default_display_name (EmpathyAccountWidget *self)
 {
-  const gchar *login_id;
+  gchar *login_id;
   const gchar *protocol, *p;
   gchar *default_display_name;
   Service service;
 
-  login_id = empathy_account_settings_get_string (self->priv->settings,
+  login_id = empathy_account_settings_dup_string (self->priv->settings,
       "account");
   protocol = empathy_account_settings_get_protocol (self->priv->settings);
   service = account_widget_get_service (self);
@@ -2290,6 +2311,8 @@ empathy_account_widget_get_default_display_name (EmpathyAccountWidget *self)
     {
       default_display_name = g_strdup (_("New account"));
     }
+
+  g_free (login_id);
 
   return default_display_name;
 }

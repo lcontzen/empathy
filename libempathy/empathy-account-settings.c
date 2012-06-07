@@ -492,7 +492,7 @@ empathy_account_settings_migrate_password_cb (GObject *source,
   g_hash_table_unref (empty);
 }
 
-static const GValue * empathy_account_settings_get (
+static GVariant * empathy_account_settings_dup (
     EmpathyAccountSettings *settings,
     const gchar *param);
 
@@ -500,12 +500,15 @@ static void
 empathy_account_settings_try_migrating_password (EmpathyAccountSettings *self)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
-  const GValue *v;
+  GVariant *v;
   const gchar *password;
 
-  if (!priv->supports_sasl || empathy_account_settings_get (
-          self, "password") == NULL)
+  v = empathy_account_settings_dup (self, "password");
+  if (v == NULL)
     return;
+
+  if (!priv->supports_sasl)
+    goto out;
 
   /* mission-control still has our password, although the CM
    * supports SASL. Let's try migrating it. */
@@ -514,16 +517,14 @@ empathy_account_settings_try_migrating_password (EmpathyAccountSettings *self)
       "keyring ourselves for account %s",
       tp_account_get_path_suffix (priv->account));
 
-  v = empathy_account_settings_get (self, "password");
-
   /* I can't imagine why this would fail. */
-  if (!G_VALUE_HOLDS_STRING (v))
-    return;
+  if (!g_variant_is_of_type (v, G_VARIANT_TYPE_STRING))
+    goto out;
 
-  password = g_value_get_string (v);
+  password = g_variant_get_string (v, NULL);
 
   if (EMP_STR_EMPTY (password))
-    return;
+    goto out;
 
   empathy_keyring_set_account_password_async (priv->account, password,
       empathy_account_settings_migrate_password_cb, self);
@@ -534,6 +535,9 @@ empathy_account_settings_try_migrating_password (EmpathyAccountSettings *self)
 
   priv->password = g_strdup (password);
   priv->password_original = g_strdup (password);
+
+out:
+  g_variant_unref (v);
 }
 
 static void
@@ -832,18 +836,17 @@ account_settings_remove_from_unset (EmpathyAccountSettings *settings,
     }
 }
 
-const GValue *
-empathy_account_settings_get_default (EmpathyAccountSettings *settings,
+GVariant *
+empathy_account_settings_dup_default (EmpathyAccountSettings *settings,
     const gchar *param)
 {
   const TpConnectionManagerParam *p;
 
   p = empathy_account_settings_get_tp_param (settings, param);
-
-  if (p == NULL || !(p->flags & TP_CONN_MGR_PARAM_FLAG_HAS_DEFAULT))
+  if (p == NULL)
     return NULL;
 
-  return &(p->default_value);
+  return tp_connection_manager_param_dup_default_variant (p);
 }
 
 const gchar *
@@ -860,43 +863,35 @@ empathy_account_settings_get_dbus_signature (EmpathyAccountSettings *settings,
   return tp_connection_manager_param_get_dbus_signature (p);
 }
 
-static const GValue *
-empathy_account_settings_get (EmpathyAccountSettings *settings,
+static GVariant *
+empathy_account_settings_dup (EmpathyAccountSettings *settings,
     const gchar *param)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  const GValue *result = NULL;
-  GVariant *variant;
+  GVariant *result;
 
   /* Lookup the update parameters we set */
-  variant = g_hash_table_lookup (priv->parameters, param);
-  if (variant != NULL)
-    {
-      GValue v = G_VALUE_INIT;
-
-      dbus_g_value_parse_g_variant (variant, &v);
-      result = (const GValue *) tp_g_value_slice_dup (&v);
-
-      g_value_unset (&v);
-      /* FIXME: this GValue is leaked */
-      return result;
-    }
+  result = g_hash_table_lookup (priv->parameters, param);
+  if (result != NULL)
+    return g_variant_ref (result);
 
   /* If the parameters isn't unset use the accounts setting if any */
   if (priv->account != NULL
       && !empathy_account_settings_is_unset (settings, param))
     {
-      const GHashTable *parameters;
+      GVariant *parameters;
 
-      parameters = tp_account_get_parameters (priv->account);
-      result = tp_asv_lookup (parameters, param);
+      parameters = tp_account_dup_parameters_vardict (priv->account);
+      result = g_variant_lookup_value (parameters, param, NULL);
+      g_variant_unref (parameters);
 
       if (result != NULL)
+        /* g_variant_lookup_value() is (transfer full) */
         return result;
     }
 
   /* fallback to the default */
-  return empathy_account_settings_get_default (settings, param);
+  return empathy_account_settings_dup_default (settings, param);
 }
 
 void
@@ -940,76 +935,80 @@ empathy_account_settings_discard_changes (EmpathyAccountSettings *settings)
     priv->uri_scheme_tel = FALSE;
 }
 
-const gchar *
-empathy_account_settings_get_string (EmpathyAccountSettings *settings,
+gchar *
+empathy_account_settings_dup_string (EmpathyAccountSettings *settings,
     const gchar *param)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-  const GValue *v;
+  GVariant *v;
+  gchar *result = NULL;
 
   if (!tp_strdiff (param, "password") && priv->supports_sasl)
     {
-      return priv->password;
+      return g_strdup (priv->password);
     }
 
-  v = empathy_account_settings_get (settings, param);
-
-  if (v == NULL || !G_VALUE_HOLDS_STRING (v))
+  v = empathy_account_settings_dup (settings, param);
+  if (v == NULL)
     return NULL;
 
-  return g_value_get_string (v);
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_STRING))
+    result = g_variant_dup_string (v, NULL);
+
+  g_variant_unref (v);
+  return result;
 }
 
-const gchar * const *
-empathy_account_settings_get_strv (EmpathyAccountSettings *settings,
+GStrv
+empathy_account_settings_dup_strv (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
+  GVariant *v;
+  GStrv result = NULL;
 
-  v = empathy_account_settings_get (settings, param);
-
-  if (v == NULL || !G_VALUE_HOLDS (v, G_TYPE_STRV))
+  v = empathy_account_settings_dup (settings, param);
+  if (v == NULL)
     return NULL;
 
-  return g_value_get_boxed (v);
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_STRING_ARRAY))
+    result = g_variant_dup_strv (v, NULL);
+
+  g_variant_unref (v);
+  return result;
 }
 
 gint32
 empathy_account_settings_get_int32 (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
+  GVariant *v;
   gint32 ret = 0;
 
-  v = empathy_account_settings_get (settings, param);
-
+  v = empathy_account_settings_dup (settings, param);
   if (v == NULL)
     return 0;
 
-  switch G_VALUE_TYPE (v)
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_BYTE))
+    ret = g_variant_get_byte (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT32))
+    ret = g_variant_get_int32 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT32))
+    ret = CLAMP (g_variant_get_uint32 (v), (guint) G_MININT32,
+        G_MAXINT32);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT64))
+    ret = CLAMP (g_variant_get_int64 (v), G_MININT32, G_MAXINT32);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT64))
+    ret = CLAMP (g_variant_get_uint64 (v), (guint64) G_MININT32, G_MAXINT32);
+  else
     {
-      case G_TYPE_UCHAR:
-        ret = g_value_get_uchar (v);
-        break;
-      case G_TYPE_INT:
-        ret = g_value_get_int (v);
-        break;
-      case G_TYPE_UINT:
-        ret = CLAMP (g_value_get_uint (v), (guint) G_MININT32,
-            G_MAXINT32);
-        break;
-      case G_TYPE_INT64:
-        ret = CLAMP (g_value_get_int64 (v), G_MININT32, G_MAXINT32);
-        break;
-      case G_TYPE_UINT64:
-        ret = CLAMP (g_value_get_uint64 (v), (guint64) G_MININT32,
-            G_MAXINT32);
-        break;
-      default:
-        ret = 0;
-        break;
+      gchar *tmp;
+
+      tmp = g_variant_print (v, TRUE);
+      DEBUG ("Unsupported type for param '%s': %s'", param, tmp);
+      g_free (tmp);
     }
 
+  g_variant_unref (v);
   return ret;
 }
 
@@ -1017,35 +1016,33 @@ gint64
 empathy_account_settings_get_int64 (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
+  GVariant *v;
   gint64 ret = 0;
 
-  v = empathy_account_settings_get (settings, param);
+  v = empathy_account_settings_dup (settings, param);
   if (v == NULL)
     return 0;
 
-  switch G_VALUE_TYPE (v)
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_BYTE))
+    ret = g_variant_get_byte (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT32))
+    ret = g_variant_get_int32 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT32))
+    ret = g_variant_get_uint32 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT64))
+    ret = g_variant_get_int64 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT64))
+    ret = CLAMP (g_variant_get_uint64 (v), (guint64) G_MININT64, G_MAXINT64);
+  else
     {
-      case G_TYPE_UCHAR:
-        ret = g_value_get_uchar (v);
-        break;
-      case G_TYPE_INT:
-        ret = g_value_get_int (v);
-        break;
-      case G_TYPE_UINT:
-        ret = g_value_get_uint (v);
-        break;
-      case G_TYPE_INT64:
-        ret = g_value_get_int64 (v);
-        break;
-      case G_TYPE_UINT64:
-        ret = CLAMP (g_value_get_uint64 (v), (guint64) G_MININT64, G_MAXINT64);
-        break;
-      default:
-        ret = 0;
-        break;
+      gchar *tmp;
+
+      tmp = g_variant_print (v, TRUE);
+      DEBUG ("Unsupported type for param '%s': %s'", param, tmp);
+      g_free (tmp);
     }
 
+  g_variant_unref (v);
   return ret;
 }
 
@@ -1053,35 +1050,33 @@ guint32
 empathy_account_settings_get_uint32 (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
-  guint32 ret;
+  GVariant *v;
+  guint32 ret = 0;
 
-  v = empathy_account_settings_get (settings, param);
+  v = empathy_account_settings_dup (settings, param);
   if (v == NULL)
     return 0;
 
-  switch G_VALUE_TYPE (v)
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_BYTE))
+    ret = g_variant_get_byte (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT32))
+    ret = MAX (0, g_variant_get_int32 (v));
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT32))
+    ret = g_variant_get_uint32 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT64))
+    ret = CLAMP (g_variant_get_int64 (v), 0, G_MAXUINT32);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT64))
+    ret = MIN (g_variant_get_uint64 (v), G_MAXUINT32);
+  else
     {
-      case G_TYPE_UCHAR:
-        ret = g_value_get_uchar (v);
-        break;
-      case G_TYPE_INT:
-        ret = MAX (0, g_value_get_int (v));
-        break;
-      case G_TYPE_UINT:
-        ret = g_value_get_uint (v);
-        break;
-      case G_TYPE_INT64:
-        ret = CLAMP (g_value_get_int64 (v), 0, G_MAXUINT32);
-        break;
-      case G_TYPE_UINT64:
-        ret = MIN (g_value_get_uint64 (v), G_MAXUINT32);
-        break;
-      default:
-        ret = 0;
-        break;
+      gchar *tmp;
+
+      tmp = g_variant_print (v, TRUE);
+      DEBUG ("Unsupported type for param '%s': %s'", param, tmp);
+      g_free (tmp);
     }
 
+  g_variant_unref (v);
   return ret;
 }
 
@@ -1089,36 +1084,34 @@ guint64
 empathy_account_settings_get_uint64 (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
+  GVariant *v;
   guint64 ret = 0;
 
-  v = empathy_account_settings_get (settings, param);
-
-  if (v == NULL || !G_VALUE_HOLDS_INT (v))
+  v = empathy_account_settings_dup (settings, param);
+  if (v == NULL)
     return 0;
 
-  switch G_VALUE_TYPE (v)
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_BYTE))
+    ret = g_variant_get_byte (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT32))
+    ret = MAX (0, g_variant_get_int32 (v));
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT32))
+    ret = g_variant_get_uint32 (v);
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_INT64))
+    ret = MAX (0, g_variant_get_int64 (v));
+  else if (g_variant_is_of_type (v, G_VARIANT_TYPE_UINT64))
+    ret = g_variant_get_uint64 (v);
+  else
     {
-      case G_TYPE_UCHAR:
-        ret = g_value_get_uchar (v);
-        break;
-      case G_TYPE_INT:
-        ret = MAX (0, g_value_get_int (v));
-        break;
-      case G_TYPE_UINT:
-        ret = g_value_get_uint (v);
-        break;
-      case G_TYPE_INT64:
-        ret = MAX (0, g_value_get_int64 (v));
-        break;
-      case G_TYPE_UINT64:
-        ret = g_value_get_uint64 (v);
-        break;
-      default:
-        ret = 0;
-        break;
+      gchar *tmp;
+
+      tmp = g_variant_print (v, TRUE);
+      DEBUG ("Unsupported type for param '%s': %s'", param, tmp);
+      g_free (tmp);
     }
 
+
+  g_variant_unref (v);
   return ret;
 }
 
@@ -1126,14 +1119,17 @@ gboolean
 empathy_account_settings_get_boolean (EmpathyAccountSettings *settings,
     const gchar *param)
 {
-  const GValue *v;
+  GVariant *v;
+  gboolean result = FALSE;
 
-  v = empathy_account_settings_get (settings, param);
+  v = empathy_account_settings_dup (settings, param);
+  if (v == NULL)
+    return result;
 
-  if (v == NULL || !G_VALUE_HOLDS_BOOLEAN (v))
-    return FALSE;
+  if (g_variant_is_of_type (v, G_VARIANT_TYPE_BOOLEAN))
+    result = g_variant_get_boolean (v);
 
-  return g_value_get_boolean (v);
+  return result;
 }
 
 void
@@ -1673,7 +1669,6 @@ empathy_account_settings_parameter_is_valid (
 {
   EmpathyAccountSettingsPriv *priv;
   const GRegex *regex;
-  const gchar *value;
 
   g_return_val_if_fail (EMPATHY_IS_ACCOUNT_SETTINGS (settings), FALSE);
 
@@ -1704,9 +1699,17 @@ test_regex:
   regex = g_hash_table_lookup (priv->param_regexps, param);
   if (regex)
     {
-      value = empathy_account_settings_get_string (settings, param);
-      if (value != NULL && !g_regex_match (regex, value, 0, NULL))
+      gchar *value;
+      gboolean match;
+
+      value = empathy_account_settings_dup_string (settings, param);
+      if (value == NULL)
         return FALSE;
+
+      match = g_regex_match (regex, value, 0, NULL);
+
+      g_free (value);
+      return match;
     }
 
   return TRUE;

@@ -57,19 +57,19 @@ account_widget_irc_destroy_cb (GtkWidget *widget,
 static void
 account_widget_irc_setup (EmpathyAccountWidgetIrc *settings)
 {
-  const gchar *nick = NULL;
-  const gchar *fullname = NULL;
+  gchar *nick = NULL;
+  gchar *fullname = NULL;
   EmpathyAccountSettings *ac_settings;
 
   g_object_get (settings->self, "settings", &ac_settings, NULL);
 
-  nick = empathy_account_settings_get_string (ac_settings, "account");
-  fullname = empathy_account_settings_get_string (ac_settings,
+  nick = empathy_account_settings_dup_string (ac_settings, "account");
+  fullname = empathy_account_settings_dup_string (ac_settings,
       "fullname");
 
   if (nick == NULL)
     {
-      nick = g_get_user_name ();
+      nick = g_strdup (g_get_user_name ());
 
       empathy_account_settings_set (ac_settings,
         "account", g_variant_new_string (nick));
@@ -77,14 +77,17 @@ account_widget_irc_setup (EmpathyAccountWidgetIrc *settings)
 
   if (fullname == NULL)
     {
-      fullname = g_get_real_name ();
+      fullname = g_strdup (g_get_real_name ());
 
       if (fullname == NULL)
-          fullname = nick;
+          fullname = g_strdup (nick);
 
       empathy_account_settings_set (ac_settings,
           "fullname", g_variant_new_string (fullname));
     }
+
+  g_free (nick);
+  g_free (fullname);
 }
 
 static void
@@ -146,7 +149,7 @@ empathy_account_widget_irc_build (EmpathyAccountWidget *self,
   EmpathyAccountWidgetIrc *settings;
   EmpathyAccountSettings *ac_settings;
   GtkWidget *entry_password;
-  const gchar *password;
+  gchar *password;
 
   settings = g_slice_new0 (EmpathyAccountWidgetIrc);
   settings->self = self;
@@ -190,13 +193,15 @@ empathy_account_widget_irc_build (EmpathyAccountWidget *self,
   g_object_unref (ac_settings);
 
   /* Automatically set password-prompt when needed */
-  password = empathy_account_settings_get_string (ac_settings, "password");
+  password = empathy_account_settings_dup_string (ac_settings, "password");
 
   if (set_password_prompt_if_needed (ac_settings, password))
     {
       /* Apply right now to save password-prompt */
       empathy_account_settings_apply_async (ac_settings, NULL, NULL);
     }
+
+  g_free (password);
 
   g_signal_connect (entry_password, "changed",
       G_CALLBACK (entry_password_changed_cb), settings);

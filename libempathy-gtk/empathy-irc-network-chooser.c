@@ -225,11 +225,11 @@ static void
 set_label_from_settings (EmpathyIrcNetworkChooser *self)
 {
   EmpathyIrcNetworkChooserPriv *priv = GET_PRIV (self);
-  const gchar *server;
+  gchar *server;
 
   tp_clear_object (&priv->network);
 
-  server = empathy_account_settings_get_string (priv->settings, "server");
+  server = empathy_account_settings_dup_string (priv->settings, "server");
 
   if (server != NULL)
     {
@@ -263,6 +263,7 @@ set_label_from_settings (EmpathyIrcNetworkChooser *self)
       set_label (self);
 
       g_object_unref (srv);
+      g_free (server);
       return;
     }
 
