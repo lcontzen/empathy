@@ -2,7 +2,6 @@ include $(top_srcdir)/tools/flymake.mk
 
 CPPFLAGS_COMMON =					\
 	$(EMPATHY_CFLAGS)				\
-	$(EDS_CFLAGS)					\
 	$(ERROR_CFLAGS)					\
 	-I$(top_srcdir)                          	\
 	-DG_LOG_DOMAIN=\"empathy\"			\
@@ -39,7 +38,6 @@ libempathy_accounts_common_la_SOURCES =					\
 
 libempathy_accounts_common_la_LIBADD =					\
         $(top_builddir)/libempathy-gtk/libempathy-gtk.la		\
-	$(EDS_LIBS)							\
         $(EMPATHY_LIBS)							\
         $(LIBCHAMPLAIN_LIBS)						\
 	$(NULL)

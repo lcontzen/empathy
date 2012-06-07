@@ -219,18 +219,6 @@ AC_DEFINE(EMPATHY_GOA_PROVIDER, "org.gnome.OnlineAccounts",
    [Name of provider for accounts imported from GOA])
 
 # -----------------------------------------------------------
-# evolution-data-server (about-me)
-# -----------------------------------------------------------
-AC_ARG_WITH(eds,
-            AS_HELP_STRING([--with-eds],
-                           [build with evolution-data-server support]),,
-            [with_eds=yes])
-if test x"$with_eds" = x"yes" ; then
-   PKG_CHECK_MODULES(EDS, [libebook-1.2])
-   AC_DEFINE(HAVE_EDS, 1, [Define if we have libebook])
-fi
-
-# -----------------------------------------------------------
 # Enable debug
 # -----------------------------------------------------------
 
@@ -550,5 +538,4 @@ Configure summary:
     Extras:
 	Nautilus-sendto plugin......:  ${have_nst}
 	GOA MC plugin...............:  ${have_goa}
-	Salut E-D-S support.........:  ${with_eds}
 "
