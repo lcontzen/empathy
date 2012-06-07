@@ -88,7 +88,7 @@ struct _EmpathyAccountSettingsPriv
   gboolean password_retrieved;
   gboolean password_requested;
 
-  /* Parameter name (gchar *) -> parameter value (GValue) */
+  /* Parameter name (gchar *) -> parameter value (GVariant) */
   GHashTable *parameters;
   /* Keys are parameter names from the hash above (gchar *).
    * Values are regular expresions that should match corresponding parameter
@@ -123,7 +123,7 @@ empathy_account_settings_init (EmpathyAccountSettings *obj)
   priv->account_manager = tp_account_manager_dup ();
 
   priv->parameters = g_hash_table_new_full (g_str_hash, g_str_equal,
-    g_free, (GDestroyNotify) tp_g_value_slice_free);
+    g_free, (GDestroyNotify) g_variant_unref);
 
   priv->param_regexps = g_hash_table_new_full (g_str_hash, g_str_equal,
     g_free, (GDestroyNotify) g_regex_unref);
@@ -866,11 +866,21 @@ empathy_account_settings_get (EmpathyAccountSettings *settings,
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
   const GValue *result = NULL;
+  GVariant *variant;
 
   /* Lookup the update parameters we set */
-  result = tp_asv_lookup (priv->parameters, param);
-  if (result != NULL)
-    return result;
+  variant = g_hash_table_lookup (priv->parameters, param);
+  if (variant != NULL)
+    {
+      GValue v = G_VALUE_INIT;
+
+      dbus_g_value_parse_g_variant (variant, &v);
+      result = (const GValue *) tp_g_value_slice_dup (&v);
+
+      g_value_unset (&v);
+      /* FIXME: this GValue is leaked */
+      return result;
+    }
 
   /* If the parameters isn't unset use the accounts setting if any */
   if (priv->account != NULL
@@ -1144,7 +1154,8 @@ empathy_account_settings_set_string (EmpathyAccountSettings *settings,
     }
   else
     {
-      tp_asv_set_string (priv->parameters, g_strdup (param), value);
+      g_hash_table_insert (priv->parameters, g_strdup (param),
+          g_variant_ref_sink (g_variant_new_string (value)));
     }
 
   account_settings_remove_from_unset (settings, param);
@@ -1153,14 +1164,15 @@ empathy_account_settings_set_string (EmpathyAccountSettings *settings,
 void
 empathy_account_settings_set_strv (EmpathyAccountSettings *settings,
     const gchar *param,
-    gchar **value)
+    const gchar * const *value)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
 
   g_return_if_fail (param != NULL);
   g_return_if_fail (value != NULL);
 
-  tp_asv_set_strv (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_strv (value, -1)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1174,7 +1186,8 @@ empathy_account_settings_set_int32 (EmpathyAccountSettings *settings,
 
   g_return_if_fail (param != NULL);
 
-  tp_asv_set_int32 (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_int32 (value)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1188,7 +1201,8 @@ empathy_account_settings_set_int64 (EmpathyAccountSettings *settings,
 
   g_return_if_fail (param != NULL);
 
-  tp_asv_set_int64 (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_int64 (value)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1202,7 +1216,8 @@ empathy_account_settings_set_uint32 (EmpathyAccountSettings *settings,
 
   g_return_if_fail (param != NULL);
 
-  tp_asv_set_uint32 (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_uint32 (value)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1216,7 +1231,8 @@ empathy_account_settings_set_uint64 (EmpathyAccountSettings *settings,
 
   g_return_if_fail (param != NULL);
 
-  tp_asv_set_uint64 (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_uint64 (value)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1230,7 +1246,8 @@ empathy_account_settings_set_boolean (EmpathyAccountSettings *settings,
 
   g_return_if_fail (param != NULL);
 
-  tp_asv_set_boolean (priv->parameters, g_strdup (param), value);
+  g_hash_table_insert (priv->parameters, g_strdup (param),
+      g_variant_ref_sink (g_variant_new_boolean (value)));
 
   account_settings_remove_from_unset (settings, param);
 }
@@ -1479,7 +1496,7 @@ empathy_account_settings_account_updated (GObject *source,
   GError *error = NULL;
   GStrv reconnect_required = NULL;
 
-  if (!tp_account_update_parameters_finish (TP_ACCOUNT (source),
+  if (!tp_account_update_parameters_vardict_finish (TP_ACCOUNT (source),
           result, &reconnect_required, &error))
     {
       g_simple_async_result_set_from_error (priv->apply_result, error);
@@ -1577,9 +1594,8 @@ empathy_account_settings_do_create_account (EmpathyAccountSettings *self)
   gchar *status;
   gchar *message;
   EmpathyPresenceManager *presence_mgr;
-  GVariant *vardict, *value;
-  GVariantIter iter;
-  const gchar *key;
+  GHashTableIter iter;
+  gpointer k, v;
 
   account_req = tp_account_request_new (priv->account_manager, priv->cm_name,
       priv->protocol, "New Account");
@@ -1602,18 +1618,43 @@ empathy_account_settings_do_create_account (EmpathyAccountSettings *self)
   if (priv->service != NULL)
     tp_account_request_set_service (account_req, priv->service);
 
-  vardict = empathy_asv_to_vardict (priv->parameters);
-
-  g_variant_iter_init (&iter, vardict);
-  while (g_variant_iter_loop (&iter, "{sv}", &key, &value))
+  g_hash_table_iter_init (&iter, priv->parameters);
+  while (g_hash_table_iter_next (&iter, &k, &v))
     {
+      const gchar *key = k;
+      GVariant *value = v;
+
       tp_account_request_set_parameter (account_req, key, value);
     }
 
-  g_variant_unref (vardict);
-
   tp_account_request_create_account_async (account_req,
       empathy_account_settings_created_cb, self);
+}
+
+static GVariant *
+build_parameters_variant (EmpathyAccountSettings *self)
+{
+  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
+  GVariantBuilder *builder;
+  GHashTableIter iter;
+  gpointer k, v;
+
+  builder = g_variant_builder_new (G_VARIANT_TYPE_VARDICT);
+
+  g_hash_table_iter_init (&iter, priv->parameters);
+  while (g_hash_table_iter_next (&iter, &k, &v))
+    {
+      const gchar *key = k;
+      GVariant *value = v;
+      GVariant *entry;
+
+      entry = g_variant_new_dict_entry (g_variant_new_string (key),
+          g_variant_new_variant (value));
+
+      g_variant_builder_add_value (builder, entry);
+    }
+
+  return g_variant_builder_end (builder);
 }
 
 void
@@ -1646,8 +1687,9 @@ empathy_account_settings_apply_async (EmpathyAccountSettings *settings,
     }
   else
     {
-      tp_account_update_parameters_async (priv->account,
-          priv->parameters, (const gchar **)priv->unset_parameters->data,
+      tp_account_update_parameters_vardict_async (priv->account,
+          build_parameters_variant (settings),
+          (const gchar **) priv->unset_parameters->data,
           empathy_account_settings_account_updated, settings);
     }
 }
@@ -1730,7 +1772,7 @@ empathy_account_settings_parameter_is_valid (
   if (g_list_find_custom (priv->required_params, param, (GCompareFunc) strcmp))
     {
       /* first, look if it's set in our own parameters */
-      if (tp_asv_lookup (priv->parameters, param))
+      if (g_hash_table_lookup (priv->parameters, param) != NULL)
         goto test_regex;
 
       /* if we did not unset the parameter, look if it's in the account */

@@ -603,13 +603,13 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
 
   if (!tp_strdiff (service, "google-talk"))
     {
-      gchar *fallback_servers[] = {
+      const gchar *fallback_servers[] = {
           "talkx.l.google.com",
           "talkx.l.google.com:443,oldssl",
           "talkx.l.google.com:80",
           NULL};
 
-      gchar *extra_certificate_identities[] = {
+      const gchar *extra_certificate_identities[] = {
           "talk.google.com",
           NULL};
 
@@ -631,7 +631,7 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
     }
   else if (!tp_strdiff (service, "facebook"))
     {
-      gchar *fallback_servers[] = {
+      const gchar *fallback_servers[] = {
           "chat.facebook.com:443",
           NULL };
 

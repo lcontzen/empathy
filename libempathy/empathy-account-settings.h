@@ -129,7 +129,8 @@ gboolean empathy_account_settings_get_boolean (EmpathyAccountSettings *settings,
 void empathy_account_settings_set_string (EmpathyAccountSettings *settings,
     const gchar *param, const gchar *value);
 void empathy_account_settings_set_strv (EmpathyAccountSettings *settings,
-    const gchar *param, gchar **value);
+    const gchar *param,
+    const gchar * const *value);
 
 void empathy_account_settings_set_int32 (EmpathyAccountSettings *settings,
     const gchar *param, gint32 value);
