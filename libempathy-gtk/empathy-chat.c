@@ -2548,9 +2548,17 @@ got_filtered_messages_cb (GObject *manager,
 {
 	GList *l;
 	GList *messages;
-	EmpathyChat *chat = EMPATHY_CHAT (user_data);
-	EmpathyChatPriv *priv = GET_PRIV (chat);
+	TpWeakRef *wr = user_data;
+	EmpathyChat *chat = tp_weak_ref_dup_object (wr);
+	EmpathyChatPriv *priv;
 	GError *error = NULL;
+
+	if (chat == NULL) {
+		tp_weak_ref_destroy (wr);
+		return;
+	}
+
+	priv = GET_PRIV (chat);
 
 	if (!tpl_log_manager_get_filtered_events_finish (TPL_LOG_MANAGER (manager),
 		result, &messages, &error)) {
@@ -2613,6 +2621,9 @@ out:
 
 	/* Turn back on scrolling */
 	empathy_chat_view_scroll (chat->view, TRUE);
+
+	g_object_unref (chat);
+	tp_weak_ref_destroy (wr);
 }
 
 static void
@@ -2643,7 +2654,7 @@ chat_add_logs (EmpathyChat *chat)
 						   chat_log_filter,
 						   chat,
 						   got_filtered_messages_cb,
-						   (gpointer) chat);
+						   tp_weak_ref_new (chat, NULL, NULL));
 
 	g_object_unref (target);
 }
