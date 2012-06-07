@@ -1252,11 +1252,6 @@ empathy_roster_window_finalize (GObject *window)
 
   g_hash_table_unref (self->priv->status_changed_handlers);
 
-  g_signal_handlers_disconnect_by_func (self->priv->event_manager,
-      roster_window_event_added_cb, self);
-  g_signal_handlers_disconnect_by_func (self->priv->event_manager,
-      roster_window_event_removed_cb, self);
-
   g_object_unref (self->priv->call_observer);
   g_object_unref (self->priv->event_manager);
   g_object_unref (self->priv->chatroom_manager);
@@ -2295,10 +2290,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   self->priv->call_observer = empathy_call_observer_dup_singleton ();
   self->priv->event_manager = empathy_event_manager_dup_singleton ();
 
-  g_signal_connect (self->priv->event_manager, "event-added",
-      G_CALLBACK (roster_window_event_added_cb), self);
-  g_signal_connect (self->priv->event_manager, "event-removed",
-      G_CALLBACK (roster_window_event_removed_cb), self);
+  tp_g_signal_connect_object (self->priv->event_manager, "event-added",
+      G_CALLBACK (roster_window_event_added_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->event_manager, "event-removed",
+      G_CALLBACK (roster_window_event_removed_cb), self, 0);
   g_signal_connect (self->priv->account_manager, "account-validity-changed",
       G_CALLBACK (roster_window_account_validity_changed_cb), self);
   g_signal_connect (self->priv->account_manager, "account-removed",
