@@ -472,7 +472,7 @@ empathy_account_settings_migrate_password_cb (GObject *source,
   GError *error = NULL;
   EmpathyAccountSettings *self = user_data;
   EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
-  GHashTable *empty;
+  GVariantBuilder *builder;
   const gchar *unset[] = { "password", NULL };
 
   if (!empathy_keyring_set_account_password_finish (account, result, &error))
@@ -483,13 +483,12 @@ empathy_account_settings_migrate_password_cb (GObject *source,
     }
 
   /* Now clear the password MC has stored. */
-  empty = tp_asv_new (NULL, NULL);
-  tp_account_update_parameters_async (priv->account,
-      empty, unset, NULL, NULL);
+  builder = g_variant_builder_new (G_VARIANT_TYPE_VARDICT);
+
+  tp_account_update_parameters_vardict_async (priv->account,
+      g_variant_builder_end (builder), unset, NULL, NULL);
 
   g_hash_table_remove (priv->parameters, "password");
-
-  g_hash_table_unref (empty);
 }
 
 static GVariant * empathy_account_settings_dup (
