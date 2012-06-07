@@ -126,23 +126,9 @@ guint64 empathy_account_settings_get_uint64 (EmpathyAccountSettings *settings,
 gboolean empathy_account_settings_get_boolean (EmpathyAccountSettings *settings,
     const gchar *param);
 
-void empathy_account_settings_set_string (EmpathyAccountSettings *settings,
-    const gchar *param, const gchar *value);
-void empathy_account_settings_set_strv (EmpathyAccountSettings *settings,
+void empathy_account_settings_set (EmpathyAccountSettings *settings,
     const gchar *param,
-    const gchar * const *value);
-
-void empathy_account_settings_set_int32 (EmpathyAccountSettings *settings,
-    const gchar *param, gint32 value);
-void empathy_account_settings_set_int64 (EmpathyAccountSettings *settings,
-    const gchar *param, gint64 value);
-void empathy_account_settings_set_uint32 (EmpathyAccountSettings *settings,
-    const gchar *param, guint32 value);
-void empathy_account_settings_set_uint64 (EmpathyAccountSettings *settings,
-    const gchar *param, guint64 value);
-
-void empathy_account_settings_set_boolean (EmpathyAccountSettings *settings,
-    const gchar *param, gboolean value);
+    GVariant *v);
 
 gchar *empathy_account_settings_get_icon_name (
   EmpathyAccountSettings *settings);

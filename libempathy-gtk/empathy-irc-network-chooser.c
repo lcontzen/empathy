@@ -163,7 +163,8 @@ update_server_params (EmpathyIrcNetworkChooser *self)
 
   charset = empathy_irc_network_get_charset (priv->network);
   DEBUG ("Setting charset to %s", charset);
-  empathy_account_settings_set_string (priv->settings, "charset", charset);
+  empathy_account_settings_set (priv->settings, "charset",
+      g_variant_new_string (charset));
 
   servers = empathy_irc_network_get_servers (priv->network);
   if (g_slist_length (servers) > 0)
@@ -182,11 +183,14 @@ update_server_params (EmpathyIrcNetworkChooser *self)
           NULL);
 
       DEBUG ("Setting server to %s", address);
-      empathy_account_settings_set_string (priv->settings, "server", address);
+      empathy_account_settings_set (priv->settings, "server",
+          g_variant_new_string (address));
       DEBUG ("Setting port to %u", port);
-      empathy_account_settings_set_uint32 (priv->settings, "port", port);
+      empathy_account_settings_set (priv->settings, "port",
+          g_variant_new_uint32 (port));
       DEBUG ("Setting use-ssl to %s", ssl ? "TRUE": "FALSE" );
-      empathy_account_settings_set_boolean (priv->settings, "use-ssl", ssl);
+      empathy_account_settings_set (priv->settings, "use-ssl",
+          g_variant_new_boolean (ssl));
 
       /* Set Account.Service */
       service = dup_network_service (priv->network);

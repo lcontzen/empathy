@@ -304,8 +304,8 @@ account_widget_entry_changed_common (EmpathyAccountWidget *self,
     {
       DEBUG ("Setting %s to %s", param_name,
           tp_strdiff (param_name, "password") ? str : "***");
-      empathy_account_settings_set_string (self->priv->settings, param_name,
-          str);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_string (str));
     }
 
   curr_status = empathy_account_settings_parameter_is_valid (
@@ -361,21 +361,21 @@ account_widget_int_changed_cb (GtkWidget *widget,
     {
     case DBUS_TYPE_INT16:
     case DBUS_TYPE_INT32:
-      empathy_account_settings_set_int32 (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_int32 (value));
       break;
     case DBUS_TYPE_INT64:
-      empathy_account_settings_set_int64 (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_int64 (value));
       break;
     case DBUS_TYPE_UINT16:
     case DBUS_TYPE_UINT32:
-      empathy_account_settings_set_uint32 (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_uint32 (value));
       break;
     case DBUS_TYPE_UINT64:
-      empathy_account_settings_set_uint64 (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_uint64 (value));
       break;
     default:
       g_return_if_reached ();
@@ -409,8 +409,8 @@ account_widget_checkbutton_toggled_cb (GtkWidget *widget,
   else
     {
       DEBUG ("Setting %s to %d", param_name, value);
-      empathy_account_settings_set_boolean (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_boolean (value));
     }
 
   empathy_account_widget_changed (self);
@@ -475,8 +475,8 @@ account_widget_combobox_changed_cb (GtkWidget *widget,
   else
     {
       DEBUG ("Setting %s to %s", param_name, value);
-      empathy_account_settings_set_string (self->priv->settings, param_name,
-          value);
+      empathy_account_settings_set (self->priv->settings, param_name,
+          g_variant_new_string (value));
     }
 
   empathy_account_widget_changed (self);
@@ -1006,8 +1006,8 @@ account_widget_apply_and_log_in (EmpathyAccountWidget *self)
             self->priv->radiobutton_reuse));
 
       DEBUG ("Set register param: %d", !reuse);
-      empathy_account_settings_set_boolean (self->priv->settings, "register",
-          !reuse);
+      empathy_account_settings_set (self->priv->settings, "register",
+          g_variant_new_boolean (!reuse));
     }
 
   g_object_get (self->priv->settings,
@@ -1242,8 +1242,8 @@ suffix_id_widget_changed_cb (GtkWidget *entry,
 
       DEBUG ("Change account from '%s' to '%s'", account, tmp);
 
-      empathy_account_settings_set_string (self->priv->settings, "account",
-          tmp);
+      empathy_account_settings_set (self->priv->settings, "account",
+          g_variant_new_string (tmp));
       g_free (tmp);
     }
 

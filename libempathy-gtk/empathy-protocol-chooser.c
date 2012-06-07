@@ -615,18 +615,19 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
 
       empathy_account_settings_set_icon_name_async (settings, "im-google-talk",
           NULL, NULL);
-      empathy_account_settings_set_string (settings, "server",
-          extra_certificate_identities[0]);
-      empathy_account_settings_set_boolean (settings, "require-encryption",
-          TRUE);
-      empathy_account_settings_set_strv (settings, "fallback-servers",
-          fallback_servers);
+      empathy_account_settings_set (settings, "server",
+          g_variant_new_string (extra_certificate_identities[0]));
+      empathy_account_settings_set (settings, "require-encryption",
+          g_variant_new_boolean (TRUE));
+      empathy_account_settings_set (settings, "fallback-servers",
+          g_variant_new_strv (fallback_servers, -1));
 
       if (empathy_account_settings_have_tp_param (settings,
               "extra-certificate-identities"))
         {
-          empathy_account_settings_set_strv (settings,
-              "extra-certificate-identities", extra_certificate_identities);
+          empathy_account_settings_set (settings,
+              "extra-certificate-identities",
+              g_variant_new_strv (extra_certificate_identities, -1));
         }
     }
   else if (!tp_strdiff (service, "facebook"))
@@ -637,12 +638,12 @@ empathy_protocol_chooser_create_account_settings (EmpathyProtocolChooser *self)
 
       empathy_account_settings_set_icon_name_async (settings, "im-facebook",
           NULL, NULL);
-      empathy_account_settings_set_boolean (settings, "require-encryption",
-          TRUE);
-      empathy_account_settings_set_string (settings, "server",
-          "chat.facebook.com");
-      empathy_account_settings_set_strv (settings, "fallback-servers",
-          fallback_servers);
+      empathy_account_settings_set (settings, "require-encryption",
+          g_variant_new_boolean (TRUE));
+      empathy_account_settings_set (settings, "server",
+          g_variant_new_string ("chat.facebook.com"));
+      empathy_account_settings_set (settings, "fallback-servers",
+          g_variant_new_strv (fallback_servers, -1));
     }
 
 out:

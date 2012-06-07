@@ -1137,117 +1137,27 @@ empathy_account_settings_get_boolean (EmpathyAccountSettings *settings,
 }
 
 void
-empathy_account_settings_set_string (EmpathyAccountSettings *settings,
+empathy_account_settings_set (EmpathyAccountSettings *settings,
     const gchar *param,
-    const gchar *value)
+    GVariant *v)
 {
   EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
 
   g_return_if_fail (param != NULL);
-  g_return_if_fail (value != NULL);
+  g_return_if_fail (v != NULL);
 
-  if (!tp_strdiff (param, "password") && priv->supports_sasl)
+  if (!tp_strdiff (param, "password") && priv->supports_sasl &&
+      g_variant_is_of_type (v, G_VARIANT_TYPE_STRING))
     {
       g_free (priv->password);
-      priv->password = g_strdup (value);
+      priv->password = g_variant_dup_string (v, NULL);
       priv->password_changed = TRUE;
     }
   else
     {
       g_hash_table_insert (priv->parameters, g_strdup (param),
-          g_variant_ref_sink (g_variant_new_string (value)));
+          g_variant_ref_sink (v));
     }
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_strv (EmpathyAccountSettings *settings,
-    const gchar *param,
-    const gchar * const *value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-  g_return_if_fail (value != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_strv (value, -1)));
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_int32 (EmpathyAccountSettings *settings,
-    const gchar *param,
-    gint32 value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_int32 (value)));
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_int64 (EmpathyAccountSettings *settings,
-    const gchar *param,
-    gint64 value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_int64 (value)));
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_uint32 (EmpathyAccountSettings *settings,
-    const gchar *param,
-    guint32 value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_uint32 (value)));
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_uint64 (EmpathyAccountSettings *settings,
-    const gchar *param,
-    guint64 value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_uint64 (value)));
-
-  account_settings_remove_from_unset (settings, param);
-}
-
-void
-empathy_account_settings_set_boolean (EmpathyAccountSettings *settings,
-    const gchar *param,
-    gboolean value)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (settings);
-
-  g_return_if_fail (param != NULL);
-
-  g_hash_table_insert (priv->parameters, g_strdup (param),
-      g_variant_ref_sink (g_variant_new_boolean (value)));
 
   account_settings_remove_from_unset (settings, param);
 }

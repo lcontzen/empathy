@@ -102,13 +102,15 @@ create_salut_account_settings (void)
      nickname, first_name, last_name, email, jid);
 
   empathy_account_settings_set_string (settings,
-      "nickname", nickname ? nickname : "");
-  empathy_account_settings_set_string (settings,
-      "first-name", first_name ? first_name : "");
-  empathy_account_settings_set_string (settings,
-      "last-name", last_name ? last_name : "");
-  empathy_account_settings_set_string (settings, "email", email ? email : "");
-  empathy_account_settings_set_string (settings, "jid", jid ? jid : "");
+      "nickname", g_variant_new_string (nickname ? nickname : ""));
+  empathy_account_settings_set_ (settings,
+      "first-name", g_variant_new_string (first_name ? first_name : ""));
+  empathy_account_settings_set (settings,
+      "last-name", g_variant_new_string (last_name ? last_name : ""));
+  empathy_account_settings_set (settings, "email",
+      g_variant_new_string (email ? email : ""));
+  empathy_account_settings_set (settings, "jid",
+      g_variant_new_string (jid ? jid : ""));
 
   g_free (nickname);
   g_free (first_name);

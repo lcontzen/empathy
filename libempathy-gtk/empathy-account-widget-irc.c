@@ -67,22 +67,23 @@ account_widget_irc_setup (EmpathyAccountWidgetIrc *settings)
   fullname = empathy_account_settings_get_string (ac_settings,
       "fullname");
 
-  if (!nick)
+  if (nick == NULL)
     {
-      nick = g_strdup (g_get_user_name ());
-      empathy_account_settings_set_string (ac_settings,
-        "account", nick);
+      nick = g_get_user_name ();
+
+      empathy_account_settings_set (ac_settings,
+        "account", g_variant_new_string (nick));
     }
 
-  if (!fullname)
+  if (fullname == NULL)
     {
-      fullname = g_strdup (g_get_real_name ());
-      if (!fullname)
-        {
-          fullname = g_strdup (nick);
-        }
-      empathy_account_settings_set_string (ac_settings,
-          "fullname", fullname);
+      fullname = g_get_real_name ();
+
+      if (fullname == NULL)
+          fullname = nick;
+
+      empathy_account_settings_set (ac_settings,
+          "fullname", g_variant_new_string (fullname));
     }
 }
 
@@ -114,8 +115,8 @@ set_password_prompt_if_needed (EmpathyAccountSettings *ac_settings,
         "password-prompt"))
     return FALSE;
 
-  empathy_account_settings_set_boolean (ac_settings, "password-prompt",
-      prompt);
+  empathy_account_settings_set (ac_settings, "password-prompt",
+      g_variant_new_boolean (prompt));
 
   return TRUE;
 }
