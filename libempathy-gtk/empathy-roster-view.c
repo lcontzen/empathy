@@ -1187,3 +1187,10 @@ empathy_roster_view_is_empty (EmpathyRosterView *self)
 {
   return self->priv->empty;
 }
+
+gboolean
+empathy_roster_view_is_searching (EmpathyRosterView *self)
+{
+  return (self->priv->search != NULL &&
+      gtk_widget_get_visible (GTK_WIDGET (self->priv->search)));
+}
