@@ -49,9 +49,8 @@
 #include <libempathy-gtk/empathy-geometry.h>
 #include <libempathy-gtk/empathy-gtk-enum-types.h>
 #include <libempathy-gtk/empathy-individual-dialogs.h>
-#include <libempathy-gtk/empathy-individual-store.h>
 #include <libempathy-gtk/empathy-individual-store-manager.h>
-#include <libempathy-gtk/empathy-individual-view.h>
+#include <libempathy-gtk/empathy-roster-view.h>
 #include <libempathy-gtk/empathy-new-message-dialog.h>
 #include <libempathy-gtk/empathy-new-call-dialog.h>
 #include <libempathy-gtk/empathy-log-window.h>
@@ -101,8 +100,7 @@ enum
 G_DEFINE_TYPE (EmpathyRosterWindow, empathy_roster_window, GTK_TYPE_APPLICATION_WINDOW)
 
 struct _EmpathyRosterWindowPriv {
-  EmpathyIndividualStore *individual_store;
-  EmpathyIndividualView *individual_view;
+  EmpathyRosterView *view;
   TpAccountManager *account_manager;
   EmpathyChatroomManager *chatroom_manager;
   EmpathyEventManager *event_manager;
@@ -152,6 +150,7 @@ struct _EmpathyRosterWindowPriv {
   gboolean shell_running;
 };
 
+#if 0
 static void
 roster_window_flash_stop (EmpathyRosterWindow *self)
 {
@@ -281,6 +280,7 @@ roster_window_flash_start (EmpathyRosterWindow *self)
 
   roster_window_flash_cb (self);
 }
+#endif
 
 static void
 roster_window_remove_auth (EmpathyRosterWindow *self,
@@ -406,6 +406,7 @@ roster_window_auth_display (EmpathyRosterWindow *self,
   g_hash_table_insert (self->priv->auths, event, info_bar);
 }
 
+#if 0
 static void
 modify_event_count (GtkTreeModel *model,
     GtkTreeIter *iter,
@@ -482,6 +483,7 @@ decrease_event_count (EmpathyRosterWindow *self,
 
   gtk_tree_model_foreach (model, decrease_event_count_foreach, event);
 }
+#endif
 
 static void
 roster_window_event_added_cb (EmpathyEventManager *manager,
@@ -490,9 +492,11 @@ roster_window_event_added_cb (EmpathyEventManager *manager,
 {
   if (event->contact)
     {
+      /* TODO
       increase_event_count (self, event);
 
       roster_window_flash_start (self);
+      */
     }
   else if (event->type == EMPATHY_EVENT_TYPE_AUTH)
     {
@@ -505,7 +509,7 @@ roster_window_event_removed_cb (EmpathyEventManager *manager,
     EmpathyEvent *event,
     EmpathyRosterWindow *self)
 {
-  FlashForeachData data;
+  //FlashForeachData data;
 
   if (event->type == EMPATHY_EVENT_TYPE_AUTH)
     {
@@ -513,6 +517,7 @@ roster_window_event_removed_cb (EmpathyEventManager *manager,
       return;
     }
 
+  /* TODO
   if (!event->contact)
     return;
 
@@ -525,6 +530,7 @@ roster_window_event_removed_cb (EmpathyEventManager *manager,
   gtk_tree_model_foreach (GTK_TREE_MODEL (self->priv->individual_store),
       roster_window_flash_foreach,
       &data);
+      */
 }
 
 static gboolean
@@ -544,6 +550,7 @@ roster_window_load_events_idle_cb (gpointer user_data)
   return FALSE;
 }
 
+#if 0
 static void
 roster_window_row_activated_cb (EmpathyIndividualView *view,
     GtkTreePath *path,
@@ -591,6 +598,7 @@ roster_window_row_activated_cb (EmpathyIndividualView *view,
 OUT:
   tp_clear_object (&individual);
 }
+#endif
 
 static void
 button_account_settings_clicked_cb (GtkButton *button,
@@ -639,6 +647,7 @@ display_page_no_account (EmpathyRosterWindow *self)
       _("You need to setup an account to see contacts here."), TRUE, FALSE);
 }
 
+#if 0
 static void
 roster_window_row_deleted_cb (GtkTreeModel *model,
     GtkTreePath *path,
@@ -656,6 +665,7 @@ roster_window_row_deleted_cb (GtkTreeModel *model,
         }
     }
 }
+#endif
 
 static void
 display_page_contact_list (EmpathyRosterWindow *self)
@@ -669,6 +679,7 @@ display_page_contact_list (EmpathyRosterWindow *self)
       PAGE_CONTACT_LIST);
 }
 
+#if 0
 static void
 roster_window_row_inserted_cb (GtkTreeModel      *model,
     GtkTreePath *path,
@@ -689,6 +700,7 @@ roster_window_row_inserted_cb (GtkTreeModel      *model,
       g_idle_add (roster_window_load_events_idle_cb, self);
     }
 }
+#endif
 
 static void
 roster_window_remove_error (EmpathyRosterWindow *self,
@@ -1240,7 +1252,6 @@ empathy_roster_window_finalize (GObject *window)
   g_list_free (self->priv->actions_connected);
 
   g_object_unref (self->priv->account_manager);
-  g_object_unref (self->priv->individual_store);
   g_object_unref (self->priv->sound_mgr);
   g_hash_table_unref (self->priv->errors);
   g_hash_table_unref (self->priv->auths);
@@ -2112,7 +2123,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   GtkBuilder *gui;
   GtkWidget *sw;
   gchar *filename;
-  GtkTreeModel *model;
   GtkWidget *search_vbox;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
@@ -2224,60 +2234,34 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
           "contacts-loaded", G_CALLBACK (contacts_loaded_cb), self, 0);
     }
 
-  self->priv->individual_store = EMPATHY_INDIVIDUAL_STORE (
-      empathy_individual_store_manager_new (self->priv->individual_manager));
+  self->priv->view = EMPATHY_ROSTER_VIEW (
+      empathy_roster_view_new (self->priv->individual_manager));
 
-  /* For the moment, we disallow Persona drops onto the roster contact list
-   * (e.g. from things such as the EmpathyPersonaView in the linking dialogue).
-   * No code is hooked up to do anything on a Persona drop, so allowing them
-   * would achieve nothing except confusion. */
-  self->priv->individual_view = empathy_individual_view_new (
-      self->priv->individual_store,
-      /* EmpathyIndividualViewFeatureFlags */
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_SAVE |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_RENAME |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_REMOVE |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_GROUPS_CHANGE |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_INDIVIDUAL_REMOVE |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_INDIVIDUAL_DROP |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_INDIVIDUAL_DRAG |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_INDIVIDUAL_TOOLTIP |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_INDIVIDUAL_CALL |
-      EMPATHY_INDIVIDUAL_VIEW_FEATURE_FILE_DROP,
-      /* EmpathyIndividualFeatureFlags  */
-      EMPATHY_INDIVIDUAL_FEATURE_CHAT |
-      EMPATHY_INDIVIDUAL_FEATURE_CALL |
-      EMPATHY_INDIVIDUAL_FEATURE_EDIT |
-      EMPATHY_INDIVIDUAL_FEATURE_INFO |
-      EMPATHY_INDIVIDUAL_FEATURE_LOG |
-      EMPATHY_INDIVIDUAL_FEATURE_SMS |
-      EMPATHY_INDIVIDUAL_FEATURE_CALL_PHONE |
-      EMPATHY_INDIVIDUAL_FEATURE_REMOVE);
+  gtk_widget_show (GTK_WIDGET (self->priv->view));
 
-  gtk_widget_show (GTK_WIDGET (self->priv->individual_view));
-  gtk_container_add (GTK_CONTAINER (sw),
-      GTK_WIDGET (self->priv->individual_view));
-  g_signal_connect (self->priv->individual_view, "row-activated",
-     G_CALLBACK (roster_window_row_activated_cb), self);
+  egg_list_box_add_to_scrolled (EGG_LIST_BOX (self->priv->view),
+      GTK_SCROLLED_WINDOW (sw));
 
   /* Set up search bar */
   self->priv->search_bar = empathy_live_search_new (
-      GTK_WIDGET (self->priv->individual_view));
-  empathy_individual_view_set_live_search (self->priv->individual_view,
+      GTK_WIDGET (self->priv->view));
+  empathy_roster_view_set_live_search (self->priv->view,
       EMPATHY_LIVE_SEARCH (self->priv->search_bar));
   gtk_box_pack_start (GTK_BOX (search_vbox), self->priv->search_bar,
       FALSE, TRUE, 0);
 
   g_signal_connect_swapped (self, "map",
-      G_CALLBACK (gtk_widget_grab_focus), self->priv->individual_view);
+      G_CALLBACK (gtk_widget_grab_focus), self->priv->view);
 
   /* Connect to proper signals to check if contact list is empty or not */
+#if 0
   model = gtk_tree_view_get_model (GTK_TREE_VIEW (self->priv->individual_view));
   self->priv->empty = TRUE;
   g_signal_connect (model, "row-inserted",
       G_CALLBACK (roster_window_row_inserted_cb), self);
   g_signal_connect (model, "row-deleted",
       G_CALLBACK (roster_window_row_deleted_cb), self);
+#endif
 
   /* Load user-defined accelerators. */
   roster_window_accels_load ();
@@ -2294,6 +2278,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (roster_window_event_added_cb), self, 0);
   tp_g_signal_connect_object (self->priv->event_manager, "event-removed",
       G_CALLBACK (roster_window_event_removed_cb), self, 0);
+
   g_signal_connect (self->priv->account_manager, "account-validity-changed",
       G_CALLBACK (roster_window_account_validity_changed_cb), self);
   g_signal_connect (self->priv->account_manager, "account-removed",
@@ -2302,22 +2287,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (roster_window_account_disabled_cb), self);
 
   g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_OFFLINE,
-      self->priv->individual_view, "show-offline",
-      G_SETTINGS_BIND_GET);
-  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_PROTOCOLS,
-      self->priv->individual_store, "show-protocols",
-      G_SETTINGS_BIND_GET);
-  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST,
-      self->priv->individual_store, "is-compact",
-      G_SETTINGS_BIND_GET);
-  g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_AVATARS,
-      self->priv->individual_store, "show-avatars",
-      G_SETTINGS_BIND_GET);
-  g_settings_bind (self->priv->gsettings_contacts, EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM,
-      self->priv->individual_store, "sort-criterium",
+      self->priv->view, "show-offline",
       G_SETTINGS_BIND_GET);
   g_settings_bind (self->priv->gsettings_ui, EMPATHY_PREFS_UI_SHOW_GROUPS,
-      self->priv->individual_store, "show-groups",
+      self->priv->view, "show-groups",
       G_SETTINGS_BIND_GET);
   g_settings_bind (self->priv->gsettings_ui, "show-balance-in-roster",
       self->priv->balance_vbox, "visible",
