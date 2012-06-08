@@ -2496,26 +2496,35 @@ static gboolean
 chat_log_filter (TplEvent *event,
 		 gpointer user_data)
 {
-	EmpathyChat *chat = user_data;
+	TpWeakRef *wr = user_data;
+	EmpathyChat *chat = tp_weak_ref_dup_object (wr);
 	EmpathyMessage *message;
-	EmpathyChatPriv *priv = GET_PRIV (chat);
+	EmpathyChatPriv *priv;
 	const GList *pending;
+	bool retval = FALSE;
+
+	if (chat == NULL)
+		return FALSE;
 
 	g_return_val_if_fail (TPL_IS_EVENT (event), FALSE);
 	g_return_val_if_fail (EMPATHY_IS_CHAT (chat), FALSE);
+
+	priv = GET_PRIV (chat);
 
 	pending = empathy_tp_chat_get_pending_messages (priv->tp_chat);
 	message = empathy_message_from_tpl_log_event (event);
 
 	for (; pending; pending = g_list_next (pending)) {
-		if (empathy_message_equal (message, pending->data)) {
-			g_object_unref (message);
-			return FALSE;
-		}
+		if (empathy_message_equal (message, pending->data))
+			goto out;
 	}
 
+	retval = TRUE;
+
+out:
 	g_object_unref (message);
-	return TRUE;
+	g_object_unref (chat);
+	return retval;
 }
 
 
@@ -2631,6 +2640,7 @@ chat_add_logs (EmpathyChat *chat)
 {
 	EmpathyChatPriv *priv = GET_PRIV (chat);
 	TplEntity       *target;
+	TpWeakRef       *wr;
 
 	if (!priv->id) {
 		return;
@@ -2646,15 +2656,16 @@ chat_add_logs (EmpathyChat *chat)
 	  target = tpl_entity_new (priv->id, TPL_ENTITY_CONTACT, NULL, NULL);
 
 	priv->retrieving_backlogs = TRUE;
+	wr = tp_weak_ref_new (chat, NULL, NULL);
 	tpl_log_manager_get_filtered_events_async (priv->log_manager,
 						   priv->account,
 						   target,
 						   TPL_EVENT_MASK_TEXT,
 						   5,
 						   chat_log_filter,
-						   chat,
+						   wr,
 						   got_filtered_messages_cb,
-						   tp_weak_ref_new (chat, NULL, NULL));
+						   wr);
 
 	g_object_unref (target);
 }
