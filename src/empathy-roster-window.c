@@ -550,6 +550,26 @@ roster_window_load_events_idle_cb (gpointer user_data)
   return FALSE;
 }
 
+static void
+individual_activated_cb (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    gpointer user_data)
+{
+  EmpathyContact *contact;
+
+  contact = empathy_contact_dup_best_for_action (individual,
+      EMPATHY_ACTION_CHAT);
+
+  if (contact == NULL)
+    return;
+
+  DEBUG ("Starting a chat");
+
+  empathy_chat_with_contact (contact, gtk_get_current_event_time ());
+
+  g_object_unref (contact);
+}
+
 #if 0
 static void
 roster_window_row_activated_cb (EmpathyIndividualView *view,
@@ -2118,6 +2138,49 @@ roster_window_setup_actions (EmpathyRosterWindow *self)
 }
 
 static void
+menu_deactivate_cb (GtkMenuShell *menushell,
+    gpointer user_data)
+{
+  /* FIXME: we shouldn't have to disconnect the signal (bgo #641327) */
+  g_signal_handlers_disconnect_by_func (menushell,
+      menu_deactivate_cb, user_data);
+
+  gtk_menu_detach (GTK_MENU (menushell));
+}
+
+static void
+popup_individual_menu_cb (EmpathyRosterView *view,
+    FolksIndividual *individual,
+    guint button,
+    guint time,
+    gpointer user_data)
+{
+  GtkWidget *menu;
+  EmpathyIndividualFeatureFlags features = EMPATHY_INDIVIDUAL_FEATURE_CHAT |
+    EMPATHY_INDIVIDUAL_FEATURE_CALL |
+    EMPATHY_INDIVIDUAL_FEATURE_EDIT |
+    EMPATHY_INDIVIDUAL_FEATURE_INFO |
+    EMPATHY_INDIVIDUAL_FEATURE_LOG |
+    EMPATHY_INDIVIDUAL_FEATURE_SMS |
+    EMPATHY_INDIVIDUAL_FEATURE_CALL_PHONE |
+    EMPATHY_INDIVIDUAL_FEATURE_REMOVE;
+
+  menu = empathy_individual_menu_new (individual, features, NULL);
+
+  /* menu is initially unowned but gtk_menu_attach_to_widget() takes its
+   * floating ref. We can either wait for the view to release its ref
+   * when it is destroyed (when leaving Empathy) or explicitly
+   * detach the menu when it's not displayed any more.
+   * We go for the latter as we don't want to keep useless menus in memory
+   * during the whole lifetime of Empathy. */
+  g_signal_connect (menu, "deactivate", G_CALLBACK (menu_deactivate_cb),
+      NULL);
+
+  gtk_menu_attach_to_widget (GTK_MENU (menu), GTK_WIDGET (view), NULL);
+  gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, button, time);
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2241,6 +2304,11 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   egg_list_box_add_to_scrolled (EGG_LIST_BOX (self->priv->view),
       GTK_SCROLLED_WINDOW (sw));
+
+  g_signal_connect (self->priv->view, "individual-activated",
+      G_CALLBACK (individual_activated_cb), self);
+  g_signal_connect (self->priv->view, "popup-individual-menu",
+      G_CALLBACK (popup_individual_menu_cb), self);
 
   /* Set up search bar */
   self->priv->search_bar = empathy_live_search_new (
