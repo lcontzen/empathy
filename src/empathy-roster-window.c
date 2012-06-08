@@ -2277,7 +2277,8 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       EMPATHY_INDIVIDUAL_FEATURE_INFO |
       EMPATHY_INDIVIDUAL_FEATURE_LOG |
       EMPATHY_INDIVIDUAL_FEATURE_SMS |
-      EMPATHY_INDIVIDUAL_FEATURE_CALL_PHONE);
+      EMPATHY_INDIVIDUAL_FEATURE_CALL_PHONE |
+      EMPATHY_INDIVIDUAL_FEATURE_REMOVE);
 
   gtk_widget_show (GTK_WIDGET (self->priv->individual_view));
   gtk_container_add (GTK_CONTAINER (sw),

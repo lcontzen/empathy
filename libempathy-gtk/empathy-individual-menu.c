@@ -97,6 +97,8 @@ static GtkWidget * empathy_individual_add_menu_item_new (
     FolksIndividual *individual);
 static GtkWidget * empathy_individiual_block_menu_item_new (
     FolksIndividual *individual);
+static GtkWidget * empathy_individiual_remove_menu_item_new (
+    FolksIndividual *individual);
 
 static void
 individual_menu_add_personas (GtkMenuShell *menu,
@@ -678,6 +680,196 @@ empathy_individiual_block_menu_item_new (FolksIndividual *individual)
   return item;
 }
 
+enum
+{
+  REMOVE_DIALOG_RESPONSE_CANCEL = 0,
+  REMOVE_DIALOG_RESPONSE_DELETE,
+  REMOVE_DIALOG_RESPONSE_DELETE_AND_BLOCK,
+};
+
+static int
+remove_dialog_show (const gchar *message,
+    const gchar *secondary_text,
+    gboolean block_button,
+    GdkPixbuf *avatar)
+{
+  GtkWidget *dialog;
+  gboolean res;
+
+  dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+      GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, "%s", message);
+
+  if (avatar != NULL)
+    {
+      GtkWidget *image = gtk_image_new_from_pixbuf (avatar);
+      gtk_message_dialog_set_image (GTK_MESSAGE_DIALOG (dialog), image);
+      gtk_widget_show (image);
+    }
+
+  if (block_button)
+    {
+      GtkWidget *button;
+
+      /* gtk_dialog_add_button() doesn't allow us to pass a string with a
+       * mnemonic so we have to create the button manually. */
+      button = gtk_button_new_with_mnemonic (
+          _("Delete and _Block"));
+
+      gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button,
+          REMOVE_DIALOG_RESPONSE_DELETE_AND_BLOCK);
+
+      gtk_widget_show (button);
+    }
+
+  gtk_dialog_add_buttons (GTK_DIALOG (dialog),
+      GTK_STOCK_CANCEL, REMOVE_DIALOG_RESPONSE_CANCEL,
+      GTK_STOCK_DELETE, REMOVE_DIALOG_RESPONSE_DELETE, NULL);
+  gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+      "%s", secondary_text);
+
+  gtk_widget_show (dialog);
+
+  res = gtk_dialog_run (GTK_DIALOG (dialog));
+  gtk_widget_destroy (dialog);
+
+  return res;
+}
+
+static void
+remove_got_avatar (GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  FolksIndividual *individual = FOLKS_INDIVIDUAL (source_object);
+  GdkPixbuf *avatar;
+  EmpathyIndividualManager *manager;
+  gchar *text;
+  GeeSet *personas;
+  guint persona_count = 0;
+  gboolean can_block;
+  GError *error = NULL;
+  gint res;
+
+  avatar = empathy_pixbuf_avatar_from_individual_scaled_finish (individual,
+      result, &error);
+
+  if (error != NULL)
+    {
+      DEBUG ("Could not get avatar: %s", error->message);
+      g_error_free (error);
+    }
+
+  /* We couldn't retrieve the avatar, but that isn't a fatal error,
+   * so we still display the remove dialog. */
+
+  personas = folks_individual_get_personas (individual);
+
+  persona_count = gee_collection_get_size (GEE_COLLECTION (personas));
+
+  /* If we have more than one TpfPersona, display a different message
+   * ensuring the user knows that *all* of the meta-contacts' personas will
+   * be removed. */
+
+  if (persona_count < 2)
+    {
+      /* Not a meta-contact */
+      text =
+          g_strdup_printf (
+              _("Do you really want to remove the contact '%s'?"),
+              folks_alias_details_get_alias (
+                  FOLKS_ALIAS_DETAILS (individual)));
+    }
+  else
+    {
+      /* Meta-contact */
+      text =
+          g_strdup_printf (
+              _("Do you really want to remove the linked contact '%s'? "
+                "Note that this will remove all the contacts which make up "
+                "this linked contact."),
+              folks_alias_details_get_alias (
+                  FOLKS_ALIAS_DETAILS (individual)));
+    }
+
+
+  manager = empathy_individual_manager_dup_singleton ();
+  can_block = empathy_individual_manager_supports_blocking (manager,
+      individual);
+  res = remove_dialog_show (_("Removing contact"), text, can_block, avatar);
+
+  if (res == REMOVE_DIALOG_RESPONSE_DELETE ||
+      res == REMOVE_DIALOG_RESPONSE_DELETE_AND_BLOCK)
+    {
+      gboolean abusive;
+
+      if (res == REMOVE_DIALOG_RESPONSE_DELETE_AND_BLOCK)
+        {
+          if (!empathy_block_individual_dialog_show (NULL, individual,
+                avatar, &abusive))
+            goto finally;
+
+          empathy_individual_manager_set_blocked (manager, individual,
+              TRUE, abusive);
+        }
+
+      empathy_individual_manager_remove (manager, individual, "");
+    }
+
+ finally:
+  g_free (text);
+  g_object_unref (manager);
+}
+
+static void
+remove_activate_cb (GtkMenuItem *menuitem,
+    FolksIndividual *individual)
+{
+  empathy_pixbuf_avatar_from_individual_scaled_async (individual,
+      48, 48, NULL, remove_got_avatar, NULL);
+}
+
+static GtkWidget *
+empathy_individiual_remove_menu_item_new (FolksIndividual *individual)
+{
+  GeeSet *personas;
+  GeeIterator *iter;
+  gboolean can_remove = FALSE;
+  GtkWidget *item, *image;
+
+  /* If any of the Individual's personas can be removed, add an option to
+   * remove. This will act as a best-effort option. If any Personas cannot be
+   * removed from the server, then this option will just be inactive upon
+   * subsequent menu openings */
+  personas = folks_individual_get_personas (individual);
+  iter = gee_iterable_iterator (GEE_ITERABLE (personas));
+  while (!can_remove && gee_iterator_next (iter))
+    {
+      FolksPersona *persona = gee_iterator_get (iter);
+      FolksPersonaStore *store = folks_persona_get_store (persona);
+      FolksMaybeBool maybe_can_remove =
+          folks_persona_store_get_can_remove_personas (store);
+
+      if (maybe_can_remove == FOLKS_MAYBE_BOOL_TRUE)
+        can_remove = TRUE;
+
+      g_clear_object (&persona);
+    }
+  g_clear_object (&iter);
+
+  if (!can_remove)
+    return NULL;
+
+  item = gtk_image_menu_item_new_with_mnemonic (_("_Remove"));
+  image = gtk_image_new_from_icon_name (GTK_STOCK_REMOVE,
+      GTK_ICON_SIZE_MENU);
+  gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+
+  g_signal_connect (item, "activate",
+      G_CALLBACK (remove_activate_cb), individual);
+
+  return item;
+}
+
 static void
 constructed (GObject *object)
 {
@@ -807,6 +999,19 @@ constructed (GObject *object)
   /* Separator & Block */
   if (features & EMPATHY_INDIVIDUAL_FEATURE_BLOCK &&
       (item = empathy_individiual_block_menu_item_new (individual)) != NULL) {
+    GtkWidget *sep;
+
+    sep = gtk_separator_menu_item_new ();
+    gtk_menu_shell_append (shell, sep);
+    gtk_widget_show (sep);
+
+    gtk_menu_shell_append (shell, item);
+    gtk_widget_show (item);
+  }
+
+  /* Separator & Remove */
+  if (features & EMPATHY_INDIVIDUAL_FEATURE_REMOVE &&
+      (item = empathy_individiual_remove_menu_item_new (individual)) != NULL) {
     GtkWidget *sep;
 
     sep = gtk_separator_menu_item_new ();
