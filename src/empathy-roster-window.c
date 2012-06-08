@@ -109,7 +109,6 @@ struct _EmpathyRosterWindowPriv {
   EmpathyIndividualManager *individual_manager;
   guint flash_timeout_id;
   gboolean flash_on;
-  gboolean empty;
 
   GSettings *gsettings_ui;
   GSettings *gsettings_contacts;
@@ -667,26 +666,6 @@ display_page_no_account (EmpathyRosterWindow *self)
       _("You need to setup an account to see contacts here."), TRUE, FALSE);
 }
 
-#if 0
-static void
-roster_window_row_deleted_cb (GtkTreeModel *model,
-    GtkTreePath *path,
-    EmpathyRosterWindow *self)
-{
-  GtkTreeIter help_iter;
-
-  if (!gtk_tree_model_get_iter_first (model, &help_iter))
-    {
-      self->priv->empty = TRUE;
-
-      if (empathy_individual_view_is_searching (self->priv->individual_view))
-        {
-          display_page_message (self, _("No match found"), FALSE, FALSE);
-        }
-    }
-}
-#endif
-
 static void
 display_page_contact_list (EmpathyRosterWindow *self)
 {
@@ -698,29 +677,6 @@ display_page_contact_list (EmpathyRosterWindow *self)
   gtk_notebook_set_current_page (GTK_NOTEBOOK (self->priv->notebook),
       PAGE_CONTACT_LIST);
 }
-
-#if 0
-static void
-roster_window_row_inserted_cb (GtkTreeModel      *model,
-    GtkTreePath *path,
-    GtkTreeIter *iter,
-    EmpathyRosterWindow *self)
-{
-  if (self->priv->empty)
-    {
-      self->priv->empty = FALSE;
-
-      display_page_contact_list (self);
-      gtk_widget_grab_focus (GTK_WIDGET (self->priv->individual_view));
-
-      /* The store is being filled, it will be done after an idle cb.
-       * So we can then get events. If we do that too soon, event's
-       * contact is not yet in the store and it won't get marked as
-       * having events. */
-      g_idle_add (roster_window_load_events_idle_cb, self);
-    }
-}
-#endif
 
 static void
 roster_window_remove_error (EmpathyRosterWindow *self,
@@ -2181,6 +2137,31 @@ popup_individual_menu_cb (EmpathyRosterView *view,
 }
 
 static void
+view_empty_cb (EmpathyRosterView *view,
+    GParamSpec *spec,
+    EmpathyRosterWindow *self)
+{
+  if (empathy_roster_view_is_empty (view))
+    {
+      if (empathy_roster_view_is_searching (self->priv->view))
+        {
+          display_page_message (self, _("No match found"), FALSE, FALSE);
+        }
+    }
+  else
+    {
+      display_page_contact_list (self);
+      gtk_widget_grab_focus (GTK_WIDGET (self->priv->view));
+
+      /* The store is being filled, it will be done after an idle cb.
+       * So we can then get events. If we do that too soon, event's
+       * contact is not yet in the store and it won't get marked as
+       * having events. */
+      g_idle_add (roster_window_load_events_idle_cb, self);
+    }
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2309,6 +2290,8 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (individual_activated_cb), self);
   g_signal_connect (self->priv->view, "popup-individual-menu",
       G_CALLBACK (popup_individual_menu_cb), self);
+  g_signal_connect (self->priv->view, "notify::empty",
+      G_CALLBACK (view_empty_cb), self);
 
   /* Set up search bar */
   self->priv->search_bar = empathy_live_search_new (
@@ -2320,16 +2303,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   g_signal_connect_swapped (self, "map",
       G_CALLBACK (gtk_widget_grab_focus), self->priv->view);
-
-  /* Connect to proper signals to check if contact list is empty or not */
-#if 0
-  model = gtk_tree_view_get_model (GTK_TREE_VIEW (self->priv->individual_view));
-  self->priv->empty = TRUE;
-  g_signal_connect (model, "row-inserted",
-      G_CALLBACK (roster_window_row_inserted_cb), self);
-  g_signal_connect (model, "row-deleted",
-      G_CALLBACK (roster_window_row_deleted_cb), self);
-#endif
 
   /* Load user-defined accelerators. */
   roster_window_accels_load ();
