@@ -1357,16 +1357,6 @@ roster_window_view_show_ft_manager (GSimpleAction *action,
 }
 
 static void
-roster_window_edit_search_contacts_cb (GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data)
-{
-  EmpathyRosterWindow *self = user_data;
-
-  empathy_individual_view_start_search (self->priv->individual_view);
-}
-
-static void
 join_chatroom (EmpathyChatroom *chatroom,
     gint64 timestamp)
 {
@@ -1710,14 +1700,6 @@ roster_window_help_about_cb (GSimpleAction *action,
 }
 
 static void
-roster_window_help_debug_cb (GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data)
-{
-  empathy_launch_program (BIN_DIR, "empathy-debugger", NULL);
-}
-
-static void
 roster_window_help_contents_cb (GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data)
@@ -1903,7 +1885,6 @@ roster_window_connection_items_setup (EmpathyRosterWindow *self)
       "chat_search_contacts",
       "chat_add_contact",
       "edit_blocked_contacts",
-      "edit_search_contacts"
   };
 
   for (i = 0; i < G_N_ELEMENTS (actions_connected); i++)
@@ -2010,7 +1991,6 @@ static GActionEntry menubar_entries[] = {
   { "chat_quit", roster_window_chat_quit_cb, NULL, NULL, NULL },
 
   { "edit_accounts", roster_window_edit_accounts_cb, NULL, NULL, NULL },
-  { "edit_search_contacts", roster_window_edit_search_contacts_cb, NULL, NULL, NULL },
   { "edit_blocked_contacts", roster_window_edit_blocked_contacts_cb, NULL, NULL, NULL },
   { "edit_preferences", roster_window_edit_preferences_cb, NULL, NULL, NULL },
 
@@ -2022,7 +2002,6 @@ static GActionEntry menubar_entries[] = {
   { "room_manage_favorites", roster_window_room_manage_favorites_cb, NULL, NULL, NULL },
 
   { "help_contents", roster_window_help_contents_cb, NULL, NULL, NULL },
-  { "help_debug", roster_window_help_debug_cb, NULL, NULL, NULL },
   { "help_about", roster_window_help_about_cb, NULL, NULL, NULL },
 };
 
