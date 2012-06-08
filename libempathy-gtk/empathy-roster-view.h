@@ -75,6 +75,8 @@ void empathy_roster_view_set_individual_tooltip_cb (EmpathyRosterView *self,
     EmpathyRosterViewIndividualTooltipCb callback,
     gpointer user_data);
 
+gboolean empathy_roster_view_is_empty (EmpathyRosterView *self);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_VIEW_H__*/

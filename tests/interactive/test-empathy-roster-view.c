@@ -65,6 +65,17 @@ individual_tooltip_cb (EmpathyRosterView *view,
   return TRUE;
 }
 
+static void
+empty_cb (EmpathyRosterView *view,
+    GParamSpec *spec,
+    gpointer user_data)
+{
+  if (empathy_roster_view_is_empty (view))
+    g_print ("view is now empty\n");
+  else
+    g_print ("view is no longer empty\n");
+}
+
 int
 main (int argc,
     char **argv)
@@ -100,6 +111,8 @@ main (int argc,
       G_CALLBACK (individual_activated_cb), NULL);
   g_signal_connect (view, "popup-individual-menu",
       G_CALLBACK (popup_individual_menu_cb), NULL);
+  g_signal_connect (view, "notify::empty",
+      G_CALLBACK (empty_cb), NULL);
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);

@@ -15,6 +15,7 @@ enum
   PROP_MANAGER = 1,
   PROP_SHOW_OFFLINE,
   PROP_SHOW_GROUPS,
+  PROP_EMPTY,
   N_PROPS
 };
 
@@ -45,9 +46,12 @@ struct _EmpathyRosterViewPriv
   GHashTable *roster_contacts;
   /* (gchar *group_name) -> EmpathyRosterGroup (borrowed) */
   GHashTable *roster_groups;
+  /* Hash of the EmpathyRosterContact currently displayed */
+  GHashTable *displayed_contacts;
 
   gboolean show_offline;
   gboolean show_groups;
+  gboolean empty;
 
   EmpathyLiveSearch *search;
 
@@ -73,6 +77,9 @@ empathy_roster_view_get_property (GObject *object,
         break;
       case PROP_SHOW_GROUPS:
         g_value_set_boolean (value, self->priv->show_groups);
+        break;
+      case PROP_EMPTY:
+        g_value_set_boolean (value, self->priv->empty);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -512,6 +519,35 @@ is_searching (EmpathyRosterView *self)
   return gtk_widget_get_visible (GTK_WIDGET (self->priv->search));
 }
 
+static void
+update_empty (EmpathyRosterView *self,
+    gboolean empty)
+{
+  if (self->priv->empty == empty)
+    return;
+
+  self->priv->empty = empty;
+  g_object_notify (G_OBJECT (self), "empty");
+}
+
+static void
+add_to_displayed (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
+{
+  g_hash_table_add (self->priv->displayed_contacts, contact);
+  update_empty (self, FALSE);
+}
+
+static void
+remove_from_displayed (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
+{
+  g_hash_table_remove (self->priv->displayed_contacts, contact);
+
+  if (g_hash_table_size (self->priv->displayed_contacts) == 0)
+    update_empty (self, TRUE);
+}
+
 static gboolean
 filter_contact (EmpathyRosterView *self,
     EmpathyRosterContact *contact)
@@ -555,8 +591,17 @@ filter_contact (EmpathyRosterView *self,
           /* When searching, always display even if the group is closed */
           if (!is_searching (self) &&
               !gtk_expander_get_expanded (GTK_EXPANDER (group)))
-            return FALSE;
+            displayed = FALSE;
         }
+    }
+
+  if (displayed)
+    {
+      add_to_displayed (self, contact);
+    }
+  else
+    {
+      remove_from_displayed (self, contact);
     }
 
   return displayed;
@@ -797,6 +842,7 @@ empathy_roster_view_finalize (GObject *object)
 
   g_hash_table_unref (self->priv->roster_contacts);
   g_hash_table_unref (self->priv->roster_groups);
+  g_hash_table_unref (self->priv->displayed_contacts);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -917,12 +963,27 @@ empathy_roster_view_set_individual_tooltip_cb (EmpathyRosterView *self,
 }
 
 static void
+empathy_roster_view_remove (GtkContainer *container,
+    GtkWidget *widget)
+{
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (container);
+  void (*chain_up) (GtkContainer *, GtkWidget *) =
+      ((GtkContainerClass *) empathy_roster_view_parent_class)->remove;
+
+  chain_up (container, widget);
+
+  if (EMPATHY_IS_ROSTER_CONTACT (widget))
+    remove_from_displayed (self, (EmpathyRosterContact *) widget);
+}
+
+static void
 empathy_roster_view_class_init (
     EmpathyRosterViewClass *klass)
 {
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
   EggListBoxClass *box_class = EGG_LIST_BOX_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
   GParamSpec *spec;
 
   oclass->get_property = empathy_roster_view_get_property;
@@ -934,6 +995,8 @@ empathy_roster_view_class_init (
   widget_class->button_press_event = empathy_roster_view_button_press_event;
   widget_class->key_press_event = empathy_roster_view_key_press_event;
   widget_class->query_tooltip = empathy_roster_view_query_tooltip;
+
+  container_class->remove = empathy_roster_view_remove;
 
   box_class->child_activated = empathy_roster_view_child_activated;
 
@@ -954,6 +1017,12 @@ empathy_roster_view_class_init (
       FALSE,
       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_SHOW_GROUPS, spec);
+
+  spec = g_param_spec_boolean ("empty", "Empty",
+      "Is the view currently empty?",
+      FALSE,
+      G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_EMPTY, spec);
 
   signals[SIG_INDIVIDUAL_ACTIVATED] = g_signal_new ("individual-activated",
       G_OBJECT_CLASS_TYPE (klass),
@@ -982,6 +1051,9 @@ empathy_roster_view_init (EmpathyRosterView *self)
       NULL, (GDestroyNotify) g_hash_table_unref);
   self->priv->roster_groups = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, NULL);
+  self->priv->displayed_contacts = g_hash_table_new (NULL, NULL);
+
+  self->priv->empty = TRUE;
 }
 
 GtkWidget *
@@ -1108,4 +1180,10 @@ empathy_roster_view_set_live_search (EmpathyRosterView *self,
       G_CALLBACK (search_text_notify_cb), self);
   g_signal_connect (self->priv->search, "activate",
       G_CALLBACK (search_activate_cb), self);
+}
+
+gboolean
+empathy_roster_view_is_empty (EmpathyRosterView *self)
+{
+  return self->priv->empty;
 }
