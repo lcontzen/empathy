@@ -56,6 +56,9 @@ const gchar * empathy_roster_contact_get_group (EmpathyRosterContact *self);
 
 gboolean empathy_roster_contact_is_online (EmpathyRosterContact *self);
 
+void empathy_roster_contact_set_event_icon (EmpathyRosterContact *self,
+    const gchar *icon);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_CONTACT_H__*/

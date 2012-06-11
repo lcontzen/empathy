@@ -43,6 +43,9 @@ struct _EmpathyRosterContactPriv
   GtkWidget *presence_icon;
   GtkWidget *phone_icon;
 
+  /* If not NULL, used instead of the individual's presence icon */
+  gchar *event_icon;
+
   gboolean online;
 };
 
@@ -227,7 +230,10 @@ update_presence_icon (EmpathyRosterContact *self)
 {
   const gchar *icon;
 
-  icon = empathy_icon_name_for_individual (self->priv->individual);
+  if (self->priv->event_icon == NULL)
+    icon = empathy_icon_name_for_individual (self->priv->individual);
+  else
+    icon = self->priv->event_icon;
 
   gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->presence_icon), icon,
       GTK_ICON_SIZE_MENU);
@@ -331,6 +337,7 @@ empathy_roster_contact_finalize (GObject *object)
       ((GObjectClass *) empathy_roster_contact_parent_class)->finalize;
 
   g_free (self->priv->group);
+  g_free (self->priv->event_icon);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -476,4 +483,17 @@ const gchar *
 empathy_roster_contact_get_group (EmpathyRosterContact *self)
 {
   return self->priv->group;
+}
+
+void
+empathy_roster_contact_set_event_icon (EmpathyRosterContact *self,
+    const gchar *icon)
+{
+  if (!tp_strdiff (self->priv->event_icon, icon))
+    return;
+
+  g_free (self->priv->event_icon);
+  self->priv->event_icon = g_strdup (icon);
+
+  update_presence_icon (self);
 }
