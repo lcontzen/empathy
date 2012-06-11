@@ -149,138 +149,6 @@ struct _EmpathyRosterWindowPriv {
   gboolean shell_running;
 };
 
-#if 0
-static void
-roster_window_flash_stop (EmpathyRosterWindow *self)
-{
-  if (self->priv->flash_timeout_id == 0)
-    return;
-
-  DEBUG ("Stop flashing");
-  g_source_remove (self->priv->flash_timeout_id);
-  self->priv->flash_timeout_id = 0;
-  self->priv->flash_on = FALSE;
-}
-
-typedef struct
-{
-  EmpathyEvent *event;
-  gboolean on;
-  EmpathyRosterWindow *self;
-} FlashForeachData;
-
-static gboolean
-roster_window_flash_foreach (GtkTreeModel *model,
-    GtkTreePath *path,
-    GtkTreeIter *iter,
-    gpointer user_data)
-{
-  FlashForeachData *data = (FlashForeachData *) user_data;
-  FolksIndividual *individual;
-  EmpathyContact *contact;
-  const gchar *icon_name;
-  GtkTreePath *parent_path = NULL;
-  GtkTreeIter parent_iter;
-  GdkPixbuf *pixbuf = NULL;
-
-  gtk_tree_model_get (model, iter,
-          EMPATHY_INDIVIDUAL_STORE_COL_INDIVIDUAL, &individual,
-          -1);
-
-  if (individual == NULL)
-    return FALSE;
-
-  contact = empathy_contact_dup_from_folks_individual (individual);
-  if (contact != data->event->contact)
-    goto out;
-
-  if (data->on)
-    {
-      icon_name = data->event->icon_name;
-      pixbuf = empathy_pixbuf_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
-    }
-  else
-    {
-      pixbuf = empathy_individual_store_get_individual_status_icon (
-              data->self->priv->individual_store,
-              individual);
-      if (pixbuf != NULL)
-        g_object_ref (pixbuf);
-    }
-
-  gtk_tree_store_set (GTK_TREE_STORE (model), iter,
-      EMPATHY_INDIVIDUAL_STORE_COL_ICON_STATUS, pixbuf,
-      -1);
-
-  /* To make sure the parent is shown correctly, we emit
-   * the row-changed signal on the parent so it prompts
-   * it to be refreshed by the filter func.
-   */
-  if (gtk_tree_model_iter_parent (model, &parent_iter, iter))
-    {
-      parent_path = gtk_tree_model_get_path (model, &parent_iter);
-    }
-
-  if (parent_path != NULL)
-    {
-      gtk_tree_model_row_changed (model, parent_path, &parent_iter);
-      gtk_tree_path_free (parent_path);
-    }
-
-out:
-  g_object_unref (individual);
-  tp_clear_object (&contact);
-  tp_clear_object (&pixbuf);
-
-  return FALSE;
-}
-
-static gboolean
-roster_window_flash_cb (EmpathyRosterWindow *self)
-{
-  GtkTreeModel *model;
-  GSList *events, *l;
-  gboolean found_event = FALSE;
-  FlashForeachData  data;
-
-  self->priv->flash_on = !self->priv->flash_on;
-  data.on = self->priv->flash_on;
-  model = GTK_TREE_MODEL (self->priv->individual_store);
-
-  events = empathy_event_manager_get_events (self->priv->event_manager);
-  for (l = events; l; l = l->next)
-    {
-      data.event = l->data;
-      data.self = self;
-      if (!data.event->contact || !data.event->must_ack)
-        continue;
-
-      found_event = TRUE;
-      gtk_tree_model_foreach (model,
-          roster_window_flash_foreach,
-          &data);
-    }
-
-  if (!found_event)
-    roster_window_flash_stop (self);
-
-  return TRUE;
-}
-
-static void
-roster_window_flash_start (EmpathyRosterWindow *self)
-{
-  if (self->priv->flash_timeout_id != 0)
-    return;
-
-  DEBUG ("Start flashing");
-  self->priv->flash_timeout_id = g_timeout_add (FLASH_TIMEOUT,
-      (GSourceFunc) roster_window_flash_cb, self);
-
-  roster_window_flash_cb (self);
-}
-#endif
-
 static void
 roster_window_remove_auth (EmpathyRosterWindow *self,
     EmpathyEvent *event)
@@ -405,84 +273,17 @@ roster_window_auth_display (EmpathyRosterWindow *self,
   g_hash_table_insert (self->priv->auths, event, info_bar);
 }
 
-#if 0
-static void
-modify_event_count (GtkTreeModel *model,
-    GtkTreeIter *iter,
-    EmpathyEvent *event,
-    gboolean increase)
+static FolksIndividual *
+ensure_individual_for_event (EmpathyEvent *event)
 {
-  FolksIndividual *individual;
-  EmpathyContact *contact;
-  guint count;
+  TpContact *contact;
 
-  gtk_tree_model_get (model, iter,
-      EMPATHY_INDIVIDUAL_STORE_COL_INDIVIDUAL, &individual,
-      EMPATHY_INDIVIDUAL_STORE_COL_EVENT_COUNT, &count,
-      -1);
+  contact = empathy_contact_get_tp_contact (event->contact);
+  if (contact == NULL)
+    return NULL;
 
-  if (individual == NULL)
-    return;
-
-  increase ? count++ : count--;
-
-  contact = empathy_contact_dup_from_folks_individual (individual);
-  if (contact == event->contact)
-    gtk_tree_store_set (GTK_TREE_STORE (model), iter,
-        EMPATHY_INDIVIDUAL_STORE_COL_EVENT_COUNT, count, -1);
-
-  tp_clear_object (&contact);
-  g_object_unref (individual);
+  return empathy_ensure_individual_from_tp_contact (contact);
 }
-
-static gboolean
-increase_event_count_foreach (GtkTreeModel *model,
-    GtkTreePath *path,
-    GtkTreeIter *iter,
-    gpointer user_data)
-{
-  EmpathyEvent *event = user_data;
-
-  modify_event_count (model, iter, event, TRUE);
-
-  return FALSE;
-}
-
-static void
-increase_event_count (EmpathyRosterWindow *self,
-    EmpathyEvent *event)
-{
-  GtkTreeModel *model;
-
-  model = GTK_TREE_MODEL (self->priv->individual_store);
-
-  gtk_tree_model_foreach (model, increase_event_count_foreach, event);
-}
-
-static gboolean
-decrease_event_count_foreach (GtkTreeModel *model,
-    GtkTreePath *path,
-    GtkTreeIter *iter,
-    gpointer user_data)
-{
-  EmpathyEvent *event = user_data;
-
-  modify_event_count (model, iter, event, FALSE);
-
-  return FALSE;
-}
-
-static void
-decrease_event_count (EmpathyRosterWindow *self,
-    EmpathyEvent *event)
-{
-  GtkTreeModel *model;
-
-  model = GTK_TREE_MODEL (self->priv->individual_store);
-
-  gtk_tree_model_foreach (model, decrease_event_count_foreach, event);
-}
-#endif
 
 static void
 roster_window_event_added_cb (EmpathyEventManager *manager,
@@ -491,11 +292,16 @@ roster_window_event_added_cb (EmpathyEventManager *manager,
 {
   if (event->contact)
     {
-      /* TODO
-      increase_event_count (self, event);
+      FolksIndividual *individual;
 
-      roster_window_flash_start (self);
-      */
+      individual = ensure_individual_for_event (event);
+      if (individual == NULL)
+        return;
+
+      event->roster_view_id = empathy_roster_view_add_event (self->priv->view,
+          individual, event->icon_name, event);
+
+      g_object_unref (individual);
     }
   else if (event->type == EMPATHY_EVENT_TYPE_AUTH)
     {
@@ -508,28 +314,13 @@ roster_window_event_removed_cb (EmpathyEventManager *manager,
     EmpathyEvent *event,
     EmpathyRosterWindow *self)
 {
-  //FlashForeachData data;
-
   if (event->type == EMPATHY_EVENT_TYPE_AUTH)
     {
       roster_window_remove_auth (self, event);
       return;
     }
 
-  /* TODO
-  if (!event->contact)
-    return;
-
-  decrease_event_count (self, event);
-
-  data.on = FALSE;
-  data.event = event;
-  data.self = self;
-
-  gtk_tree_model_foreach (GTK_TREE_MODEL (self->priv->individual_store),
-      roster_window_flash_foreach,
-      &data);
-      */
+  empathy_roster_view_remove_event (self->priv->view, event->roster_view_id);
 }
 
 static gboolean
@@ -569,55 +360,15 @@ individual_activated_cb (EmpathyRosterView *self,
   g_object_unref (contact);
 }
 
-#if 0
 static void
-roster_window_row_activated_cb (EmpathyIndividualView *view,
-    GtkTreePath *path,
-    GtkTreeViewColumn *col,
-    EmpathyRosterWindow *self)
+event_activated_cb (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    gpointer user_data)
 {
-  EmpathyContact *contact = NULL;
-  FolksIndividual *individual;
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-  GSList *events, *l;
+  EmpathyEvent *event = user_data;
 
-  model = gtk_tree_view_get_model (GTK_TREE_VIEW (self->priv->individual_view));
-  gtk_tree_model_get_iter (model, &iter, path);
-
-  gtk_tree_model_get (model, &iter, EMPATHY_INDIVIDUAL_STORE_COL_INDIVIDUAL,
-      &individual, -1);
-
-  if (individual != NULL)
-    contact = empathy_contact_dup_from_folks_individual (individual);
-
-  if (contact == NULL)
-    goto OUT;
-
-  /* If the contact has an event activate it, otherwise the
-   * default handler of row-activated will be called. */
-  events = empathy_event_manager_get_events (self->priv->event_manager);
-  for (l = events; l; l = l->next)
-    {
-      EmpathyEvent *event = l->data;
-
-      if (event->contact == contact)
-        {
-          DEBUG ("Activate event");
-          empathy_event_activate (event);
-
-          /* We don't want the default handler of this signal
-           * (e.g. open a chat) */
-          g_signal_stop_emission_by_name (view, "row-activated");
-          break;
-        }
-    }
-
-  g_object_unref (contact);
-OUT:
-  tp_clear_object (&individual);
+  empathy_event_activate (event);
 }
-#endif
 
 static void
 button_account_settings_clicked_cb (GtkButton *button,
@@ -2288,6 +2039,8 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   g_signal_connect (self->priv->view, "individual-activated",
       G_CALLBACK (individual_activated_cb), self);
+  g_signal_connect (self->priv->view, "event-activated",
+      G_CALLBACK (event_activated_cb), self);
   g_signal_connect (self->priv->view, "popup-individual-menu",
       G_CALLBACK (popup_individual_menu_cb), self);
   g_signal_connect (self->priv->view, "notify::empty",
