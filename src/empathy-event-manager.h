@@ -69,6 +69,7 @@ typedef struct {
     gchar *message;
     gboolean must_ack;
     GObject *handler_instance;
+    guint roster_view_id;
 } EmpathyEvent;
 
 GType                empathy_event_manager_get_type      (void) G_GNUC_CONST;

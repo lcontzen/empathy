@@ -10,6 +10,9 @@
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
+/* Flashing delay for icons (milliseconds). */
+#define FLASH_TIMEOUT 500
+
 enum
 {
   PROP_MANAGER = 1,
@@ -23,6 +26,7 @@ enum
 {
   SIG_INDIVIDUAL_ACTIVATED,
   SIG_POPUP_INDIVIDUAL_MENU,
+  SIG_EVENT_ACTIVATED,
   LAST_SIGNAL
 };
 
@@ -49,6 +53,13 @@ struct _EmpathyRosterViewPriv
   /* Hash of the EmpathyRosterContact currently displayed */
   GHashTable *displayed_contacts;
 
+  guint last_event_id;
+  /* queue of (Event *). The most recent events are in the head of the queue
+   * so we always display the icon of the oldest one. */
+  GQueue *events;
+  guint flash_id;
+  gboolean display_flash_event;
+
   gboolean show_offline;
   gboolean show_groups;
   gboolean empty;
@@ -58,6 +69,39 @@ struct _EmpathyRosterViewPriv
   EmpathyRosterViewIndividualTooltipCb individual_tooltip_cb;
   gpointer individual_tooltip_data;
 };
+
+typedef struct
+{
+  guint id;
+  FolksIndividual *individual;
+  gchar *icon;
+  gpointer user_data;
+} Event;
+
+static Event *
+event_new (guint id,
+    FolksIndividual *individual,
+    const gchar *icon,
+    gpointer user_data)
+{
+  Event *event = g_slice_new (Event);
+
+  event->id = id;
+  event->individual = g_object_ref (individual);
+  event->icon = g_strdup (icon);
+  event->user_data = user_data;
+  return event;
+}
+
+static void
+event_free (gpointer data)
+{
+  Event *event = data;
+  g_object_unref (event->individual);
+  g_free (event->icon);
+
+  g_slice_free (Event, event);
+}
 
 static void
 empathy_roster_view_get_property (GObject *object,
@@ -281,6 +325,115 @@ update_group_widgets_count (EmpathyRosterView *self,
 }
 
 static void
+set_event_icon_on_individual (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    const gchar *icon)
+{
+  GHashTable *contacts;
+  GHashTableIter iter;
+  gpointer v;
+
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
+    return;
+
+  g_hash_table_iter_init (&iter, contacts);
+  while (g_hash_table_iter_next (&iter, NULL, &v))
+    {
+      EmpathyRosterContact *contact =v;
+
+      empathy_roster_contact_set_event_icon (contact, icon);
+    }
+}
+
+static void
+flash_event (Event *event,
+    EmpathyRosterView *self)
+{
+  set_event_icon_on_individual (self, event->individual, event->icon);
+}
+
+static void
+unflash_event (Event *event,
+    EmpathyRosterView *self)
+{
+  set_event_icon_on_individual (self, event->individual, NULL);
+}
+
+static gboolean
+flash_cb (gpointer data)
+{
+  EmpathyRosterView *self = data;
+
+  if (self->priv->display_flash_event)
+    {
+      g_queue_foreach (self->priv->events, (GFunc) flash_event, self);
+      self->priv->display_flash_event = FALSE;
+    }
+  else
+    {
+      g_queue_foreach (self->priv->events, (GFunc) unflash_event, self);
+      self->priv->display_flash_event = TRUE;
+    }
+
+  return TRUE;
+}
+
+static void
+start_flashing (EmpathyRosterView *self)
+{
+  if (self->priv->flash_id != 0)
+    return;
+
+  self->priv->display_flash_event = TRUE;
+
+  self->priv->flash_id = g_timeout_add (FLASH_TIMEOUT,
+      flash_cb, self);
+}
+
+static void
+stop_flashing (EmpathyRosterView *self)
+{
+  if (self->priv->flash_id == 0)
+    return;
+
+  g_source_remove (self->priv->flash_id);
+  self->priv->flash_id = 0;
+}
+
+static void
+remove_event (EmpathyRosterView *self,
+    Event *event)
+{
+  unflash_event (event, self);
+  g_queue_remove (self->priv->events, event);
+
+  if (g_queue_get_length (self->priv->events) == 0)
+    {
+      stop_flashing (self);
+    }
+}
+
+static void
+remove_all_individual_event (EmpathyRosterView *self,
+    FolksIndividual *individual)
+{
+  GList *l;
+
+  for (l = g_queue_peek_head_link (self->priv->events); l != NULL;
+      l = g_list_next (l))
+    {
+      Event *event = l->data;
+
+      if (event->individual == individual)
+        {
+          remove_event (self, event);
+          return;
+        }
+    }
+}
+
+static void
 individual_removed (EmpathyRosterView *self,
     FolksIndividual *individual)
 {
@@ -291,6 +444,8 @@ individual_removed (EmpathyRosterView *self,
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts == NULL)
     return;
+
+  remove_all_individual_event (self, individual);
 
   g_hash_table_iter_init (&iter, contacts);
   while (g_hash_table_iter_next (&iter, &key, &value))
@@ -826,6 +981,8 @@ empathy_roster_view_dispose (GObject *object)
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_roster_view_parent_class)->dispose;
 
+  stop_flashing (self);
+
   empathy_roster_view_set_live_search (self, NULL);
   g_clear_object (&self->priv->manager);
 
@@ -843,6 +1000,7 @@ empathy_roster_view_finalize (GObject *object)
   g_hash_table_unref (self->priv->roster_contacts);
   g_hash_table_unref (self->priv->roster_groups);
   g_hash_table_unref (self->priv->displayed_contacts);
+  g_queue_free_full (self->priv->events, event_free);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -852,14 +1010,30 @@ static void
 empathy_roster_view_child_activated (EggListBox *box,
     GtkWidget *child)
 {
+  EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (box);
   EmpathyRosterContact *contact;
   FolksIndividual *individual;
+  GList *l;
 
   if (!EMPATHY_IS_ROSTER_CONTACT (child))
     return;
 
   contact = EMPATHY_ROSTER_CONTACT (child);
   individual = empathy_roster_contact_get_individual (contact);
+
+  /* Activate the oldest event associated with this contact, if any */
+  for (l = g_queue_peek_tail_link (self->priv->events); l != NULL;
+      l = g_list_previous (l))
+    {
+      Event *event = l->data;
+
+      if (event->individual == individual)
+        {
+          g_signal_emit (box, signals[SIG_EVENT_ACTIVATED], 0, individual,
+              event->user_data);
+          return;
+        }
+    }
 
   g_signal_emit (box, signals[SIG_INDIVIDUAL_ACTIVATED], 0, individual);
 }
@@ -1038,6 +1212,13 @@ empathy_roster_view_class_init (
       G_TYPE_NONE,
       3, FOLKS_TYPE_INDIVIDUAL, G_TYPE_UINT, G_TYPE_UINT);
 
+  signals[SIG_EVENT_ACTIVATED] = g_signal_new ("event-activated",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, NULL, NULL, NULL,
+      G_TYPE_NONE,
+      2, FOLKS_TYPE_INDIVIDUAL, G_TYPE_POINTER);
+
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }
 
@@ -1052,6 +1233,8 @@ empathy_roster_view_init (EmpathyRosterView *self)
   self->priv->roster_groups = g_hash_table_new_full (g_str_hash, g_str_equal,
       g_free, NULL);
   self->priv->displayed_contacts = g_hash_table_new (NULL, NULL);
+
+  self->priv->events = g_queue_new ();
 
   self->priv->empty = TRUE;
 }
@@ -1193,4 +1376,47 @@ empathy_roster_view_is_searching (EmpathyRosterView *self)
 {
   return (self->priv->search != NULL &&
       gtk_widget_get_visible (GTK_WIDGET (self->priv->search)));
+}
+
+/* Don't use EmpathyEvent as I prefer to keep this object not too specific to
+ * Empathy's internals. */
+guint
+empathy_roster_view_add_event (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    const gchar *icon,
+    gpointer user_data)
+{
+  GHashTable *contacts;
+
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
+    return 0;
+
+  self->priv->last_event_id++;
+
+  g_queue_push_head (self->priv->events,
+      event_new (self->priv->last_event_id, individual, icon, user_data));
+
+  start_flashing (self);
+
+  return self->priv->last_event_id;
+}
+
+void
+empathy_roster_view_remove_event (EmpathyRosterView *self,
+    guint event_id)
+{
+  GList *l;
+
+  for (l = g_queue_peek_head_link (self->priv->events); l != NULL;
+      l = g_list_next (l))
+    {
+      Event *event = l->data;
+
+      if (event->id == event_id)
+        {
+          remove_event (self, event);
+          return;
+        }
+    }
 }

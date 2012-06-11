@@ -79,6 +79,14 @@ gboolean empathy_roster_view_is_empty (EmpathyRosterView *self);
 
 gboolean empathy_roster_view_is_searching (EmpathyRosterView *self);
 
+guint empathy_roster_view_add_event (EmpathyRosterView *self,
+    FolksIndividual *individual,
+    const gchar *icon,
+    gpointer user_data);
+
+void empathy_roster_view_remove_event (EmpathyRosterView *self,
+    guint event_id);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_VIEW_H__*/
