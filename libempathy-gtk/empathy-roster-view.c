@@ -703,19 +703,21 @@ remove_from_displayed (EmpathyRosterView *self,
     update_empty (self, TRUE);
 }
 
+/**
+ * check if @contact should be displayed according to @self's current status
+ * and without consideration for the state of @contact's groups.
+ */
 static gboolean
-filter_contact (EmpathyRosterView *self,
+contact_should_be_displayed (EmpathyRosterView *self,
     EmpathyRosterContact *contact)
 {
-  gboolean displayed;
-
   if (is_searching (self))
     {
       FolksIndividual *individual;
 
       individual = empathy_roster_contact_get_individual (contact);
 
-      displayed = empathy_individual_match_string (individual,
+      return empathy_individual_match_string (individual,
           empathy_live_search_get_text (self->priv->search),
           empathy_live_search_get_words (self->priv->search));
     }
@@ -723,13 +725,22 @@ filter_contact (EmpathyRosterView *self,
     {
       if (self->priv->show_offline)
         {
-          displayed = TRUE;
+          return TRUE;
         }
       else
         {
-          displayed = empathy_roster_contact_is_online (contact);
+          return empathy_roster_contact_is_online (contact);
         }
     }
+}
+
+static gboolean
+filter_contact (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
+{
+  gboolean displayed;
+
+  displayed = contact_should_be_displayed (self, contact);
 
   if (self->priv->show_groups)
     {
