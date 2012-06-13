@@ -179,6 +179,8 @@ preferences_setup_widgets (EmpathyPreferences *preferences,
 
 	BIND_ACTIVE (ui, UI_SHOW_OFFLINE,
 		     "checkbutton_show_offline");
+	BIND_ACTIVE (ui, UI_SHOW_GROUPS,
+		     "checkbutton_show_groups");
 	BIND_ACTIVE (ui, UI_SEPARATE_CHAT_WINDOWS,
 		     "radiobutton_chats_new_windows");
 	BIND_ACTIVE (ui, UI_EVENTS_NOTIFY_AREA,
