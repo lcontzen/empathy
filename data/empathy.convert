@@ -9,17 +9,10 @@ file-transfer-default-folder = /apps/empathy/file_transfer_default_folder
   
 [org.gnome.Empathy.ui]
 show-offline = /apps/empathy/ui/show_offline
-show-avatars = /apps/empathy/ui/show_avatars
-show-protocols = /apps/empathy/ui/show_protocols
-compact-contact-list = /apps/empathy/ui/compact_contact_list
 main-window-hidden = /apps/empathy/ui/main_window_hidden
 avatar-directory = /apps/empathy/ui/avatar_directory
 separate-chat-windows = /apps/empathy/ui/separate_chat_windows
 chat-window-paned-pos = /apps/empathy/ui/chat_window_paned_pos
-
-  
-[org.gnome.Empathy.contacts]
-sort-criterium = /apps/empathy/contacts/sort_criterium
 
   
 [org.gnome.Empathy.sounds]

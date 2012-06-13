@@ -74,16 +74,10 @@ G_BEGIN_DECLS
 #define EMPATHY_PREFS_UI_EVENTS_NOTIFY_AREA        "events-notify-area"
 #define EMPATHY_PREFS_UI_MAIN_WINDOW_HIDDEN        "main-window-hidden"
 #define EMPATHY_PREFS_UI_AVATAR_DIRECTORY          "avatar-directory"
-#define EMPATHY_PREFS_UI_SHOW_AVATARS              "show-avatars"
-#define EMPATHY_PREFS_UI_SHOW_PROTOCOLS            "show-protocols"
 #define EMPATHY_PREFS_UI_SHOW_BALANCES             "show-balance-in-roster"
-#define EMPATHY_PREFS_UI_COMPACT_CONTACT_LIST      "compact-contact-list"
 #define EMPATHY_PREFS_UI_CHAT_WINDOW_PANED_POS     "chat-window-paned-pos"
 #define EMPATHY_PREFS_UI_SHOW_OFFLINE              "show-offline"
 #define EMPATHY_PREFS_UI_SHOW_GROUPS               "show-groups"
-
-#define EMPATHY_PREFS_CONTACTS_SCHEMA EMPATHY_PREFS_SCHEMA ".contacts"
-#define EMPATHY_PREFS_CONTACTS_SORT_CRITERIUM      "sort-criterium"
 
 #define EMPATHY_PREFS_HINTS_SCHEMA EMPATHY_PREFS_SCHEMA ".hints"
 #define EMPATHY_PREFS_HINTS_CLOSE_MAIN_WINDOW      "close-main-window"

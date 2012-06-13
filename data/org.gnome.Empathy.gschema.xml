@@ -48,25 +48,10 @@
       <summary>Show offline contacts</summary>
       <description>Whether to show contacts that are offline in the contact list.</description>
     </key>
-    <key name="show-avatars" type="b">
-      <default>true</default>
-      <summary>Show avatars</summary>
-      <description>Whether to show avatars for contacts in the contact list and chat windows.</description>
-    </key>
-    <key name="show-protocols" type="b">
-      <default>false</default>
-      <summary>Show protocols</summary>
-      <description>Whether to show protocols for contacts in the contact list.</description>
-    </key>
     <key name="show-balance-in-roster" type="b">
       <default>true</default>
       <summary>Show Balance in contact list</summary>
       <description>Whether to show account balances in the contact list.</description>
-    </key>
-    <key name="compact-contact-list" type="b">
-      <default>false</default>
-      <summary>Compact contact list</summary>
-      <description>Whether to show the contact list in compact mode.</description>
     </key>
     <key name="main-window-hidden" type="b">
       <default>false</default>
@@ -98,17 +83,6 @@ present them to the user immediately.</description>
       <default>true</default>
       <summary>Show contact groups</summary>
       <description>Whether to show groups in the contact list.</description>
-    </key>
-  </schema>
-  <schema id="org.gnome.Empathy.contacts" path="/org/gnome/empathy/contacts/">
-    <key name="sort-criterium" type="s">
-      <default>'state'</default>
-      <choices>
-        <choice value='state'/>
-        <choice value='name'/>
-      </choices>
-      <summary>Contact list sort criterion</summary>
-      <description>Which criterion to use when sorting the contact list. Default is to sort by the contact's state with the value "state". A value of "name" will sort the contact list by name.</description>
     </key>
   </schema>
   <schema id="org.gnome.Empathy.sounds" path="/org/gnome/empathy/sounds/">
