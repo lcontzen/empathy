@@ -80,7 +80,7 @@ present them to the user immediately.</description>
       <description>The stored position (in pixels) of the chat window side pane.</description>
     </key>
     <key name="show-groups" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Show contact groups</summary>
       <description>Whether to show groups in the contact list.</description>
     </key>
