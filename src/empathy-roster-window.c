@@ -111,7 +111,6 @@ struct _EmpathyRosterWindowPriv {
   gboolean flash_on;
 
   GSettings *gsettings_ui;
-  GSettings *gsettings_contacts;
 
   GtkWidget *preferences;
   GtkWidget *main_vbox;
@@ -995,7 +994,6 @@ empathy_roster_window_finalize (GObject *window)
   g_object_unref (self->priv->chatroom_manager);
 
   g_object_unref (self->priv->gsettings_ui);
-  g_object_unref (self->priv->gsettings_contacts);
   g_object_unref (self->priv->individual_manager);
 
   g_object_unref (self->priv->menumodel);
@@ -1926,7 +1924,6 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   empathy_set_css_provider (GTK_WIDGET (self));
 
   self->priv->gsettings_ui = g_settings_new (EMPATHY_PREFS_UI_SCHEMA);
-  self->priv->gsettings_contacts = g_settings_new (EMPATHY_PREFS_CONTACTS_SCHEMA);
 
   self->priv->sound_mgr = empathy_sound_manager_dup_singleton ();
 

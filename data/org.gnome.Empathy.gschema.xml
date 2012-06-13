@@ -36,7 +36,6 @@
       <description>empathy-sanity-cleaning.c uses this number to check if the cleaning tasks should be executed or not. Users should not change this key manually.</description>
     </key>
     <child name="ui" schema="org.gnome.Empathy.ui"/>
-    <child name="contacts" schema="org.gnome.Empathy.contacts"/>
     <child name="sounds" schema="org.gnome.Empathy.sounds"/>
     <child name="notifications" schema="org.gnome.Empathy.notifications"/>
     <child name="conversation" schema="org.gnome.Empathy.conversation"/>
