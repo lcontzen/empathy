@@ -147,6 +147,8 @@ empathy_client_factory_dup_contact_features (TpSimpleClientFactory *factory,
        * is already in the contact list. This feature is pretty cheap to
        * prepare as it doesn't prepare the full roster. */
       TP_CONTACT_FEATURE_SUBSCRIPTION_STATES,
+      TP_CONTACT_FEATURE_CONTACT_GROUPS,
+      TP_CONTACT_FEATURE_CLIENT_TYPES,
   };
 
   features = chainup->dup_contact_features (factory, connection);
