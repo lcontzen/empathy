@@ -132,11 +132,8 @@ compute_popularity (FolksIndividual *individual)
 {
   /* TODO: we should have a better heuristic using the last time we interacted
    * with the contact as well. */
-#if 0
   return folks_interaction_details_get_im_interaction_count (
       FOLKS_INTERACTION_DETAILS (individual));
-#endif
-  return 0;
 }
 
 static void
@@ -216,7 +213,6 @@ compare_individual_by_pop (gconstpointer a,
   return pop_b - pop_a;
 }
 
-#if 0
 static void
 individual_notify_im_interaction_count (FolksIndividual *individual,
     GParamSpec *pspec,
@@ -227,7 +223,6 @@ individual_notify_im_interaction_count (FolksIndividual *individual,
   g_sequence_sort (priv->individuals_pop, compare_individual_by_pop, NULL);
   check_top_individuals (self);
 }
-#endif
 
 static void
 add_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
@@ -246,10 +241,8 @@ add_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
       G_CALLBACK (individual_group_changed_cb), self);
   g_signal_connect (individual, "notify::is-favourite",
       G_CALLBACK (individual_notify_is_favourite_cb), self);
-#if 0
   g_signal_connect (individual, "notify::im-interaction-count",
       G_CALLBACK (individual_notify_im_interaction_count), self);
-#endif
 }
 
 static void
@@ -270,10 +263,8 @@ remove_individual (EmpathyIndividualManager *self, FolksIndividual *individual)
       individual_group_changed_cb, self);
   g_signal_handlers_disconnect_by_func (individual,
       individual_notify_is_favourite_cb, self);
-#if 0
   g_signal_handlers_disconnect_by_func (individual,
       individual_notify_im_interaction_count, self);
-#endif
 
   g_hash_table_remove (priv->individuals, folks_individual_get_id (individual));
 }
