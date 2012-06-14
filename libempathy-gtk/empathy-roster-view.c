@@ -34,7 +34,7 @@ static guint signals[LAST_SIGNAL];
 
 #define NO_GROUP "X-no-group"
 #define UNGROUPED _("Ungrouped")
-#define TOP_GROUP _("Most Used")
+#define TOP_GROUP _("Top Contacts")
 
 struct _EmpathyRosterViewPriv
 {
@@ -302,6 +302,12 @@ individual_added (EmpathyRosterView *self,
     {
       GeeSet *groups;
 
+      if (folks_favourite_details_get_is_favourite (
+            FOLKS_FAVOURITE_DETAILS (individual)))
+        {
+          add_to_group (self, individual, TOP_GROUP);
+        }
+
       groups = folks_group_details_get_groups (
           FOLKS_GROUP_DETAILS (individual));
 
@@ -513,11 +519,25 @@ compare_roster_contacts_by_alias (EmpathyRosterContact *a,
 }
 
 static gboolean
+contact_is_favourite (EmpathyRosterContact *contact)
+{
+  FolksIndividual *individual;
+
+  individual = empathy_roster_contact_get_individual (contact);
+
+  return folks_favourite_details_get_is_favourite (
+      FOLKS_FAVOURITE_DETAILS (individual));
+}
+
+static gboolean
 contact_in_top (EmpathyRosterView *self,
     EmpathyRosterContact *contact)
 {
   FolksIndividual *individual;
   GList *tops;
+
+  if (contact_is_favourite (contact))
+    return TRUE;
 
   individual = empathy_roster_contact_get_individual (contact);
 
@@ -748,6 +768,13 @@ contact_should_be_displayed (EmpathyRosterView *self,
         {
           return TRUE;
         }
+      else if (!self->priv->show_groups &&
+          contact_is_favourite (contact))
+        {
+          /* Always display favourite contacts in non-group mode. In the group
+           * mode we'll display only the one in the 'top' section. */
+          return TRUE;
+        }
       else
         {
           return empathy_roster_contact_is_online (contact);
@@ -770,6 +797,10 @@ filter_contact (EmpathyRosterView *self,
 
       group_name = empathy_roster_contact_get_group (contact);
       group = lookup_roster_group (self, group_name);
+
+      if (!tp_strdiff (group_name, TOP_GROUP) &&
+          contact_is_favourite (contact))
+        displayed = TRUE;
 
       if (group != NULL)
         {
@@ -930,6 +961,9 @@ update_top_contacts (EmpathyRosterView *self)
           EmpathyRosterContact *contact = l->data;
           FolksIndividual *individual;
 
+          if (contact_is_favourite (contact))
+            continue;
+
           individual = empathy_roster_contact_get_individual (contact);
 
           if (g_list_find (tops, individual) == NULL)
@@ -985,6 +1019,37 @@ top_individuals_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+favourites_changed_cb (EmpathyIndividualManager *manager,
+    FolksIndividual *individual,
+    gboolean favourite,
+    EmpathyRosterView *self)
+{
+  GHashTable *contacts;
+
+  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
+  if (contacts == NULL)
+    return;
+
+  if (self->priv->show_groups)
+    {
+      if (favourite)
+        add_to_group (self, individual, TOP_GROUP);
+      else
+        remove_from_group (self, individual, TOP_GROUP);
+    }
+  else
+    {
+      GtkWidget *contact;
+
+      contact = g_hash_table_lookup (contacts, NO_GROUP);
+      if (contact == NULL)
+        return;
+
+      egg_list_box_child_changed (EGG_LIST_BOX (self), contact);
+    }
+}
+
+static void
 empathy_roster_view_constructed (GObject *object)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (object);
@@ -1004,6 +1069,8 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (groups_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
       G_CALLBACK (top_individuals_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "notify::favourites-changed",
+      G_CALLBACK (favourites_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       roster_view_sort, self, NULL);
