@@ -220,6 +220,10 @@ individual_notify_im_interaction_count (FolksIndividual *individual,
 {
   EmpathyIndividualManagerPriv *priv = GET_PRIV (self);
 
+  /* We don't use g_sequence_sort_changed() because we'll first have to find
+   * the iter of @individual using g_sequence_lookup() but the lookup function
+   * won't work as it assumes that the sequence is sorted which is no longer
+   * the case at this point as @individual's popularity just changed. */
   g_sequence_sort (priv->individuals_pop, compare_individual_by_pop, NULL);
   check_top_individuals (self);
 }
