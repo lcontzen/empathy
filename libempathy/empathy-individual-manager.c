@@ -58,7 +58,7 @@ typedef struct
   GHashTable *individuals; /* Individual.id -> Individual */
   gboolean contacts_loaded;
 
-  /* FolksIndividual sorted by popularity (most popular first) */
+  /* reffed FolksIndividual sorted by popularity (most popular first) */
   GSequence *individuals_pop;
   /* The TOP_INDIVIDUALS_LEN first FolksIndividual (borrowed) from
    * individuals_pop */
