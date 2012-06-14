@@ -221,7 +221,10 @@ ensure_roster_group (EmpathyRosterView *self,
   if (roster_group != NULL)
     return EMPATHY_ROSTER_GROUP (roster_group);
 
-  roster_group = empathy_roster_group_new (group);
+  if (!tp_strdiff (group, TOP_GROUP))
+    roster_group = empathy_roster_group_new (group, "emblem-favorite-symbolic");
+  else
+    roster_group = empathy_roster_group_new (group, NULL);
 
   g_signal_connect (roster_group, "notify::expanded",
       G_CALLBACK (group_expanded_cb), self);

@@ -46,7 +46,8 @@ GType empathy_roster_group_get_type (void);
     EMPATHY_TYPE_ROSTER_GROUP, \
     EmpathyRosterGroupClass))
 
-GtkWidget * empathy_roster_group_new (const gchar *name);
+GtkWidget * empathy_roster_group_new (const gchar *name,
+    const gchar *icon);
 
 const gchar * empathy_roster_group_get_name (EmpathyRosterGroup *self);
 
