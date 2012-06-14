@@ -33,7 +33,7 @@ enum
 static guint signals[LAST_SIGNAL];
 
 #define NO_GROUP "X-no-group"
-#define UNGROUPPED _("Ungroupped")
+#define UNGROUPED _("Ungrouped")
 #define TOP_GROUP _("Most Used")
 
 struct _EmpathyRosterViewPriv
@@ -322,8 +322,8 @@ individual_added (EmpathyRosterView *self,
         }
       else
         {
-          /* No group, adds to Ungroupped */
-          add_to_group (self, individual, UNGROUPPED);
+          /* No group, adds to Ungrouped */
+          add_to_group (self, individual, UNGROUPED);
         }
     }
 }
@@ -890,7 +890,7 @@ remove_from_group (EmpathyRosterView *self,
 
   if (g_hash_table_size (contacts) == 0)
     {
-      add_to_group (self, individual, UNGROUPPED);
+      add_to_group (self, individual, UNGROUPED);
     }
 
   roster_group = lookup_roster_group (self, group);
@@ -1323,6 +1323,8 @@ clear_view (EmpathyRosterView *self)
       (GtkCallback) gtk_widget_destroy, NULL);
 
   g_hash_table_remove_all (self->priv->roster_contacts);
+  g_hash_table_remove_all (self->priv->roster_groups);
+  g_hash_table_remove_all (self->priv->displayed_contacts);
 }
 
 void
