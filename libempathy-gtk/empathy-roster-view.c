@@ -512,33 +512,21 @@ compare_roster_contacts_by_alias (EmpathyRosterContact *a,
   return g_ascii_strcasecmp (alias_a, alias_b);
 }
 
-static gint
-compare_individual_top_position (EmpathyRosterView *self,
-    EmpathyRosterContact *a,
-    EmpathyRosterContact *b)
+static gboolean
+contact_in_top (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
 {
-  FolksIndividual *ind_a, *ind_b;
+  FolksIndividual *individual;
   GList *tops;
-  gint index_a, index_b;
 
-  ind_a = empathy_roster_contact_get_individual (a);
-  ind_b = empathy_roster_contact_get_individual (b);
+  individual = empathy_roster_contact_get_individual (contact);
 
   tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
 
-  index_a = g_list_index (tops, ind_a);
-  index_b = g_list_index (tops, ind_b);
+  if (g_list_index (tops, individual) != -1)
+    return TRUE;
 
-  if (index_a == index_b)
-    return 0;
-
-  if (index_a == -1)
-    return 1;
-
-  if (index_b == -1)
-    return -1;
-
-  return index_a - index_b;
+  return FALSE;
 }
 
 static gint
@@ -546,13 +534,19 @@ compare_roster_contacts_no_group (EmpathyRosterView *self,
     EmpathyRosterContact *a,
     EmpathyRosterContact *b)
 {
-  gint top;
+  gboolean top_a, top_b;
 
-  top = compare_individual_top_position (self, a, b);
-  if (top != 0)
-    return top;
+  top_a = contact_in_top (self, a);
+  top_b = contact_in_top (self, b);
 
-  return compare_roster_contacts_by_alias (a, b);
+  if (top_a == top_b)
+    /* Both contacts are in the top of the roster (or not). Sort them
+     * alphabetically */
+    return compare_roster_contacts_by_alias (a, b);
+  else if (top_a)
+    return -1;
+  else
+    return 1;
 }
 
 static gint
