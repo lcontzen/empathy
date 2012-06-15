@@ -767,3 +767,12 @@ empathy_audio_src_change_microphone_finish (EmpathyGstAudioSrc *src,
   empathy_implement_finish_void (src,
       empathy_audio_src_change_microphone_async);
 }
+
+void
+empathy_audio_src_set_mute (EmpathyGstAudioSrc *self,
+    gboolean mute)
+{
+  empathy_audio_set_hw_mute (self, mute);
+
+  g_object_notify (G_OBJECT (self), "mute");
+}

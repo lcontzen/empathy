@@ -77,6 +77,9 @@ void empathy_audio_src_change_microphone_async (EmpathyGstAudioSrc *src,
 gboolean empathy_audio_src_change_microphone_finish (EmpathyGstAudioSrc *src,
     GAsyncResult *result, GError **error);
 
+void empathy_audio_src_set_mute (EmpathyGstAudioSrc *self,
+    gboolean mute);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_GST_AUDIO_SRC_H__*/
