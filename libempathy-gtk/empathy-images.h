@@ -48,6 +48,8 @@ G_BEGIN_DECLS
 #define EMPATHY_IMAGE_AVATAR_DEFAULT      "avatar-default-symbolic"
 /* FIXME: need a better icon! */
 #define EMPATHY_IMAGE_EDIT_MESSAGE        "format-text-direction-ltr"
+#define EMPATHY_IMAGE_MIC                 "audio-input-microphone-symbolic"
+#define EMPATHY_IMAGE_MIC_MUTED           "audio-input-microphone-muted-symbolic"
 
 #define EMPATHY_IMAGE_CALL                "call-start"
 #define EMPATHY_IMAGE_CALL_MISSED         "call-stop"

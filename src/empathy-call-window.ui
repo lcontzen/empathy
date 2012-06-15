@@ -286,9 +286,8 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkToggleButton" id="microphone">
+                      <object class="GtkButton" id="microphone">
                         <property name="visible">True</property>
-                        <property name="active">True</property>
                         <property name="tooltip_text" translatable="yes">Toggle audio transmission</property>
                         <child>
                           <object class="GtkImage" id="microphone_icon">

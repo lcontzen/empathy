@@ -164,6 +164,7 @@ struct _EmpathyCallWindowPriv
   GtkWidget *audio_call_button;
   GtkWidget *video_call_button;
   GtkWidget *mic_button;
+  GtkWidget *microphone_icon;
   GtkWidget *volume_button;
   GtkWidget *camera_button;
   GtkWidget *dialpad_button;
@@ -473,6 +474,17 @@ audio_input_mute_notify_cb (GObject *obj, GParamSpec *spec,
   if (muted && self->priv->transitions)
     clutter_state_set_state (self->priv->transitions, "fade-in");
 
+  if (muted)
+    {
+      gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->microphone_icon),
+          EMPATHY_IMAGE_MIC_MUTED, GTK_ICON_SIZE_MENU);
+    }
+  else
+    {
+      gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->microphone_icon),
+          EMPATHY_IMAGE_MIC, GTK_ICON_SIZE_MENU);
+    }
+
   empathy_call_window_update_timer (self);
 }
 
@@ -487,12 +499,6 @@ create_audio_input (EmpathyCallWindow *self)
 
   g_signal_connect (priv->audio_input, "notify::mute",
     G_CALLBACK (audio_input_mute_notify_cb), self);
-
-  g_object_bind_property (priv->mic_button, "active",
-    priv->audio_input, "mute",
-    G_BINDING_BIDIRECTIONAL |
-      G_BINDING_INVERT_BOOLEAN | G_BINDING_SYNC_CREATE);
-
 }
 
 static void
@@ -1539,6 +1545,16 @@ empathy_call_window_start_ringing (EmpathyCallWindow *self,
 }
 
 static void
+mic_button_clicked (GtkWidget *button,
+    EmpathyCallWindow *self)
+{
+  /* Toggle the muted state. We rely on audio_input_mute_notify_cb to update
+   * the icon. */
+  empathy_audio_src_set_mute (EMPATHY_GST_AUDIO_SRC (self->priv->audio_input),
+      !self->priv->muted);
+}
+
+static void
 empathy_call_window_init (EmpathyCallWindow *self)
 {
   EmpathyCallWindowPriv *priv;
@@ -1569,6 +1585,7 @@ empathy_call_window_init (EmpathyCallWindow *self)
     "audiocall", &priv->audio_call_button,
     "videocall", &priv->video_call_button,
     "microphone", &priv->mic_button,
+    "microphone_icon", &priv->microphone_icon,
     "volume", &priv->volume_button,
     "camera", &priv->camera_button,
     "hangup", &priv->hangup_button,
@@ -1624,6 +1641,9 @@ empathy_call_window_init (EmpathyCallWindow *self)
       G_CALLBACK (empathy_call_window_camera_added_cb), self);
   g_signal_connect (priv->camera_monitor, "removed",
       G_CALLBACK (empathy_call_window_camera_removed_cb), self);
+
+  g_signal_connect (priv->mic_button, "clicked",
+      G_CALLBACK (mic_button_clicked), self);
 
   g_mutex_init (&priv->lock);
 
@@ -2557,8 +2577,8 @@ empathy_call_window_disconnected (EmpathyCallWindow *self,
       gtk_widget_set_sensitive (priv->mic_button, FALSE);
 
       /* Be sure that the mic button is enabled */
-      gtk_toggle_button_set_active (
-          GTK_TOGGLE_BUTTON (priv->mic_button), TRUE);
+      empathy_audio_src_set_mute (
+          EMPATHY_GST_AUDIO_SRC (self->priv->audio_input), TRUE);
 
       if (priv->camera_state == CAMERA_STATE_ON)
         {
@@ -2847,8 +2867,7 @@ empathy_call_window_update_timer (gpointer user_data)
 
   if (priv->call_state == HELD)
     status = _("On hold");
-  else if (!gtk_toggle_button_get_active (
-      GTK_TOGGLE_BUTTON (priv->mic_button)))
+  else if (priv->muted)
     status = _("Mute");
   else
     status = _("Duration");
