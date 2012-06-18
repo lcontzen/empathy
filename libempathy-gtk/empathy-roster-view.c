@@ -1184,7 +1184,11 @@ empathy_roster_view_button_press_event (GtkWidget *widget,
       child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), event->y);
 
       if (child != NULL)
-        fire_popup_individual_menu (self, child, event->button, event->time);
+        {
+          egg_list_box_select_child (EGG_LIST_BOX (self), child);
+
+          fire_popup_individual_menu (self, child, event->button, event->time);
+        }
     }
 
   return chain_up (widget, event);
