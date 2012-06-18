@@ -1230,6 +1230,7 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
   GtkWidget *child;
   EmpathyRosterContact *contact;
   FolksIndividual *individual;
+  gboolean result;
 
   if (self->priv->individual_tooltip_cb == NULL)
     return FALSE;
@@ -1241,8 +1242,18 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
   contact = EMPATHY_ROSTER_CONTACT (child);
   individual = empathy_roster_contact_get_individual (contact);
 
-  return self->priv->individual_tooltip_cb (self, individual, keyboard_mode,
+  result = self->priv->individual_tooltip_cb (self, individual, keyboard_mode,
       tooltip, self->priv->individual_tooltip_data);
+
+  if (result)
+    {
+      GtkAllocation allocation;
+
+      gtk_widget_get_allocation (child, &allocation);
+      gtk_tooltip_set_tip_area (tooltip, (GdkRectangle *) &allocation);
+    }
+
+  return result;
 }
 
 void
