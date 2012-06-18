@@ -124,6 +124,7 @@ struct _EmpathyRosterWindowPriv {
   GtkWidget *no_entry_label;
   GtkWidget *button_account_settings;
   GtkWidget *spinner_loading;
+  GtkWidget *tooltip_widget;
 
   GMenu *menumodel;
   GMenu *rooms_section;
@@ -998,6 +999,8 @@ empathy_roster_window_finalize (GObject *window)
 
   g_object_unref (self->priv->menumodel);
   g_object_unref (self->priv->rooms_section);
+
+  g_clear_object (&self->priv->tooltip_widget);
 
   G_OBJECT_CLASS (empathy_roster_window_parent_class)->finalize (window);
 }
@@ -1911,6 +1914,50 @@ view_empty_cb (EmpathyRosterView *view,
 }
 
 static void
+tooltip_destroy_cb (GtkWidget *widget,
+    EmpathyRosterWindow *self)
+{
+  g_clear_object (&self->priv->tooltip_widget);
+}
+
+static gboolean
+individual_tooltip_cb (EmpathyRosterView *view,
+    FolksIndividual *individual,
+    gboolean keyboard_mode,
+    GtkTooltip *tooltip,
+    gpointer user_data)
+{
+  EmpathyRosterWindow *self = user_data;
+
+  if (self->priv->tooltip_widget == NULL)
+    {
+      self->priv->tooltip_widget = empathy_individual_widget_new (individual,
+          EMPATHY_INDIVIDUAL_WIDGET_FOR_TOOLTIP |
+          EMPATHY_INDIVIDUAL_WIDGET_SHOW_LOCATION |
+          EMPATHY_INDIVIDUAL_WIDGET_SHOW_CLIENT_TYPES);
+
+      gtk_container_set_border_width (
+          GTK_CONTAINER (self->priv->tooltip_widget), 8);
+
+      g_object_ref (self->priv->tooltip_widget);
+
+      tp_g_signal_connect_object (self->priv->tooltip_widget, "destroy",
+          G_CALLBACK (tooltip_destroy_cb), self, 0);
+
+      gtk_widget_show (self->priv->tooltip_widget);
+    }
+  else
+    {
+      empathy_individual_widget_set_individual (
+        EMPATHY_INDIVIDUAL_WIDGET (self->priv->tooltip_widget), individual);
+    }
+
+  gtk_tooltip_set_custom (tooltip, self->priv->tooltip_widget);
+
+  return TRUE;
+}
+
+static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
   GtkBuilder *gui;
@@ -2042,6 +2089,9 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (popup_individual_menu_cb), self);
   g_signal_connect (self->priv->view, "notify::empty",
       G_CALLBACK (view_empty_cb), self);
+
+  empathy_roster_view_set_individual_tooltip_cb (self->priv->view,
+      individual_tooltip_cb, self);
 
   /* Set up search bar */
   self->priv->search_bar = empathy_live_search_new (
