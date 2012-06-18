@@ -48,6 +48,13 @@
  * changes, not when the position of every single individual is updated. */
 #define TOP_INDIVIDUALS_LEN 5
 
+/* The constant INDIVIDUALS_COUNT_COMPRESS_FACTOR represents the number of
+ * interactions needed to be considered as 1 interaction */
+#define INTERACTION_COUNT_COMPRESS_FACTOR 50
+
+/* The constant DAY_IN_SECONDS represents the seconds in a day */
+#define DAY_IN_SECONDS 86400
+
 /* This class only stores and refs Individuals who contain an EmpathyContact.
  *
  * This class merely forwards along signals from the aggregator and individuals
@@ -63,6 +70,7 @@ typedef struct
   /* The TOP_INDIVIDUALS_LEN first FolksIndividual (borrowed) from
    * individuals_pop */
   GList *top_individuals;
+  guint global_interaction_counter;
 } EmpathyIndividualManagerPriv;
 
 enum
@@ -127,13 +135,35 @@ individual_notify_is_favourite_cb (FolksIndividual *individual,
       is_favourite);
 }
 
+
+/* Contacts that have been interacted with within the last 30 days and have
+ * have an interaction count > INTERACTION_COUNT_COMPRESS_FACTOR have a
+ * popularity value of the count/INTERACTION_COUNT_COMPRESS_FACTOR */
 static guint
 compute_popularity (FolksIndividual *individual)
 {
-  /* TODO: we should have a better heuristic using the last time we interacted
-   * with the contact as well. */
-  return folks_interaction_details_get_im_interaction_count (
-      FOLKS_INTERACTION_DETAILS (individual));
+  FolksInteractionDetails *details = FOLKS_INTERACTION_DETAILS (individual);
+  GDateTime *last;
+  guint  current_timestamp, count;
+  float timediff;
+
+  last = folks_interaction_details_get_last_im_interaction_datetime (details);
+  if (last == NULL)
+    return 0;
+
+  /* Convert g_get_real_time () fro microseconds to seconds */
+  current_timestamp = g_get_real_time () / 1000000;
+  timediff = current_timestamp - g_date_time_to_unix (last);
+
+  if (timediff / DAY_IN_SECONDS > 30)
+    return 0;
+
+  count = folks_interaction_details_get_im_interaction_count (details);
+  count = count / INTERACTION_COUNT_COMPRESS_FACTOR;
+  if (count == 0)
+    return 0;
+
+  return count;
 }
 
 static void
@@ -225,7 +255,11 @@ individual_notify_im_interaction_count (FolksIndividual *individual,
    * won't work as it assumes that the sequence is sorted which is no longer
    * the case at this point as @individual's popularity just changed. */
   g_sequence_sort (priv->individuals_pop, compare_individual_by_pop, NULL);
-  check_top_individuals (self);
+
+  /* Only check for top individuals after 10 interaction events happen */
+  if (priv->global_interaction_counter % 10 == 0)
+    check_top_individuals (self);
+  priv->global_interaction_counter++;
 }
 
 static void
