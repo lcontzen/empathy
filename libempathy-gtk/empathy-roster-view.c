@@ -27,6 +27,7 @@ enum
   SIG_INDIVIDUAL_ACTIVATED,
   SIG_POPUP_INDIVIDUAL_MENU,
   SIG_EVENT_ACTIVATED,
+  SIG_INDIVIDUAL_TOOLTIP,
   LAST_SIGNAL
 };
 
@@ -65,9 +66,6 @@ struct _EmpathyRosterViewPriv
   gboolean empty;
 
   EmpathyLiveSearch *search;
-
-  EmpathyRosterViewIndividualTooltipCb individual_tooltip_cb;
-  gpointer individual_tooltip_data;
 };
 
 typedef struct
@@ -1232,9 +1230,6 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
   FolksIndividual *individual;
   gboolean result;
 
-  if (self->priv->individual_tooltip_cb == NULL)
-    return FALSE;
-
   child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), y);
   if (!EMPATHY_IS_ROSTER_CONTACT (child))
     return FALSE;
@@ -1242,8 +1237,8 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
   contact = EMPATHY_ROSTER_CONTACT (child);
   individual = empathy_roster_contact_get_individual (contact);
 
-  result = self->priv->individual_tooltip_cb (self, individual, keyboard_mode,
-      tooltip, self->priv->individual_tooltip_data);
+  g_signal_emit (self, signals[SIG_INDIVIDUAL_TOOLTIP], 0,
+      individual, keyboard_mode, tooltip, &result);
 
   if (result)
     {
@@ -1254,17 +1249,6 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
     }
 
   return result;
-}
-
-void
-empathy_roster_view_set_individual_tooltip_cb (EmpathyRosterView *self,
-    EmpathyRosterViewIndividualTooltipCb callback,
-    gpointer user_data)
-{
-  self->priv->individual_tooltip_cb = callback;
-  self->priv->individual_tooltip_data = user_data;
-
-  gtk_widget_set_has_tooltip (GTK_WIDGET (self), callback != NULL);
 }
 
 static void
@@ -1349,6 +1333,13 @@ empathy_roster_view_class_init (
       0, NULL, NULL, NULL,
       G_TYPE_NONE,
       2, FOLKS_TYPE_INDIVIDUAL, G_TYPE_POINTER);
+
+  signals[SIG_INDIVIDUAL_TOOLTIP] = g_signal_new ("individual-tooltip",
+      G_OBJECT_CLASS_TYPE (klass),
+      G_SIGNAL_RUN_LAST,
+      0, g_signal_accumulator_true_handled, NULL, NULL,
+      G_TYPE_BOOLEAN,
+      3, FOLKS_TYPE_INDIVIDUAL, G_TYPE_BOOLEAN, GTK_TYPE_TOOLTIP);
 
   g_type_class_add_private (klass, sizeof (EmpathyRosterViewPriv));
 }

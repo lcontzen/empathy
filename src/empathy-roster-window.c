@@ -1925,10 +1925,8 @@ individual_tooltip_cb (EmpathyRosterView *view,
     FolksIndividual *individual,
     gboolean keyboard_mode,
     GtkTooltip *tooltip,
-    gpointer user_data)
+    EmpathyRosterWindow *self)
 {
-  EmpathyRosterWindow *self = user_data;
-
   if (self->priv->tooltip_widget == NULL)
     {
       self->priv->tooltip_widget = empathy_individual_widget_new (individual,
@@ -2089,9 +2087,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (popup_individual_menu_cb), self);
   g_signal_connect (self->priv->view, "notify::empty",
       G_CALLBACK (view_empty_cb), self);
+  g_signal_connect (self->priv->view, "individual-tooltip",
+      G_CALLBACK (individual_tooltip_cb), self);
 
-  empathy_roster_view_set_individual_tooltip_cb (self->priv->view,
-      individual_tooltip_cb, self);
+  gtk_widget_set_has_tooltip (GTK_WIDGET (self->priv->view), TRUE);
 
   /* Set up search bar */
   self->priv->search_bar = empathy_live_search_new (

@@ -113,12 +113,13 @@ main (int argc,
       G_CALLBACK (popup_individual_menu_cb), NULL);
   g_signal_connect (view, "notify::empty",
       G_CALLBACK (empty_cb), NULL);
+  g_signal_connect (view, "individual-tooltip",
+      G_CALLBACK (individual_tooltip_cb), NULL);
+
+  gtk_widget_set_has_tooltip (view, TRUE);
 
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
-
-  empathy_roster_view_set_individual_tooltip_cb (EMPATHY_ROSTER_VIEW (view),
-      individual_tooltip_cb, NULL);
 
   g_object_unref (mgr);
 
