@@ -3,6 +3,7 @@ themesdir = $(datadir)/adium/message-styles
 themes = \
 	$(boxes_messageStyle) \
 	$(classic_messageStyle) \
+	$(pgo_messageStyle) \
 	$(NULL)
 
 boxes_messageStyle = \
@@ -21,6 +22,18 @@ classic_messageStyle = \
 	Classic.AdiumMessageStyle/Contents/Resources/main.css \
 	Classic.AdiumMessageStyle/Contents/Resources/Status.html \
 	Classic.AdiumMessageStyle/Contents/Info.plist \
+	$(NULL)
+
+pgo_messageStyle = \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Images/corners.png \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Images/horizontal.png \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Images/nipple.png \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Images/vertical.png \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Incoming/Content.html \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Incoming/NextContent.html \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/Status.html \
+	PlanetGNOME.AdiumMessageStyle/Contents/Resources/main.css \
+	PlanetGNOME.AdiumMessageStyle/Contents/Info.plist \
 	$(NULL)
 
 install-themes: $(themes)
