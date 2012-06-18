@@ -512,6 +512,7 @@ AC_CONFIG_FILES([
    data/empathy.desktop.in
    data/empathy-accounts.desktop.in
    data/icons/Makefile
+   data/themes/Makefile
    extensions/Makefile
    po/Makefile.in
    libempathy/Makefile

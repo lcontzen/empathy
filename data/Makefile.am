@@ -1,4 +1,4 @@
-SUBDIRS = icons
+SUBDIRS = icons themes
 
 desktopdir = $(datadir)/applications
 desktop_in_files = \
