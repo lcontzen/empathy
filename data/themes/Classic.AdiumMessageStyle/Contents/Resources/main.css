@@ -1,0 +1,31 @@
+* {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+html {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  padding: 6px;
+  margin: 0;
+}
+
+.incoming .sender {
+  color: blue;
+}
+
+.outgoing .sender {
+  color: green;
+}
+
+.mention .sender {
+  color: red;
+  font-weight: bold;
+}
+
+.status {
+  color: #939373;
+}
