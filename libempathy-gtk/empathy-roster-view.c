@@ -304,10 +304,11 @@ individual_added (EmpathyRosterView *self,
       GeeSet *groups;
       GList *tops;
 
-      tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
+      tops = empathy_individual_manager_get_top_individuals (
+          self->priv->manager);
 
       if (folks_favourite_details_get_is_favourite (
-            FOLKS_FAVOURITE_DETAILS (individual)) || 
+            FOLKS_FAVOURITE_DETAILS (individual)) ||
           g_list_index (tops, individual) != -1)
         {
           add_to_group (self, individual, TOP_GROUP);
