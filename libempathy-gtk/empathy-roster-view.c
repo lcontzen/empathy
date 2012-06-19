@@ -8,6 +8,8 @@
 #include <libempathy-gtk/empathy-roster-group.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
+#include <libempathy/empathy-utils.h>
+
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
 /* Flashing delay for icons (milliseconds). */
@@ -36,6 +38,7 @@ static guint signals[LAST_SIGNAL];
 #define NO_GROUP "X-no-group"
 #define UNGROUPED _("Ungrouped")
 #define TOP_GROUP _("Top Contacts")
+#define PEOPLE_NEARBY _("People Nearby")
 
 struct _EmpathyRosterViewPriv
 {
@@ -163,6 +166,27 @@ roster_contact_changed_cb (GtkWidget *child,
   egg_list_box_child_changed (EGG_LIST_BOX (self), child);
 }
 
+static gboolean
+is_xmpp_local_contact (FolksIndividual *individual)
+{
+  EmpathyContact *contact;
+  TpConnection *connection;
+  const gchar *protocol_name = NULL;
+  gboolean result;
+
+  contact = empathy_contact_dup_from_folks_individual (individual);
+
+  if (contact == NULL)
+    return FALSE;
+
+  connection = empathy_contact_get_connection (contact);
+  protocol_name = tp_connection_get_protocol_name (connection);
+  result = !tp_strdiff (protocol_name, "local-xmpp");
+  g_object_unref (contact);
+
+  return result;
+}
+
 static GtkWidget *
 add_roster_contact (EmpathyRosterView *self,
     FolksIndividual *individual,
@@ -221,6 +245,8 @@ ensure_roster_group (EmpathyRosterView *self,
 
   if (!tp_strdiff (group, TOP_GROUP))
     roster_group = empathy_roster_group_new (group, "emblem-favorite-symbolic");
+  else if (!tp_strdiff (group, PEOPLE_NEARBY))
+    roster_group = empathy_roster_group_new (group, "im-local-xmpp");
   else
     roster_group = empathy_roster_group_new (group, NULL);
 
@@ -298,6 +324,10 @@ individual_added (EmpathyRosterView *self,
   if (!self->priv->show_groups)
     {
       add_to_group (self, individual, NO_GROUP);
+    }
+  else if (is_xmpp_local_contact (individual))
+    {
+      add_to_group (self, individual, PEOPLE_NEARBY);
     }
   else
     {
