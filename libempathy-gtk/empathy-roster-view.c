@@ -715,7 +715,7 @@ add_to_displayed (EmpathyRosterView *self,
   FolksIndividual *individual;
   GHashTable *contacts;
   GHashTableIter iter;
-  gpointer v;
+  gpointer k;
 
   if (g_hash_table_lookup (self->priv->displayed_contacts, contact) != NULL)
     return;
@@ -731,9 +731,14 @@ add_to_displayed (EmpathyRosterView *self,
     return;
 
   g_hash_table_iter_init (&iter, contacts);
-  while (g_hash_table_iter_next (&iter, NULL, &v))
+  while (g_hash_table_iter_next (&iter, &k, NULL))
     {
-      GtkWidget *group = GTK_WIDGET (v);
+      const gchar *group_name = k;
+      GtkWidget *group;
+
+      group = g_hash_table_lookup (self->priv->roster_groups, group_name);
+      if (group == NULL)
+        continue;
 
       egg_list_box_child_changed (EGG_LIST_BOX (self), group);
     }
