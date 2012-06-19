@@ -725,6 +725,10 @@ add_to_displayed (EmpathyRosterView *self,
 
   /* Groups of this contact may now be displayed if we just displays the first
    * child in this group. */
+
+  if (!self->priv->show_groups)
+    return;
+
   individual = empathy_roster_contact_get_individual (contact);
   contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
   if (contacts == NULL)
