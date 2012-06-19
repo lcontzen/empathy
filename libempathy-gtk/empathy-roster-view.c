@@ -584,6 +584,11 @@ compare_group_names (const gchar *group_a,
   if (!tp_strdiff (group_b, TOP_GROUP))
     return 1;
 
+  if (!tp_strdiff (group_a, UNGROUPED))
+    return 1;
+  else if (!tp_strdiff (group_b, UNGROUPED))
+    return -1;
+
   return g_ascii_strcasecmp (group_a, group_b);
 }
 
