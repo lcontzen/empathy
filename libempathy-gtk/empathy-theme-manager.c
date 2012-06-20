@@ -37,8 +37,6 @@
 #include "empathy-theme-manager.h"
 #include "empathy-chat-view.h"
 #include "empathy-chat-text-view.h"
-#include "empathy-theme-boxes.h"
-#include "empathy-theme-irc.h"
 #include "empathy-theme-adium.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
@@ -47,7 +45,6 @@
 #define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyThemeManager)
 typedef struct {
 	GSettings   *gsettings_chat;
-	gchar       *name;
 	GtkSettings *settings;
 	GList       *boxes_views;
 	guint        emit_changed_idle;
@@ -66,14 +63,6 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static const gchar *themes[] = {
-	"classic", N_("Classic"),
-	"simple", N_("Simple"),
-	"clean", N_("Clean"),
-	"blue", N_("Blue"),
-	NULL
-};
-
 G_DEFINE_TYPE (EmpathyThemeManager, empathy_theme_manager, G_TYPE_OBJECT);
 
 static gboolean
@@ -85,8 +74,8 @@ theme_manager_emit_changed_idle_cb (gpointer manager)
 	if (priv->adium_data) {
 		adium_path = empathy_adium_data_get_path (priv->adium_data);
 	}
-	DEBUG ("Emit theme-changed with: name='%s' adium_path='%s' "
-	       "adium_variant='%s'", priv->name, adium_path,
+	DEBUG ("Emit theme-changed with: adium_path='%s' "
+	       "adium_variant='%s'", adium_path,
 	       priv->adium_variant);
 
 	g_signal_emit (manager, signals[THEME_CHANGED], 0, NULL);
@@ -127,6 +116,7 @@ clear_list_of_views (GList **views)
 	}
 }
 
+#if 0
 static void
 theme_manager_gdk_color_to_hex (GdkColor *gdk_color, gchar *str_color)
 {
@@ -136,243 +126,7 @@ theme_manager_gdk_color_to_hex (GdkColor *gdk_color, gchar *str_color)
 		    gdk_color->green >> 8,
 		    gdk_color->blue >> 8);
 }
-
-static EmpathyThemeIrc *
-theme_manager_create_irc_view (EmpathyThemeManager *manager)
-{
-	EmpathyChatTextView *view;
-	EmpathyThemeIrc     *theme;
-
-	theme = empathy_theme_irc_new ();
-	view = EMPATHY_CHAT_TEXT_VIEW (theme);
-
-	/* Define base tags */
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_SPACING,
-					"size", 2000,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_TIME,
-					"foreground", "darkgrey",
-					"justification", GTK_JUSTIFY_CENTER,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_ACTION,
-					"foreground", "brown4",
-					"style", PANGO_STYLE_ITALIC,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_BODY,
-					"foreground-set", FALSE,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_EVENT,
-					"foreground", "PeachPuff4",
-					"justification", GTK_JUSTIFY_LEFT,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_LINK,
-					"foreground", "steelblue",
-					"underline", PANGO_UNDERLINE_SINGLE,
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_HIGHLIGHT,
-					"background", "yellow",
-					NULL);
-
-	/* Define IRC tags */
-	empathy_chat_text_view_tag_set (view, EMPATHY_THEME_IRC_TAG_NICK_SELF,
-					"foreground", "sea green",
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_THEME_IRC_TAG_NICK_OTHER,
-					"foreground", "skyblue4",
-					NULL);
-	empathy_chat_text_view_tag_set (view, EMPATHY_THEME_IRC_TAG_NICK_HIGHLIGHT,
-					"foreground", "indian red",
-					"weight", PANGO_WEIGHT_BOLD,
-					NULL);
-
-	return theme;
-}
-
-static void on_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, EmpathyThemeManager *self);
-
-static EmpathyThemeBoxes *
-theme_manager_create_boxes_view (EmpathyThemeManager *manager)
-{
-	EmpathyThemeManagerPriv *priv = GET_PRIV (manager);
-	EmpathyThemeBoxes       *theme;
-
-	theme = empathy_theme_boxes_new ();
-	priv->boxes_views = g_list_prepend (priv->boxes_views, theme);
-	g_object_weak_ref (G_OBJECT (theme),
-			   theme_manager_view_weak_notify_cb,
-			   &priv->boxes_views);
-
-	g_signal_connect (G_OBJECT (theme), "style-set",
-			  G_CALLBACK (on_style_set_cb), manager);
-
-	return theme;
-}
-
-static void
-theme_manager_update_boxes_tags (EmpathyThemeBoxes *theme,
-				 const gchar       *header_foreground,
-				 const gchar       *header_background,
-				 const gchar       *header_line_background,
-				 const gchar       *action_foreground,
-				 const gchar       *time_foreground,
-				 const gchar       *event_foreground,
-				 const gchar       *link_foreground,
-				 const gchar       *text_foreground,
-				 const gchar       *text_background,
-				 const gchar       *highlight_foreground)
-
-{
-	EmpathyChatTextView *view = EMPATHY_CHAT_TEXT_VIEW (theme);
-	GtkTextTag          *tag;
-
-	DEBUG ("Update view with new colors:\n"
-		"header_foreground = %s\n"
-		"header_background = %s\n"
-		"header_line_background = %s\n"
-		"action_foreground = %s\n"
-		"time_foreground = %s\n"
-		"event_foreground = %s\n"
-		"link_foreground = %s\n"
-		"text_foreground = %s\n"
-		"text_background = %s\n"
-		"highlight_foreground = %s\n",
-		header_foreground, header_background, header_line_background,
-		action_foreground, time_foreground, event_foreground,
-		link_foreground, text_foreground, text_background,
-		highlight_foreground);
-
-
-	/* FIXME: GtkTextTag don't support to set color properties to NULL.
-	 * See bug #542523 */
-
-	#define TAG_SET(prop, prop_set, value) \
-		if (value != NULL) { \
-			g_object_set (tag, prop, value, NULL); \
-		} else { \
-			g_object_set (tag, prop_set, FALSE, NULL); \
-		}
-
-	/* Define base tags */
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_HIGHLIGHT,
-					      "weight", PANGO_WEIGHT_BOLD,
-					      "pixels-above-lines", 4,
-					      NULL);
-	TAG_SET ("paragraph-background", "paragraph-background-set", text_background);
-	TAG_SET ("foreground", "foreground-set", highlight_foreground);
-
-	empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_SPACING,
-					"size", 3000,
-					"pixels-above-lines", 8,
-					NULL);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_TIME,
-					      "justification", GTK_JUSTIFY_CENTER,
-					      NULL);
-	TAG_SET ("foreground", "foreground-set", time_foreground);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_ACTION,
-					      "style", PANGO_STYLE_ITALIC,
-					      "pixels-above-lines", 4,
-					      NULL);
-	TAG_SET ("paragraph-background", "paragraph-background-set", text_background);
-	TAG_SET ("foreground", "foreground-set", action_foreground);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_BODY,
-					      "pixels-above-lines", 4,
-					      NULL);
-	TAG_SET ("paragraph-background", "paragraph-background-set", text_background);
-	TAG_SET ("foreground", "foreground-set", text_foreground);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_EVENT,
-					      "justification", GTK_JUSTIFY_LEFT,
-					      NULL);
-	TAG_SET ("foreground", "foreground-set", event_foreground);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_CHAT_TEXT_VIEW_TAG_LINK,
-					      "underline", PANGO_UNDERLINE_SINGLE,
-					      NULL);
-	TAG_SET ("foreground", "foreground-set", link_foreground);
-
-	/* Define BOXES tags */
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_THEME_BOXES_TAG_HEADER,
-					      "weight", PANGO_WEIGHT_BOLD,
-					      NULL);
-	TAG_SET ("foreground", "foreground-set", header_foreground);
-	TAG_SET ("paragraph-background", "paragraph-background-set", header_background);
-	tag = empathy_chat_text_view_tag_set (view, EMPATHY_THEME_BOXES_TAG_HEADER_LINE,
-					      "size", 1,
-					      NULL);
-	TAG_SET ("paragraph-background", "paragraph-background-set", header_line_background);
-
-	#undef TAG_SET
-}
-
-static void
-on_style_set_cb (GtkWidget *widget, GtkStyle *previous_style, EmpathyThemeManager *self)
-{
-	EmpathyThemeManagerPriv *priv = GET_PRIV (self);
-	GtkStyle *style;
-	gchar     color1[10];
-	gchar     color2[10];
-	gchar     color3[10];
-	gchar     color4[10];
-
-	/* The simple theme depends on the current GTK+ theme so it has to be
-	 * updated if the theme changes. */
-	if (tp_strdiff (priv->name, "simple"))
-		return;
-
-	style = gtk_widget_get_style (GTK_WIDGET (widget));
-
-	theme_manager_gdk_color_to_hex (&style->base[GTK_STATE_SELECTED], color1);
-	theme_manager_gdk_color_to_hex (&style->bg[GTK_STATE_SELECTED], color2);
-	theme_manager_gdk_color_to_hex (&style->dark[GTK_STATE_SELECTED], color3);
-	theme_manager_gdk_color_to_hex (&style->fg[GTK_STATE_SELECTED], color4);
-
-	theme_manager_update_boxes_tags (EMPATHY_THEME_BOXES (widget),
-					 color4,     /* header_foreground */
-					 color2,     /* header_background */
-					 color3,     /* header_line_background */
-					 color1,     /* action_foreground */
-					 "darkgrey", /* time_foreground */
-					 "darkgrey", /* event_foreground */
-					 color1,     /* link_foreground */
-					 NULL,       /* text_foreground */
-					 NULL,       /* text_background */
-					 NULL);      /* highlight_foreground */
-}
-
-static void
-theme_manager_update_boxes_theme (EmpathyThemeManager *manager,
-				  EmpathyThemeBoxes   *theme)
-{
-	EmpathyThemeManagerPriv *priv = GET_PRIV (manager);
-
-	if (strcmp (priv->name, "simple") == 0) {
-		on_style_set_cb (GTK_WIDGET (theme), NULL, manager);
-	}
-	else if (strcmp (priv->name, "clean") == 0) {
-		theme_manager_update_boxes_tags (theme,
-						 "black",    /* header_foreground */
-						 "#efefdf",  /* header_background */
-						 "#e3e3d3",  /* header_line_background */
-						 "brown4",   /* action_foreground */
-						 "darkgrey", /* time_foreground */
-						 "darkgrey", /* event_foreground */
-						 "#49789e",  /* link_foreground */
-						 NULL,       /* text_foreground */
-						 NULL,       /* text_background */
-						 NULL);      /* highlight_foreground */
-	}
-	else if (strcmp (priv->name, "blue") == 0) {
-		theme_manager_update_boxes_tags (theme,
-						 "black",    /* header_foreground */
-						 "#88a2b4",  /* header_background */
-						 "#7f96a4",  /* header_line_background */
-						 "brown4",   /* action_foreground */
-						 "darkgrey", /* time_foreground */
-						 "#7f96a4",  /* event_foreground */
-						 "#49789e",  /* link_foreground */
-						 "black",    /* text_foreground */
-						 "#adbdc8",  /* text_background */
-						 "black");   /* highlight_foreground */
-	}
-}
+#endif
 
 static EmpathyThemeAdium *
 theme_manager_create_adium_view (EmpathyThemeManager *manager)
@@ -458,114 +212,14 @@ EmpathyChatView *
 empathy_theme_manager_create_view (EmpathyThemeManager *manager)
 {
 	EmpathyThemeManagerPriv *priv = GET_PRIV (manager);
-	EmpathyThemeBoxes       *theme;
 
 	g_return_val_if_fail (EMPATHY_IS_THEME_MANAGER (manager), NULL);
 
-	DEBUG ("Using theme %s", priv->name);
-
-	if (strcmp (priv->name, "adium") == 0 && priv->adium_data != NULL)  {
+	if (priv->adium_data != NULL)  {
 		return EMPATHY_CHAT_VIEW (theme_manager_create_adium_view (manager));
 	}
 
-	if (strcmp (priv->name, "classic") == 0)  {
-		return EMPATHY_CHAT_VIEW (theme_manager_create_irc_view (manager));
-	}
-
-	theme = theme_manager_create_boxes_view (manager);
-	theme_manager_update_boxes_theme (manager, theme);
-
-	return EMPATHY_CHAT_VIEW (theme);
-}
-
-static gboolean
-theme_manager_ensure_theme_exists (const gchar *name)
-{
-	gint i;
-
-	if (EMP_STR_EMPTY (name)) {
-		return FALSE;
-	}
-
-	if (strcmp ("adium", name) == 0) {
-		return TRUE;
-	}
-
-	for (i = 0; themes[i]; i += 2) {
-		if (strcmp (themes[i], name) == 0) {
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-typedef enum {
-	THEME_TYPE_IRC,
-	THEME_TYPE_BOXED,
-	THEME_TYPE_ADIUM,
-} ThemeType;
-
-static ThemeType
-theme_type (const gchar *name)
-{
-	if (!tp_strdiff (name, "classic")) {
-		return THEME_TYPE_IRC;
-	} else if (!tp_strdiff (name, "adium")) {
-		return THEME_TYPE_ADIUM;
-	} else {
-		return THEME_TYPE_BOXED;
-	}
-}
-
-static void
-theme_manager_notify_name_cb (GSettings   *gsettings_chat,
-			      const gchar *key,
-			      gpointer     user_data)
-{
-	EmpathyThemeManager     *manager = EMPATHY_THEME_MANAGER (user_data);
-	EmpathyThemeManagerPriv *priv = GET_PRIV (manager);
-	gchar                   *name;
-	ThemeType                old_type;
-	ThemeType                new_type;
-
-	name = g_settings_get_string (gsettings_chat, key);
-
-	/* Fallback to classic theme if current setting does not exist */
-	if (!theme_manager_ensure_theme_exists (name)) {
-		g_free (name);
-		name = g_strdup ("classic");
-	}
-
-	/* If theme did not change, nothing to do */
-	if (!tp_strdiff (priv->name, name)) {
-		g_free (name);
-		return;
-	}
-
-	old_type = theme_type (priv->name);
-	g_free (priv->name);
-	priv->name = name;
-	new_type = theme_type (priv->name);
-
-	if (new_type == THEME_TYPE_BOXED) {
-		GList *l;
-
-		/* The theme changes to a boxed one, we can update boxed views */
-		for (l = priv->boxes_views; l; l = l->next) {
-			theme_manager_update_boxes_theme (manager,
-							  EMPATHY_THEME_BOXES (l->data));
-		}
-	}
-
-	/* Do not emit theme-changed if theme type didn't change. If theme
-	 * changed from a boxed to another boxed, all view are updated in place.
-	 * If theme changed from an adium to another adium, the signal will be
-	 * emited from theme_manager_notify_adium_path_cb ()
-	 */
-	if (old_type != new_type) {
-		theme_manager_emit_changed (manager);
-	}
+	g_return_val_if_reached (NULL);
 }
 
 static void
@@ -574,7 +228,6 @@ theme_manager_finalize (GObject *object)
 	EmpathyThemeManagerPriv *priv = GET_PRIV (object);
 
 	g_object_unref (priv->gsettings_chat);
-	g_free (priv->name);
 
 	if (priv->emit_changed_idle != 0) {
 		g_source_remove (priv->emit_changed_idle);
@@ -620,15 +273,6 @@ empathy_theme_manager_init (EmpathyThemeManager *manager)
 
 	priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
 
-	/* Take the theme name and track changes */
-	g_signal_connect (priv->gsettings_chat,
-			  "changed::" EMPATHY_PREFS_CHAT_THEME,
-			  G_CALLBACK (theme_manager_notify_name_cb),
-			  manager);
-	theme_manager_notify_name_cb (priv->gsettings_chat,
-				      EMPATHY_PREFS_CHAT_THEME,
-				      manager);
-
 	/* Take the adium path/variant and track changes */
 	g_signal_connect (priv->gsettings_chat,
 			  "changed::" EMPATHY_PREFS_CHAT_ADIUM_PATH,
@@ -661,12 +305,6 @@ empathy_theme_manager_dup_singleton (void)
 	}
 
 	return g_object_ref (manager);
-}
-
-const gchar **
-empathy_theme_manager_get_themes (void)
-{
-	return themes;
 }
 
 static void
