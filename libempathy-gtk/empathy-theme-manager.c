@@ -161,15 +161,13 @@ theme_manager_notify_adium_path_cb (GSettings   *gsettings_chat,
 
 	/* If path did not really changed, ignore */
 	if (!tp_strdiff (current_path, new_path)) {
-		g_free (new_path);
-		return;
+		goto finally;
 	}
 
 	/* If path does not really contains an adium path, ignore */
 	if (!empathy_adium_path_is_valid (new_path)) {
 		DEBUG ("Invalid theme path set: %s", new_path);
-		g_free (new_path);
-		return;
+		goto finally;
 	}
 
 	/* Load new theme data, we can stop tracking existing views since we
@@ -180,6 +178,7 @@ theme_manager_notify_adium_path_cb (GSettings   *gsettings_chat,
 
 	theme_manager_emit_changed (manager);
 
+finally:
 	g_free (new_path);
 }
 
