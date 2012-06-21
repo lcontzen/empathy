@@ -225,9 +225,11 @@ ft_handler_outgoing_ready_cb (EmpathyFTHandler *handler,
     GError *error,
     gpointer user_data)
 {
-  EmpathyFTFactory *factory = user_data;
+  EmpathyFTFactory *factory = EMPATHY_FT_FACTORY (user_data);
 
   g_signal_emit (factory, signals[NEW_FT_HANDLER], 0, handler, error);
+
+  g_object_unref (factory);
 }
 
 /* public methods */
@@ -266,7 +268,7 @@ empathy_ft_factory_new_transfer_outgoing (EmpathyFTFactory *factory,
   g_return_if_fail (G_IS_FILE (source));
 
   empathy_ft_handler_new_outgoing (contact, source, action_time,
-      ft_handler_outgoing_ready_cb, factory);
+      ft_handler_outgoing_ready_cb, g_object_ref (factory));
 }
 
 /**
