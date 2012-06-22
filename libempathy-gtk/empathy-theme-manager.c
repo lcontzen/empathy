@@ -262,6 +262,51 @@ empathy_theme_manager_class_init (EmpathyThemeManagerClass *klass)
 }
 
 static void
+theme_manager_migrate_from_legacy_theme (EmpathyThemeManager *self)
+{
+	EmpathyThemeManagerPriv *priv = self->priv;
+	char *theme = g_settings_get_string (priv->gsettings_chat,
+			EMPATHY_PREFS_CHAT_THEME);
+	const char *adium_theme, *variant = "";
+	char *path;
+
+	if (!tp_strdiff (theme, "adium")) {
+		goto finally;
+	} else if (!tp_strdiff (theme, "gnome")) {
+		adium_theme = "PlanetGNOME";
+	} else if (!tp_strdiff (theme, "simple")) {
+		adium_theme = "Boxes";
+		variant = "Simple";
+	} else if (!tp_strdiff (theme, "clean")) {
+		adium_theme = "Boxes";
+		variant = "Clean";
+	} else if (!tp_strdiff (theme, "blue")) {
+		adium_theme = "Boxes";
+		variant = "Blue";
+	} else {
+		adium_theme = "Classic";
+	}
+
+	path = g_strjoin (NULL, DATADIR, "/adium/message-styles/",
+		adium_theme, ".AdiumMessageStyle",
+		NULL);
+
+	DEBUG ("Migrating to '%s' variant '%s'", path, variant);
+
+	g_settings_set_string (priv->gsettings_chat,
+		EMPATHY_PREFS_CHAT_THEME, "adium");
+	g_settings_set_string (priv->gsettings_chat,
+		EMPATHY_PREFS_CHAT_ADIUM_PATH, path);
+	g_settings_set_string (priv->gsettings_chat,
+		EMPATHY_PREFS_CHAT_THEME_VARIANT, variant);
+
+	g_free (path);
+
+finally:
+	g_free (theme);
+}
+
+static void
 empathy_theme_manager_init (EmpathyThemeManager *manager)
 {
 	EmpathyThemeManagerPriv *priv = G_TYPE_INSTANCE_GET_PRIVATE (manager,
@@ -271,6 +316,8 @@ empathy_theme_manager_init (EmpathyThemeManager *manager)
 	priv->in_constructor = TRUE;
 
 	priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
+
+	theme_manager_migrate_from_legacy_theme (manager);
 
 	/* Take the adium path/variant and track changes */
 	g_signal_connect (priv->gsettings_chat,
