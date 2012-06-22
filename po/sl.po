@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: empathy master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-04-20 13:35+0000\n"
-"PO-Revision-Date: 2012-04-21 12:58+0100\n"
-"Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
+"PO-Revision-Date: 2012-06-21 09:27+0200\n"
+"Last-Translator: Andrej Žnidaršič <andrej.znidarsic@gmail.com>\n"
 "Language-Team: Slovenščina <gnome-si@googlegroups.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -160,7 +160,7 @@ msgstr "Prikaz prihajajočih dogodkov v vrstici stanja."
 
 #: ../data/org.gnome.Empathy.gschema.xml.in.h:29
 msgid "Display incoming events in the status area. If false, present them to the user immediately."
-msgstr "Prikaz prihajajočih dogodkov v vrstici stanja. V primeru da možnost ni izbrana, bodo prikazane takoj."
+msgstr "Prikaz prihajajočih dogodkov v vrstici stanja. V primeru da možnost ni izbrana, bodo prikazani takoj."
 
 #: ../data/org.gnome.Empathy.gschema.xml.in.h:30
 msgid "The position for the chat window side pane"
