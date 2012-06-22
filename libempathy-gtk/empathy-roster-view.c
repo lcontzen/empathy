@@ -1262,6 +1262,27 @@ empathy_roster_view_key_press_event (GtkWidget *widget,
   return chain_up (widget, event);
 }
 
+/**
+ * @out_child: (out) (allow-none)
+ */
+FolksIndividual *
+empathy_roster_view_get_individual_at_y (EmpathyRosterView *self,
+    gint y,
+    GtkWidget **out_child)
+{
+  GtkWidget *child;
+
+  child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), y);
+
+  if (out_child != NULL)
+    *out_child = child;
+
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+    return NULL;
+
+  return empathy_roster_contact_get_individual (EMPATHY_ROSTER_CONTACT (child));
+}
+
 static gboolean
 empathy_roster_view_query_tooltip (GtkWidget *widget,
     gint x,
@@ -1270,17 +1291,13 @@ empathy_roster_view_query_tooltip (GtkWidget *widget,
     GtkTooltip *tooltip)
 {
   EmpathyRosterView *self = EMPATHY_ROSTER_VIEW (widget);
-  GtkWidget *child;
-  EmpathyRosterContact *contact;
   FolksIndividual *individual;
   gboolean result;
+  GtkWidget *child;
 
-  child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), y);
-  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+  individual = empathy_roster_view_get_individual_at_y (self, y, &child);
+  if (individual == NULL)
     return FALSE;
-
-  contact = EMPATHY_ROSTER_CONTACT (child);
-  individual = empathy_roster_contact_get_individual (contact);
 
   g_signal_emit (self, signals[SIG_INDIVIDUAL_TOOLTIP], 0,
       individual, keyboard_mode, tooltip, &result);

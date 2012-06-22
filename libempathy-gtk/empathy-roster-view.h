@@ -76,6 +76,11 @@ guint empathy_roster_view_add_event (EmpathyRosterView *self,
 void empathy_roster_view_remove_event (EmpathyRosterView *self,
     guint event_id);
 
+FolksIndividual * empathy_roster_view_get_individual_at_y (
+    EmpathyRosterView *self,
+    gint y,
+    GtkWidget **out_child);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_VIEW_H__*/
