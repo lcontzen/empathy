@@ -1956,6 +1956,161 @@ individual_tooltip_cb (EmpathyRosterView *view,
   return TRUE;
 }
 
+typedef enum
+{
+  DND_DRAG_TYPE_INVALID = -1,
+  DND_DRAG_TYPE_URI_LIST,
+} DndDragType;
+
+#define DRAG_TYPE(T,I) \
+  { (gchar *) T, 0, I }
+
+static const GtkTargetEntry drag_types_dest[] = {
+  DRAG_TYPE ("text/path-list", DND_DRAG_TYPE_URI_LIST),
+  DRAG_TYPE ("text/uri-list", DND_DRAG_TYPE_URI_LIST),
+};
+
+static GdkAtom drag_atoms_dest[G_N_ELEMENTS (drag_types_dest)];
+
+static DndDragType
+get_drag_type (GtkWidget *widget,
+    GdkDragContext *context)
+{
+  GdkAtom target;
+  guint i;
+
+  target = gtk_drag_dest_find_target (widget, context, NULL);
+
+  for (i = 0; i < G_N_ELEMENTS (drag_atoms_dest); i++)
+    {
+      if (target == drag_atoms_dest[i])
+          return drag_types_dest[i].info;
+    }
+
+  return DND_DRAG_TYPE_INVALID;
+}
+
+static gboolean
+individual_supports_ft (FolksIndividual *individual)
+{
+  EmpathyContact *contact;
+  EmpathyCapabilities caps;
+  gboolean result;
+
+  contact = empathy_contact_dup_from_folks_individual (individual);
+  if (contact == NULL)
+    return FALSE;
+
+  caps = empathy_contact_get_capabilities (contact);
+  result = (caps & EMPATHY_CAPABILITIES_FT);
+
+  g_object_unref (contact);
+  return result;
+}
+
+static gboolean
+view_drag_motion_cb (GtkWidget *widget,
+    GdkDragContext *context,
+    gint x,
+    gint y,
+    guint time_,
+    EmpathyRosterWindow *self)
+{
+  DndDragType type;
+
+  type = get_drag_type (widget, context);
+
+  if (type == DND_DRAG_TYPE_URI_LIST)
+    {
+      /* Check if contact supports FT */
+      FolksIndividual *individual;
+      GtkWidget *child;
+
+      individual = empathy_roster_view_get_individual_at_y (self->priv->view,
+          y, &child);
+      if (individual == NULL)
+        goto no_hl;
+
+      if (!individual_supports_ft (individual))
+        goto no_hl;
+
+      egg_list_box_drag_highlight_widget (EGG_LIST_BOX (widget), child);
+      return FALSE;
+    }
+
+no_hl:
+  egg_list_box_drag_unhighlight_widget (EGG_LIST_BOX (widget));
+  return FALSE;
+}
+
+static gboolean
+view_drag_drop_cb (GtkWidget *widget,
+    GdkDragContext *context,
+    gint x,
+    gint y,
+    guint time_,
+    EmpathyRosterWindow *self)
+{
+  DndDragType type;
+  FolksIndividual *individual;
+
+  type = get_drag_type (widget, context);
+  if (type == DND_DRAG_TYPE_INVALID)
+    return FALSE;
+
+  individual = empathy_roster_view_get_individual_at_y (self->priv->view, y,
+      NULL);
+  if (individual == NULL)
+    return FALSE;
+
+  if (!individual_supports_ft (individual))
+    return FALSE;
+
+  gtk_drag_get_data (widget, context,
+      gtk_drag_dest_find_target (widget, context, NULL), time_);
+
+  return TRUE;
+}
+
+static void
+view_drag_data_received_cb (GtkWidget *widget,
+    GdkDragContext *context,
+    gint x,
+    gint y,
+    GtkSelectionData *selection,
+    guint info,
+    guint time_,
+    EmpathyRosterWindow *self)
+{
+  gboolean success = FALSE;
+
+  if (selection == NULL)
+    goto out;
+
+  if (info == DND_DRAG_TYPE_URI_LIST)
+    {
+      const gchar *path;
+      FolksIndividual *individual;
+      EmpathyContact *contact;
+
+      individual = empathy_roster_view_get_individual_at_y (self->priv->view,
+          y, NULL);
+      g_return_if_fail (individual != NULL);
+
+      path = (const gchar *) gtk_selection_data_get_data (selection);
+
+      contact = empathy_contact_dup_from_folks_individual (individual);
+      empathy_send_file_from_uri_list (contact, path);
+
+      g_object_unref (contact);
+
+      success = TRUE;
+    }
+
+out:
+  gtk_drag_finish (context, success, FALSE, time_);
+}
+
 static void
 empathy_roster_window_init (EmpathyRosterWindow *self)
 {
@@ -1963,6 +2118,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   GtkWidget *sw;
   gchar *filename;
   GtkWidget *search_vbox;
+  guint i;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
@@ -2090,6 +2246,20 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
       G_CALLBACK (view_empty_cb), self);
   g_signal_connect (self->priv->view, "individual-tooltip",
       G_CALLBACK (individual_tooltip_cb), self);
+
+  /* DnD - destination */
+  gtk_drag_dest_set (GTK_WIDGET (self->priv->view), GTK_DEST_DEFAULT_MOTION,
+      drag_types_dest, G_N_ELEMENTS (drag_types_dest), GDK_ACTION_COPY);
+
+  for (i = 0; i < G_N_ELEMENTS (drag_types_dest); ++i)
+    drag_atoms_dest[i] = gdk_atom_intern (drag_types_dest[i].target, FALSE);
+
+  g_signal_connect (self->priv->view, "drag-motion",
+      G_CALLBACK (view_drag_motion_cb), self);
+  g_signal_connect (self->priv->view, "drag-drop",
+      G_CALLBACK (view_drag_drop_cb), self);
+  g_signal_connect (self->priv->view, "drag-data-received",
+      G_CALLBACK (view_drag_data_received_cb), self);
 
   gtk_widget_set_has_tooltip (GTK_WIDGET (self->priv->view), TRUE);
 
