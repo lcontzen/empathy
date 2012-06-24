@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy-master-po-gl-57278_.merged\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-30 16:38+0200\n"
-"PO-Revision-Date: 2012-05-30 16:40+0200\n"
+"POT-Creation-Date: 2012-06-25 00:03+0200\n"
+"PO-Revision-Date: 2012-06-25 00:03+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician <gnome-l10n-gl@gnome.org>\n"
 "Language: gl\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Gtranslator 2.91.5\n"
 
 #: ../data/empathy.desktop.in.in.h:1
 msgid "Empathy"
@@ -128,83 +128,49 @@ msgstr ""
 
 # rever
 #: ../data/org.gnome.Empathy.gschema.xml.h:14
-msgid "Show avatars"
-msgstr "Mostrar avatares"
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:15
-msgid ""
-"Whether to show avatars for contacts in the contact list and chat windows."
-msgstr ""
-"Indica se se deben mostrar os avatares dos contactos na lista de contactos e "
-"das xanelas de conversa."
-
-#: ../data/org.gnome.Empathy.gschema.xml.h:16
-msgid "Show protocols"
-msgstr "Mostrar protocolos"
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:17
-msgid "Whether to show protocols for contacts in the contact list."
-msgstr ""
-"Indica se se deben mostrar os protocolos para os contactos na lista de "
-"contactos."
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:18
 msgid "Show Balance in contact list"
 msgstr "Mostrar crédito na lista de contactos"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:19
+#: ../data/org.gnome.Empathy.gschema.xml.h:15
 msgid "Whether to show account balances in the contact list."
 msgstr "Indica se se debe mostrar o crédito na lista de contactos."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:20
-msgid "Compact contact list"
-msgstr "Lista compacta de contactos"
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:21
-msgid "Whether to show the contact list in compact mode."
-msgstr "Indica se se debe mostrar a lista de contactos en modo compacto."
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:22
+#: ../data/org.gnome.Empathy.gschema.xml.h:16
 msgid "Hide main window"
 msgstr "Ocultar a xanela principal"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:23
+#: ../data/org.gnome.Empathy.gschema.xml.h:17
 msgid "Hide the main window."
 msgstr "Ocultar a xanela principal."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:24
+#: ../data/org.gnome.Empathy.gschema.xml.h:18
 msgid "Default directory to select an avatar image from"
 msgstr "Cartafol predeterminado para seleccionar un avatar"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:25
+#: ../data/org.gnome.Empathy.gschema.xml.h:19
 msgid "The last directory that an avatar image was chosen from."
 msgstr "Último cartafol do que escolleu unha imaxe de avatar."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:26
+#: ../data/org.gnome.Empathy.gschema.xml.h:20
 msgid "Open new chats in separate windows"
 msgstr "Abrir as novas conversas en xanelas separadas"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:27
+#: ../data/org.gnome.Empathy.gschema.xml.h:21
 msgid "Always open a separate chat window for new chats."
 msgstr "Abrir sempre unha xanela de conversa separada para as conversas novas."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:28
+#: ../data/org.gnome.Empathy.gschema.xml.h:22
 msgid "Display incoming events in the status area"
 msgstr "Mostrar os eventos entrantes na área de estado"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:29
+#: ../data/org.gnome.Empathy.gschema.xml.h:23
 msgid ""
 "Display incoming events in the status area. If false, present them to the "
 "user immediately."
@@ -212,112 +178,96 @@ msgstr ""
 "Mostrar os eventos entrantes na área de estado. Se é falso mostrarllos "
 "directamente ao usuario."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:30
+#: ../data/org.gnome.Empathy.gschema.xml.h:24
 msgid "The position for the chat window side pane"
 msgstr "A posición do panel lateral da xanela de conversa"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:31
+#: ../data/org.gnome.Empathy.gschema.xml.h:25
 msgid "The stored position (in pixels) of the chat window side pane."
 msgstr ""
 "A posición almacenada (en píxeles) do panel lateral da xanela de conversa."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:32
+#: ../data/org.gnome.Empathy.gschema.xml.h:26
 msgid "Show contact groups"
 msgstr "Mostrar grupos de contactos"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:33
+#: ../data/org.gnome.Empathy.gschema.xml.h:27
 msgid "Whether to show groups in the contact list."
 msgstr "Indica se se deben mostrar os grupos na lista de contactos."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:34
-msgid "Contact list sort criterion"
-msgstr "Criterio de ordenación da lista de contactos"
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:35
-msgid ""
-"Which criterion to use when sorting the contact list. Default is to sort by "
-"the contact's state with the value \"state\". A value of \"name\" will sort "
-"the contact list by name."
-msgstr ""
-"Que criterio usar ao ordenar a lista de contactos. O predeterminado é "
-"ordenar polo estado do contacto co valor «state» (estado). Un valor "
-"«name» (nome) ordenará a lista de contactos polo nome."
-
-# rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:36
+#: ../data/org.gnome.Empathy.gschema.xml.h:28
 msgid "Use notification sounds"
 msgstr "Usar sons de notificación"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:37
+#: ../data/org.gnome.Empathy.gschema.xml.h:29
 msgid "Whether to play a sound to notify of events."
 msgstr "Indica se se debe reproducir un son para notificar os eventos."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:38
+#: ../data/org.gnome.Empathy.gschema.xml.h:30
 msgid "Disable sounds when away"
 msgstr "Desactivar os sons ao ausentarse"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:39
+#: ../data/org.gnome.Empathy.gschema.xml.h:31
 msgid "Whether to play sound notifications when away or busy."
 msgstr ""
 "Indica se se debe reproducir un son para notificar cando se está ocupado ou "
 "ausente."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:40
+#: ../data/org.gnome.Empathy.gschema.xml.h:32
 msgid "Play a sound for incoming messages"
 msgstr "Reproducir un son cando cheguen mensaxes"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:41
+#: ../data/org.gnome.Empathy.gschema.xml.h:33
 msgid "Whether to play a sound to notify of incoming messages."
 msgstr "Indica se se debe reproducir un son para notificar mensaxes entrantes."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:42
+#: ../data/org.gnome.Empathy.gschema.xml.h:34
 msgid "Play a sound for outgoing messages"
 msgstr "Reproducir un son ao enviar mensaxes"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:43
+#: ../data/org.gnome.Empathy.gschema.xml.h:35
 msgid "Whether to play a sound to notify of outgoing messages."
 msgstr ""
 "Indica se se debe reproducir un son para notificar as mensaxes saíntes."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:44
+#: ../data/org.gnome.Empathy.gschema.xml.h:36
 msgid "Play a sound for new conversations"
 msgstr "Reproducir un son para as conversas novas"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:45
+#: ../data/org.gnome.Empathy.gschema.xml.h:37
 msgid "Whether to play a sound to notify of new conversations."
 msgstr "Indica se se debe reproducir un son para notificar as conversas novas."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:46
+#: ../data/org.gnome.Empathy.gschema.xml.h:38
 msgid "Play a sound when a contact logs in"
 msgstr "Reproducir un son cando un contacto inicie sesión"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:47
+#: ../data/org.gnome.Empathy.gschema.xml.h:39
 msgid "Whether to play a sound to notify of contacts logging into the network."
 msgstr ""
 "Indica se se debe reproducir un son para notificar os inicio de sesión dos "
 "contactos na rede."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:48
+#: ../data/org.gnome.Empathy.gschema.xml.h:40
 msgid "Play a sound when a contact logs out"
 msgstr "Reproducir un son cando un contacto saia da sesión"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:49
+#: ../data/org.gnome.Empathy.gschema.xml.h:41
 msgid ""
 "Whether to play a sound to notify of contacts logging out of the network."
 msgstr ""
@@ -325,56 +275,56 @@ msgstr ""
 "unha sesión na rede."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:50
+#: ../data/org.gnome.Empathy.gschema.xml.h:42
 msgid "Play a sound when we log in"
 msgstr "Reproducir un son cando inicio sesión"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:51
+#: ../data/org.gnome.Empathy.gschema.xml.h:43
 msgid "Whether to play a sound when logging into a network."
 msgstr "Indica se se debe reproducir un son cando se inicia sesión na rede."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:52
+#: ../data/org.gnome.Empathy.gschema.xml.h:44
 msgid "Play a sound when we log out"
 msgstr "Reproducir un son cando ao saír da sesión"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:53
+#: ../data/org.gnome.Empathy.gschema.xml.h:45
 msgid "Whether to play a sound when logging out of a network."
 msgstr "Indica se se debe reproducir un son cando se sae da sesión na rede."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:54
+#: ../data/org.gnome.Empathy.gschema.xml.h:46
 msgid "Enable popup notifications for new messages"
 msgstr "Activar as notificacións emerxentes para as mensaxes novas"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:55
+#: ../data/org.gnome.Empathy.gschema.xml.h:47
 msgid "Whether to show a popup notification when receiving a new message."
 msgstr ""
 "Indica se mostrar ou non unha notificación emerxente cando se reciba unha "
 "mensaxe nova."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:56
+#: ../data/org.gnome.Empathy.gschema.xml.h:48
 msgid "Disable popup notifications when away"
 msgstr "Desactivar as notificacións emerxentes cando se está ausente"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:57
+#: ../data/org.gnome.Empathy.gschema.xml.h:49
 msgid "Whether to show popup notifications when away or busy."
 msgstr ""
 "Indica se mostrar ou non as notificacións emerxentes cando se está ausente "
 "ou ocupado."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:58
+#: ../data/org.gnome.Empathy.gschema.xml.h:50
 msgid "Pop up notifications if the chat isn't focused"
 msgstr "Facer emerxer unha notificación cando a conversa non está enfocada"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:59
+#: ../data/org.gnome.Empathy.gschema.xml.h:51
 msgid ""
 "Whether to show a popup notification when receiving a new message even if "
 "the chat is already opened, but not focused."
@@ -383,98 +333,98 @@ msgstr ""
 "mensaxe nova, aínda cando a conversa xa estea aberta mais non estea enfocada."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:60
+#: ../data/org.gnome.Empathy.gschema.xml.h:52
 msgid "Pop up notifications when a contact logs in"
 msgstr "Facer emerxer unha notificación cando un contacto entra"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:61
+#: ../data/org.gnome.Empathy.gschema.xml.h:53
 msgid "Whether to show a popup notification when a contact goes online."
 msgstr ""
 "Indica se mostrar ou non unha notificación emerxente cando un contacto está "
 "conectado."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:62
+#: ../data/org.gnome.Empathy.gschema.xml.h:54
 msgid "Pop up notifications when a contact logs out"
 msgstr "Facer emerxer unha notificación cando un contacto sae"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:63
+#: ../data/org.gnome.Empathy.gschema.xml.h:55
 msgid "Whether to show a popup notification when a contact goes offline."
 msgstr ""
 "Indica se mostrar ou non unha notificación emerxente cando un contacto está "
 "desconectado."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:64
+#: ../data/org.gnome.Empathy.gschema.xml.h:56
 msgid "Use graphical smileys"
 msgstr "Usar emoticonas gráficas"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:65
+#: ../data/org.gnome.Empathy.gschema.xml.h:57
 msgid "Whether to convert smileys into graphical images in conversations."
 msgstr ""
 "Indica se converter ou non as emoticonas en imaxes gráficas nas conversas."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:66
+#: ../data/org.gnome.Empathy.gschema.xml.h:58
 msgid "Show contact list in rooms"
 msgstr "Mostrar a lista de contactos nas salas"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:67
+#: ../data/org.gnome.Empathy.gschema.xml.h:59
 msgid "Whether to show the contact list in chat rooms."
 msgstr "Indica se mostrar ou non a lista de contactos nas salas de conversa."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:68
+#: ../data/org.gnome.Empathy.gschema.xml.h:60
 msgid "Chat window theme"
 msgstr "Tema da xanela de conversa"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:69
+#: ../data/org.gnome.Empathy.gschema.xml.h:61
 msgid "The theme that is used to display the conversation in chat windows."
 msgstr "O tema usado para mostrar as conversa nas xanelas de conversa."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:70
+#: ../data/org.gnome.Empathy.gschema.xml.h:62
 msgid "Chat window theme variant"
 msgstr "Variante do tema da xanela de charla"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:71
+#: ../data/org.gnome.Empathy.gschema.xml.h:63
 msgid ""
 "The theme variant that is used to display the conversation in chat windows."
 msgstr ""
 "A variante do tema que se usará para mostrar a conversa nas xanelas de chat."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:72
+#: ../data/org.gnome.Empathy.gschema.xml.h:64
 msgid "Path of the Adium theme to use"
 msgstr "Ruta do tema de Adium para usar"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:73
+#: ../data/org.gnome.Empathy.gschema.xml.h:65
 msgid "Path of the Adium theme to use if the theme used for chat is Adium."
 msgstr ""
 "Ruta do tema de Adium para usar se o tema usado para o chat é de Adium."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:74
+#: ../data/org.gnome.Empathy.gschema.xml.h:66
 msgid "Enable WebKit Developer Tools"
 msgstr "Activar as ferramentas de desenvolvedor WebKit"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:75
+#: ../data/org.gnome.Empathy.gschema.xml.h:67
 msgid ""
 "Whether WebKit developer tools, such as the Web Inspector, should be enabled."
 msgstr ""
 "Indica se as ferramentas de desenvolvedor WebKit, tales como Web Inspector, "
 "deberían ser activadas."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:76
+#: ../data/org.gnome.Empathy.gschema.xml.h:68
 msgid "Inform other users when you are typing to them"
 msgstr "Informar a outros usuarios cando vostede está escribindo"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:77
+#: ../data/org.gnome.Empathy.gschema.xml.h:69
 msgid ""
 "Whether to send the 'composing' or 'paused' chat states. Does not currently "
 "affect the 'gone' state."
@@ -483,22 +433,22 @@ msgstr ""
 "afecta realmente ao estado «ausente»."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:78
+#: ../data/org.gnome.Empathy.gschema.xml.h:70
 msgid "Use theme for chat rooms"
 msgstr "Usar un tema para as salas de conversa"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:79
+#: ../data/org.gnome.Empathy.gschema.xml.h:71
 msgid "Whether to use the theme for chat rooms."
 msgstr "Indica se usar ou non o tema para as salas de conversa."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:80
+#: ../data/org.gnome.Empathy.gschema.xml.h:72
 msgid "Spell checking languages"
 msgstr "Idiomas para a corrección ortográfica"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:81
+#: ../data/org.gnome.Empathy.gschema.xml.h:73
 msgid ""
 "Comma-separated list of spell checker languages to use (e.g. \"en, fr, nl\")."
 msgstr ""
@@ -506,12 +456,12 @@ msgstr ""
 "ex., «gl, pt, en»)."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:82
+#: ../data/org.gnome.Empathy.gschema.xml.h:74
 msgid "Enable spell checker"
 msgstr "Activar a verificación ortográfica"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:83
+#: ../data/org.gnome.Empathy.gschema.xml.h:75
 msgid ""
 "Whether to check words typed against the languages you want to check with."
 msgstr ""
@@ -519,12 +469,12 @@ msgstr ""
 "as quere verificar."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:84
+#: ../data/org.gnome.Empathy.gschema.xml.h:76
 msgid "Nick completed character"
 msgstr "Carácter de completado de alcume"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:85
+#: ../data/org.gnome.Empathy.gschema.xml.h:77
 msgid ""
 "Character to add after nickname when using nick completion (tab) in group "
 "chat."
@@ -533,63 +483,63 @@ msgstr ""
 "alcume (tabulador) nunha conversa de grupo."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:86
+#: ../data/org.gnome.Empathy.gschema.xml.h:78
 msgid "Empathy should use the avatar of the contact as the chat window icon"
 msgstr ""
 "O Empathy debería usar o avatar do contacto como a icona da xanela de "
 "conversa"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:87
+#: ../data/org.gnome.Empathy.gschema.xml.h:79
 msgid ""
 "Whether Empathy should use the avatar of the contact as the chat window icon."
 msgstr ""
 "Indica se o Empathy debería usar o avatar dos contactos como a icona da "
 "xanela da conversa ou non."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:88
+#: ../data/org.gnome.Empathy.gschema.xml.h:80
 msgid "Last account selected in Join Room dialog"
 msgstr "Última conta seleccionada no diálogo Unirse á sala"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:89
+#: ../data/org.gnome.Empathy.gschema.xml.h:81
 msgid "D-Bus object path of the last account selected to join a room."
 msgstr ""
 "Ruta do obxecto D-Bus da última conta seleccionada para unirse a unha sala."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:90
+#: ../data/org.gnome.Empathy.gschema.xml.h:82
 msgid "Camera device"
 msgstr "Dispositivo da cámara"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:91
+#: ../data/org.gnome.Empathy.gschema.xml.h:83
 msgid "Default camera device to use in video calls, e.g. /dev/video0."
 msgstr ""
 "Dispositivo de cámara predeterminado para usar nas chamadas de vídeo, p.ex. /"
 "dev/video0."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:92
+#: ../data/org.gnome.Empathy.gschema.xml.h:84
 msgid "Camera position"
 msgstr "Posición da cámara"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:93
+#: ../data/org.gnome.Empathy.gschema.xml.h:85
 msgid "Position the camera preview should be during a call."
 msgstr ""
 "Posición onde debe estar a vista previa da cámara durante unha chamada."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:94
+#: ../data/org.gnome.Empathy.gschema.xml.h:86
 msgid "Echo cancellation support"
 msgstr "Compatibilidade de cancelación de eco"
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:95
+#: ../data/org.gnome.Empathy.gschema.xml.h:87
 msgid "Whether to enable Pulseaudio's echo cancellation filter."
 msgstr "Indica se activar o filtro de cancelación de eco de Pulseaudio."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:96
+#: ../data/org.gnome.Empathy.gschema.xml.h:88
 msgid "Show hint about closing the main window"
 msgstr "Mostrar unha indicación sobre pechar a xanela principal"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:97
+#: ../data/org.gnome.Empathy.gschema.xml.h:89
 msgid ""
 "Whether to show the message dialog about closing the main window with the "
 "'x' button in the title bar."
@@ -597,55 +547,55 @@ msgstr ""
 "Indica se mostrar ou non o diálogo de mensaxe sobre pechar a xanela "
 "principal co botón 'x' da barra de título."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:98
+#: ../data/org.gnome.Empathy.gschema.xml.h:90
 msgid "Empathy can publish the user's location"
 msgstr "Empathy pode publicar a localización dos usuarios"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:99
+#: ../data/org.gnome.Empathy.gschema.xml.h:91
 msgid "Whether Empathy can publish the user's location to their contacts."
 msgstr ""
 "Indica se o Empathy pode ou non publicar a localización do usuario aos seus "
 "contactos."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:100
+#: ../data/org.gnome.Empathy.gschema.xml.h:92
 msgid "Empathy can use the network to guess the location"
 msgstr "Empathy pode usar a rede para adiviñar a localización"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:101
+#: ../data/org.gnome.Empathy.gschema.xml.h:93
 msgid "Whether Empathy can use the network to guess the location."
 msgstr ""
 "Indica se o Empathy pode ou non usar a rede para adiviñar a localización."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:102
+#: ../data/org.gnome.Empathy.gschema.xml.h:94
 msgid "Empathy can use the cellular network to guess the location"
 msgstr "Empathy pode usar a rede de móbiles para seguir a localización"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:103
+#: ../data/org.gnome.Empathy.gschema.xml.h:95
 msgid "Whether Empathy can use the cellular network to guess the location."
 msgstr ""
 "Indica se o Empathy pode ou non usar a rede de telefonía móbil para adiviñar "
 "a localización."
 
-#: ../data/org.gnome.Empathy.gschema.xml.h:104
+#: ../data/org.gnome.Empathy.gschema.xml.h:96
 msgid "Empathy can use the GPS to guess the location"
 msgstr "Empathy pode usar o GPS para seguir a localización"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:105
+#: ../data/org.gnome.Empathy.gschema.xml.h:97
 msgid "Whether Empathy can use the GPS to guess the location."
 msgstr ""
 "Indica se o Empathy pode usar ou non o GPS para adiviñar a localización."
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:106
+#: ../data/org.gnome.Empathy.gschema.xml.h:98
 msgid "Empathy should reduce the location's accuracy"
 msgstr "O Empathy debería reducir a precisión da localización"
 
 # rever
-#: ../data/org.gnome.Empathy.gschema.xml.h:107
+#: ../data/org.gnome.Empathy.gschema.xml.h:99
 msgid ""
 "Whether Empathy should reduce the location's accuracy for privacy reasons."
 msgstr ""
@@ -887,20 +837,20 @@ msgid "Internal error"
 msgstr "Erro interno"
 
 # rever
-#: ../libempathy/empathy-utils.c:533
+#: ../libempathy/empathy-utils.c:503
 msgid "People Nearby"
 msgstr "Xente cerca"
 
 # rever
-#: ../libempathy/empathy-utils.c:538
+#: ../libempathy/empathy-utils.c:508
 msgid "Yahoo! Japan"
 msgstr "Yahoo! Japan"
 
-#: ../libempathy/empathy-utils.c:567
+#: ../libempathy/empathy-utils.c:537
 msgid "Google Talk"
 msgstr "Google Talk"
 
-#: ../libempathy/empathy-utils.c:568
+#: ../libempathy/empathy-utils.c:538
 msgid "Facebook Chat"
 msgstr "Chat de Facebook"
 
@@ -968,56 +918,56 @@ msgstr "Contrasinal para a sala de conversa «%s» na conta %s (%s)"
 msgid "All accounts"
 msgstr "Todas as contas"
 
-#: ../libempathy-gtk/empathy-account-widget.c:682
+#: ../libempathy-gtk/empathy-account-widget.c:680
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:1
 #: ../src/empathy-import-widget.c:323
 msgid "Account"
 msgstr "Conta"
 
-#: ../libempathy-gtk/empathy-account-widget.c:683
+#: ../libempathy-gtk/empathy-account-widget.c:681
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:12
 msgid "Password"
 msgstr "Contrasinal"
 
-#: ../libempathy-gtk/empathy-account-widget.c:684
+#: ../libempathy-gtk/empathy-account-widget.c:682
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:12
 #: ../libempathy-gtk/empathy-irc-network-dialog.c:511
 msgid "Server"
 msgstr "Servidor"
 
-#: ../libempathy-gtk/empathy-account-widget.c:685
+#: ../libempathy-gtk/empathy-account-widget.c:683
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:20
 #: ../libempathy-gtk/empathy-irc-network-dialog.c:529
 msgid "Port"
 msgstr "Porto"
 
-#: ../libempathy-gtk/empathy-account-widget.c:765
+#: ../libempathy-gtk/empathy-account-widget.c:767
 #, c-format
 msgid "%s"
 msgstr "%s"
 
-#: ../libempathy-gtk/empathy-account-widget.c:819
+#: ../libempathy-gtk/empathy-account-widget.c:822
 #, c-format
 msgid "%s:"
 msgstr "%s:"
 
-#: ../libempathy-gtk/empathy-account-widget.c:1426
+#: ../libempathy-gtk/empathy-account-widget.c:1434
 msgid "Username:"
 msgstr "Nome de usuario:"
 
-#: ../libempathy-gtk/empathy-account-widget.c:1743
+#: ../libempathy-gtk/empathy-account-widget.c:1751
 msgid "A_pply"
 msgstr "_Aplicar"
 
-#: ../libempathy-gtk/empathy-account-widget.c:1772
+#: ../libempathy-gtk/empathy-account-widget.c:1780
 msgid "L_og in"
 msgstr "Iniciar _sesión"
 
-#: ../libempathy-gtk/empathy-account-widget.c:1842
+#: ../libempathy-gtk/empathy-account-widget.c:1850
 msgid "This account already exists on the server"
 msgstr "Esta conta xa existe no servidor"
 
-#: ../libempathy-gtk/empathy-account-widget.c:1846
+#: ../libempathy-gtk/empathy-account-widget.c:1854
 msgid "Create a new account on the server"
 msgstr "Crear unha nova conta no servidor"
 
@@ -1027,20 +977,20 @@ msgstr "Crear unha nova conta no servidor"
 #. * like: "MyUserName on freenode".
 #. * You should reverse the order of these arguments if the
 #. * server should come before the login id in your locale.
-#: ../libempathy-gtk/empathy-account-widget.c:2253
+#: ../libempathy-gtk/empathy-account-widget.c:2271
 #, c-format
 msgid "%1$s on %2$s"
 msgstr "%1$s sobre %2$s"
 
 #. To translators: The parameter is the protocol name. The resulting
 #. * string will be something like: "Jabber Account"
-#: ../libempathy-gtk/empathy-account-widget.c:2279
+#: ../libempathy-gtk/empathy-account-widget.c:2297
 #, c-format
 msgid "%s Account"
 msgstr "Conta %s"
 
 # rever
-#: ../libempathy-gtk/empathy-account-widget.c:2283
+#: ../libempathy-gtk/empathy-account-widget.c:2301
 msgid "New account"
 msgstr "Conta nova"
 
@@ -1757,12 +1707,12 @@ msgstr "_Enviar"
 msgid "_Spelling Suggestions"
 msgstr "Suxestións de _ortografía"
 
-#: ../libempathy-gtk/empathy-chat.c:2559
+#: ../libempathy-gtk/empathy-chat.c:2576
 msgid "Failed to retrieve recent logs"
 msgstr "Produciuse un fallo ao obter os rexistros recentes"
 
 # rever
-#: ../libempathy-gtk/empathy-chat.c:2698
+#: ../libempathy-gtk/empathy-chat.c:2720
 #, c-format
 msgid "%s has disconnected"
 msgstr "%s desconectou"
@@ -1770,12 +1720,12 @@ msgstr "%s desconectou"
 #. translators: reverse the order of these arguments
 #. * if the kicked should come before the kicker in your locale.
 #.
-#: ../libempathy-gtk/empathy-chat.c:2705
+#: ../libempathy-gtk/empathy-chat.c:2727
 #, c-format
 msgid "%1$s was kicked by %2$s"
 msgstr "%1$s foi expulsado por %2$s"
 
-#: ../libempathy-gtk/empathy-chat.c:2708
+#: ../libempathy-gtk/empathy-chat.c:2730
 #, c-format
 msgid "%s was kicked"
 msgstr "%s foi expulsado"
@@ -1783,17 +1733,17 @@ msgstr "%s foi expulsado"
 #. translators: reverse the order of these arguments
 #. * if the banned should come before the banner in your locale.
 #.
-#: ../libempathy-gtk/empathy-chat.c:2716
+#: ../libempathy-gtk/empathy-chat.c:2738
 #, c-format
 msgid "%1$s was banned by %2$s"
 msgstr "%1$s foi vetado por %2$s"
 
-#: ../libempathy-gtk/empathy-chat.c:2719
+#: ../libempathy-gtk/empathy-chat.c:2741
 #, c-format
 msgid "%s was banned"
 msgstr "%s foi excluído"
 
-#: ../libempathy-gtk/empathy-chat.c:2723
+#: ../libempathy-gtk/empathy-chat.c:2745
 #, c-format
 msgid "%s has left the room"
 msgstr "%s deixou a sala"
@@ -1803,18 +1753,18 @@ msgstr "%s deixou a sala"
 #. * given by the user living the room. If this poses a problem,
 #. * please let us know. :-)
 #.
-#: ../libempathy-gtk/empathy-chat.c:2732
+#: ../libempathy-gtk/empathy-chat.c:2754
 #, c-format
 msgid " (%s)"
 msgstr " (%s)"
 
 # rever
-#: ../libempathy-gtk/empathy-chat.c:2757
+#: ../libempathy-gtk/empathy-chat.c:2779
 #, c-format
 msgid "%s has joined the room"
 msgstr "%s uniuse á sala"
 
-#: ../libempathy-gtk/empathy-chat.c:2782
+#: ../libempathy-gtk/empathy-chat.c:2804
 #, c-format
 msgid "%s is now known as %s"
 msgstr "%s agora é coñecido como %s"
@@ -1822,55 +1772,55 @@ msgstr "%s agora é coñecido como %s"
 #. We don't know if the incoming call has been accepted or not, so we
 #. * assume it hasn't and if it has, we'll set the proper status when
 #. * we get the new handler.
-#: ../libempathy-gtk/empathy-chat.c:2969 ../src/empathy-event-manager.c:1167
-#: ../src/empathy-call-window.c:1465 ../src/empathy-call-window.c:1515
-#: ../src/empathy-call-window.c:2566
+#: ../libempathy-gtk/empathy-chat.c:2991 ../src/empathy-event-manager.c:1167
+#: ../src/empathy-call-window.c:1468 ../src/empathy-call-window.c:1518
+#: ../src/empathy-call-window.c:2571
 msgid "Disconnected"
 msgstr "Desconectado"
 
 #. Add message
-#: ../libempathy-gtk/empathy-chat.c:3633
+#: ../libempathy-gtk/empathy-chat.c:3655
 msgid "Would you like to store this password?"
 msgstr "Desexa gardar este contrasinal?"
 
-#: ../libempathy-gtk/empathy-chat.c:3639
+#: ../libempathy-gtk/empathy-chat.c:3661
 msgid "Remember"
 msgstr "Lembrar"
 
-#: ../libempathy-gtk/empathy-chat.c:3649
+#: ../libempathy-gtk/empathy-chat.c:3671
 msgid "Not now"
 msgstr "Agora non"
 
-#: ../libempathy-gtk/empathy-chat.c:3693
+#: ../libempathy-gtk/empathy-chat.c:3715
 #: ../libempathy-gtk/empathy-bad-password-dialog.c:142
 msgid "Retry"
 msgstr "Reintentar"
 
-#: ../libempathy-gtk/empathy-chat.c:3697
+#: ../libempathy-gtk/empathy-chat.c:3719
 msgid "Wrong password; please try again:"
 msgstr "O contrasinal é incorrecto, ténteo de novo:"
 
 #. Add message
-#: ../libempathy-gtk/empathy-chat.c:3827
+#: ../libempathy-gtk/empathy-chat.c:3849
 msgid "This room is protected by a password:"
 msgstr "Esta sala está protexida por un contrasinal:"
 
-#: ../libempathy-gtk/empathy-chat.c:3854
+#: ../libempathy-gtk/empathy-chat.c:3876
 #: ../src/empathy-new-chatroom-dialog.c:780
 msgid "Join"
 msgstr "Unirse"
 
-#: ../libempathy-gtk/empathy-chat.c:4046 ../src/empathy-event-manager.c:1188
+#: ../libempathy-gtk/empathy-chat.c:4068 ../src/empathy-event-manager.c:1188
 msgid "Connected"
 msgstr "Conectado"
 
-#: ../libempathy-gtk/empathy-chat.c:4101
+#: ../libempathy-gtk/empathy-chat.c:4123
 msgid "Conversation"
 msgstr "Conversa"
 
 #. Translators: this string is a something like
 #. * "Escher Cat (SMS)"
-#: ../libempathy-gtk/empathy-chat.c:4106
+#: ../libempathy-gtk/empathy-chat.c:4128
 #, c-format
 msgid "%s (SMS)"
 msgstr "%s (SMS)"
@@ -2134,7 +2084,7 @@ msgstr "Altitude:"
 #: ../libempathy-gtk/empathy-contact-widget.c:852
 #: ../libempathy-gtk/empathy-individual-widget.c:593
 #: ../libempathy-gtk/empathy-individual-widget.c:608
-#: ../src/empathy-preferences.ui.h:42
+#: ../src/empathy-preferences.ui.h:39
 msgid "Location"
 msgstr "Localización"
 
@@ -2330,147 +2280,49 @@ msgstr "Contactos ligados"
 #. Translators: this is used in the context menu for a contact. The first
 #. * parameter is a contact ID (e.g. foo@jabber.org) and the second is one
 #. * of the user's account IDs (e.g. me@hotmail.com).
-#: ../libempathy-gtk/empathy-individual-menu.c:172
+#: ../libempathy-gtk/empathy-individual-menu.c:174
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:344
+#: ../libempathy-gtk/empathy-individual-menu.c:346
 msgid "Select account to use to place the call"
 msgstr "Seleccione a conta a usar para realizar a chamada"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:348
+#: ../libempathy-gtk/empathy-individual-menu.c:350
 #: ../libempathy-gtk/empathy-log-window.ui.h:6
 #: ../src/empathy-call-window.ui.h:18
 msgid "Call"
 msgstr "Chamar"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:413
+#: ../libempathy-gtk/empathy-individual-menu.c:415
 msgid "Mobile"
 msgstr "Móbil"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:415
+#: ../libempathy-gtk/empathy-individual-menu.c:417
 msgid "Work"
 msgstr "Traballo"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:417
+#: ../libempathy-gtk/empathy-individual-menu.c:419
 msgid "HOME"
 msgstr "Casa"
 
 # rever
-#: ../libempathy-gtk/empathy-individual-menu.c:658
+#: ../libempathy-gtk/empathy-individual-menu.c:660
 msgid "_Block Contact"
 msgstr "_Bloquear contacto"
 
-#. add chat button
-#: ../libempathy-gtk/empathy-individual-menu.c:1017
-#: ../libempathy-gtk/empathy-new-message-dialog.c:318
-msgid "_Chat"
-msgstr "_Conversa"
-
-#. add SMS button
-#: ../libempathy-gtk/empathy-individual-menu.c:1052
-#: ../libempathy-gtk/empathy-new-message-dialog.c:312
-msgid "_SMS"
-msgstr "_SMS"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1085
-msgctxt "menu item"
-msgid "_Audio Call"
-msgstr "_Audiochamada"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1118
-msgctxt "menu item"
-msgid "_Video Call"
-msgstr "_Videochamada"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-menu.c:1159
-#: ../src/empathy-roster-window-menubar.ui.h:11
-msgid "_Previous Conversations"
-msgstr "Conversas _previas"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1188
-msgid "Send File"
-msgstr "Enviar ficheiro"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1218
-msgid "Share My Desktop"
-msgstr "Compartir o meu escritorio"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-menu.c:1244
-#: ../libempathy-gtk/empathy-individual-widget.c:1357
-msgid "Favorite"
-msgstr "Favorito"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1263
-msgid "gnome-contacts not installed"
-msgstr "gnome-contacts non está instalado"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1266
-msgid "Please install gnome-contacts to access contacts details."
-msgstr ""
-"Instale o programa gnome-contacts para acceder aos detalles dos contactos"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1397
-msgid "Infor_mation"
-msgstr "Infor_mación"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1446
-msgctxt "Edit individual (contextual menu)"
-msgid "_Edit"
-msgstr "_Editar"
-
-# rever
-#. send invitation
-#: ../libempathy-gtk/empathy-individual-menu.c:1562
-#: ../src/empathy-chat-window.c:1211
-msgid "Inviting you to this room"
-msgstr "Invítao a vostede a esta sala"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-menu.c:1608
-msgid "_Invite to Chat Room"
-msgstr "Conv_idar a sala de conversa"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-menu.c:1804
-msgid "_Add Contact…"
-msgstr "Eng_adir un contacto…"
-
-#: ../libempathy-gtk/empathy-individual-view.c:2364
+#: ../libempathy-gtk/empathy-individual-menu.c:716
 msgid "Delete and _Block"
 msgstr "Eliminar e _bloquear"
 
 # rever
-#: ../libempathy-gtk/empathy-individual-view.c:2399
-#, c-format
-msgid "Do you really want to remove the group '%s'?"
-msgstr "Está seguro de que quere eliminar o grupo '%s'?"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-view.c:2402
-msgid "Removing group"
-msgstr "Eliminando o grupo"
-
-#: ../libempathy-gtk/empathy-individual-view.c:2470
-msgid "Re_name"
-msgstr "Re_nomear"
-
-#. Remove
-#: ../libempathy-gtk/empathy-individual-view.c:2479
-#: ../libempathy-gtk/empathy-individual-view.c:2683
-msgid "_Remove"
-msgstr "_Eliminar"
-
-# rever
-#: ../libempathy-gtk/empathy-individual-view.c:2556
+#: ../libempathy-gtk/empathy-individual-menu.c:778
 #, c-format
 msgid "Do you really want to remove the contact '%s'?"
 msgstr "Está seguro de quere eliminar o contacto '%s'?"
 
-#: ../libempathy-gtk/empathy-individual-view.c:2565
+#: ../libempathy-gtk/empathy-individual-menu.c:787
 #, c-format
 msgid ""
 "Do you really want to remove the linked contact '%s'? Note that this will "
@@ -2479,9 +2331,106 @@ msgstr ""
 "Desexa eliminar o contacto ligado %s? Teña en conta que eliminaranse tamén "
 "todos os contactos que forman este contacto ligado."
 
-#: ../libempathy-gtk/empathy-individual-view.c:2577
+#: ../libempathy-gtk/empathy-individual-menu.c:798
 msgid "Removing contact"
 msgstr "Eliminando o contacto"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:862
+#: ../libempathy-gtk/empathy-individual-view.c:2454
+msgid "_Remove"
+msgstr "_Eliminar"
+
+#. add chat button
+#: ../libempathy-gtk/empathy-individual-menu.c:1222
+#: ../libempathy-gtk/empathy-new-message-dialog.c:318
+msgid "_Chat"
+msgstr "_Conversa"
+
+#. add SMS button
+#: ../libempathy-gtk/empathy-individual-menu.c:1257
+#: ../libempathy-gtk/empathy-new-message-dialog.c:312
+msgid "_SMS"
+msgstr "_SMS"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1290
+msgctxt "menu item"
+msgid "_Audio Call"
+msgstr "_Audiochamada"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1323
+msgctxt "menu item"
+msgid "_Video Call"
+msgstr "_Videochamada"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-menu.c:1364
+#: ../src/empathy-roster-window-menubar.ui.h:11
+msgid "_Previous Conversations"
+msgstr "Conversas _previas"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1393
+msgid "Send File"
+msgstr "Enviar ficheiro"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1423
+msgid "Share My Desktop"
+msgstr "Compartir o meu escritorio"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-menu.c:1449
+#: ../libempathy-gtk/empathy-individual-widget.c:1357
+msgid "Favorite"
+msgstr "Favorito"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1468
+msgid "gnome-contacts not installed"
+msgstr "gnome-contacts non está instalado"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1471
+msgid "Please install gnome-contacts to access contacts details."
+msgstr ""
+"Instale o programa gnome-contacts para acceder aos detalles dos contactos"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1602
+msgid "Infor_mation"
+msgstr "Infor_mación"
+
+#: ../libempathy-gtk/empathy-individual-menu.c:1651
+msgctxt "Edit individual (contextual menu)"
+msgid "_Edit"
+msgstr "_Editar"
+
+# rever
+#. send invitation
+#: ../libempathy-gtk/empathy-individual-menu.c:1767
+#: ../src/empathy-chat-window.c:1211
+msgid "Inviting you to this room"
+msgstr "Invítao a vostede a esta sala"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-menu.c:1813
+msgid "_Invite to Chat Room"
+msgstr "Conv_idar a sala de conversa"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-menu.c:2009
+msgid "_Add Contact…"
+msgstr "Eng_adir un contacto…"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-view.c:2374
+#, c-format
+msgid "Do you really want to remove the group '%s'?"
+msgstr "Está seguro de que quere eliminar o grupo '%s'?"
+
+# rever
+#: ../libempathy-gtk/empathy-individual-view.c:2377
+msgid "Removing group"
+msgstr "Eliminando o grupo"
+
+#: ../libempathy-gtk/empathy-individual-view.c:2445
+msgid "Re_name"
+msgstr "Re_nomear"
 
 #. Alias
 #: ../libempathy-gtk/empathy-individual-widget.c:1293
@@ -2634,7 +2583,7 @@ msgid "Text chats"
 msgstr "Conversas de texto"
 
 #: ../libempathy-gtk/empathy-log-window.c:3035
-#: ../src/empathy-preferences.ui.h:32
+#: ../src/empathy-preferences.ui.h:29
 msgid "Calls"
 msgstr "Chamadas"
 
@@ -2686,12 +2635,12 @@ msgid "Profile"
 msgstr "Perfíl"
 
 #: ../libempathy-gtk/empathy-log-window.ui.h:5
-#: ../src/empathy-chat-window.ui.h:19 ../src/empathy-preferences.ui.h:14
+#: ../src/empathy-chat-window.ui.h:19 ../src/empathy-preferences.ui.h:11
 msgid "Chat"
 msgstr "Conversa"
 
 #: ../libempathy-gtk/empathy-log-window.ui.h:7
-#: ../src/empathy-call-window.ui.h:26
+#: ../src/empathy-call-window.ui.h:24
 msgid "Video"
 msgstr "V_ídeo"
 
@@ -2840,7 +2789,7 @@ msgstr "Mensaxes personalizadas…"
 #. To translator: %s is the name of the protocol, such as "Google Talk" or
 #. * "Yahoo!"
 #.
-#: ../libempathy-gtk/empathy-protocol-chooser.c:588
+#: ../libempathy-gtk/empathy-protocol-chooser.c:597
 #, c-format
 msgid "New %s account"
 msgstr "Conta nova de %s"
@@ -3335,7 +3284,7 @@ msgstr "Hai modificacións sen gardar respecto da súa conta %s."
 msgid "Your new account has not been saved yet."
 msgstr "A súa nova conta aínda non foi gardada."
 
-#: ../src/empathy-accounts-dialog.c:403 ../src/empathy-call-window.c:1265
+#: ../src/empathy-accounts-dialog.c:403 ../src/empathy-call-window.c:1268
 msgid "Connecting…"
 msgstr "Conectando…"
 
@@ -3540,47 +3489,37 @@ msgstr "Mostrar teclado de chamada"
 msgid "Display the dialpad"
 msgstr "Mostrar o teclado de chamada"
 
-# rever
 #: ../src/empathy-call-window.ui.h:22
-msgid "Send Video"
-msgstr "Enviar vídeo"
-
-#: ../src/empathy-call-window.ui.h:23
 msgid "Toggle video transmission"
 msgstr "Activar/desactivar transmisión de vídeo"
 
-# rever
-#: ../src/empathy-call-window.ui.h:24
-msgid "Send Audio"
-msgstr "Enviar voz"
-
-#: ../src/empathy-call-window.ui.h:25
+#: ../src/empathy-call-window.ui.h:23
 msgid "Toggle audio transmission"
 msgstr "Activar/desactivar transmisión de audio"
 
-#: ../src/empathy-call-window.ui.h:27
+#: ../src/empathy-call-window.ui.h:25
 msgid "Encoding Codec:"
 msgstr "Códec de codificación:"
 
-#: ../src/empathy-call-window.ui.h:28 ../src/empathy-call-window.c:2518
-#: ../src/empathy-call-window.c:2519 ../src/empathy-call-window.c:2520
-#: ../src/empathy-call-window.c:2521
+#: ../src/empathy-call-window.ui.h:26 ../src/empathy-call-window.c:2523
+#: ../src/empathy-call-window.c:2524 ../src/empathy-call-window.c:2525
+#: ../src/empathy-call-window.c:2526
 msgid "Unknown"
 msgstr "Descoñecido"
 
-#: ../src/empathy-call-window.ui.h:29
+#: ../src/empathy-call-window.ui.h:27
 msgid "Decoding Codec:"
 msgstr "Códec de decodificación:"
 
-#: ../src/empathy-call-window.ui.h:30
+#: ../src/empathy-call-window.ui.h:28
 msgid "Remote Candidate:"
 msgstr "Candidato remoto:"
 
-#: ../src/empathy-call-window.ui.h:31
+#: ../src/empathy-call-window.ui.h:29
 msgid "Local Candidate:"
 msgstr "Candidato local:"
 
-#: ../src/empathy-call-window.ui.h:32 ../src/empathy-preferences.ui.h:31
+#: ../src/empathy-call-window.ui.h:30 ../src/empathy-preferences.ui.h:28
 msgid "Audio"
 msgstr "Son"
 
@@ -3765,7 +3704,7 @@ msgid "Incoming video call"
 msgstr "Chamada de vídeo entrante"
 
 # rever
-#: ../src/empathy-event-manager.c:510 ../src/empathy-call-window.c:1482
+#: ../src/empathy-event-manager.c:510 ../src/empathy-call-window.c:1485
 msgid "Incoming call"
 msgstr "Chamada entrante"
 
@@ -3782,7 +3721,7 @@ msgid "%s is calling you. Do you want to answer?"
 msgstr "%s estao chamando. Quere responder?"
 
 #: ../src/empathy-event-manager.c:518 ../src/empathy-event-manager.c:915
-#: ../src/empathy-call-window.c:1488
+#: ../src/empathy-call-window.c:1491
 #, c-format
 msgid "Incoming call from %s"
 msgstr "Chamada entrante de %s"
@@ -3837,7 +3776,7 @@ msgstr "%s convidouno a unirse a %s"
 msgid "You have been invited to join %s"
 msgstr "Vostede foi convidado a unirse a %s"
 
-#: ../src/empathy-event-manager.c:915 ../src/empathy-call-window.c:1488
+#: ../src/empathy-event-manager.c:915 ../src/empathy-call-window.c:1491
 #, c-format
 msgid "Incoming video call from %s"
 msgstr "Videochamada entrante de %s"
@@ -3848,7 +3787,7 @@ msgstr "Videochamada entrante de %s"
 msgid "Incoming file transfer from %s"
 msgstr "Transferencia de ficheiro entrante de %s"
 
-#: ../src/empathy-event-manager.c:983 ../src/empathy-roster-window.c:356
+#: ../src/empathy-event-manager.c:983 ../src/empathy-roster-window.c:223
 msgid "Password required"
 msgstr "Requírese o contrasinal"
 
@@ -4021,61 +3960,61 @@ msgstr "Protocolo"
 msgid "Source"
 msgstr "Orixe"
 
-#: ../src/empathy-roster-window.c:373
+#: ../src/empathy-roster-window.c:240
 msgid "Provide Password"
 msgstr "Escriba o seu contrasinal"
 
-#: ../src/empathy-roster-window.c:379
+#: ../src/empathy-roster-window.c:246
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: ../src/empathy-roster-window.c:639
+#: ../src/empathy-roster-window.c:417
 msgid "You need to setup an account to see contacts here."
 msgstr "Debe configurar unha conta para ver contactos aquí."
 
-# rever
-#: ../src/empathy-roster-window.c:655
-msgid "No match found"
-msgstr "Non se atopou ningunha coincidencia."
-
-#: ../src/empathy-roster-window.c:765
+#: ../src/empathy-roster-window.c:504
 #, c-format
 msgid "Sorry, %s accounts can’t be used until your %s software is updated."
 msgstr ""
 "As contas de %s non se poden usar até que non teña actualizado o seu "
 "software %s."
 
-#: ../src/empathy-roster-window.c:831
+#: ../src/empathy-roster-window.c:570
 msgid "Update software..."
 msgstr "Actualizar software…"
 
-#: ../src/empathy-roster-window.c:837 ../src/empathy-roster-window.c:954
+#: ../src/empathy-roster-window.c:576 ../src/empathy-roster-window.c:693
 msgid "Close"
 msgstr "Pechar"
 
-#: ../src/empathy-roster-window.c:942
+#: ../src/empathy-roster-window.c:681
 msgid "Reconnect"
 msgstr "Reconectar"
 
-#: ../src/empathy-roster-window.c:948
+#: ../src/empathy-roster-window.c:687
 msgid "Edit Account"
 msgstr "Editar a conta"
 
-#: ../src/empathy-roster-window.c:1128
+#: ../src/empathy-roster-window.c:867
 msgid "Top up account"
 msgstr "Recargar conta"
 
-#: ../src/empathy-roster-window.c:1813
+#: ../src/empathy-roster-window.c:1529
 msgid "You need to enable one of your accounts to see contacts here."
 msgstr "Debe activar unha das súas contas para ver contactos aquí."
 
 #. translators: argument is an account name
-#: ../src/empathy-roster-window.c:1821
+#: ../src/empathy-roster-window.c:1537
 #, c-format
 msgid "You need to enable %s to see contacts here."
 msgstr "Debe activar %s para ver contactos aquí."
 
-#: ../src/empathy-roster-window.c:2154 ../src/empathy-preferences.ui.h:7
+# rever
+#: ../src/empathy-roster-window.c:1900
+msgid "No match found"
+msgstr "Non se atopou ningunha coincidencia."
+
+#: ../src/empathy-roster-window.c:1975 ../src/empathy-preferences.ui.h:4
 msgid "Contact List"
 msgstr "Lista de contactos"
 
@@ -4236,205 +4175,193 @@ msgstr "Non foi posíbel ler a lista da sala"
 msgid "Room List"
 msgstr "Lista de salas"
 
-#: ../src/empathy-preferences.c:146
+#: ../src/empathy-preferences.c:145
 msgid "Message received"
 msgstr "Mensaxe recibida"
 
-#: ../src/empathy-preferences.c:147
+#: ../src/empathy-preferences.c:146
 msgid "Message sent"
 msgstr "Mensaxe enviada"
 
-#: ../src/empathy-preferences.c:148
+#: ../src/empathy-preferences.c:147
 msgid "New conversation"
 msgstr "Conversa nova"
 
 # rever
-#: ../src/empathy-preferences.c:149
+#: ../src/empathy-preferences.c:148
 msgid "Contact comes online"
 msgstr "O contacto conéctase"
 
 # rever
-#: ../src/empathy-preferences.c:150
+#: ../src/empathy-preferences.c:149
 msgid "Contact goes offline"
 msgstr "O contacto desconéctase"
 
 # rever
-#: ../src/empathy-preferences.c:151
+#: ../src/empathy-preferences.c:150
 msgid "Account connected"
 msgstr "Conta conectada"
 
 # rever
-#: ../src/empathy-preferences.c:152
+#: ../src/empathy-preferences.c:151
 msgid "Account disconnected"
 msgstr "Conta desconectada"
 
-#: ../src/empathy-preferences.c:429
+#: ../src/empathy-preferences.c:388
 msgid "Language"
 msgstr "Idioma"
 
 #. translators: Contact name for the chat theme preview
-#: ../src/empathy-preferences.c:678
+#: ../src/empathy-preferences.c:637
 msgid "Juliet"
 msgstr "Xulieta"
 
 #. translators: Contact name for the chat theme preview
-#: ../src/empathy-preferences.c:685
+#: ../src/empathy-preferences.c:644
 msgid "Romeo"
 msgstr "Romeo"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:691
+#: ../src/empathy-preferences.c:650
 msgid "O Romeo, Romeo, wherefore art thou Romeo?"
 msgstr "Oh, Romeu, Romeu!, ¿onde estás que non te vexo?"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:695
+#: ../src/empathy-preferences.c:654
 msgid "Deny thy father and refuse thy name;"
 msgstr "Nega ao teu pai e rexeita o teu nome;"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:698
+#: ../src/empathy-preferences.c:657
 msgid "Or if thou wilt not, be but sworn my love"
 msgstr "Ou, se non queres, xúrame tan só que me amas"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:701
+#: ../src/empathy-preferences.c:660
 msgid "And I'll no longer be a Capulet."
 msgstr "E deixarei eu de ser un Capuleto."
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:704
+#: ../src/empathy-preferences.c:663
 msgid "Shall I hear more, or shall I speak at this?"
 msgstr "Debo escoitar máis ou contestar ao dito?"
 
 # rever
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:707
+#: ../src/empathy-preferences.c:666
 msgid "Juliet has disconnected"
 msgstr "Xulieta desconectouse"
 
-#: ../src/empathy-preferences.c:1112
+#: ../src/empathy-preferences.c:1070
 msgid "Preferences"
 msgstr "Preferencias"
 
+# rever
 #: ../src/empathy-preferences.ui.h:2
-msgid "Show protocol in avatar"
-msgstr "Mostrar protocolo no avatar"
+msgid "Show groups"
+msgstr "Mostrar grupos"
 
 # rever
 #: ../src/empathy-preferences.ui.h:3
 msgid "Show account balances"
 msgstr "Mostrar os balances das contas"
 
-# rever
-#: ../src/empathy-preferences.ui.h:4
-msgid "Sort contacts by:"
-msgstr "Ordenar contactos por:"
-
 #: ../src/empathy-preferences.ui.h:5
-msgid "status"
-msgstr "estado"
-
-#: ../src/empathy-preferences.ui.h:6
-msgid "name"
-msgstr "nome"
-
-#: ../src/empathy-preferences.ui.h:8
 msgid "Start chats in:"
 msgstr "Iniciar conversas en:"
 
-#: ../src/empathy-preferences.ui.h:9
+#: ../src/empathy-preferences.ui.h:6
 msgid "new ta_bs"
 msgstr "lapelas no_vas"
 
-#: ../src/empathy-preferences.ui.h:10
+#: ../src/empathy-preferences.ui.h:7
 msgid "new _windows"
 msgstr "xan_elas novas"
 
 # rever
-#: ../src/empathy-preferences.ui.h:11
+#: ../src/empathy-preferences.ui.h:8
 msgid "Show _smileys as images"
 msgstr "Mostrar as _emoticonas como imaxes"
 
 # rever
-#: ../src/empathy-preferences.ui.h:12
+#: ../src/empathy-preferences.ui.h:9
 msgid "Show contact _list in rooms"
 msgstr "Mostrar _lista de contactos en salas"
 
-#: ../src/empathy-preferences.ui.h:13
+#: ../src/empathy-preferences.ui.h:10
 msgid "Log conversations"
 msgstr "Rexistrar conversas"
 
-#: ../src/empathy-preferences.ui.h:15
+#: ../src/empathy-preferences.ui.h:12
 msgid "Display incoming events in the notification area"
 msgstr "Mostrar os eventos entrantes na área de notificación"
 
 # rever
-#: ../src/empathy-preferences.ui.h:16
+#: ../src/empathy-preferences.ui.h:13
 msgid "_Automatically connect on startup"
 msgstr "_Conectar automaticamente ao inicio"
 
-#: ../src/empathy-preferences.ui.h:17
+#: ../src/empathy-preferences.ui.h:14
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: ../src/empathy-preferences.ui.h:18
+#: ../src/empathy-preferences.ui.h:15
 msgid "General"
 msgstr "Xeral"
 
 # rever
-#: ../src/empathy-preferences.ui.h:19
+#: ../src/empathy-preferences.ui.h:16
 msgid "_Enable bubble notifications"
 msgstr "_Activar notificacións de burbulla"
 
 # rever
-#: ../src/empathy-preferences.ui.h:20
+#: ../src/empathy-preferences.ui.h:17
 msgid "Disable notifications when _away or busy"
 msgstr "Desactivar notificacións ao estar _ausente ou ocupado"
 
 # rever
-#: ../src/empathy-preferences.ui.h:21
+#: ../src/empathy-preferences.ui.h:18
 msgid "Enable notifications when the _chat is not focused"
 msgstr "Activar notificacións cando a _conversa non teña o foco"
 
 # rever
-#: ../src/empathy-preferences.ui.h:22
+#: ../src/empathy-preferences.ui.h:19
 msgid "Enable notifications when a contact comes online"
 msgstr "Activar notificacións cando un contacto se conecta"
 
 # rever
-#: ../src/empathy-preferences.ui.h:23
+#: ../src/empathy-preferences.ui.h:20
 msgid "Enable notifications when a contact goes offline"
 msgstr "Activar notificacións cando un contacto se desconecta"
 
-#: ../src/empathy-preferences.ui.h:24
+#: ../src/empathy-preferences.ui.h:21
 msgid "Notifications"
 msgstr "Notificacións"
 
 # rever
-#: ../src/empathy-preferences.ui.h:25
+#: ../src/empathy-preferences.ui.h:22
 msgid "_Enable sound notifications"
 msgstr "_Activar notificacións de son"
 
 # rever
-#: ../src/empathy-preferences.ui.h:26
+#: ../src/empathy-preferences.ui.h:23
 msgid "Disable sounds when _away or busy"
 msgstr "Desactivar os sons cando se estea _ausente ou ocupado"
 
 # rever
-#: ../src/empathy-preferences.ui.h:27
+#: ../src/empathy-preferences.ui.h:24
 msgid "Play sound for events"
 msgstr "Reproducir un son para os eventos"
 
-#: ../src/empathy-preferences.ui.h:28
+#: ../src/empathy-preferences.ui.h:25
 msgid "Sounds"
 msgstr "Sons"
 
-#: ../src/empathy-preferences.ui.h:29
+#: ../src/empathy-preferences.ui.h:26
 msgid "Use _echo cancellation to improve call quality"
 msgstr "Usar cancelación de _eco para mellorar a calidade da chamada"
 
-#: ../src/empathy-preferences.ui.h:30
+#: ../src/empathy-preferences.ui.h:27
 msgid ""
 "Echo cancellation helps to make your voice sound clearer to the other "
 "person, but may cause problems on some computers. If you or the other person "
@@ -4446,11 +4373,11 @@ msgstr ""
 "persoa escoita ruidos estranos ou ten problemas técnicos durante as chamadas "
 "tente desactivando a cancelación do eco e reiniciando a chamada."
 
-#: ../src/empathy-preferences.ui.h:33
+#: ../src/empathy-preferences.ui.h:30
 msgid "_Publish location to my contacts"
 msgstr "_Publicar a miña localización aos meus contactos"
 
-#: ../src/empathy-preferences.ui.h:34
+#: ../src/empathy-preferences.ui.h:31
 msgid ""
 "Reduced location accuracy means that nothing more precise than your city, "
 "state and country will be published.  GPS coordinates will be accurate to 1 "
@@ -4461,33 +4388,33 @@ msgstr ""
 "aproximadas a 1 valor decimal."
 
 #. To translators: The longitude and latitude are rounded to closest 0,1 degrees, so for example 146,2345° is rounded to round(146,2345*10)/10 = 146,2 degrees.
-#: ../src/empathy-preferences.ui.h:36
+#: ../src/empathy-preferences.ui.h:33
 msgid "_Reduce location accuracy"
 msgstr "_Reducir a precisión da localización"
 
-#: ../src/empathy-preferences.ui.h:37
+#: ../src/empathy-preferences.ui.h:34
 msgid "Privacy"
 msgstr "Privacidade"
 
-#: ../src/empathy-preferences.ui.h:38
+#: ../src/empathy-preferences.ui.h:35
 msgid "_GPS"
 msgstr "_GPS"
 
 # rever
-#: ../src/empathy-preferences.ui.h:39
+#: ../src/empathy-preferences.ui.h:36
 msgid "_Cellphone"
 msgstr "_Teléfono móbil"
 
-#: ../src/empathy-preferences.ui.h:40
+#: ../src/empathy-preferences.ui.h:37
 msgid "_Network (IP, Wi-Fi)"
 msgstr "_Rede (IP, Wi-Fi)"
 
-#: ../src/empathy-preferences.ui.h:41
+#: ../src/empathy-preferences.ui.h:38
 msgid "Location sources:"
 msgstr "Fontes de localización:"
 
 # rever
-#: ../src/empathy-preferences.ui.h:43
+#: ../src/empathy-preferences.ui.h:40
 msgid ""
 "The list of languages reflects only the languages for which you have a "
 "dictionary installed."
@@ -4496,24 +4423,24 @@ msgstr ""
 "dicionario instalado."
 
 # rever
-#: ../src/empathy-preferences.ui.h:44
+#: ../src/empathy-preferences.ui.h:41
 msgid "Enable spell checking for languages:"
 msgstr "Activar a verificación ortográfica para os idiomas:"
 
-#: ../src/empathy-preferences.ui.h:45
+#: ../src/empathy-preferences.ui.h:42
 msgid "Spell Checking"
 msgstr "Verificación ortográfica"
 
 # rever
-#: ../src/empathy-preferences.ui.h:46
+#: ../src/empathy-preferences.ui.h:43
 msgid "Chat Th_eme:"
 msgstr "T_ema do chat:"
 
-#: ../src/empathy-preferences.ui.h:47
+#: ../src/empathy-preferences.ui.h:44
 msgid "Variant:"
 msgstr "Variante:"
 
-#: ../src/empathy-preferences.ui.h:48
+#: ../src/empathy-preferences.ui.h:45
 msgid "Themes"
 msgstr "Temas"
 
@@ -4675,14 +4602,14 @@ msgid "Respond"
 msgstr "Responder"
 
 #: ../src/empathy-notifications-approver.c:197
-#: ../src/empathy-call-window.c:1492
+#: ../src/empathy-call-window.c:1495
 msgid "Reject"
 msgstr "Rexeitar"
 
 # rever
 #: ../src/empathy-notifications-approver.c:202
 #: ../src/empathy-notifications-approver.c:207
-#: ../src/empathy-call-window.c:1493
+#: ../src/empathy-call-window.c:1496
 msgid "Answer"
 msgstr "Responder"
 
@@ -4714,62 +4641,62 @@ msgstr "%s tentou chamarlle, pero vostede estaba noutra chamada."
 
 #. Translators: this is an "Info" label. It should be as short
 #. * as possible.
-#: ../src/empathy-call-window.c:1122 ../src/empathy-call-window.c:1138
+#: ../src/empathy-call-window.c:1125 ../src/empathy-call-window.c:1141
 msgid "i"
 msgstr "Información"
 
 #. translators: Call is a noun and %s is the contact name. This string
 #. * is used in the window title
-#: ../src/empathy-call-window.c:1857
+#: ../src/empathy-call-window.c:1862
 #, c-format
 msgid "Call with %s"
 msgstr "Chamada con %s"
 
-#: ../src/empathy-call-window.c:2109
+#: ../src/empathy-call-window.c:2114
 msgid "The IP address as seen by the machine"
 msgstr "O enderezo IP como é visto polo computador"
 
-#: ../src/empathy-call-window.c:2111
+#: ../src/empathy-call-window.c:2116
 msgid "The IP address as seen by a server on the Internet"
 msgstr "O enderezo IP como é visto por un servidor na Internet"
 
-#: ../src/empathy-call-window.c:2113
+#: ../src/empathy-call-window.c:2118
 msgid "The IP address of the peer as seen by the other side"
 msgstr "O enderezo IP do par como é visto pola outra parte"
 
-#: ../src/empathy-call-window.c:2115
+#: ../src/empathy-call-window.c:2120
 msgid "The IP address of a relay server"
 msgstr "O enderezo IP dun servidor de desvío"
 
-#: ../src/empathy-call-window.c:2117
+#: ../src/empathy-call-window.c:2122
 msgid "The IP address of the multicast group"
 msgstr "O enderezo IP do grupo multicast"
 
-#: ../src/empathy-call-window.c:2864
+#: ../src/empathy-call-window.c:2869
 msgid "On hold"
 msgstr "En espera"
 
-#: ../src/empathy-call-window.c:2867
+#: ../src/empathy-call-window.c:2871
 msgid "Mute"
 msgstr "Silenciar"
 
-#: ../src/empathy-call-window.c:2869
+#: ../src/empathy-call-window.c:2873
 msgid "Duration"
 msgstr "Duración"
 
 # rever
 #. Translators: 'status - minutes:seconds' the caller has been connected
-#: ../src/empathy-call-window.c:2872
+#: ../src/empathy-call-window.c:2876
 #, c-format
 msgid "%s — %d:%02dm"
 msgstr "%s — %d:%02dm"
 
 # rever
-#: ../src/empathy-call-window.c:2968
+#: ../src/empathy-call-window.c:2972
 msgid "Technical Details"
 msgstr "Detalles técnicos"
 
-#: ../src/empathy-call-window.c:3007
+#: ../src/empathy-call-window.c:3011
 #, c-format
 msgid ""
 "%s's software does not understand any of the audio formats supported by your "
@@ -4778,7 +4705,7 @@ msgstr ""
 "O software de %s non entende algúns dos formatos de video admitidos polo seu "
 "computador"
 
-#: ../src/empathy-call-window.c:3012
+#: ../src/empathy-call-window.c:3016
 #, c-format
 msgid ""
 "%s's software does not understand any of the video formats supported by your "
@@ -4787,7 +4714,7 @@ msgstr ""
 "O software de %s non entende algúns dos formatos de vídeo admitidos polo seu "
 "computador"
 
-#: ../src/empathy-call-window.c:3018
+#: ../src/empathy-call-window.c:3022
 #, c-format
 msgid ""
 "Can't establish a connection to %s. One of you might be on a network that "
@@ -4796,21 +4723,21 @@ msgstr ""
 "Non é posíbel estabelecer unha conexión a %s. Un deles pode estar nunha rede "
 "que non permite conexións directas."
 
-#: ../src/empathy-call-window.c:3024
+#: ../src/empathy-call-window.c:3028
 msgid "There was a failure on the network"
 msgstr "Produciuse un fallo na rede"
 
-#: ../src/empathy-call-window.c:3028
+#: ../src/empathy-call-window.c:3032
 msgid ""
 "The audio formats necessary for this call are not installed on your computer"
 msgstr "Non ten instalados os formatos de audio necesarios neste computador"
 
-#: ../src/empathy-call-window.c:3031
+#: ../src/empathy-call-window.c:3035
 msgid ""
 "The video formats necessary for this call are not installed on your computer"
 msgstr "Non ten instalados os formatos de vídeo necesarios neste computador"
 
-#: ../src/empathy-call-window.c:3043
+#: ../src/empathy-call-window.c:3047
 #, c-format
 msgid ""
 "Something unexpected happened in a Telepathy component. Please <a href=\"%s"
@@ -4821,32 +4748,32 @@ msgstr ""
 "\">Informe de este erro</a> e anexe os rexistros que pode ollar na xanela "
 "«Depuración» no menú Axuda."
 
-#: ../src/empathy-call-window.c:3052
+#: ../src/empathy-call-window.c:3056
 msgid "There was a failure in the call engine"
 msgstr "Produciuse un fallo ao chamar ao motor"
 
-#: ../src/empathy-call-window.c:3055
+#: ../src/empathy-call-window.c:3059
 msgid "The end of the stream was reached"
 msgstr "Chegouse ao final do fluxo"
 
-#: ../src/empathy-call-window.c:3095
+#: ../src/empathy-call-window.c:3099
 msgid "Can't establish audio stream"
 msgstr "Non é posíbel estabelecer un fluxo de audio"
 
-#: ../src/empathy-call-window.c:3105
+#: ../src/empathy-call-window.c:3109
 msgid "Can't establish video stream"
 msgstr "Non é posíbel estabelecer un fluxo de vídeo"
 
-#: ../src/empathy-call-window.c:3142
+#: ../src/empathy-call-window.c:3146
 #, c-format
 msgid "Your current balance is %s."
 msgstr "O seu crédito actual é %s."
 
-#: ../src/empathy-call-window.c:3146
+#: ../src/empathy-call-window.c:3150
 msgid "Sorry, you don’t have enough credit for that call."
 msgstr "Non ten crédito dabondo para facer esta chamada."
 
-#: ../src/empathy-call-window.c:3148
+#: ../src/empathy-call-window.c:3152
 msgid "Top Up"
 msgstr "Recargar"
 
@@ -4872,12 +4799,7 @@ msgstr "Que tipo de conta ten?"
 msgid "Adding new account"
 msgstr "Engadindo conta nova"
 
-# rever
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:77
-msgid "People nearby"
-msgstr "Xente cerca"
-
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:149
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:81
 msgid ""
 "Empathy can automatically discover and chat with the people connected on the "
 "same network as you. If you want to use this feature, please check that the "
@@ -4887,7 +4809,12 @@ msgstr ""
 "mesma rede que vostede. Se quere usar esta característica, comprobe que os "
 "detalles de abaixo son correctos."
 
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:180
+# rever
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:98
+msgid "People nearby"
+msgstr "Xente cerca"
+
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:113
 msgid ""
 "You can change these details later or disable this feature by choosing <span "
 "style=\"italic\">Edit → Accounts</span> in the Contact List."
@@ -4895,6 +4822,69 @@ msgstr ""
 "Pode cambiar de forma sinxela eses detalles máis tarde ou desactivar esta "
 "característica usando o diálogo <span style=\"italic\">Editar → Contas</"
 "span> na Lista de contactos."
+
+# rever
+#~ msgid "Show avatars"
+#~ msgstr "Mostrar avatares"
+
+# rever
+#~ msgid ""
+#~ "Whether to show avatars for contacts in the contact list and chat windows."
+#~ msgstr ""
+#~ "Indica se se deben mostrar os avatares dos contactos na lista de "
+#~ "contactos e das xanelas de conversa."
+
+#~ msgid "Show protocols"
+#~ msgstr "Mostrar protocolos"
+
+# rever
+#~ msgid "Whether to show protocols for contacts in the contact list."
+#~ msgstr ""
+#~ "Indica se se deben mostrar os protocolos para os contactos na lista de "
+#~ "contactos."
+
+# rever
+#~ msgid "Compact contact list"
+#~ msgstr "Lista compacta de contactos"
+
+# rever
+#~ msgid "Whether to show the contact list in compact mode."
+#~ msgstr "Indica se se debe mostrar a lista de contactos en modo compacto."
+
+# rever
+#~ msgid "Contact list sort criterion"
+#~ msgstr "Criterio de ordenación da lista de contactos"
+
+# rever
+#~ msgid ""
+#~ "Which criterion to use when sorting the contact list. Default is to sort "
+#~ "by the contact's state with the value \"state\". A value of \"name\" will "
+#~ "sort the contact list by name."
+#~ msgstr ""
+#~ "Que criterio usar ao ordenar a lista de contactos. O predeterminado é "
+#~ "ordenar polo estado do contacto co valor «state» (estado). Un valor "
+#~ "«name» (nome) ordenará a lista de contactos polo nome."
+
+# rever
+#~ msgid "Send Video"
+#~ msgstr "Enviar vídeo"
+
+# rever
+#~ msgid "Send Audio"
+#~ msgstr "Enviar voz"
+
+#~ msgid "Show protocol in avatar"
+#~ msgstr "Mostrar protocolo no avatar"
+
+# rever
+#~ msgid "Sort contacts by:"
+#~ msgstr "Ordenar contactos por:"
+
+#~ msgid "status"
+#~ msgstr "estado"
+
+#~ msgid "name"
+#~ msgstr "nome"
 
 #~ msgid "Network:"
 #~ msgstr "Rede:"
