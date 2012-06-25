@@ -136,8 +136,10 @@ static const GtkTargetEntry drag_types_dest[] = {
 	{ "text/contact-id", 0, DND_DRAG_TYPE_CONTACT_ID },
 	{ "text/x-individual-id", 0, DND_DRAG_TYPE_INDIVIDUAL_ID },
 	{ "GTK_NOTEBOOK_TAB", GTK_TARGET_SAME_APP, DND_DRAG_TYPE_TAB },
+	/* FIXME: disabled because of bug #640513
 	{ "text/uri-list", 0, DND_DRAG_TYPE_URI_LIST },
 	{ "text/path-list", 0, DND_DRAG_TYPE_URI_LIST },
+	*/
 };
 
 static const GtkTargetEntry drag_types_dest_contact[] = {
