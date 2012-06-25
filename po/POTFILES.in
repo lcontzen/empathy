@@ -63,8 +63,6 @@ libempathy-gtk/empathy-sound-manager.c
 libempathy-gtk/empathy-status-preset-dialog.c
 [type: gettext/glade]libempathy-gtk/empathy-status-preset-dialog.ui
 libempathy-gtk/empathy-theme-adium.c
-libempathy-gtk/empathy-theme-boxes.c
-libempathy-gtk/empathy-theme-irc.c
 libempathy-gtk/empathy-theme-manager.c
 libempathy-gtk/empathy-tls-dialog.c
 libempathy-gtk/empathy-ui-utils.c
