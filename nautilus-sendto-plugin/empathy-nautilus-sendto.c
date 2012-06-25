@@ -36,11 +36,16 @@
 
 #include <libempathy-gtk/empathy-contact-chooser.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
+#include <libempathy-gtk/empathy-roster-view.h>
+#include <libempathy-gtk/empathy-roster-contact.h>
+
 
 #include "nautilus-sendto-plugin.h"
 
 static EmpathyFTFactory *factory = NULL;
 static guint transfers = 0;
+
+#define BOX_DATA_KEY "roster_view"
 
 static gboolean destroy (NstPlugin *plugin);
 
@@ -82,16 +87,16 @@ dup_contact_from_individual (FolksIndividual *individual)
 }
 
 static gboolean
-filter_individual (EmpathyContactChooser *chooser,
-    FolksIndividual *individual,
-    gboolean is_online,
-    gboolean searching,
+filter_individual (GtkWidget *child,
     gpointer user_data)
 {
+  FolksIndividual *individual;
   EmpathyContact *contact;
 
-  if (!is_online)
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
     return FALSE;
+
+  individual = empathy_roster_contact_get_individual (EMPATHY_ROSTER_CONTACT (child));
 
   contact = dup_contact_from_individual (individual);
   if (contact == NULL)
@@ -104,28 +109,47 @@ filter_individual (EmpathyContactChooser *chooser,
 static GtkWidget *
 get_contacts_widget (NstPlugin *plugin)
 {
-  GtkWidget *chooser;
+  GtkWidget *roster_view, *box, *scrolled;
+  EmpathyIndividualManager *mgr;
 
-  chooser = empathy_contact_chooser_new ();
-  empathy_contact_chooser_set_filter_func (EMPATHY_CONTACT_CHOOSER (chooser),
-      filter_individual, plugin);
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
-  empathy_contact_chooser_show_search_entry (EMPATHY_CONTACT_CHOOSER (chooser),
-      FALSE);
+  mgr = empathy_individual_manager_dup_singleton ();
+  roster_view = empathy_roster_view_new (mgr);
 
-  /* Make sure to display some contacts */
-  gtk_widget_set_size_request (chooser, -1, 300);
-  return chooser;
+  scrolled = gtk_scrolled_window_new (NULL, NULL);
+
+  g_object_unref (mgr);
+
+  gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
+      GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+  egg_list_box_set_filter_func (EGG_LIST_BOX (roster_view), filter_individual,
+      roster_view, NULL);
+  egg_list_box_add_to_scrolled (EGG_LIST_BOX (roster_view),
+      GTK_SCROLLED_WINDOW (scrolled));
+
+  gtk_box_pack_start (GTK_BOX (box), scrolled, TRUE, TRUE, 0);
+
+  gtk_widget_set_size_request (box, -1, 300);
+  gtk_widget_show (roster_view);
+  gtk_widget_show (scrolled);
+  gtk_widget_show (box);
+
+  g_object_set_data (G_OBJECT (box), BOX_DATA_KEY, roster_view);
+
+  return box;
 }
 
 static EmpathyContact *
 get_selected_contact (GtkWidget *widget)
 {
+  EmpathyRosterView *roster_view;
   FolksIndividual *individual;
   EmpathyContact *contact;
 
-  individual = empathy_contact_chooser_dup_selected (
-      EMPATHY_CONTACT_CHOOSER (widget));
+  roster_view = g_object_get_data (G_OBJECT (widget), BOX_DATA_KEY);
+  individual = empathy_roster_view_get_selected_individual (roster_view);
+
   if (individual == NULL)
     return NULL;
 
