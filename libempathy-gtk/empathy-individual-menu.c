@@ -229,10 +229,13 @@ individual_menu_add_personas (GtkMenuShell *menu,
       gtk_widget_show (action);
 
       /* File transfer */
-      action = empathy_individual_file_transfer_menu_item_new (
-          single_individual);
-      gtk_menu_shell_append (GTK_MENU_SHELL (contact_submenu), action);
-      gtk_widget_show (action);
+      if (features & EMPATHY_INDIVIDUAL_FEATURE_FILE_TRANSFER)
+        {
+          action = empathy_individual_file_transfer_menu_item_new (
+              single_individual);
+          gtk_menu_shell_append (GTK_MENU_SHELL (contact_submenu), action);
+          gtk_widget_show (action);
+        }
 
       /* Share my desktop */
       action = empathy_individual_share_my_desktop_menu_item_new (
@@ -940,9 +943,12 @@ constructed (GObject *object)
   gtk_widget_show (item);
 
   /* File transfer */
-  item = empathy_individual_file_transfer_menu_item_new (individual);
-  gtk_menu_shell_append (shell, item);
-  gtk_widget_show (item);
+  if (features & EMPATHY_INDIVIDUAL_FEATURE_FILE_TRANSFER)
+    {
+      item = empathy_individual_file_transfer_menu_item_new (individual);
+      gtk_menu_shell_append (shell, item);
+      gtk_widget_show (item);
+    }
 
   /* Share my desktop */
   /* FIXME we should add the "Share my desktop" menu item if Vino is
