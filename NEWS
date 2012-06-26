@@ -1,3 +1,44 @@
+NEW in 3.5.3 (26/06/2012)
+============
+
+The contact list has been completely redesigned, see [0] for details; please
+test it and report any regression you may experience.
+
+[0] http://blog.desmottes.be/post/2012/06/15/New-Empathy-contact-list
+
+Dependencies:
+ • folks ≥ 0.7.1
+ • telepathy-glib ≥ 0.19.1
+ • libebook no longer needed
+
+Bugs fixed:
+ - Fixed #669484, [design] New contact list view (Guillaume Desmottes)
+ - Fixed #675214, Contacts not in groups after a restart (Guillaume Desmottes)
+ - Fixed #676634, Use TpAccountRequest (Guillaume Desmottes)
+ - Fixed #677465, Use TpProtocol more (Guillaume Desmottes)
+ - Fixed #677533, doesn't build with latest evolution-data-server (Guillaume Desmottes)
+ - Fixed #677545, Build with tp-glib GSEAL (Guillaume Desmottes)
+ - Fixed #677641, Use a weak reference while loading the logs asynchronously to detect when the object has been destroyed (Debarshi Ray)
+ - Fixed #677940, [new roster] Individual manager: track more popular contacts (Guillaume Desmottes)
+ - Fixed #677947, [new roster] Add EmpathyRosterView (Guillaume Desmottes)
+ - Fixed #677948, [new roster] Use EmpathyRosterView (Guillaume Desmottes)
+ - Fixed #677949, [new roster] Remove old preferences (Guillaume Desmottes)
+ - Fixed #678083, Find a better heuristic to compute contacts popularity (Seif Lotfy)
+ - Fixed #678091, [new roster] Display favorites in the top of the roster (Guillaume Desmottes)
+ - Fixed #678156, [new roster] People nearby group (Laurent Contzen)
+ - Fixed #678167, Not clear if mic is muted or not (Guillaume Desmottes)
+ - Fixed #678205, Contact gets displayed in the wrong group (Guillaume Desmottes)
+ - Fixed #678294, [new roster] Bring back individual tooltips (Guillaume Desmottes)
+ - Fixed #678307, irc connection parameters dialog: "apply" button stays unsensitive (Guillaume Desmottes)
+ - Fixed #678376, [new roster] Ungroupped contact should be displayed at the bottom of the roster (Laurent Contzen)
+
+Translations:
+ - Updated be Translation (Ihar Hrachyshka)
+ - Updated el Translation (Tom Tryfonidis)
+ - Updated es Translation (Daniel Mustieles)
+ - Updated gl Translation (Fran Diéguez)
+ - Updated sl Translation (Andrej Žnidaršič)
+
 NEW in 3.5.2 (05/06/2012)
 ============
 
