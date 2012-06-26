@@ -600,6 +600,12 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
 			 * local alias instead.
 			 */
 			replace = name;
+		} else if (theme_adium_match (&cur, "%senderPrefix%")) {
+			/* FIXME: If we supported IRC user mode flags, this
+			 * would be replaced with @ if the user is an op, + if
+			 * the user has voice, etc. as per
+			 * http://hg.adium.im/adium/rev/b586b027de42. But we
+			 * don't, so for now we just strip it. */
 		} else if (theme_adium_match_with_format (&cur, "%textbackgroundcolor{", &format)) {
 			/* FIXME: This keyword is used to represent the
 			 * highlight background color. "X" is the opacity of the
