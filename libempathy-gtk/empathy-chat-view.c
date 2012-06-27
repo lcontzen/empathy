@@ -253,3 +253,23 @@ empathy_chat_view_message_acknowledged (EmpathyChatView *view,
 	}
 }
 
+/*
+ * empathy_chat_view_set_show_avatars:
+ * @view: a chat view
+ * @show_avatars: TRUE if contacts' avatars should be shown alongside their name
+ *
+ * At present, this is only called on freshly-constructed chat views based on
+ * whether or not the protocol supports avatars at all. Hence, themes don't
+ * have to worry about retroactively showing or hiding avatars in the
+ * scrollback.
+ */
+void
+empathy_chat_view_set_show_avatars (EmpathyChatView *view,
+				    gboolean show_avatars)
+{
+	g_return_if_fail (EMPATHY_IS_CHAT_VIEW (view));
+
+	if (EMPATHY_TYPE_CHAT_VIEW_GET_IFACE (view)->set_show_avatars) {
+		EMPATHY_TYPE_CHAT_VIEW_GET_IFACE (view)->set_show_avatars (view, show_avatars);
+	}
+}
