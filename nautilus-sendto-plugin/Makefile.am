@@ -6,6 +6,7 @@ INCLUDES =					\
 	-DLOCALEDIR=\""$(datadir)/locale"\"	\
 	$(NST_CFLAGS)				\
 	$(WARN_CFLAGS)				\
+	$(ERROR_CFLAGS)				\
 	$(DISABLE_DEPRECATED)			\
 	$(EMPATHY_CFLAGS)
 
