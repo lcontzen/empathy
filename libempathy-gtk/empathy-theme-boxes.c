@@ -48,7 +48,12 @@ typedef struct {
 	gboolean show_avatars;
 } EmpathyThemeBoxesPriv;
 
-G_DEFINE_TYPE (EmpathyThemeBoxes, empathy_theme_boxes, EMPATHY_TYPE_CHAT_TEXT_VIEW);
+static void chat_text_view_iface_init (EmpathyChatViewIface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (EmpathyThemeBoxes, empathy_theme_boxes,
+			 EMPATHY_TYPE_CHAT_TEXT_VIEW,
+			 G_IMPLEMENT_INTERFACE (EMPATHY_TYPE_CHAT_VIEW,
+						chat_text_view_iface_init));
 
 static void
 theme_boxes_create_tags (EmpathyThemeBoxes *theme)
@@ -363,6 +368,16 @@ theme_boxes_append_message (EmpathyChatTextView *view,
 }
 
 static void
+theme_boxes_set_show_avatars (EmpathyChatView *view,
+			      gboolean show_avatars)
+{
+	EmpathyThemeBoxes *self = EMPATHY_THEME_BOXES (view);
+	EmpathyThemeBoxesPriv *priv = GET_PRIV (self);
+
+	priv->show_avatars = show_avatars;
+}
+
+static void
 empathy_theme_boxes_class_init (EmpathyThemeBoxesClass *class)
 {
 	GObjectClass             *object_class;
@@ -384,8 +399,7 @@ empathy_theme_boxes_init (EmpathyThemeBoxes *theme)
 
 	theme->priv = priv;
 
-	/* This is just hard-coded to TRUE until someone adds a tickybox in the
-	 * Theme tab for it. */
+	/* Show avatars by default. */
 	priv->show_avatars = TRUE;
 
 	theme_boxes_create_tags (theme);
@@ -405,3 +419,8 @@ empathy_theme_boxes_new (void)
 			     NULL);
 }
 
+static void
+chat_text_view_iface_init (EmpathyChatViewIface *iface)
+{
+	iface->set_show_avatars = theme_boxes_set_show_avatars;
+}
