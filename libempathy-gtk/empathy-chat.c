@@ -3338,6 +3338,17 @@ chat_constructed (GObject *object)
 	EmpathyChat *chat = EMPATHY_CHAT (object);
 	EmpathyChatPriv *priv = GET_PRIV (chat);
 
+	if (priv->tp_chat != NULL) {
+		TpChannel *channel = TP_CHANNEL (priv->tp_chat);
+		TpConnection *conn = tp_channel_borrow_connection (channel);
+		gboolean supports_avatars =
+			tp_proxy_has_interface_by_id (conn,
+						      TP_IFACE_QUARK_CONNECTION_INTERFACE_AVATARS);
+
+		empathy_chat_view_set_show_avatars (chat->view,
+						    supports_avatars);
+	}
+
 	if (priv->handle_type != TP_HANDLE_TYPE_ROOM) {
 		/* First display logs from the logger and then display pending messages */
 		chat_add_logs (chat);
