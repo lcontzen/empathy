@@ -74,6 +74,7 @@ typedef struct {
 	gboolean              allow_scrolling;
 	gchar                *variant;
 	gboolean              in_construction;
+	gboolean              show_avatars;
 } EmpathyThemeAdiumPriv;
 
 struct _EmpathyAdiumData {
@@ -642,9 +643,7 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
 			 * will become "Alternating_Messages_-_Blue_Red".
 			 */
 		} else if (theme_adium_match (&cur, "%userIcons%")) {
-			/* FIXME: mus t be "hideIcons" if use preference is set
-			 * to hide avatars */
-			replace = "showIcons";
+			replace = priv->show_avatars ? "showIcons" : "hideIcons";
 		} else if (theme_adium_match (&cur, "%messageClasses%")) {
 			replace = message_classes;
 		} else if (theme_adium_match (&cur, "%status%")) {
@@ -1314,6 +1313,16 @@ theme_adium_button_press_event (GtkWidget *widget, GdkEventButton *event)
 }
 
 static void
+theme_adium_set_show_avatars (EmpathyChatView *view,
+			      gboolean show_avatars)
+{
+	EmpathyThemeAdium     *theme = EMPATHY_THEME_ADIUM (view);
+	EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
+
+	priv->show_avatars = show_avatars;
+}
+
+static void
 theme_adium_iface_init (EmpathyChatViewIface *iface)
 {
 	iface->append_message = theme_adium_append_message;
@@ -1331,6 +1340,7 @@ theme_adium_iface_init (EmpathyChatViewIface *iface)
 	iface->copy_clipboard = theme_adium_copy_clipboard;
 	iface->focus_toggled = theme_adium_focus_toggled;
 	iface->message_acknowledged = theme_adium_message_acknowledged;
+	iface->set_show_avatars = theme_adium_set_show_avatars;
 }
 
 static void
@@ -1613,6 +1623,9 @@ empathy_theme_adium_init (EmpathyThemeAdium *theme)
 	g_queue_init (&priv->message_queue);
 	priv->allow_scrolling = TRUE;
 	priv->smiley_manager = empathy_smiley_manager_dup_singleton ();
+
+	/* Show avatars by default. */
+	priv->show_avatars = TRUE;
 
 	g_signal_connect (theme, "load-finished",
 			  G_CALLBACK (theme_adium_load_finished_cb),
