@@ -1606,3 +1606,16 @@ empathy_roster_view_remove_event (EmpathyRosterView *self,
         }
     }
 }
+
+FolksIndividual *
+empathy_roster_view_get_selected_individual (EmpathyRosterView *self)
+{
+  GtkWidget *child;
+
+  child = egg_list_box_get_selected_child (EGG_LIST_BOX (self));
+
+  if (!EMPATHY_IS_ROSTER_CONTACT (child))
+    return NULL;
+
+  return empathy_roster_contact_get_individual (EMPATHY_ROSTER_CONTACT (child));
+}

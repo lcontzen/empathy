@@ -81,6 +81,8 @@ FolksIndividual * empathy_roster_view_get_individual_at_y (
     gint y,
     GtkWidget **out_child);
 
+FolksIndividual * empathy_roster_view_get_selected_individual (EmpathyRosterView *self);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ROSTER_VIEW_H__*/
