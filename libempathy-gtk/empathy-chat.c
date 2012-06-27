@@ -4216,51 +4216,72 @@ empathy_chat_cut (EmpathyChat *chat)
 	}
 }
 
+static gboolean
+copy_from_chat_view (EmpathyChat *chat)
+{
+	if (!empathy_chat_view_get_has_selection (chat->view))
+		return FALSE;
+
+	empathy_chat_view_copy_clipboard (chat->view);
+	return TRUE;
+}
+
+static gboolean
+copy_from_input (EmpathyChat *chat)
+{
+	GtkTextBuffer *buffer;
+	GtkClipboard *clipboard;
+
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (chat->input_text_view));
+	if (!gtk_text_buffer_get_has_selection (buffer))
+		return FALSE;
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_text_buffer_copy_clipboard (buffer, clipboard);
+	return TRUE;
+}
+
+static gboolean
+copy_from_topic (EmpathyChat *chat)
+{
+	EmpathyChatPriv *priv = GET_PRIV (chat);
+	gint start_offset;
+	gint end_offset;
+	gchar *start;
+	gchar *end;
+	gchar *selection;
+	const gchar *topic;
+	GtkClipboard *clipboard;
+
+	if (!gtk_label_get_selection_bounds (GTK_LABEL (priv->label_topic),
+						       &start_offset,
+						       &end_offset))
+		return FALSE;
+
+	topic = gtk_label_get_text (GTK_LABEL (priv->label_topic));
+	start = g_utf8_offset_to_pointer (topic, start_offset);
+	end = g_utf8_offset_to_pointer (topic, end_offset);
+	selection = g_strndup (start, end - start);
+
+	clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+	gtk_clipboard_set_text (clipboard, selection, -1);
+
+	g_free (selection);
+	return TRUE;
+}
+
 void
 empathy_chat_copy (EmpathyChat *chat)
 {
-	GtkTextBuffer *buffer;
-
 	g_return_if_fail (EMPATHY_IS_CHAT (chat));
 
-	if (empathy_chat_view_get_has_selection (chat->view)) {
-		empathy_chat_view_copy_clipboard (chat->view);
+	if (copy_from_chat_view (chat))
 		return;
-	}
 
-	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (chat->input_text_view));
-	if (gtk_text_buffer_get_has_selection (buffer)) {
-		GtkClipboard *clipboard;
+	if (copy_from_input (chat))
+		return;
 
-		clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-
-		gtk_text_buffer_copy_clipboard (buffer, clipboard);
-	}
-	else {
-		gint start_offset;
-		gint end_offset;
-		EmpathyChatPriv *priv = GET_PRIV (chat);
-
-		if (gtk_label_get_selection_bounds (GTK_LABEL (priv->label_topic),
-							       &start_offset,
-							       &end_offset)) {
-			gchar *start;
-			gchar *end;
-			gchar *selection;
-			const gchar *topic;
-			GtkClipboard *clipboard;
-
-			topic = gtk_label_get_text (GTK_LABEL (priv->label_topic));
-			start = g_utf8_offset_to_pointer (topic, start_offset);
-			end = g_utf8_offset_to_pointer (topic, end_offset);
-			selection = g_strndup (start, end - start);
-
-			clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-			gtk_clipboard_set_text (clipboard, selection, -1);
-
-			g_free (selection);
-		}
-	}
+	copy_from_topic (chat);
 }
 
 void
