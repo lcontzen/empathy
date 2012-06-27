@@ -176,6 +176,7 @@ empathy_tp_chat_add (EmpathyTpChat *self,
       const char *object_path;
       GPtrArray channels = { (gpointer *) &object_path, 1 };
       const char *invitees[2] = { NULL, };
+      TpAccount *account;
 
       invitees[0] = empathy_contact_get_id (contact);
       object_path = tp_proxy_get_object_path (self);
@@ -192,7 +193,9 @@ empathy_tp_chat_add (EmpathyTpChat *self,
           /* FIXME: InvitationMessage ? */
           NULL);
 
-      req = tp_account_channel_request_new (self->priv->account, props,
+      account = empathy_tp_chat_get_account (self);
+
+      req = tp_account_channel_request_new (account, props,
         TP_USER_ACTION_TIME_NOT_USER_ACTION);
 
       /* Although this is a MUC, it's anonymous, so CreateChannel is
@@ -659,7 +662,6 @@ tp_chat_dispose (GObject *object)
 {
   EmpathyTpChat *self = EMPATHY_TP_CHAT (object);
 
-  tp_clear_object (&self->priv->account);
   tp_clear_object (&self->priv->remote_contact);
   tp_clear_object (&self->priv->user);
 
@@ -905,9 +907,6 @@ tp_chat_get_property (GObject *object,
 
   switch (param_id)
     {
-      case PROP_ACCOUNT:
-        g_value_set_object (value, self->priv->account);
-        break;
       case PROP_SELF_CONTACT:
         g_value_set_object (value, self->priv->user);
         break;
@@ -925,25 +924,6 @@ tp_chat_get_property (GObject *object,
       case PROP_SUBJECT:
         g_value_set_string (value,
           empathy_tp_chat_get_subject (self));
-        break;
-      default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-        break;
-    };
-}
-
-static void
-tp_chat_set_property (GObject *object,
-    guint param_id,
-    const GValue *value,
-    GParamSpec   *pspec)
-{
-  EmpathyTpChat *self = EMPATHY_TP_CHAT (object);
-
-  switch (param_id)
-    {
-      case PROP_ACCOUNT:
-        self->priv->account = g_value_dup_object (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -986,17 +966,8 @@ empathy_tp_chat_class_init (EmpathyTpChatClass *klass)
   object_class->dispose = tp_chat_dispose;
   object_class->finalize = tp_chat_finalize;
   object_class->get_property = tp_chat_get_property;
-  object_class->set_property = tp_chat_set_property;
 
   proxy_class->list_features = tp_chat_list_features;
-
-  g_object_class_install_property (object_class, PROP_ACCOUNT,
-      g_param_spec_object ("account", "TpAccount",
-        "the account associated with the chat",
-        TP_TYPE_ACCOUNT,
-        G_PARAM_READWRITE |
-        G_PARAM_CONSTRUCT_ONLY |
-        G_PARAM_STATIC_STRINGS));
 
   /**
    * EmpathyTpChat:self-contact:
@@ -1095,18 +1066,15 @@ empathy_tp_chat_init (EmpathyTpChat *self)
 
 EmpathyTpChat *
 empathy_tp_chat_new (TpSimpleClientFactory *factory,
-    TpAccount *account,
     TpConnection *conn,
     const gchar *object_path,
     const GHashTable *immutable_properties)
 {
-  g_return_val_if_fail (TP_IS_ACCOUNT (account), NULL);
   g_return_val_if_fail (TP_IS_CONNECTION (conn), NULL);
   g_return_val_if_fail (immutable_properties != NULL, NULL);
 
   return g_object_new (EMPATHY_TYPE_TP_CHAT,
       "factory", factory,
-       "account", account,
        "connection", conn,
        "dbus-daemon", tp_proxy_get_dbus_daemon (conn),
        "bus-name", tp_proxy_get_bus_name (conn),
@@ -1143,9 +1111,13 @@ empathy_tp_chat_get_remote_contact (EmpathyTpChat *self)
 TpAccount *
 empathy_tp_chat_get_account (EmpathyTpChat *self)
 {
+  TpConnection *connection;
+
   g_return_val_if_fail (EMPATHY_IS_TP_CHAT (self), NULL);
 
-  return self->priv->account;
+  connection = tp_channel_borrow_connection (TP_CHANNEL (self));
+
+  return tp_connection_get_account (connection);
 }
 
 void

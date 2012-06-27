@@ -45,12 +45,8 @@ empathy_client_factory_create_channel (TpSimpleClientFactory *factory,
 
   if (!tp_strdiff (chan_type, TP_IFACE_CHANNEL_TYPE_TEXT))
     {
-      TpAccount *account;
-
-      account = tp_connection_get_account (conn);
-
       return TP_CHANNEL (empathy_tp_chat_new (
-            TP_SIMPLE_CLIENT_FACTORY (factory), account, conn, path,
+            TP_SIMPLE_CLIENT_FACTORY (factory), conn, path,
             properties));
     }
 
