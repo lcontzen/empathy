@@ -38,10 +38,10 @@
 #include <extensions/extensions.h>
 
 #include <libempathy-gtk/empathy-images.h>
-#include <libempathy-gtk/empathy-contact-dialogs.h>
 #include <libempathy-gtk/empathy-sound-manager.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 #include <libempathy-gtk/empathy-call-utils.h>
+#include <libempathy-gtk/empathy-subscription-dialog.h>
 
 #include "empathy-event-manager.h"
 #include "empathy-roster-window.h"
@@ -1063,9 +1063,18 @@ approve_channels (TpSimpleApprover *approver,
 static void
 event_pending_subscribe_func (EventPriv *event)
 {
-  empathy_subscription_dialog_show (event->public.contact, event->public.header,
-      NULL);
+  GtkWidget *dialog;
+  FolksIndividual *individual;
+
+  individual = empathy_ensure_individual_from_tp_contact (
+      empathy_contact_get_tp_contact (event->public.contact));
+
+  dialog = empathy_subscription_dialog_new (individual, event->public.message);
+  gtk_window_present (GTK_WINDOW (dialog));
+
   event_remove (event);
+
+  g_object_unref (individual);
 }
 
 static void
