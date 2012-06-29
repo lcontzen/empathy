@@ -68,6 +68,7 @@ libempathy-gtk/empathy-ui-utils.c
 libempathy-gtk/totem-subtitle-encoding.c
 libempathy-gtk/empathy-webkit-utils.c
 libempathy-gtk/empathy-calendar-button.c
+libempathy-gtk/empathy-subscription-dialog.c
 
 nautilus-sendto-plugin/empathy-nautilus-sendto.c
 
