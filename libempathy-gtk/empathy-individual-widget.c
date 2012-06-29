@@ -1214,6 +1214,8 @@ notify_presence_cb (gpointer folks_object,
   GtkWidget *status_label, *state_image;
   const gchar *message;
   gchar *markup_text = NULL;
+  FolksPresenceType presence;
+  gboolean visible = TRUE;
 
   if (FOLKS_IS_INDIVIDUAL (folks_object))
     grid = G_OBJECT (priv->individual_grid);
@@ -1228,14 +1230,22 @@ notify_presence_cb (gpointer folks_object,
   status_label = g_object_get_data (grid, "status-label");
   state_image = g_object_get_data (grid, "state-image");
 
+  presence = folks_presence_details_get_presence_type (
+      FOLKS_PRESENCE_DETAILS (folks_object));
+  if (presence == FOLKS_PRESENCE_TYPE_UNKNOWN ||
+      presence == FOLKS_PRESENCE_TYPE_ERROR)
+    {
+      /* Don't display anything if we don't know the presence */
+      visible = FALSE;
+      goto out;
+    }
+
   /* FIXME: Default messages should be moved into libfolks (bgo#627403) */
   message = folks_presence_details_get_presence_message (
       FOLKS_PRESENCE_DETAILS (folks_object));
   if (EMP_STR_EMPTY (message))
     {
-      message = empathy_presence_get_default_message (
-          folks_presence_details_get_presence_type (
-              FOLKS_PRESENCE_DETAILS (folks_object)));
+      message = empathy_presence_get_default_message (presence);
     }
 
   if (message != NULL)
@@ -1244,11 +1254,12 @@ notify_presence_cb (gpointer folks_object,
   g_free (markup_text);
 
   gtk_image_set_from_icon_name (GTK_IMAGE (state_image),
-      empathy_icon_name_for_presence (
-          folks_presence_details_get_presence_type (
-              FOLKS_PRESENCE_DETAILS (folks_object))),
+      empathy_icon_name_for_presence (presence),
       GTK_ICON_SIZE_BUTTON);
-  gtk_widget_show (state_image);
+
+out:
+  gtk_widget_set_visible (status_label, visible);
+  gtk_widget_set_visible (state_image, visible);
 }
 
 static void
