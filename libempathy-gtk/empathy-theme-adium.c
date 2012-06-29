@@ -1710,6 +1710,9 @@ empathy_adium_path_is_valid (const gchar *path)
 	gboolean ret;
 	gchar   *file;
 
+	if (path[0] != '/')
+		return FALSE;
+
 	/* The theme is not valid if there is no Info.plist */
 	file = g_build_filename (path, "Contents", "Info.plist",
 				 NULL);

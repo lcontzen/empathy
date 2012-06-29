@@ -165,8 +165,12 @@ theme_manager_notify_adium_path_cb (GSettings   *gsettings_chat,
 	}
 
 	/* If path does not really contains an adium path, ignore */
-	if (!empathy_adium_path_is_valid (new_path)) {
-		DEBUG ("Invalid theme path set: %s", new_path);
+	if (empathy_adium_path_is_valid (new_path)) {
+		/* pass */
+	} else if (empathy_theme_manager_find_theme (new_path) != NULL) {
+		new_path = empathy_theme_manager_find_theme (new_path);
+	} else {
+		g_warning ("Do not understand theme: %s", new_path);
 		goto finally;
 	}
 
@@ -405,4 +409,63 @@ empathy_theme_manager_get_adium_themes (void)
 	}
 
 	return themes_list;
+}
+
+gchar *
+empathy_theme_manager_find_theme (const gchar *name)
+{
+	gchar *path;
+	const gchar * const *paths;
+	gint i;
+
+	/* look in EMPATHY_SRCDIR */
+	path = g_strjoin (NULL,
+			g_getenv ("EMPATHY_SRCDIR"),
+			"/data/themes/",
+			name,
+			".AdiumMessageStyle",
+			NULL);
+
+	DEBUG ("Trying '%s'", path);
+
+	if (empathy_adium_path_is_valid (path))
+		return path;
+
+	g_free (path);
+
+	/* look in user dir */
+	path = g_strjoin (NULL,
+			g_get_user_data_dir (),
+			"/adium/message-styles/",
+			name,
+			".AdiumMessageStyle",
+			NULL);
+
+	DEBUG ("Trying '%s'", path);
+
+	if (empathy_adium_path_is_valid (path))
+		return path;
+
+	g_free (path);
+
+	/* look in system dirs */
+	paths = g_get_system_data_dirs ();
+
+	for (i = 0; paths[i] != NULL; i++) {
+		path = g_strjoin (NULL,
+				paths[i],
+				"/adium/message-styles/",
+				name,
+				".AdiumMessageStyle",
+				NULL);
+
+		DEBUG ("Trying '%s'", path);
+
+		if (empathy_adium_path_is_valid (path))
+			return path;
+
+		g_free (path);
+	}
+
+	return NULL;
 }
