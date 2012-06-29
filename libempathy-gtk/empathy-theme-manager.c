@@ -272,7 +272,6 @@ theme_manager_migrate_from_legacy_theme (EmpathyThemeManager *self)
 	char *theme = g_settings_get_string (priv->gsettings_chat,
 			EMPATHY_PREFS_CHAT_THEME);
 	const char *adium_theme, *variant = "";
-	char *path;
 
 	if (!tp_strdiff (theme, "adium")) {
 		goto finally;
@@ -291,20 +290,14 @@ theme_manager_migrate_from_legacy_theme (EmpathyThemeManager *self)
 		adium_theme = "Classic";
 	}
 
-	path = g_strjoin (NULL, DATADIR, "/adium/message-styles/",
-		adium_theme, ".AdiumMessageStyle",
-		NULL);
-
-	DEBUG ("Migrating to '%s' variant '%s'", path, variant);
+	DEBUG ("Migrating to '%s' variant '%s'", adium_theme, variant);
 
 	g_settings_set_string (priv->gsettings_chat,
 		EMPATHY_PREFS_CHAT_THEME, "adium");
 	g_settings_set_string (priv->gsettings_chat,
-		EMPATHY_PREFS_CHAT_ADIUM_PATH, path);
+		EMPATHY_PREFS_CHAT_ADIUM_PATH, adium_theme);
 	g_settings_set_string (priv->gsettings_chat,
 		EMPATHY_PREFS_CHAT_THEME_VARIANT, variant);
-
-	g_free (path);
 
 finally:
 	g_free (theme);
