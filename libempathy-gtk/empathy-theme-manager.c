@@ -45,8 +45,6 @@
 #define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyThemeManager)
 typedef struct {
 	GSettings   *gsettings_chat;
-	GtkSettings *settings;
-	GList       *boxes_views;
 	guint        emit_changed_idle;
 	gboolean     in_constructor;
 
@@ -115,18 +113,6 @@ clear_list_of_views (GList **views)
 		*views = g_list_delete_link (*views, *views);
 	}
 }
-
-#if 0
-static void
-theme_manager_gdk_color_to_hex (GdkColor *gdk_color, gchar *str_color)
-{
-	g_snprintf (str_color, 10,
-		    "#%02x%02x%02x",
-		    gdk_color->red >> 8,
-		    gdk_color->green >> 8,
-		    gdk_color->blue >> 8);
-}
-#endif
 
 static EmpathyThemeAdium *
 theme_manager_create_adium_view (EmpathyThemeManager *manager)
@@ -235,8 +221,6 @@ theme_manager_finalize (GObject *object)
 	if (priv->emit_changed_idle != 0) {
 		g_source_remove (priv->emit_changed_idle);
 	}
-
-	clear_list_of_views (&priv->boxes_views);
 
 	clear_list_of_views (&priv->adium_views);
 	g_free (priv->adium_variant);
