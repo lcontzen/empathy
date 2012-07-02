@@ -141,17 +141,11 @@ theme_manager_notify_theme_cb (GSettings *gsettings_chat,
 
   theme = g_settings_get_string (gsettings_chat, key);
 
-  if (empathy_theme_manager_find_theme (theme) != NULL)
-    {
-      path = empathy_theme_manager_find_theme (theme);
-      g_free (theme);
-    }
-  else
+  path = empathy_theme_manager_find_theme (theme);
+  if (path == NULL)
     {
       g_warning ("Can't find theme: %s; fallback to 'Classic'",
           theme);
-
-      g_free (theme);
 
       path = empathy_theme_manager_find_theme ("Classic");
       if (path == NULL)
@@ -167,6 +161,7 @@ theme_manager_notify_theme_cb (GSettings *gsettings_chat,
   theme_manager_emit_changed (self);
 
   g_free (path);
+  g_free (theme);
 }
 
 static void
