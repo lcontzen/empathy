@@ -132,48 +132,41 @@ theme_manager_create_adium_view (EmpathyThemeManager *self)
 }
 
 static void
-theme_manager_notify_adium_path_cb (GSettings *gsettings_chat,
+theme_manager_notify_theme_cb (GSettings *gsettings_chat,
     const gchar *key,
     gpointer user_data)
 {
   EmpathyThemeManager *self = EMPATHY_THEME_MANAGER (user_data);
-  const gchar *current_path = NULL;
-  gchar *new_path;
+  gchar *theme, *path;
 
-  new_path = g_settings_get_string (gsettings_chat, key);
+  theme = g_settings_get_string (gsettings_chat, key);
 
-  if (self->priv->adium_data != NULL)
-    current_path = empathy_adium_data_get_path (self->priv->adium_data);
-
-  /* If path did not really changed, ignore */
-  if (!tp_strdiff (current_path, new_path))
-    goto finally;
-
-  /* If path does not really contains an adium path, ignore */
-  if (empathy_adium_path_is_valid (new_path))
+  if (empathy_theme_manager_find_theme (theme) != NULL)
     {
-      /* pass */
-    }
-  else if (empathy_theme_manager_find_theme (new_path) != NULL)
-    {
-      new_path = empathy_theme_manager_find_theme (new_path);
+      path = empathy_theme_manager_find_theme (theme);
+      g_free (theme);
     }
   else
     {
-      g_warning ("Do not understand theme: %s", new_path);
-      goto finally;
+      g_warning ("Can't find theme: %s; fallback to 'Classic'",
+          theme);
+
+      g_free (theme);
+
+      path = empathy_theme_manager_find_theme ("Classic");
+      if (path == NULL)
+        g_critical ("Can't find 'Classic theme");
     }
 
   /* Load new theme data, we can stop tracking existing views since we
    * won't be able to change them live anymore */
   clear_list_of_views (&self->priv->adium_views);
   tp_clear_pointer (&self->priv->adium_data, empathy_adium_data_unref);
-  self->priv->adium_data = empathy_adium_data_new (new_path);
+  self->priv->adium_data = empathy_adium_data_new (path);
 
   theme_manager_emit_changed (self);
 
-finally:
-  g_free (new_path);
+  g_free (path);
 }
 
 static void
@@ -261,11 +254,11 @@ empathy_theme_manager_init (EmpathyThemeManager *self)
 
   /* Take the adium path/variant and track changes */
   g_signal_connect (self->priv->gsettings_chat,
-      "changed::" EMPATHY_PREFS_CHAT_ADIUM_PATH,
-      G_CALLBACK (theme_manager_notify_adium_path_cb), self);
+      "changed::" EMPATHY_PREFS_CHAT_THEME,
+      G_CALLBACK (theme_manager_notify_theme_cb), self);
 
-  theme_manager_notify_adium_path_cb (self->priv->gsettings_chat,
-      EMPATHY_PREFS_CHAT_ADIUM_PATH, self);
+  theme_manager_notify_theme_cb (self->priv->gsettings_chat,
+      EMPATHY_PREFS_CHAT_THEME, self);
 
   g_signal_connect (self->priv->gsettings_chat,
       "changed::" EMPATHY_PREFS_CHAT_THEME_VARIANT,

@@ -183,7 +183,7 @@ present them to the user immediately.</description>
     <key name="adium-path" type="s">
       <default>''</default>
       <summary>Path of the Adium theme to use</summary>
-      <description>Path of the Adium theme to use if the theme used for chat is Adium.</description>
+      <description>Path of the Adium theme to use if the theme used for chat is Adium. Deprecated.</description>
     </key>
     <key name="enable-webkit-developer-tools" type="b">
       <default>false</default>

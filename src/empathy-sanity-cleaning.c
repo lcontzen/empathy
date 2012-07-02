@@ -144,8 +144,8 @@ static void
 upgrade_chat_theme_settings (void)
 {
   GSettings *gsettings_chat;
-  gchar *theme;
-  const char *adium_theme, *variant = "";
+  gchar *theme, *new_theme = NULL;
+  const char *variant = "";
 
   gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
 
@@ -153,33 +153,56 @@ upgrade_chat_theme_settings (void)
       EMPATHY_PREFS_CHAT_THEME);
 
   if (!tp_strdiff (theme, "adium")) {
-    goto finally;
+    gchar *path, *fullname;
+
+    path = g_settings_get_string (gsettings_chat,
+        EMPATHY_PREFS_CHAT_ADIUM_PATH);
+
+    fullname = g_path_get_basename (path);
+    if (g_str_has_suffix (fullname, ".AdiumMessageStyle"))
+      {
+        gchar **tmp;
+
+        tmp = g_strsplit (fullname, ".AdiumMessageStyle", 0);
+        new_theme = g_strdup (tmp[0]);
+
+        g_strfreev (tmp);
+      }
+    else
+      {
+        /* Use the Classic theme as fallback */
+        new_theme = g_strdup ("Classic");
+      }
+
+    g_free (path);
+    g_free (fullname);
   } else if (!tp_strdiff (theme, "gnome")) {
-    adium_theme = "PlanetGNOME";
+    new_theme = g_strdup ("PlanetGNOME");
   } else if (!tp_strdiff (theme, "simple")) {
-    adium_theme = "Boxes";
+    new_theme = g_strdup ("Boxes");
     variant = "Simple";
   } else if (!tp_strdiff (theme, "clean")) {
-    adium_theme = "Boxes";
+    new_theme = g_strdup ("Boxes");
     variant = "Clean";
   } else if (!tp_strdiff (theme, "blue")) {
-    adium_theme = "Boxes";
+    new_theme = g_strdup ("Boxes");
     variant = "Blue";
   } else {
-    adium_theme = "Classic";
+    /* Assume that's an Adium theme name. The theme manager will fallback to
+     * 'Classic' if it can't find it. */
+    goto finally;
   }
 
-  DEBUG ("Migrating to '%s' variant '%s'", adium_theme, variant);
+  DEBUG ("Migrating to '%s' variant '%s'", new_theme, variant);
 
   g_settings_set_string (gsettings_chat,
-    EMPATHY_PREFS_CHAT_THEME, "adium");
-  g_settings_set_string (gsettings_chat,
-    EMPATHY_PREFS_CHAT_ADIUM_PATH, adium_theme);
+    EMPATHY_PREFS_CHAT_THEME, new_theme);
   g_settings_set_string (gsettings_chat,
     EMPATHY_PREFS_CHAT_THEME_VARIANT, variant);
 
 finally:
   g_free (theme);
+  g_free (new_theme);
   g_object_unref (gsettings_chat);
 }
 

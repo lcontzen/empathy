@@ -115,7 +115,7 @@ enum {
 
 enum {
 	COL_THEME_VISIBLE_NAME,
-	COL_THEME_ADIUM_PATH,
+	COL_THEME_ADIUM_NAME,
 	COL_THEME_ADIUM_INFO,
 	COL_THEME_COUNT
 };
@@ -834,24 +834,24 @@ preferences_theme_changed_cb (GtkComboBox        *combo,
 
 	if (gtk_combo_box_get_active_iter (combo, &iter)) {
 		GtkTreeModel *model;
-		gchar        *path;
+		gchar        *name;
 		GHashTable   *info;
 		gboolean variant;
 
 		model = gtk_combo_box_get_model (combo);
 		gtk_tree_model_get (model, &iter,
-				    COL_THEME_ADIUM_PATH, &path,
+				    COL_THEME_ADIUM_NAME, &name,
 				    COL_THEME_ADIUM_INFO, &info,
 				    -1);
 
 		g_settings_set_string (priv->gsettings_chat,
-				       EMPATHY_PREFS_CHAT_ADIUM_PATH,
-				       path);
+				       EMPATHY_PREFS_CHAT_THEME,
+				       name);
 
 		variant = preferences_theme_variants_fill (preferences, info);
 		gtk_widget_set_visible (priv->hbox_chat_theme_variant, variant);
 
-		g_free (path);
+		g_free (name);
 		tp_clear_pointer (&info, g_hash_table_unref);
 	}
 }
@@ -864,31 +864,31 @@ preferences_theme_notify_cb (GSettings   *gsettings,
 	EmpathyPreferences *preferences = user_data;
 	EmpathyPreferencesPriv *priv = GET_PRIV (preferences);
 	GtkComboBox        *combo;
-	gchar              *conf_path;
+	gchar              *theme;
 	GtkTreeModel       *model;
 	GtkTreeIter         iter;
 	gboolean            found = FALSE;
 	gboolean            ok;
 
-	conf_path = g_settings_get_string (gsettings, EMPATHY_PREFS_CHAT_ADIUM_PATH);
+	theme = g_settings_get_string (gsettings, key);
 
 	combo = GTK_COMBO_BOX (priv->combobox_chat_theme);
 	model = gtk_combo_box_get_model (combo);
 	for (ok = gtk_tree_model_get_iter_first (model, &iter);
 	     ok && !found;
 	     ok = gtk_tree_model_iter_next (model, &iter)) {
-		gchar *path;
+		gchar *name;
 
 		gtk_tree_model_get (model, &iter,
-				    COL_THEME_ADIUM_PATH, &path,
+				    COL_THEME_ADIUM_NAME, &name,
 				    -1);
 
-		if (!tp_strdiff (path, conf_path)) {
+		if (!tp_strdiff (name, theme)) {
 			found = TRUE;
 			gtk_combo_box_set_active_iter (combo, &iter);
 		}
 
-		g_free (path);
+		g_free (name);
 	}
 
 	/* Fallback to the first one. */
@@ -898,7 +898,7 @@ preferences_theme_notify_cb (GSettings   *gsettings,
 		}
 	}
 
-	g_free (conf_path);
+	g_free (theme);
 }
 
 static void
@@ -928,21 +928,23 @@ preferences_themes_setup (EmpathyPreferences *preferences)
 	adium_themes = empathy_theme_manager_get_adium_themes ();
 	while (adium_themes != NULL) {
 		GHashTable *info;
-		const gchar *name;
-		const gchar *path;
+		const gchar *visible_name;
+		gchar *name;
 
 		info = adium_themes->data;
-		name = tp_asv_get_string (info, "CFBundleName");
-		path = tp_asv_get_string (info, "path");
+		visible_name = tp_asv_get_string (info, "CFBundleName");
+		name = empathy_theme_manager_dup_theme_name_from_path (
+			tp_asv_get_string (info, "path"));
 
-		if (name != NULL && path != NULL) {
+		if (visible_name != NULL && name != NULL) {
 			gtk_list_store_insert_with_values (store, NULL, -1,
-				COL_THEME_VISIBLE_NAME, name,
-				COL_THEME_ADIUM_PATH, path,
+				COL_THEME_VISIBLE_NAME, visible_name,
+				COL_THEME_ADIUM_NAME, name,
 				COL_THEME_ADIUM_INFO, info,
 				-1);
 		}
 		g_hash_table_unref (info);
+		g_free (name);
 		adium_themes = g_list_delete_link (adium_themes, adium_themes);
 	}
 
@@ -961,11 +963,11 @@ preferences_themes_setup (EmpathyPreferences *preferences)
 
 	/* Select the theme from the GSetting key and track changes */
 	preferences_theme_notify_cb (priv->gsettings_chat,
-				     EMPATHY_PREFS_CHAT_ADIUM_PATH,
+				     EMPATHY_PREFS_CHAT_THEME,
 				     preferences);
 
 	g_signal_connect (priv->gsettings_chat,
-			  "changed::" EMPATHY_PREFS_CHAT_ADIUM_PATH,
+			  "changed::" EMPATHY_PREFS_CHAT_THEME,
 			  G_CALLBACK (preferences_theme_notify_cb),
 			  preferences);
 }
