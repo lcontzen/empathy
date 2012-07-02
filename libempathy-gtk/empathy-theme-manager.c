@@ -336,7 +336,8 @@ empathy_theme_manager_get_adium_themes (void)
   gint i = 0;
   const gchar *dir;
 
-  hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+  hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+      g_free, (GDestroyNotify) g_hash_table_unref);
 
   /* Start from the more general locations (the system) to the more specific
    * ones ($HOME, EMPATHY_SRCDIR) so the more specific themes will override
@@ -371,7 +372,8 @@ empathy_theme_manager_get_adium_themes (void)
     }
 
   /* Pass ownership of the info hash table to the list */
-  result = g_list_copy (g_hash_table_get_values (hash));
+  result = g_list_copy_deep (g_hash_table_get_values (hash),
+      (GCopyFunc) g_hash_table_ref, NULL);
 
   g_hash_table_unref (hash);
 
