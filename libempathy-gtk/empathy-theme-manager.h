@@ -1,7 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Copyright (C) 2005-2007 Imendio AB
- * Copyright (C) 2008 Collabora Ltd.
+ * Copyright (C) 2008-2012 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -29,30 +28,48 @@
 
 G_BEGIN_DECLS
 
-#define EMPATHY_TYPE_THEME_MANAGER         (empathy_theme_manager_get_type ())
-#define EMPATHY_THEME_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), EMPATHY_TYPE_THEME_MANAGER, EmpathyThemeManager))
-#define EMPATHY_THEME_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), EMPATHY_TYPE_THEME_MANAGER, EmpathyThemeManagerClass))
-#define EMPATHY_IS_THEME_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), EMPATHY_TYPE_THEME_MANAGER))
-#define EMPATHY_IS_THEME_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), EMPATHY_TYPE_THEME_MANAGER))
-#define EMPATHY_THEME_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), EMPATHY_TYPE_THEME_MANAGER, EmpathyThemeManagerClass))
+/* TYPE MACROS */
+#define EMPATHY_TYPE_THEME_MANAGER \
+  (empathy_theme_manager_get_type ())
+#define EMPATHY_THEME_MANAGER(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), \
+    EMPATHY_TYPE_THEME_MANAGER, \
+    EmpathyThemeManager))
+#define EMPATHY_THEME_MANAGER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), \
+    EMPATHY_TYPE_THEME_MANAGER, \
+    EmpathyThemeManagerClass))
+#define EMPATHY_IS_THEME_MANAGER(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), \
+    EMPATHY_TYPE_THEME_MANAGER))
+#define EMPATHY_IS_THEME_MANAGER_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), \
+    EMPATHY_TYPE_THEME_MANAGER))
+#define EMPATHY_THEME_MANAGER_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+    EMPATHY_TYPE_THEME_MANAGER, \
+    EmpathyThemeManagerClass))
+
 
 typedef struct _EmpathyThemeManager      EmpathyThemeManager;
 typedef struct _EmpathyThemeManagerClass EmpathyThemeManagerClass;
 
-struct _EmpathyThemeManager {
-	GObject parent;
-	gpointer priv;
+struct _EmpathyThemeManager
+{
+  GObject parent;
+  gpointer priv;
 };
 
-struct _EmpathyThemeManagerClass {
-	GObjectClass parent_class;
+struct _EmpathyThemeManagerClass
+{
+  GObjectClass parent_class;
 };
 
-GType                   empathy_theme_manager_get_type    (void) G_GNUC_CONST;
-EmpathyThemeManager *   empathy_theme_manager_dup_singleton (void);
-GList *                 empathy_theme_manager_get_adium_themes (void);
-EmpathyChatView *       empathy_theme_manager_create_view (EmpathyThemeManager *manager);
-gchar *                 empathy_theme_manager_find_theme (const gchar *name);
+GType empathy_theme_manager_get_type (void) G_GNUC_CONST;
+EmpathyThemeManager * empathy_theme_manager_dup_singleton (void);
+GList * empathy_theme_manager_get_adium_themes (void);
+EmpathyChatView * empathy_theme_manager_create_view (EmpathyThemeManager *self);
+gchar * empathy_theme_manager_find_theme (const gchar *name);
 
 G_END_DECLS
 
