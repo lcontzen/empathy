@@ -44,14 +44,12 @@
 #define DEBUG_FLAG EMPATHY_DEBUG_CHAT
 #include <libempathy/empathy-debug.h>
 
-#define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyThemeAdium)
-
 #define BORING_DPI_DEFAULT 96
 
 /* "Join" consecutive messages with timestamps within five minutes */
 #define MESSAGE_JOIN_PERIOD 5*60
 
-typedef struct
+struct _EmpathyThemeAdiumPriv
 {
   EmpathyAdiumData *data;
   EmpathySmileyManager *smiley_manager;
@@ -75,7 +73,7 @@ typedef struct
   gchar *variant;
   gboolean in_construction;
   gboolean show_avatars;
-} EmpathyThemeAdiumPriv;
+};
 
 struct _EmpathyAdiumData
 {
@@ -172,14 +170,13 @@ free_queued_item (QueuedItem *item)
 }
 
 static void
-theme_adium_update_enable_webkit_developer_tools (EmpathyThemeAdium *theme)
+theme_adium_update_enable_webkit_developer_tools (EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
-  WebKitWebView *web_view = WEBKIT_WEB_VIEW (theme);
+  WebKitWebView *web_view = WEBKIT_WEB_VIEW (self);
   gboolean enable_webkit_developer_tools;
 
   enable_webkit_developer_tools = g_settings_get_boolean (
-      priv->gsettings_chat,
+      self->priv->gsettings_chat,
       EMPATHY_PREFS_CHAT_WEBKIT_DEVELOPER_TOOLS);
 
   g_object_set (G_OBJECT (webkit_web_view_get_settings (web_view)),
@@ -191,9 +188,9 @@ theme_adium_notify_enable_webkit_developer_tools_cb (GSettings *gsettings,
     const gchar *key,
     gpointer user_data)
 {
-  EmpathyThemeAdium *theme = user_data;
+  EmpathyThemeAdium *self = user_data;
 
-  theme_adium_update_enable_webkit_developer_tools (theme);
+  theme_adium_update_enable_webkit_developer_tools (self);
 }
 
 static gboolean
@@ -252,23 +249,22 @@ string_with_format (const gchar *format,
 }
 
 static void
-theme_adium_load_template (EmpathyThemeAdium *theme)
+theme_adium_load_template (EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
   gchar *basedir_uri;
   gchar *variant_path;
   gchar *template;
 
-  priv->pages_loading++;
-  basedir_uri = g_strconcat ("file://", priv->data->basedir, NULL);
+  self->priv->pages_loading++;
+  basedir_uri = g_strconcat ("file://", self->priv->data->basedir, NULL);
 
-  variant_path = adium_info_dup_path_for_variant (priv->data->info,
-      priv->variant);
+  variant_path = adium_info_dup_path_for_variant (self->priv->data->info,
+      self->priv->variant);
 
-  template = string_with_format (priv->data->template_html,
+  template = string_with_format (self->priv->data->template_html,
     variant_path, NULL);
 
-  webkit_web_view_load_html_string (WEBKIT_WEB_VIEW (theme),
+  webkit_web_view_load_html_string (WEBKIT_WEB_VIEW (self),
       template, basedir_uri);
 
   g_free (basedir_uri);
@@ -281,13 +277,12 @@ theme_adium_parse_body (EmpathyThemeAdium *self,
   const gchar *text,
   const gchar *token)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (self);
   EmpathyStringParser *parsers;
   GString *string;
 
   /* Check if we have to parse smileys */
   parsers = empathy_webkit_get_string_parser (
-    g_settings_get_boolean (priv->gsettings_chat,
+    g_settings_get_boolean (self->priv->gsettings_chat,
       EMPATHY_PREFS_CHAT_SHOW_SMILEYS));
 
   /* Parse text and construct string with links and smileys replaced
@@ -554,7 +549,7 @@ nsdate_to_strftime (EmpathyAdiumData *data, const gchar *nsdate)
 
 
 static void
-theme_adium_append_html (EmpathyThemeAdium *theme,
+theme_adium_append_html (EmpathyThemeAdium *self,
     const gchar *func,
     const gchar *html,
     const gchar *message,
@@ -567,7 +562,6 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
     gboolean is_backlog,
     gboolean outgoing)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
   GString *string;
   const gchar *cur = NULL;
   gchar *script;
@@ -665,7 +659,7 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
         {
           const gchar *strftime_format;
 
-          strftime_format = nsdate_to_strftime (priv->data, format);
+          strftime_format = nsdate_to_strftime (self->priv->data, format);
           if (is_backlog)
             dup_replace = empathy_time_to_string_local (timestamp,
               strftime_format ? strftime_format :
@@ -697,7 +691,7 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
         }
       else if (theme_adium_match (&cur, "%userIcons%"))
         {
-          replace = priv->show_avatars ? "showIcons" : "hideIcons";
+          replace = self->priv->show_avatars ? "showIcons" : "hideIcons";
         }
       else if (theme_adium_match (&cur, "%messageClasses%"))
         {
@@ -747,7 +741,7 @@ theme_adium_append_html (EmpathyThemeAdium *theme,
   g_string_append (string, "\")");
 
   script = g_string_free (string, FALSE);
-  webkit_web_view_execute_script (WEBKIT_WEB_VIEW (theme), script);
+  webkit_web_view_execute_script (WEBKIT_WEB_VIEW (self), script);
   g_free (script);
 }
 
@@ -755,23 +749,22 @@ static void
 theme_adium_append_event_escaped (EmpathyChatView *view,
     const gchar *escaped)
 {
-  EmpathyThemeAdium *theme = EMPATHY_THEME_ADIUM (view);
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
 
-  theme_adium_append_html (theme, "appendMessage",
-      priv->data->status_html, escaped, NULL, NULL, NULL,
+  theme_adium_append_html (self, "appendMessage",
+      self->priv->data->status_html, escaped, NULL, NULL, NULL,
       NULL, "event", empathy_time_get_current (), FALSE, FALSE);
 
   /* There is no last contact */
-  if (priv->last_contact)
+  if (self->priv->last_contact)
     {
-      g_object_unref (priv->last_contact);
-      priv->last_contact = NULL;
+      g_object_unref (self->priv->last_contact);
+      self->priv->last_contact = NULL;
     }
 }
 
 static void
-theme_adium_remove_focus_marks (EmpathyThemeAdium *theme,
+theme_adium_remove_focus_marks (EmpathyThemeAdium *self,
     WebKitDOMNodeList *nodes)
 {
   guint i;
@@ -815,19 +808,18 @@ theme_adium_remove_focus_marks (EmpathyThemeAdium *theme,
 }
 
 static void
-theme_adium_remove_all_focus_marks (EmpathyThemeAdium *theme)
+theme_adium_remove_all_focus_marks (EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
   WebKitDOMDocument *dom;
   WebKitDOMNodeList *nodes;
   GError *error = NULL;
 
-  if (!priv->has_unread_message)
+  if (!self->priv->has_unread_message)
     return;
 
-  priv->has_unread_message = FALSE;
+  self->priv->has_unread_message = FALSE;
 
-  dom = webkit_web_view_get_dom_document (WEBKIT_WEB_VIEW (theme));
+  dom = webkit_web_view_get_dom_document (WEBKIT_WEB_VIEW (self));
   if (dom == NULL)
     return;
 
@@ -842,7 +834,7 @@ theme_adium_remove_all_focus_marks (EmpathyThemeAdium *theme)
       return;
     }
 
-  theme_adium_remove_focus_marks (theme, nodes);
+  theme_adium_remove_focus_marks (self, nodes);
 }
 
 static void
@@ -850,8 +842,7 @@ theme_adium_append_message (EmpathyChatView *view,
     EmpathyMessage *msg,
     gboolean should_highlight)
 {
-  EmpathyThemeAdium *theme = EMPATHY_THEME_ADIUM (view);
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
   EmpathyContact *sender;
   TpMessage *tp_msg;
   TpAccount *account;
@@ -869,9 +860,9 @@ theme_adium_append_message (EmpathyChatView *view,
   gboolean consecutive;
   gboolean action;
 
-  if (priv->pages_loading != 0)
+  if (self->priv->pages_loading != 0)
     {
-      queue_item (&priv->message_queue, QUEUED_MESSAGE, msg, NULL,
+      queue_item (&self->priv->message_queue, QUEUED_MESSAGE, msg, NULL,
           should_highlight);
       return;
     }
@@ -884,7 +875,7 @@ theme_adium_append_message (EmpathyChatView *view,
   if (service_name == NULL)
     service_name = tp_account_get_protocol (account);
   timestamp = empathy_message_get_timestamp (msg);
-  body_escaped = theme_adium_parse_body (theme,
+  body_escaped = theme_adium_parse_body (self,
     empathy_message_get_body (msg),
     empathy_message_get_token (msg));
   name = empathy_contact_get_logged_alias (sender);
@@ -899,7 +890,7 @@ theme_adium_append_message (EmpathyChatView *view,
     {
       gchar *str;
 
-      if (priv->data->version >= 4 || !priv->data->custom_template)
+      if (self->priv->data->version >= 4 || !self->priv->data->custom_template)
         {
           str = g_strdup_printf ("<span class='actionMessageUserName'>%s</span>"
                      "<span class='actionMessageBody'>%s</span>",
@@ -922,18 +913,18 @@ theme_adium_append_message (EmpathyChatView *view,
   if (!avatar_filename)
     {
       if (empathy_contact_is_user (sender))
-        avatar_filename = priv->data->default_outgoing_avatar_filename;
+        avatar_filename = self->priv->data->default_outgoing_avatar_filename;
       else
-        avatar_filename = priv->data->default_incoming_avatar_filename;
+        avatar_filename = self->priv->data->default_incoming_avatar_filename;
 
       if (!avatar_filename)
         {
-          if (!priv->data->default_avatar_filename)
-            priv->data->default_avatar_filename =
+          if (!self->priv->data->default_avatar_filename)
+            self->priv->data->default_avatar_filename =
               empathy_filename_from_icon_name (EMPATHY_IMAGE_AVATAR_DEFAULT,
                        GTK_ICON_SIZE_DIALOG);
 
-          avatar_filename = priv->data->default_avatar_filename;
+          avatar_filename = self->priv->data->default_avatar_filename;
         }
     }
 
@@ -943,20 +934,20 @@ theme_adium_append_message (EmpathyChatView *view,
    * - last message and this message both are/aren't backlog, and
    * - DisableCombineConsecutive is not set in theme's settings */
   is_backlog = empathy_message_is_backlog (msg);
-  consecutive = empathy_contact_equal (priv->last_contact, sender) &&
-    (timestamp - priv->last_timestamp < MESSAGE_JOIN_PERIOD) &&
-    (is_backlog == priv->last_is_backlog) &&
-    !tp_asv_get_boolean (priv->data->info,
+  consecutive = empathy_contact_equal (self->priv->last_contact, sender) &&
+    (timestamp - self->priv->last_timestamp < MESSAGE_JOIN_PERIOD) &&
+    (is_backlog == self->priv->last_is_backlog) &&
+    !tp_asv_get_boolean (self->priv->data->info,
              "DisableCombineConsecutive", NULL);
 
   /* Define message classes */
   message_classes = g_string_new ("message");
-  if (!priv->has_focus && !is_backlog)
+  if (!self->priv->has_focus && !is_backlog)
     {
-      if (!priv->has_unread_message)
+      if (!self->priv->has_unread_message)
         {
           g_string_append (message_classes, " firstFocus");
-          priv->has_unread_message = TRUE;
+          self->priv->has_unread_message = TRUE;
         }
       g_string_append (message_classes, " focus");
     }
@@ -1008,51 +999,51 @@ theme_adium_append_message (EmpathyChatView *view,
 
   /* Define javascript function to use */
   if (consecutive)
-    func = priv->allow_scrolling ? "appendNextMessage" :
+    func = self->priv->allow_scrolling ? "appendNextMessage" :
       "appendNextMessageNoScroll";
   else
-    func = priv->allow_scrolling ? "appendMessage" : "appendMessageNoScroll";
+    func = self->priv->allow_scrolling ? "appendMessage" : "appendMessageNoScroll";
 
   if (empathy_contact_is_user (sender))
     {
       /* out */
       if (is_backlog)
         /* context */
-        html = consecutive ? priv->data->out_nextcontext_html :
-          priv->data->out_context_html;
+        html = consecutive ? self->priv->data->out_nextcontext_html :
+          self->priv->data->out_context_html;
       else
         /* content */
-        html = consecutive ? priv->data->out_nextcontent_html :
-          priv->data->out_content_html;
+        html = consecutive ? self->priv->data->out_nextcontent_html :
+          self->priv->data->out_content_html;
 
       /* remove all the unread marks when we are sending a message */
-      theme_adium_remove_all_focus_marks (theme);
+      theme_adium_remove_all_focus_marks (self);
     }
   else
     {
       /* in */
       if (is_backlog)
         /* context */
-        html = consecutive ? priv->data->in_nextcontext_html :
-          priv->data->in_context_html;
+        html = consecutive ? self->priv->data->in_nextcontext_html :
+          self->priv->data->in_context_html;
       else
         /* content */
-        html = consecutive ? priv->data->in_nextcontent_html :
-          priv->data->in_content_html;
+        html = consecutive ? self->priv->data->in_nextcontent_html :
+          self->priv->data->in_content_html;
     }
 
-  theme_adium_append_html (theme, func, html, body_escaped,
+  theme_adium_append_html (self, func, html, body_escaped,
       avatar_filename, name_escaped, contact_id,
       service_name, message_classes->str,
       timestamp, is_backlog, empathy_contact_is_user (sender));
 
   /* Keep the sender of the last displayed message */
-  if (priv->last_contact)
-    g_object_unref (priv->last_contact);
+  if (self->priv->last_contact)
+    g_object_unref (self->priv->last_contact);
 
-  priv->last_contact = g_object_ref (sender);
-  priv->last_timestamp = timestamp;
-  priv->last_is_backlog = is_backlog;
+  self->priv->last_contact = g_object_ref (sender);
+  self->priv->last_timestamp = timestamp;
+  self->priv->last_is_backlog = is_backlog;
 
   g_free (body_escaped);
   g_free (name_escaped);
@@ -1063,12 +1054,12 @@ static void
 theme_adium_append_event (EmpathyChatView *view,
     const gchar *str)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
   gchar *str_escaped;
 
-  if (priv->pages_loading != 0)
+  if (self->priv->pages_loading != 0)
     {
-      queue_item (&priv->message_queue, QUEUED_EVENT, NULL, str, FALSE);
+      queue_item (&self->priv->message_queue, QUEUED_EVENT, NULL, str, FALSE);
       return;
     }
 
@@ -1089,7 +1080,7 @@ static void
 theme_adium_edit_message (EmpathyChatView *view,
     EmpathyMessage *message)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
   WebKitDOMDocument *doc;
   WebKitDOMElement *span;
   gchar *id, *parsed_body;
@@ -1097,9 +1088,9 @@ theme_adium_edit_message (EmpathyChatView *view,
   GtkIconInfo *icon_info;
   GError *error = NULL;
 
-  if (priv->pages_loading != 0)
+  if (self->priv->pages_loading != 0)
     {
-      queue_item (&priv->message_queue, QUEUED_EDIT, message, NULL, FALSE);
+      queue_item (&self->priv->message_queue, QUEUED_EDIT, message, NULL, FALSE);
       return;
     }
 
@@ -1193,9 +1184,9 @@ static void
 theme_adium_scroll (EmpathyChatView *view,
     gboolean allow_scrolling)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
 
-  priv->allow_scrolling = allow_scrolling;
+  self->priv->allow_scrolling = allow_scrolling;
 
   if (allow_scrolling)
     empathy_chat_view_scroll_down (view);
@@ -1216,16 +1207,16 @@ theme_adium_get_has_selection (EmpathyChatView *view)
 static void
 theme_adium_clear (EmpathyChatView *view)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
 
   theme_adium_load_template (EMPATHY_THEME_ADIUM (view));
 
   /* Clear last contact to avoid trying to add a 'joined'
    * message when we don't have an insertion point. */
-  if (priv->last_contact)
+  if (self->priv->last_contact)
     {
-      g_object_unref (priv->last_contact);
-      priv->last_contact = NULL;
+      g_object_unref (self->priv->last_contact);
+      self->priv->last_contact = NULL;
     }
 }
 
@@ -1328,18 +1319,18 @@ static void
 theme_adium_focus_toggled (EmpathyChatView *view,
     gboolean has_focus)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
 
-  priv->has_focus = has_focus;
-  if (!priv->has_focus)
+  self->priv->has_focus = has_focus;
+  if (!self->priv->has_focus)
     {
       /* We've lost focus, so let's make sure all the acked
        * messages have lost their unread marker. */
-      g_queue_foreach (&priv->acked_messages,
+      g_queue_foreach (&self->priv->acked_messages,
           theme_adium_remove_acked_message_unread_mark_foreach, view);
-      g_queue_clear (&priv->acked_messages);
+      g_queue_clear (&self->priv->acked_messages);
 
-      priv->has_unread_message = FALSE;
+      self->priv->has_unread_message = FALSE;
     }
 }
 
@@ -1348,7 +1339,6 @@ theme_adium_message_acknowledged (EmpathyChatView *view,
     EmpathyMessage *message)
 {
   EmpathyThemeAdium *self = (EmpathyThemeAdium *) view;
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
   TpMessage *tp_msg;
   guint32 id;
   gboolean valid;
@@ -1369,9 +1359,9 @@ theme_adium_message_acknowledged (EmpathyChatView *view,
    * view doesn't have focus. If we did it all the time we would
    * never see the unread markers, ever! So, we'll queue these
    * up, and when we lose focus, we'll remove the markers. */
-  if (priv->has_focus)
+  if (self->priv->has_focus)
     {
-      g_queue_push_tail (&priv->acked_messages,
+      g_queue_push_tail (&self->priv->acked_messages,
              GUINT_TO_POINTER (id));
       return;
     }
@@ -1411,10 +1401,9 @@ static void
 theme_adium_set_show_avatars (EmpathyChatView *view,
     gboolean show_avatars)
 {
-  EmpathyThemeAdium *theme = EMPATHY_THEME_ADIUM (view);
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
 
-  priv->show_avatars = show_avatars;
+  self->priv->show_avatars = show_avatars;
 }
 
 static void
@@ -1443,18 +1432,18 @@ theme_adium_load_finished_cb (WebKitWebView *view,
     WebKitWebFrame *frame,
     gpointer user_data)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (view);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (view);
   EmpathyChatView *chat_view = EMPATHY_CHAT_VIEW (view);
   GList *l;
 
   DEBUG ("Page loaded");
-  priv->pages_loading--;
+  self->priv->pages_loading--;
 
-  if (priv->pages_loading != 0)
+  if (self->priv->pages_loading != 0)
     return;
 
   /* Display queued messages */
-  for (l = priv->message_queue.head; l != NULL; l = l->next)
+  for (l = self->priv->message_queue.head; l != NULL; l = l->next)
     {
       QueuedItem *item = l->data;
 
@@ -1477,18 +1466,18 @@ theme_adium_load_finished_cb (WebKitWebView *view,
       free_queued_item (item);
     }
 
-  g_queue_clear (&priv->message_queue);
+  g_queue_clear (&self->priv->message_queue);
 }
 
 static void
 theme_adium_finalize (GObject *object)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (object);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (object);
 
-  empathy_adium_data_unref (priv->data);
+  empathy_adium_data_unref (self->priv->data);
 
-  g_object_unref (priv->gsettings_chat);
-  g_object_unref (priv->gsettings_desktop);
+  g_object_unref (self->priv->gsettings_chat);
+  g_object_unref (self->priv->gsettings_desktop);
 
   G_OBJECT_CLASS (empathy_theme_adium_parent_class)->finalize (object);
 }
@@ -1496,29 +1485,29 @@ theme_adium_finalize (GObject *object)
 static void
 theme_adium_dispose (GObject *object)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (object);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (object);
 
-  if (priv->smiley_manager)
+  if (self->priv->smiley_manager)
     {
-      g_object_unref (priv->smiley_manager);
-      priv->smiley_manager = NULL;
+      g_object_unref (self->priv->smiley_manager);
+      self->priv->smiley_manager = NULL;
     }
 
-  if (priv->last_contact)
+  if (self->priv->last_contact)
     {
-      g_object_unref (priv->last_contact);
-      priv->last_contact = NULL;
+      g_object_unref (self->priv->last_contact);
+      self->priv->last_contact = NULL;
     }
 
-  if (priv->inspector_window)
+  if (self->priv->inspector_window)
     {
-      gtk_widget_destroy (priv->inspector_window);
-      priv->inspector_window = NULL;
+      gtk_widget_destroy (self->priv->inspector_window);
+      self->priv->inspector_window = NULL;
     }
 
-  if (priv->acked_messages.length > 0)
+  if (self->priv->acked_messages.length > 0)
     {
-      g_queue_clear (&priv->acked_messages);
+      g_queue_clear (&self->priv->acked_messages);
     }
 
   G_OBJECT_CLASS (empathy_theme_adium_parent_class)->dispose (object);
@@ -1526,13 +1515,11 @@ theme_adium_dispose (GObject *object)
 
 static gboolean
 theme_adium_inspector_show_window_cb (WebKitWebInspector *inspector,
-    EmpathyThemeAdium *theme)
+    EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
-
-  if (priv->inspector_window)
+  if (self->priv->inspector_window)
     {
-      gtk_widget_show_all (priv->inspector_window);
+      gtk_widget_show_all (self->priv->inspector_window);
     }
 
   return TRUE;
@@ -1540,13 +1527,11 @@ theme_adium_inspector_show_window_cb (WebKitWebInspector *inspector,
 
 static gboolean
 theme_adium_inspector_close_window_cb (WebKitWebInspector *inspector,
-    EmpathyThemeAdium *theme)
+    EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
-
-  if (priv->inspector_window)
+  if (self->priv->inspector_window)
     {
-      gtk_widget_hide (priv->inspector_window);
+      gtk_widget_hide (self->priv->inspector_window);
     }
 
   return TRUE;
@@ -1555,21 +1540,20 @@ theme_adium_inspector_close_window_cb (WebKitWebInspector *inspector,
 static WebKitWebView *
 theme_adium_inspect_web_view_cb (WebKitWebInspector *inspector,
     WebKitWebView *web_view,
-    EmpathyThemeAdium *theme)
+    EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
   GtkWidget *scrolled_window;
   GtkWidget *inspector_web_view;
 
-  if (!priv->inspector_window)
+  if (!self->priv->inspector_window)
     {
       /* Create main window */
-      priv->inspector_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+      self->priv->inspector_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
-      gtk_window_set_default_size (GTK_WINDOW (priv->inspector_window),
+      gtk_window_set_default_size (GTK_WINDOW (self->priv->inspector_window),
                  800, 600);
 
-      g_signal_connect (priv->inspector_window, "delete-event",
+      g_signal_connect (self->priv->inspector_window, "delete-event",
             G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
       /* Pack a scrolled window */
@@ -1578,7 +1562,7 @@ theme_adium_inspect_web_view_cb (WebKitWebInspector *inspector,
       gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
               GTK_POLICY_AUTOMATIC,
               GTK_POLICY_AUTOMATIC);
-      gtk_container_add (GTK_CONTAINER (priv->inspector_window),
+      gtk_container_add (GTK_CONTAINER (self->priv->inspector_window),
              scrolled_window);
       gtk_widget_show (scrolled_window);
 
@@ -1598,15 +1582,15 @@ theme_adium_inspect_web_view_cb (WebKitWebInspector *inspector,
 static void
 theme_adium_constructed (GObject *object)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (object);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (object);
   const gchar *font_family = NULL;
   gint font_size = 0;
   WebKitWebView *webkit_view = WEBKIT_WEB_VIEW (object);
   WebKitWebInspector *webkit_inspector;
 
   /* Set default settings */
-  font_family = tp_asv_get_string (priv->data->info, "DefaultFontFamily");
-  font_size = tp_asv_get_int32 (priv->data->info, "DefaultFontSize", NULL);
+  font_family = tp_asv_get_string (self->priv->data->info, "DefaultFontFamily");
+  font_size = tp_asv_get_int32 (self->priv->data->info, "DefaultFontSize", NULL);
 
   if (font_family && font_size)
     {
@@ -1618,7 +1602,7 @@ theme_adium_constructed (GObject *object)
   else
     {
       empathy_webkit_bind_font_setting (webkit_view,
-        priv->gsettings_desktop,
+        self->priv->gsettings_desktop,
         EMPATHY_PREFS_DESKTOP_INTERFACE_DOCUMENT_FONT_NAME);
     }
 
@@ -1634,7 +1618,7 @@ theme_adium_constructed (GObject *object)
   /* Load template */
   theme_adium_load_template (EMPATHY_THEME_ADIUM (object));
 
-  priv->in_construction = FALSE;
+  self->priv->in_construction = FALSE;
 }
 
 static void
@@ -1643,15 +1627,15 @@ theme_adium_get_property (GObject *object,
     GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (object);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (object);
 
   switch (param_id)
     {
       case PROP_ADIUM_DATA:
-        g_value_set_boxed (value, priv->data);
+        g_value_set_boxed (value, self->priv->data);
         break;
       case PROP_VARIANT:
-        g_value_set_string (value, priv->variant);
+        g_value_set_string (value, self->priv->variant);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -1665,17 +1649,16 @@ theme_adium_set_property (GObject *object,
     const GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyThemeAdium *theme = EMPATHY_THEME_ADIUM (object);
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (object);
+  EmpathyThemeAdium *self = EMPATHY_THEME_ADIUM (object);
 
   switch (param_id)
     {
       case PROP_ADIUM_DATA:
-        g_assert (priv->data == NULL);
-        priv->data = g_value_dup_boxed (value);
+        g_assert (self->priv->data == NULL);
+        self->priv->data = g_value_dup_boxed (value);
         break;
       case PROP_VARIANT:
-        empathy_theme_adium_set_variant (theme, g_value_get_string (value));
+        empathy_theme_adium_set_variant (self, g_value_get_string (value));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -1719,36 +1702,34 @@ empathy_theme_adium_class_init (EmpathyThemeAdiumClass *klass)
 }
 
 static void
-empathy_theme_adium_init (EmpathyThemeAdium *theme)
+empathy_theme_adium_init (EmpathyThemeAdium *self)
 {
-  EmpathyThemeAdiumPriv *priv = G_TYPE_INSTANCE_GET_PRIVATE (theme,
+  self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
     EMPATHY_TYPE_THEME_ADIUM, EmpathyThemeAdiumPriv);
 
-  theme->priv = priv;
-
-  priv->in_construction = TRUE;
-  g_queue_init (&priv->message_queue);
-  priv->allow_scrolling = TRUE;
-  priv->smiley_manager = empathy_smiley_manager_dup_singleton ();
+  self->priv->in_construction = TRUE;
+  g_queue_init (&self->priv->message_queue);
+  self->priv->allow_scrolling = TRUE;
+  self->priv->smiley_manager = empathy_smiley_manager_dup_singleton ();
 
   /* Show avatars by default. */
-  priv->show_avatars = TRUE;
+  self->priv->show_avatars = TRUE;
 
-  g_signal_connect (theme, "load-finished",
+  g_signal_connect (self, "load-finished",
       G_CALLBACK (theme_adium_load_finished_cb), NULL);
-  g_signal_connect (theme, "navigation-policy-decision-requested",
+  g_signal_connect (self, "navigation-policy-decision-requested",
         G_CALLBACK (theme_adium_navigation_policy_decision_requested_cb), NULL);
 
-  priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
-  priv->gsettings_desktop = g_settings_new (
+  self->priv->gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
+  self->priv->gsettings_desktop = g_settings_new (
     EMPATHY_PREFS_DESKTOP_INTERFACE_SCHEMA);
 
-  g_signal_connect (priv->gsettings_chat,
+  g_signal_connect (self->priv->gsettings_chat,
     "changed::" EMPATHY_PREFS_CHAT_WEBKIT_DEVELOPER_TOOLS,
     G_CALLBACK (theme_adium_notify_enable_webkit_developer_tools_cb),
-    theme);
+    self);
 
-  theme_adium_update_enable_webkit_developer_tools (theme);
+  theme_adium_update_enable_webkit_developer_tools (self);
 }
 
 EmpathyThemeAdium *
@@ -1764,40 +1745,39 @@ empathy_theme_adium_new (EmpathyAdiumData *data,
 }
 
 void
-empathy_theme_adium_set_variant (EmpathyThemeAdium *theme,
+empathy_theme_adium_set_variant (EmpathyThemeAdium *self,
     const gchar *variant)
 {
-  EmpathyThemeAdiumPriv *priv = GET_PRIV (theme);
   gchar *variant_path;
   gchar *script;
 
-  if (!tp_strdiff (priv->variant, variant))
+  if (!tp_strdiff (self->priv->variant, variant))
     return;
 
-  g_free (priv->variant);
-  priv->variant = g_strdup (variant);
+  g_free (self->priv->variant);
+  self->priv->variant = g_strdup (variant);
 
-  if (priv->in_construction)
+  if (self->priv->in_construction)
     return;
 
   DEBUG ("Update view with variant: '%s'", variant);
-  variant_path = adium_info_dup_path_for_variant (priv->data->info,
-    priv->variant);
+  variant_path = adium_info_dup_path_for_variant (self->priv->data->info,
+    self->priv->variant);
   script = g_strdup_printf ("setStylesheet(\"mainStyle\",\"%s\");",
       variant_path);
 
-  webkit_web_view_execute_script (WEBKIT_WEB_VIEW (theme), script);
+  webkit_web_view_execute_script (WEBKIT_WEB_VIEW (self), script);
 
   g_free (variant_path);
   g_free (script);
 
-  g_object_notify (G_OBJECT (theme), "variant");
+  g_object_notify (G_OBJECT (self), "variant");
 }
 
 void
-empathy_theme_adium_show_inspector (EmpathyThemeAdium *theme)
+empathy_theme_adium_show_inspector (EmpathyThemeAdium *self)
 {
-  WebKitWebView *web_view = WEBKIT_WEB_VIEW (theme);
+  WebKitWebView *web_view = WEBKIT_WEB_VIEW (self);
   WebKitWebInspector *inspector;
 
   g_object_set (G_OBJECT (webkit_web_view_get_settings (web_view)),

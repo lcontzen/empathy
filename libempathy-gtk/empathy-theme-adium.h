@@ -53,12 +53,14 @@ G_BEGIN_DECLS
 
 typedef struct _EmpathyThemeAdium EmpathyThemeAdium;
 typedef struct _EmpathyThemeAdiumClass EmpathyThemeAdiumClass;
+typedef struct _EmpathyThemeAdiumPriv EmpathyThemeAdiumPriv;
+
 typedef struct _EmpathyAdiumData EmpathyAdiumData;
 
 struct _EmpathyThemeAdium
 {
   WebKitWebView parent;
-  gpointer priv;
+  EmpathyThemeAdiumPriv *priv;
 };
 
 struct _EmpathyThemeAdiumClass
