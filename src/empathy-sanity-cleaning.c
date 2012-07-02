@@ -38,7 +38,7 @@
  * If the number stored in gsettings is lower than it, all the tasks will
  * be executed.
  */
-#define SANITY_CLEANING_NUMBER 2
+#define SANITY_CLEANING_NUMBER 3
 
 static void
 account_update_parameters_cb (GObject *source,
@@ -141,12 +141,56 @@ set_facebook_account_fallback_server (TpAccountManager *am)
 }
 
 static void
+upgrade_chat_theme_settings (void)
+{
+  GSettings *gsettings_chat;
+  gchar *theme;
+  const char *adium_theme, *variant = "";
+
+  gsettings_chat = g_settings_new (EMPATHY_PREFS_CHAT_SCHEMA);
+
+  theme = g_settings_get_string (gsettings_chat,
+      EMPATHY_PREFS_CHAT_THEME);
+
+  if (!tp_strdiff (theme, "adium")) {
+    goto finally;
+  } else if (!tp_strdiff (theme, "gnome")) {
+    adium_theme = "PlanetGNOME";
+  } else if (!tp_strdiff (theme, "simple")) {
+    adium_theme = "Boxes";
+    variant = "Simple";
+  } else if (!tp_strdiff (theme, "clean")) {
+    adium_theme = "Boxes";
+    variant = "Clean";
+  } else if (!tp_strdiff (theme, "blue")) {
+    adium_theme = "Boxes";
+    variant = "Blue";
+  } else {
+    adium_theme = "Classic";
+  }
+
+  DEBUG ("Migrating to '%s' variant '%s'", adium_theme, variant);
+
+  g_settings_set_string (gsettings_chat,
+    EMPATHY_PREFS_CHAT_THEME, "adium");
+  g_settings_set_string (gsettings_chat,
+    EMPATHY_PREFS_CHAT_ADIUM_PATH, adium_theme);
+  g_settings_set_string (gsettings_chat,
+    EMPATHY_PREFS_CHAT_THEME_VARIANT, variant);
+
+finally:
+  g_free (theme);
+  g_object_unref (gsettings_chat);
+}
+
+static void
 run_sanity_cleaning_tasks (TpAccountManager *am)
 {
   DEBUG ("Starting sanity cleaning tasks");
 
   fix_xmpp_account_priority (am);
   set_facebook_account_fallback_server (am);
+  upgrade_chat_theme_settings ();
 }
 
 static void
