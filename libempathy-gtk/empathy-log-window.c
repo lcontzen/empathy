@@ -51,7 +51,6 @@
 #include "empathy-log-window.h"
 #include "empathy-account-chooser.h"
 #include "empathy-call-utils.h"
-#include "empathy-chat-view.h"
 #include "empathy-contact-dialogs.h"
 #include "empathy-images.h"
 #include "empathy-theme-manager.h"

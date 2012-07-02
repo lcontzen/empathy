@@ -40,8 +40,6 @@
 #include <libempathy/empathy-contact.h>
 #include <libempathy/empathy-ft-handler.h>
 
-#include "empathy-chat-view.h"
-
 G_BEGIN_DECLS
 
 #define EMPATHY_RECT_IS_ON_SCREEN(x,y,w,h) ((x) + (w) > 0 && \
