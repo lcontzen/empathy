@@ -171,7 +171,7 @@ present them to the user immediately.</description>
       <description>Whether to show the contact list in chat rooms.</description>
     </key>
     <key name="theme" type="s">
-      <default>'classic'</default>
+      <default>'Classic'</default>
       <summary>Chat window theme</summary>
       <description>The theme that is used to display the conversation in chat windows.</description>
     </key>
