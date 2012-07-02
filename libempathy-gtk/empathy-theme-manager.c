@@ -416,3 +416,23 @@ empathy_theme_manager_find_theme (const gchar *name)
 
   return NULL;
 }
+
+gchar *
+empathy_theme_manager_dup_theme_name_from_path (const gchar *path)
+{
+  gchar *fullname, *result;
+  gchar **tmp;
+
+  if (path == NULL)
+    return NULL;
+
+  fullname = g_path_get_basename (path);
+  if (!g_str_has_suffix (fullname, ".AdiumMessageStyle"))
+    return NULL;
+
+  tmp = g_strsplit (fullname, ".AdiumMessageStyle", 0);
+  result = g_strdup (tmp[0]);
+
+  g_strfreev (tmp);
+  return result;
+}
