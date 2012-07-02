@@ -29,6 +29,8 @@
 
 #include <libempathy/empathy-gsettings.h>
 
+#include <libempathy-gtk/empathy-theme-manager.h>
+
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
 #include <libempathy/empathy-debug.h>
 
@@ -153,29 +155,19 @@ upgrade_chat_theme_settings (void)
       EMPATHY_PREFS_CHAT_THEME);
 
   if (!tp_strdiff (theme, "adium")) {
-    gchar *path, *fullname;
+    gchar *path;
 
     path = g_settings_get_string (gsettings_chat,
         EMPATHY_PREFS_CHAT_ADIUM_PATH);
 
-    fullname = g_path_get_basename (path);
-    if (g_str_has_suffix (fullname, ".AdiumMessageStyle"))
-      {
-        gchar **tmp;
-
-        tmp = g_strsplit (fullname, ".AdiumMessageStyle", 0);
-        new_theme = g_strdup (tmp[0]);
-
-        g_strfreev (tmp);
-      }
-    else
+    new_theme = empathy_theme_manager_dup_theme_name_from_path (path);
+    if (new_theme == NULL)
       {
         /* Use the Classic theme as fallback */
         new_theme = g_strdup ("Classic");
       }
 
     g_free (path);
-    g_free (fullname);
   } else if (!tp_strdiff (theme, "gnome")) {
     new_theme = g_strdup ("PlanetGNOME");
   } else if (!tp_strdiff (theme, "simple")) {
