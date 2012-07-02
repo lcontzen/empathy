@@ -144,7 +144,7 @@ theme_manager_notify_theme_cb (GSettings *gsettings_chat,
   path = empathy_theme_manager_find_theme (theme);
   if (path == NULL)
     {
-      g_warning ("Can't find theme: %s; fallback to 'Classic'",
+      DEBUG ("Can't find theme: %s; fallback to 'Classic'",
           theme);
 
       path = empathy_theme_manager_find_theme ("Classic");
