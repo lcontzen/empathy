@@ -287,7 +287,8 @@ empathy_theme_manager_dup_singleton (void)
 }
 
 static void
-find_themes (GList **list, const gchar *dirpath)
+find_themes (GHashTable *hash,
+    const gchar *dirpath)
 {
   GDir *dir;
   GError *error = NULL;
@@ -309,7 +310,11 @@ find_themes (GList **list, const gchar *dirpath)
               info = empathy_adium_info_new (path);
 
               if (info != NULL)
-                *list = g_list_prepend (*list, info);
+                {
+                  g_hash_table_insert (hash,
+                      empathy_theme_manager_dup_theme_name_from_path (path),
+                      info);
+                }
             }
 
           g_free (path);
@@ -328,26 +333,54 @@ find_themes (GList **list, const gchar *dirpath)
 GList *
 empathy_theme_manager_get_adium_themes (void)
 {
-  GList *themes_list = NULL;
-  gchar *userpath = NULL;
+  /* Theme name -> GHashTable info */
+  GHashTable *hash;
+  GList *result;
+  gchar *path = NULL;
   const gchar *const *paths = NULL;
   gint i = 0;
+  const gchar *dir;
 
-  userpath = g_build_path (G_DIR_SEPARATOR_S, g_get_user_data_dir (),
-      "adium/message-styles", NULL);
-  find_themes (&themes_list, userpath);
-  g_free (userpath);
+  hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
+  /* Start from the more general locations (the system) to the more specific
+   * ones ($HOME, EMPATHY_SRCDIR) so the more specific themes will override
+   * the more general ones.*/
+
+  /* System */
   paths = g_get_system_data_dirs ();
   for (i = 0; paths[i] != NULL; i++)
     {
-      userpath = g_build_path (G_DIR_SEPARATOR_S, paths[i],
+      path = g_build_path (G_DIR_SEPARATOR_S, paths[i],
         "adium/message-styles", NULL);
-      find_themes (&themes_list, userpath);
-      g_free (userpath);
+
+      find_themes (hash, path);
+      g_free (path);
     }
 
-  return themes_list;
+  /* Home */
+  path = g_build_path (G_DIR_SEPARATOR_S, g_get_user_data_dir (),
+      "adium/message-styles", NULL);
+
+  find_themes (hash, path);
+  g_free (path);
+
+  /* EMPATHY_SRCDIR */
+  dir = g_getenv ("EMPATHY_SRCDIR");
+  if (dir != NULL)
+    {
+      path = g_build_path (G_DIR_SEPARATOR_S, dir, "data/themes/", NULL);
+
+      find_themes (hash, path);
+      g_free (path);
+    }
+
+  /* Pass ownership of the info hash table to the list */
+  result = g_list_copy (g_hash_table_get_values (hash));
+
+  g_hash_table_unref (hash);
+
+  return result;
 }
 
 gchar *
