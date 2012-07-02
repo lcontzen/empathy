@@ -43,7 +43,6 @@ libempathy_gtk_handwritten_source =            	\
 	empathy-cell-renderer-activatable.c	\
 	empathy-cell-renderer-expander.c	\
 	empathy-cell-renderer-text.c		\
-	empathy-chat-view.c			\
 	empathy-chat.c				\
 	empathy-contact-blocking-dialog.c	\
 	empathy-contact-dialogs.c		\
@@ -110,7 +109,6 @@ libempathy_gtk_headers =			\
 	empathy-cell-renderer-activatable.h	\
 	empathy-cell-renderer-expander.h	\
 	empathy-cell-renderer-text.h		\
-	empathy-chat-view.h			\
 	empathy-chat.h				\
 	empathy-contact-blocking-dialog.h	\
 	empathy-contact-dialogs.h		\
