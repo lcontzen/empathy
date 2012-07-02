@@ -25,6 +25,7 @@
 #include "empathy-webkit-utils.h"
 #include "empathy-smiley-manager.h"
 #include "empathy-ui-utils.h"
+#include "empathy-theme-adium.h"
 
 #define BORING_DPI_DEFAULT 96
 
@@ -261,7 +262,7 @@ empathy_webkit_context_menu_for_event (WebKitWebView *view,
       gtk_menu_shell_prepend (GTK_MENU_SHELL (menu), item);
 
       g_signal_connect_swapped (item, "activate",
-          G_CALLBACK (empathy_chat_view_clear),
+          G_CALLBACK (empathy_theme_adium_clear),
           view);
     }
 

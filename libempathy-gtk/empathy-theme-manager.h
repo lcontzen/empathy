@@ -24,7 +24,7 @@
 #define __EMPATHY_THEME_MANAGER_H__
 
 #include <glib-object.h>
-#include "empathy-chat-view.h"
+#include "empathy-theme-adium.h"
 
 G_BEGIN_DECLS
 
@@ -69,7 +69,7 @@ struct _EmpathyThemeManagerClass
 GType empathy_theme_manager_get_type (void) G_GNUC_CONST;
 EmpathyThemeManager * empathy_theme_manager_dup_singleton (void);
 GList * empathy_theme_manager_get_adium_themes (void);
-EmpathyChatView * empathy_theme_manager_create_view (EmpathyThemeManager *self);
+EmpathyThemeAdium * empathy_theme_manager_create_view (EmpathyThemeManager *self);
 gchar * empathy_theme_manager_find_theme (const gchar *name);
 
 gchar * empathy_theme_manager_dup_theme_name_from_path (const gchar *path);

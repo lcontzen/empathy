@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
-#include "empathy-chat-view.h"
+#include "empathy-theme-adium.h"
 
 G_BEGIN_DECLS
 
@@ -56,7 +56,7 @@ struct _EmpathySearchBarClass
 };
 
 GType       empathy_search_bar_get_type (void) G_GNUC_CONST;
-GtkWidget * empathy_search_bar_new      (EmpathyChatView  *view);
+GtkWidget * empathy_search_bar_new      (EmpathyThemeAdium *view);
 void        empathy_search_bar_show     (EmpathySearchBar *searchbar);
 void        empathy_search_bar_hide     (EmpathySearchBar *searchbar);
 void        empathy_search_bar_paste_clipboard (EmpathySearchBar *searchbar);

@@ -34,7 +34,6 @@
 #include <libempathy/empathy-utils.h>
 
 #include "empathy-theme-manager.h"
-#include "empathy-chat-view.h"
 #include "empathy-theme-adium.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
@@ -189,13 +188,13 @@ theme_manager_notify_adium_variant_cb (GSettings *gsettings_chat,
     }
 }
 
-EmpathyChatView *
+EmpathyThemeAdium *
 empathy_theme_manager_create_view (EmpathyThemeManager *self)
 {
   g_return_val_if_fail (EMPATHY_IS_THEME_MANAGER (self), NULL);
 
   if (self->priv->adium_data != NULL)
-    return EMPATHY_CHAT_VIEW (theme_manager_create_adium_view (self));
+    return theme_manager_create_adium_view (self);
 
   g_return_val_if_reached (NULL);
 }

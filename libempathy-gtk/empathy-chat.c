@@ -724,7 +724,7 @@ chat_command_msg_cb (GObject *source,
 		DEBUG ("Failed to get channel: %s", error->message);
 		g_error_free (error);
 
-		empathy_chat_view_append_event (data->chat->view,
+		empathy_theme_adium_append_event (data->chat->view,
 			_("Failed to open private chat"));
 		goto OUT;
 	}
@@ -772,7 +772,7 @@ static void
 chat_command_clear (EmpathyChat *chat,
 		    GStrv        strv)
 {
-	empathy_chat_view_clear (chat->view);
+	empathy_theme_adium_clear (chat->view);
 }
 
 static void
@@ -782,13 +782,13 @@ chat_command_topic (EmpathyChat *chat,
 	EmpathyChatPriv *priv = GET_PRIV (chat);
 
 	if (!empathy_tp_chat_supports_subject (priv->tp_chat)) {
-		empathy_chat_view_append_event (chat->view,
+		empathy_theme_adium_append_event (chat->view,
 			_("Topic not supported on this conversation"));
 		return;
 	}
 
 	if (!empathy_tp_chat_can_set_subject (priv->tp_chat)) {
-		empathy_chat_view_append_event (chat->view,
+		empathy_theme_adium_append_event (chat->view,
 			_("You are not allowed to change the topic"));
 		return;
 	}
@@ -965,7 +965,7 @@ whois_got_contact_cb (GObject *source,
 		EMPATHY_CLIENT_FACTORY (source), result, NULL);
 
 	if (contact == NULL) {
-		empathy_chat_view_append_event (chat->view, _("Invalid contact ID"));
+		empathy_theme_adium_append_event (chat->view, _("Invalid contact ID"));
 		goto out;
 	}
 
@@ -1110,7 +1110,7 @@ chat_command_show_help (EmpathyChat     *chat,
 	}
 
 	str = g_strdup_printf (_("Usage: %s"), _(item->help));
-	empathy_chat_view_append_event (chat->view, str);
+	empathy_theme_adium_append_event (chat->view, str);
 	g_free (str);
 }
 
@@ -1132,7 +1132,7 @@ chat_command_help (EmpathyChat *chat,
 			if (commands[i].help == NULL) {
 				continue;
 			}
-			empathy_chat_view_append_event (chat->view,
+			empathy_theme_adium_append_event (chat->view,
 				_(commands[i].help));
 		}
 		return;
@@ -1153,7 +1153,7 @@ chat_command_help (EmpathyChat *chat,
 		}
 	}
 
-	empathy_chat_view_append_event (chat->view,
+	empathy_theme_adium_append_event (chat->view,
 		_("Unknown command"));
 }
 
@@ -1279,7 +1279,7 @@ chat_send (EmpathyChat  *chat,
 		}
 
 		if (!second_slash) {
-			empathy_chat_view_append_event (chat->view,
+			empathy_theme_adium_append_event (chat->view,
 				_("Unknown command; see /help for the available"
 				  " commands"));
 			return;
@@ -1475,7 +1475,7 @@ chat_message_received (EmpathyChat *chat,
 			empathy_message_get_supersedes (message),
 			empathy_message_get_body (message));
 
-		empathy_chat_view_edit_message (chat->view, message);
+		empathy_theme_adium_edit_message (chat->view, message);
 	} else {
 		gboolean should_highlight = chat_should_highlight (chat, message);
 
@@ -1488,7 +1488,7 @@ chat_message_received (EmpathyChat *chat,
 			empathy_contact_get_alias (sender),
 			empathy_contact_get_handle (sender));
 
-		empathy_chat_view_append_message (chat->view, message, should_highlight);
+		empathy_theme_adium_append_message (chat->view, message, should_highlight);
 
 		if (empathy_message_is_incoming (message)) {
 			priv->unread_messages++;
@@ -1521,7 +1521,7 @@ chat_message_acknowledged_cb (EmpathyTpChat  *tp_chat,
 {
 	EmpathyChatPriv *priv = GET_PRIV (chat);
 
-	empathy_chat_view_message_acknowledged (chat->view,
+	empathy_theme_adium_message_acknowledged (chat->view,
 	    message);
 
 	if (!empathy_message_is_edit (message)) {
@@ -1567,9 +1567,9 @@ append_balance_error (EmpathyChat *chat,
 	}
 
 	if (str_markup != NULL)
-		empathy_chat_view_append_event_markup (chat->view, str_markup, str);
+		empathy_theme_adium_append_event_markup (chat->view, str_markup, str);
 	else
-		empathy_chat_view_append_event (chat->view, str);
+		empathy_theme_adium_append_event (chat->view, str);
 
 	g_free (str);
 	g_free (str_markup);
@@ -1625,7 +1625,7 @@ chat_send_error_cb (EmpathyTpChat          *tp_chat,
 			str = g_strdup_printf (_("Error sending message: %s"), error);
 	}
 
-	empathy_chat_view_append_event (chat->view, str);
+	empathy_theme_adium_append_event (chat->view, str);
 	g_free (str);
 }
 
@@ -1705,7 +1705,7 @@ chat_subject_changed_cb (EmpathyChat *chat)
 			}
 
 			if (str != NULL) {
-				empathy_chat_view_append_event (EMPATHY_CHAT (chat)->view, str);
+				empathy_theme_adium_append_event (EMPATHY_CHAT (chat)->view, str);
 				g_free (str);
 			}
 		}
@@ -2028,7 +2028,7 @@ chat_input_key_press_event_cb (GtkWidget   *widget,
 					g_string_append (message, empathy_contact_get_alias (l->data));
 					g_string_append (message, " - ");
 				 }
-				 empathy_chat_view_append_event (chat->view, message->str);
+				 empathy_theme_adium_append_event (chat->view, message->str);
 				 g_string_free (message, TRUE);
 			}
 
@@ -2089,7 +2089,7 @@ chat_input_has_focus_notify_cb (GtkWidget   *widget,
 				GParamSpec  *pspec,
 				EmpathyChat *chat)
 {
-	empathy_chat_view_focus_toggled (chat->view, gtk_widget_has_focus (widget));
+	empathy_theme_adium_focus_toggled (chat->view, gtk_widget_has_focus (widget));
 }
 
 static void
@@ -2572,7 +2572,7 @@ got_filtered_messages_cb (GObject *manager,
 	if (!tpl_log_manager_get_filtered_events_finish (TPL_LOG_MANAGER (manager),
 		result, &messages, &error)) {
 		DEBUG ("%s. Aborting.", error->message);
-		empathy_chat_view_append_event (chat->view,
+		empathy_theme_adium_append_event (chat->view,
 			_("Failed to retrieve recent logs"));
 		g_error_free (error);
 		goto out;
@@ -2603,14 +2603,14 @@ got_filtered_messages_cb (GObject *manager,
 				"sender", empathy_message_get_sender (message),
 				NULL);
 
-			empathy_chat_view_append_message (chat->view, syn_msg,
+			empathy_theme_adium_append_message (chat->view, syn_msg,
 							  chat_should_highlight (chat, syn_msg));
-			empathy_chat_view_edit_message (chat->view, message);
+			empathy_theme_adium_edit_message (chat->view, message);
 
 			g_object_unref (syn_msg);
 		} else {
 			/* append the latest message */
-			empathy_chat_view_append_message (chat->view, message,
+			empathy_theme_adium_append_message (chat->view, message,
 							  chat_should_highlight (chat, message));
 		}
 
@@ -2629,7 +2629,7 @@ out:
 	empathy_chat_messages_read (chat);
 
 	/* Turn back on scrolling */
-	empathy_chat_view_scroll (chat->view, TRUE);
+	empathy_theme_adium_scroll (chat->view, TRUE);
 
 	g_object_unref (chat);
 	tp_weak_ref_destroy (wr);
@@ -2647,7 +2647,7 @@ chat_add_logs (EmpathyChat *chat)
 	}
 
 	/* Turn off scrolling temporarily */
-	empathy_chat_view_scroll (chat->view, FALSE);
+	empathy_theme_adium_scroll (chat->view, FALSE);
 
 	/* Add messages from last conversation */
 	if (priv->handle_type == TP_HANDLE_TYPE_ROOM)
@@ -2782,7 +2782,7 @@ chat_members_changed_cb (EmpathyTpChat  *tp_chat,
 		str = build_part_message (reason, name, actor, message);
 	}
 
-	empathy_chat_view_append_event (chat->view, str);
+	empathy_theme_adium_append_event (chat->view, str);
 	g_free (str);
 }
 
@@ -2804,7 +2804,7 @@ chat_member_renamed_cb (EmpathyTpChat  *tp_chat,
 		str = g_strdup_printf (_("%s is now known as %s"),
 				       empathy_contact_get_alias (old_contact),
 				       empathy_contact_get_alias (new_contact));
-		empathy_chat_view_append_event (chat->view, str);
+		empathy_theme_adium_append_event (chat->view, str);
 		g_free (str);
 	}
 
@@ -2988,7 +2988,7 @@ chat_invalidated_cb (EmpathyTpChat *tp_chat,
 	priv->tp_chat = NULL;
 	g_object_notify (G_OBJECT (chat), "tp-chat");
 
-	empathy_chat_view_append_event (chat->view, _("Disconnected"));
+	empathy_theme_adium_append_event (chat->view, _("Disconnected"));
 	gtk_widget_set_sensitive (chat->input_text_view, FALSE);
 
 	chat_update_contacts_visibility (chat, FALSE);
@@ -3345,7 +3345,7 @@ chat_constructed (GObject *object)
 			tp_proxy_has_interface_by_id (conn,
 						      TP_IFACE_QUARK_CONNECTION_INTERFACE_AVATARS);
 
-		empathy_chat_view_set_show_avatars (chat->view,
+		empathy_theme_adium_set_show_avatars (chat->view,
 						    supports_avatars);
 	}
 
@@ -4076,7 +4076,7 @@ empathy_chat_set_tp_chat (EmpathyChat   *chat,
 	if (chat->input_text_view) {
 		gtk_widget_set_sensitive (chat->input_text_view, TRUE);
 		if (priv->block_events_timeout_id == 0) {
-			empathy_chat_view_append_event (chat->view, _("Connected"));
+			empathy_theme_adium_append_event (chat->view, _("Connected"));
 		}
 	}
 
@@ -4199,7 +4199,7 @@ empathy_chat_clear (EmpathyChat *chat)
 {
 	g_return_if_fail (EMPATHY_IS_CHAT (chat));
 
-	empathy_chat_view_clear (chat->view);
+	empathy_theme_adium_clear (chat->view);
 }
 
 void
@@ -4207,7 +4207,7 @@ empathy_chat_scroll_down (EmpathyChat *chat)
 {
 	g_return_if_fail (EMPATHY_IS_CHAT (chat));
 
-	empathy_chat_view_scroll_down (chat->view);
+	empathy_theme_adium_scroll_down (chat->view);
 }
 
 void
@@ -4230,10 +4230,10 @@ empathy_chat_cut (EmpathyChat *chat)
 static gboolean
 copy_from_chat_view (EmpathyChat *chat)
 {
-	if (!empathy_chat_view_get_has_selection (chat->view))
+	if (!empathy_theme_adium_get_has_selection (chat->view))
 		return FALSE;
 
-	empathy_chat_view_copy_clipboard (chat->view);
+	empathy_theme_adium_copy_clipboard (chat->view);
 	return TRUE;
 }
 

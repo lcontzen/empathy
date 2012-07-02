@@ -27,7 +27,7 @@
 
 #include <libempathy/empathy-utils.h>
 
-#include "empathy-chat-view.h"
+#include "empathy-theme-adium.h"
 #include "empathy-search-bar.h"
 #include "empathy-ui-utils.h"
 
@@ -38,7 +38,7 @@ G_DEFINE_TYPE (EmpathySearchBar, empathy_search_bar, GTK_TYPE_BOX);
 typedef struct _EmpathySearchBarPriv EmpathySearchBarPriv;
 struct _EmpathySearchBarPriv
 {
-  EmpathyChatView *chat_view;
+  EmpathyThemeAdium *chat_view;
 
   GtkWidget *search_entry;
 
@@ -53,7 +53,7 @@ struct _EmpathySearchBarPriv
 };
 
 GtkWidget *
-empathy_search_bar_new (EmpathyChatView *view)
+empathy_search_bar_new (EmpathyThemeAdium *view)
 {
   EmpathySearchBar *self = g_object_new (EMPATHY_TYPE_SEARCH_BAR, NULL);
 
@@ -73,7 +73,7 @@ empathy_search_bar_update_buttons (EmpathySearchBar *self,
   EmpathySearchBarPriv* priv = GET_PRIV (self);
 
   /* update previous / next buttons */
-  empathy_chat_view_find_abilities (priv->chat_view, search, match_case,
+  empathy_theme_adium_find_abilities (priv->chat_view, search, match_case,
       &can_go_backward, &can_go_forward);
 
   gtk_widget_set_sensitive (priv->search_previous,
@@ -94,7 +94,7 @@ empathy_search_bar_update (EmpathySearchBar *self)
       GTK_TOGGLE_BUTTON (priv->search_match_case));
 
   /* highlight & search */
-  empathy_chat_view_highlight (priv->chat_view, search, match_case);
+  empathy_theme_adium_highlight (priv->chat_view, search, match_case);
 
   /* update the buttons */
   empathy_search_bar_update_buttons (self, search, match_case);
@@ -121,7 +121,7 @@ empathy_search_bar_hide (EmpathySearchBar *self)
 {
   EmpathySearchBarPriv *priv = GET_PRIV (self);
 
-  empathy_chat_view_highlight (priv->chat_view, "", FALSE);
+  empathy_theme_adium_highlight (priv->chat_view, "", FALSE);
   gtk_widget_hide (GTK_WIDGET (self));
 
   /* give the focus back to the focus-chain with the chat view */
@@ -145,17 +145,17 @@ empathy_search_bar_search (EmpathySearchBar *self,
       GTK_TOGGLE_BUTTON (priv->search_match_case));
 
   /* highlight & search */
-  empathy_chat_view_highlight (priv->chat_view, search, match_case);
+  empathy_theme_adium_highlight (priv->chat_view, search, match_case);
   if (next)
     {
-      found = empathy_chat_view_find_next (priv->chat_view,
+      found = empathy_theme_adium_find_next (priv->chat_view,
           search,
           new_search,
           match_case);
     }
   else
     {
-      found = empathy_chat_view_find_previous (priv->chat_view,
+      found = empathy_theme_adium_find_previous (priv->chat_view,
           search,
           new_search,
           match_case);

@@ -1259,7 +1259,7 @@ chat_window_edit_activate_cb (GtkAction         *action,
 	} else {
 		gboolean selection;
 
-		selection = empathy_chat_view_get_has_selection (priv->current_chat->view);
+		selection = empathy_theme_adium_get_has_selection (priv->current_chat->view);
 
 		gtk_action_set_sensitive (priv->menu_edit_cut, FALSE);
 		gtk_action_set_sensitive (priv->menu_edit_copy, selection);

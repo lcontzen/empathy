@@ -75,7 +75,7 @@ struct _EmpathyPreferencesPriv {
 	GtkWidget *combobox_chat_theme_variant;
 	GtkWidget *hbox_chat_theme_variant;
 	GtkWidget *sw_chat_theme_preview;
-	EmpathyChatView *chat_theme_preview;
+	EmpathyThemeAdium *chat_theme_preview;
 	EmpathyThemeManager *theme_manager;
 
 	GSettings *gsettings;
@@ -584,7 +584,7 @@ preferences_languages_cell_toggled_cb (GtkCellRendererToggle *cell,
 }
 
 static void
-preferences_preview_theme_append_message (EmpathyChatView *view,
+preferences_preview_theme_append_message (EmpathyThemeAdium *view,
 					  EmpathyContact *sender,
 					  EmpathyContact *receiver,
 					  const gchar *text,
@@ -598,7 +598,7 @@ preferences_preview_theme_append_message (EmpathyChatView *view,
 		"body", text,
 		NULL);
 
-	empathy_chat_view_append_message (view, message, should_highlight);
+	empathy_theme_adium_append_message (view, message, should_highlight);
 	g_object_unref (message);
 }
 
@@ -661,7 +661,7 @@ preferences_preview_theme_changed_cb (EmpathyThemeManager *manager,
 		romeo, juliet, _("Shall I hear more, or shall I speak at this?"), FALSE);
 
 	/* translators: Quote from Romeo & Julier, for chat theme preview */
-	empathy_chat_view_append_event (priv->chat_theme_preview, _("Juliet has disconnected"));
+	empathy_theme_adium_append_event (priv->chat_theme_preview, _("Juliet has disconnected"));
 
 	g_object_unref (juliet);
 	g_object_unref (romeo);

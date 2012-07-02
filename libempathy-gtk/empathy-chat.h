@@ -34,7 +34,7 @@
 #include <libempathy/empathy-message.h>
 #include <libempathy/empathy-tp-chat.h>
 
-#include "empathy-chat-view.h"
+#include <libempathy-gtk/empathy-theme-adium.h>
 
 G_BEGIN_DECLS
 
@@ -54,7 +54,7 @@ struct _EmpathyChat {
 	EmpathyChatPriv *priv;
 
 	/* Protected */
-	EmpathyChatView *view;
+	EmpathyThemeAdium *view;
 	GtkWidget       *input_text_view;
 };
 

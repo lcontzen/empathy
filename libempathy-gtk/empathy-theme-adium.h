@@ -23,7 +23,7 @@
 
 #include <webkit/webkitwebview.h>
 
-#include "empathy-chat-view.h"
+#include <libempathy/empathy-message.h>
 
 G_BEGIN_DECLS
 
@@ -75,6 +75,60 @@ EmpathyThemeAdium *empathy_theme_adium_new (EmpathyAdiumData *data,
 void empathy_theme_adium_set_variant (EmpathyThemeAdium *theme,
                 const gchar *variant);
 void empathy_theme_adium_show_inspector (EmpathyThemeAdium *theme);
+
+void empathy_theme_adium_append_message (EmpathyThemeAdium *self,
+    EmpathyMessage *msg,
+    gboolean should_highlight);
+
+void empathy_theme_adium_append_event (EmpathyThemeAdium *self,
+    const gchar *str);
+
+void empathy_theme_adium_append_event_markup (EmpathyThemeAdium *self,
+    const gchar *markup_text,
+    const gchar *fallback_text);
+
+void empathy_theme_adium_edit_message (EmpathyThemeAdium *self,
+    EmpathyMessage *message);
+
+void empathy_theme_adium_scroll (EmpathyThemeAdium *self,
+    gboolean allow_scrolling);
+
+void empathy_theme_adium_scroll_down (EmpathyThemeAdium *self);
+
+gboolean empathy_theme_adium_get_has_selection (EmpathyThemeAdium *self);
+
+void empathy_theme_adium_clear (EmpathyThemeAdium *self);
+
+gboolean empathy_theme_adium_find_previous (EmpathyThemeAdium *self,
+    const gchar *search_criteria,
+    gboolean new_search,
+    gboolean match_case);
+
+gboolean empathy_theme_adium_find_next (EmpathyThemeAdium *self,
+    const gchar *search_criteria,
+    gboolean new_search,
+    gboolean match_case);
+
+void empathy_theme_adium_find_abilities (EmpathyThemeAdium *self,
+    const gchar *search_criteria,
+    gboolean match_case,
+    gboolean *can_do_previous,
+    gboolean *can_do_next);
+
+void empathy_theme_adium_highlight (EmpathyThemeAdium *self,
+    const gchar *text,
+    gboolean match_case);
+
+void empathy_theme_adium_copy_clipboard (EmpathyThemeAdium *self);
+
+void empathy_theme_adium_focus_toggled (EmpathyThemeAdium *self,
+    gboolean has_focus);
+
+void empathy_theme_adium_message_acknowledged (EmpathyThemeAdium *self,
+    EmpathyMessage *message);
+
+void empathy_theme_adium_set_show_avatars (EmpathyThemeAdium *self,
+    gboolean show_avatars);
 
 /* not methods functions */
 
