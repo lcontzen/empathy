@@ -35,7 +35,6 @@
 
 #include "empathy-theme-manager.h"
 #include "empathy-chat-view.h"
-#include "empathy-chat-text-view.h"
 #include "empathy-theme-adium.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
