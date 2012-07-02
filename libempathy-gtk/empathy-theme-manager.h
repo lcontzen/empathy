@@ -53,11 +53,12 @@ G_BEGIN_DECLS
 
 typedef struct _EmpathyThemeManager      EmpathyThemeManager;
 typedef struct _EmpathyThemeManagerClass EmpathyThemeManagerClass;
+typedef struct _EmpathyThemeManagerPriv EmpathyThemeManagerPriv;
 
 struct _EmpathyThemeManager
 {
   GObject parent;
-  gpointer priv;
+  EmpathyThemeManagerPriv *priv;
 };
 
 struct _EmpathyThemeManagerClass
