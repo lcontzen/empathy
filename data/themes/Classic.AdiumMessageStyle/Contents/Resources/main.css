@@ -11,14 +11,15 @@ html {
 body {
   padding: 6px;
   margin: 0;
+  color: #2e3436;
 }
 
 .incoming .sender {
-  color: blue;
+  color: #4a708b;
 }
 
 .outgoing .sender {
-  color: green;
+  color: #2e8b57;
 }
 
 .mention .sender {
