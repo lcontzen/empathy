@@ -23,10 +23,14 @@ body {
 }
 
 .mention .sender {
-  color: red;
+  color: #8b2323;
   font-weight: bold;
 }
 
 .status {
   color: #939373;
+}
+
+a {
+  color: #4682b4;
 }
