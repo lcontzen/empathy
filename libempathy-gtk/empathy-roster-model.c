@@ -102,3 +102,17 @@ empathy_roster_model_get_individuals (EmpathyRosterModel *self)
 
   return (* iface->get_individuals) (self);
 }
+
+GList *
+empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
+    FolksIndividual *individual)
+{
+  EmpathyRosterModelInterface *iface;
+
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (self), NULL);
+
+  iface = EMPATHY_ROSTER_MODEL_GET_IFACE (self);
+  g_return_val_if_fail (iface->get_groups_for_individual != NULL, NULL);
+
+  return (* iface->get_groups_for_individual) (self, individual);
+}

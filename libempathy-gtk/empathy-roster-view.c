@@ -338,7 +338,7 @@ individual_added (EmpathyRosterView *self,
     }
   else
     {
-      GeeSet *groups;
+      GList *groups, *l;
       GList *tops;
 
       tops = empathy_individual_manager_get_top_individuals (
@@ -351,29 +351,23 @@ individual_added (EmpathyRosterView *self,
           add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
         }
 
-      groups = folks_group_details_get_groups (
-          FOLKS_GROUP_DETAILS (individual));
+      groups = empathy_roster_model_get_groups_for_individual (self->priv->model,
+          individual);
 
-      if (gee_collection_get_size (GEE_COLLECTION (groups)) > 0)
+      if (g_list_length (groups) > 0)
         {
-          GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (groups));
-
-          while (iter != NULL && gee_iterator_next (iter))
+          for (l = groups; l != NULL; l = g_list_next (l))
             {
-              gchar *group = gee_iterator_get (iter);
-
-              add_to_group (self, individual, group);
-
-              g_free (group);
+              add_to_group (self, individual, l->data);
             }
-
-          g_clear_object (&iter);
         }
       else
         {
           /* No group, adds to Ungrouped */
           add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED);
         }
+
+      g_list_free (groups);
     }
 }
 
