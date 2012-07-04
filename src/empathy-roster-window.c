@@ -49,6 +49,8 @@
 #include <libempathy-gtk/empathy-gtk-enum-types.h>
 #include <libempathy-gtk/empathy-individual-dialogs.h>
 #include <libempathy-gtk/empathy-individual-store-manager.h>
+#include <libempathy-gtk/empathy-roster-model.h>
+#include <libempathy-gtk/empathy-roster-model-manager.h>
 #include <libempathy-gtk/empathy-roster-view.h>
 #include <libempathy-gtk/empathy-new-message-dialog.h>
 #include <libempathy-gtk/empathy-new-call-dialog.h>
@@ -2118,6 +2120,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   gchar *filename;
   GtkWidget *search_vbox;
   guint i;
+  EmpathyRosterModel *model;
 
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_WINDOW, EmpathyRosterWindowPriv);
@@ -2218,6 +2221,8 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
 
   self->priv->individual_manager = empathy_individual_manager_dup_singleton ();
 
+  model = EMPATHY_ROSTER_MODEL (empathy_roster_model_manager_new (self->priv->individual_manager));
+
   if (!empathy_individual_manager_get_contacts_loaded (
         self->priv->individual_manager))
     {
@@ -2228,7 +2233,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
     }
 
   self->priv->view = EMPATHY_ROSTER_VIEW (
-      empathy_roster_view_new (self->priv->individual_manager));
+      empathy_roster_view_new (self->priv->individual_manager,
+          model));
+
+  g_object_unref (model);
 
   gtk_widget_show (GTK_WIDGET (self->priv->view));
 

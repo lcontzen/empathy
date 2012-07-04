@@ -18,6 +18,7 @@ G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 enum
 {
   PROP_MANAGER = 1,
+  PROP_MODEL,
   PROP_SHOW_OFFLINE,
   PROP_SHOW_GROUPS,
   PROP_EMPTY,
@@ -66,6 +67,8 @@ struct _EmpathyRosterViewPriv
   gboolean empty;
 
   EmpathyLiveSearch *search;
+
+  EmpathyRosterModel *model;
 };
 
 typedef struct
@@ -114,6 +117,9 @@ empathy_roster_view_get_property (GObject *object,
       case PROP_MANAGER:
         g_value_set_object (value, self->priv->manager);
         break;
+      case PROP_MODEL:
+        g_value_set_object (value, self->priv->model);
+        break;
       case PROP_SHOW_OFFLINE:
         g_value_set_boolean (value, self->priv->show_offline);
         break;
@@ -142,6 +148,10 @@ empathy_roster_view_set_property (GObject *object,
       case PROP_MANAGER:
         g_assert (self->priv->manager == NULL); /* construct only */
         self->priv->manager = g_value_dup_object (value);
+        break;
+      case PROP_MODEL:
+        g_assert (self->priv->model == NULL);
+        self->priv->model = g_value_dup_object (value);
         break;
       case PROP_SHOW_OFFLINE:
         empathy_roster_view_show_offline (self, g_value_get_boolean (value));
@@ -930,7 +940,7 @@ populate_view (EmpathyRosterView *self)
 {
   GList *individuals, *l;
 
-  individuals = empathy_individual_manager_get_members (self->priv->manager);
+  individuals = empathy_roster_model_get_individuals (self->priv->model);
   for (l = individuals; l != NULL; l = g_list_next (l))
     {
       FolksIndividual *individual = l->data;
@@ -1109,6 +1119,7 @@ empathy_roster_view_constructed (GObject *object)
     chain_up (object);
 
   g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
+  g_assert (EMPATHY_IS_ROSTER_MODEL (self->priv->model));
 
   populate_view (self);
 
@@ -1143,6 +1154,7 @@ empathy_roster_view_dispose (GObject *object)
 
   empathy_roster_view_set_live_search (self, NULL);
   g_clear_object (&self->priv->manager);
+  g_clear_object (&self->priv->model);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -1375,6 +1387,12 @@ empathy_roster_view_class_init (
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_MANAGER, spec);
 
+  spec = g_param_spec_object ("model", "Model",
+      "EmpathyRosterModel",
+      EMPATHY_TYPE_ROSTER_MODEL,
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_MODEL, spec);
+
   spec = g_param_spec_boolean ("show-offline", "Show Offline",
       "Show offline contacts",
       FALSE,
@@ -1442,12 +1460,15 @@ empathy_roster_view_init (EmpathyRosterView *self)
 }
 
 GtkWidget *
-empathy_roster_view_new (EmpathyIndividualManager *manager)
+empathy_roster_view_new (EmpathyIndividualManager *manager,
+    EmpathyRosterModel *model)
 {
   g_return_val_if_fail (EMPATHY_IS_INDIVIDUAL_MANAGER (manager), NULL);
-
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (model), NULL);
+  
   return g_object_new (EMPATHY_TYPE_ROSTER_VIEW,
       "manager", manager,
+      "model", model,
       NULL);
 }
 

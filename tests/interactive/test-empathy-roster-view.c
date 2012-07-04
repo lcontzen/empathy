@@ -1,5 +1,8 @@
 #include <config.h>
 
+#include <libempathy-gtk/empathy-roster-model.h>
+#include <libempathy-gtk/empathy-roster-model-manager.h>
+
 #include <libempathy-gtk/empathy-roster-view.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
@@ -84,6 +87,7 @@ main (int argc,
   EmpathyIndividualManager *mgr;
   GError *error = NULL;
   GOptionContext *context;
+  EmpathyRosterModel *model;
 
   gtk_init (&argc, &argv);
   empathy_gtk_init ();
@@ -105,8 +109,10 @@ main (int argc,
 
   mgr = empathy_individual_manager_dup_singleton ();
 
-  view = empathy_roster_view_new (mgr);
+  model = EMPATHY_ROSTER_MODEL (empathy_roster_model_manager_new (mgr));
+  view = empathy_roster_view_new (mgr, model);
 
+  g_object_unref (model);
   g_signal_connect (view, "individual-activated",
       G_CALLBACK (individual_activated_cb), NULL);
   g_signal_connect (view, "popup-individual-menu",

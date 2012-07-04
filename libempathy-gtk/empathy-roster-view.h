@@ -6,6 +6,7 @@
 #include <libempathy-gtk/empathy-live-search.h>
 
 #include <libempathy/empathy-individual-manager.h>
+#include <libempathy-gtk/empathy-roster-model.h>
 
 G_BEGIN_DECLS
 
@@ -54,7 +55,8 @@ GType empathy_roster_view_get_type (void);
     EMPATHY_TYPE_ROSTER_VIEW, \
     EmpathyRosterViewClass))
 
-GtkWidget * empathy_roster_view_new (EmpathyIndividualManager *manager);
+GtkWidget * empathy_roster_view_new (EmpathyIndividualManager *manager,
+    EmpathyRosterModel *model);
 
 EmpathyIndividualManager * empathy_roster_view_get_manager (
     EmpathyRosterView *self);

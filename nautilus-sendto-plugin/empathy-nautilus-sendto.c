@@ -34,6 +34,8 @@
 #include <libempathy/empathy-ft-factory.h>
 #include <libempathy/empathy-ft-handler.h>
 
+#include <libempathy-gtk/empathy-roster-model.h>
+#include <libempathy-gtk/empathy-roster-model-manager.h>
 #include <libempathy-gtk/empathy-contact-chooser.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 #include <libempathy-gtk/empathy-roster-view.h>
@@ -111,12 +113,16 @@ get_contacts_widget (NstPlugin *plugin)
 {
   GtkWidget *roster_view, *box, *scrolled;
   EmpathyIndividualManager *mgr;
-
+  EmpathyRosterModel *model;
+  
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
   mgr = empathy_individual_manager_dup_singleton ();
-  roster_view = empathy_roster_view_new (mgr);
+  model = EMPATHY_ROSTER_MODEL (empathy_roster_model_manager_new (mgr));
+  roster_view = empathy_roster_view_new (mgr, model);
 
+  g_object_unref (model);
+  
   scrolled = gtk_scrolled_window_new (NULL, NULL);
 
   g_object_unref (mgr);
