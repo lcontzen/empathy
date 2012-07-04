@@ -169,7 +169,16 @@ empathy_roster_model_manager_new (EmpathyIndividualManager *manager)
       NULL);
 }
 
+static GList *
+empathy_roster_model_manager_get_individuals (EmpathyRosterModel *model)
+{
+  EmpathyRosterModelManager *self = EMPATHY_ROSTER_MODEL_MANAGER (model);
+
+  return empathy_individual_manager_get_members (self->priv->manager);
+}
+
 static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
+  iface->get_individuals = empathy_roster_model_manager_get_individuals;
 }
