@@ -584,7 +584,7 @@ pixbuf_avatar_from_individual_closure_new (FolksIndividual *individual,
   g_return_val_if_fail (FOLKS_IS_INDIVIDUAL (individual), NULL);
   g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
 
-  closure = g_new0 (PixbufAvatarFromIndividualClosure, 1);
+  closure = g_slice_new0 (PixbufAvatarFromIndividualClosure);
   closure->result = g_object_ref (result);
   closure->width = width;
   closure->height = height;
@@ -601,7 +601,7 @@ pixbuf_avatar_from_individual_closure_free (
 {
   g_clear_object (&closure->cancellable);
   g_object_unref (closure->result);
-  g_free (closure);
+  g_slice_free (PixbufAvatarFromIndividualClosure, closure);
 }
 
 /**
