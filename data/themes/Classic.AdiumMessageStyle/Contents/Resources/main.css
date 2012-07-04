@@ -34,3 +34,25 @@ body {
 a {
   color: #4682b4;
 }
+
+.message.action {
+  color: #8b2323;
+  font-style: italic;
+}
+
+.message.action .sender {
+  display: none;
+}
+
+.message.action .actionMessageUserName {
+  display: inline;
+}
+
+div.message.action span.message::before {
+  content: " * ";
+}
+
+.message.action .actionMessageBody::before,
+.message.action .actionMessageBody::after {
+  content: " ";
+}
