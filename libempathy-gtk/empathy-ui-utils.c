@@ -468,37 +468,41 @@ empathy_gdk_pixbuf_is_opaque (GdkPixbuf *pixbuf)
 }
 
 static GdkPixbuf *
-avatar_pixbuf_from_loader (GdkPixbufLoader *loader)
+pixbuf_round_corners (GdkPixbuf *pixbuf)
 {
-  GdkPixbuf *pixbuf;
-
-  pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+  GdkPixbuf *result;
 
   if (!gdk_pixbuf_get_has_alpha (pixbuf))
     {
-      GdkPixbuf *rounded_pixbuf;
-
-      rounded_pixbuf = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
+      result = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8,
           gdk_pixbuf_get_width (pixbuf),
           gdk_pixbuf_get_height (pixbuf));
 
       gdk_pixbuf_copy_area (pixbuf, 0, 0,
           gdk_pixbuf_get_width (pixbuf),
           gdk_pixbuf_get_height (pixbuf),
-          rounded_pixbuf,
+          result,
           0, 0);
-
-      pixbuf = rounded_pixbuf;
     }
   else
     {
-      g_object_ref (pixbuf);
+      result = g_object_ref (pixbuf);
     }
 
-  if (empathy_gdk_pixbuf_is_opaque (pixbuf))
-    empathy_avatar_pixbuf_roundify (pixbuf);
+  if (empathy_gdk_pixbuf_is_opaque (result))
+    empathy_avatar_pixbuf_roundify (result);
 
-  return pixbuf;
+  return result;
+}
+
+static GdkPixbuf *
+avatar_pixbuf_from_loader (GdkPixbufLoader *loader)
+{
+  GdkPixbuf *pixbuf;
+
+  pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+
+  return pixbuf_round_corners (pixbuf);
 }
 
 static GdkPixbuf *
