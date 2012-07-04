@@ -23,6 +23,8 @@
 
 #include <glib-object.h>
 
+#include <libempathy/empathy-individual-manager.h>
+
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModelManager EmpathyRosterModelManager;
@@ -66,7 +68,7 @@ GType empathy_roster_model_manager_get_type (void);
     EMPATHY_TYPE_ROSTER_MODEL_MANAGER, \
     EmpathyRosterModelManagerClass))
 
-EmpathyRosterModelManager * empathy_roster_model_manager_new (void);
+EmpathyRosterModelManager * empathy_roster_model_manager_new (EmpathyIndividualManager *manager);
 
 G_END_DECLS
 
