@@ -397,6 +397,8 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
   /* Avatar */
   self->priv->avatar = gtk_image_new ();
 
+  gtk_widget_set_size_request (self->priv->avatar, AVATAR_SIZE, AVATAR_SIZE);
+
   gtk_box_pack_start (GTK_BOX (main_box), self->priv->avatar, FALSE, FALSE, 0);
   gtk_widget_show (self->priv->avatar);
 
