@@ -78,6 +78,19 @@ members_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+groups_changed_cb (EmpathyIndividualManager *manager,
+    FolksIndividual *individual,
+    const gchar *group,
+    gboolean is_member,
+    EmpathyRosterModelManager *self)
+{
+  empathy_roster_model_fire_groups_changed (EMPATHY_ROSTER_MODEL (self),
+      individual,
+      group,
+      is_member);
+}
+
+static void
 empathy_roster_model_manager_get_property (GObject *object,
     guint property_id,
     GValue *value,
@@ -130,6 +143,8 @@ empathy_roster_model_manager_constructed (GObject *object)
 
   tp_g_signal_connect_object (self->priv->manager, "members-changed",
       G_CALLBACK (members_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "groups-changed",
+      G_CALLBACK (groups_changed_cb), self, 0);
 }
 
 static void

@@ -27,6 +27,7 @@ enum
 {
   SIG_INDIVIDUAL_ADDED,
   SIG_INDIVIDUAL_REMOVED,
+  SIG_GROUPS_CHANGED,
   LAST_SIGNAL
 };
 
@@ -50,6 +51,16 @@ empathy_roster_model_default_init (EmpathyRosterModelInterface *iface)
         0, NULL, NULL, NULL,
         G_TYPE_NONE, 1,
         FOLKS_TYPE_INDIVIDUAL);
+
+  signals[SIG_GROUPS_CHANGED] =
+    g_signal_new ("groups-changed",
+        EMPATHY_TYPE_ROSTER_MODEL,
+        G_SIGNAL_RUN_LAST,
+        0, NULL, NULL, NULL,
+        G_TYPE_NONE, 3,
+        FOLKS_TYPE_INDIVIDUAL,
+        G_TYPE_STRING,
+        G_TYPE_BOOLEAN);
 }
 
 /***** Restricted *****/
@@ -66,6 +77,15 @@ empathy_roster_model_fire_individual_removed (EmpathyRosterModel *self,
     FolksIndividual *individual)
 {
   g_signal_emit (self, signals[SIG_INDIVIDUAL_REMOVED], 0, individual);
+}
+
+void
+empathy_roster_model_fire_groups_changed (EmpathyRosterModel *self,
+    FolksIndividual *individual,
+    const gchar *group,
+    gboolean is_member)
+{
+  g_signal_emit (self, signals[SIG_GROUPS_CHANGED], 0, individual, group, is_member);
 }
 
 /***** Public *****/

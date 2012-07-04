@@ -63,6 +63,11 @@ void empathy_roster_model_fire_individual_added (EmpathyRosterModel *self,
 void empathy_roster_model_fire_individual_removed (EmpathyRosterModel *self,
     FolksIndividual *individual);
 
+void empathy_roster_model_fire_groups_changed (EmpathyRosterModel *self,
+    FolksIndividual *individual,
+    const gchar *group,
+    gboolean is_member);
+
 /* Public API */
 GList * empathy_roster_model_get_individuals (EmpathyRosterModel *self);
 

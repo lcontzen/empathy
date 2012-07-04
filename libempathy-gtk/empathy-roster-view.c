@@ -1040,9 +1040,9 @@ update_top_contacts (EmpathyRosterView *self)
 }
 
 static void
-groups_changed_cb (EmpathyIndividualManager *manager,
+groups_changed_cb (EmpathyRosterModel *model,
     FolksIndividual *individual,
-    gchar *group,
+    const gchar *group,
     gboolean is_member,
     EmpathyRosterView *self)
 {
@@ -1118,7 +1118,7 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (individual_added_cb), self, 0);
   tp_g_signal_connect_object (self->priv->model, "individual-removed",
       G_CALLBACK (individual_removed_cb), self, 0);
-  tp_g_signal_connect_object (self->priv->manager, "groups-changed",
+  tp_g_signal_connect_object (self->priv->model, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
       G_CALLBACK (top_individuals_changed_cb), self, 0);
