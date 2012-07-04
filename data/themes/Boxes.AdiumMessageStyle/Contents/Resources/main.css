@@ -53,3 +53,28 @@ body {
   font-style: italic;
   color: #939373;
 }
+
+div.action.message {
+  font-style: italic;
+}
+
+.actionMessageUserName {
+  display: inline;
+}
+
+.actionMessageUserName::before {
+  content: " * ";
+}
+
+.actionMessageUserName::after {
+  content: " ";
+}
+
+div.message.action span.message::before {
+  content: " * ";
+}
+
+.actionMessageBody::before,
+.actionMessageBody::after {
+  content: " ";
+}
