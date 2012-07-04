@@ -55,6 +55,29 @@ struct _EmpathyRosterModelManagerPriv
 };
 
 static void
+members_changed_cb (EmpathyIndividualManager *manager,
+    const gchar *message,
+    GList *added,
+    GList *removed,
+    TpChannelGroupChangeReason reason,
+    EmpathyRosterModelManager *self)
+{
+  GList *l;
+
+  for (l = added; l != NULL; l = g_list_next (l))
+    {
+      empathy_roster_model_fire_individual_added (EMPATHY_ROSTER_MODEL (self),
+          l->data);
+    }
+
+  for (l = removed; l != NULL; l = g_list_next (l))
+    {
+      empathy_roster_model_fire_individual_removed (EMPATHY_ROSTER_MODEL (self),
+          l->data);
+    }
+}
+
+static void
 empathy_roster_model_manager_get_property (GObject *object,
     guint property_id,
     GValue *value,
@@ -104,6 +127,9 @@ empathy_roster_model_manager_constructed (GObject *object)
     chain_up (object);
 
   g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
+
+  tp_g_signal_connect_object (self->priv->manager, "members-changed",
+      G_CALLBACK (members_changed_cb), self, 0);
 }
 
 static void

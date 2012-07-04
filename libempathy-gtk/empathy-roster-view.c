@@ -521,28 +521,19 @@ individual_removed (EmpathyRosterView *self,
 }
 
 static void
-members_changed_cb (EmpathyIndividualManager *manager,
-    const gchar *message,
-    GList *added,
-    GList *removed,
-    TpChannelGroupChangeReason reason,
+individual_added_cb (EmpathyRosterModel *model,
+    FolksIndividual *individual,
     EmpathyRosterView *self)
 {
-  GList *l;
+  individual_added (self, individual);
+}
 
-  for (l = added; l != NULL; l = g_list_next (l))
-    {
-      FolksIndividual *individual = l->data;
-
-      individual_added (self, individual);
-    }
-
-  for (l = removed; l != NULL; l = g_list_next (l))
-    {
-      FolksIndividual *individual = l->data;
-
-      individual_removed (self, individual);
-    }
+static void
+individual_removed_cb (EmpathyRosterModel *model,
+    FolksIndividual *individual,
+    EmpathyRosterView *self)
+{
+  individual_removed (self, individual);
 }
 
 static gint
@@ -1123,8 +1114,10 @@ empathy_roster_view_constructed (GObject *object)
 
   populate_view (self);
 
-  tp_g_signal_connect_object (self->priv->manager, "members-changed",
-      G_CALLBACK (members_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->model, "individual-added",
+      G_CALLBACK (individual_added_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->model, "individual-removed",
+      G_CALLBACK (individual_removed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
