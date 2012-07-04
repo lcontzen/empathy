@@ -22,6 +22,8 @@
 
 #include <glib-object.h>
 
+#include <folks/folks.h>
+
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModel EmpathyRosterModel;
@@ -33,6 +35,7 @@ struct _EmpathyRosterModelInterface
   GTypeInterface g_iface;
 
   /* Virtual table */
+  GList * (* get_individuals) (EmpathyRosterModel *self);
 };
 
 GType empathy_roster_model_get_type (void);
@@ -51,6 +54,17 @@ GType empathy_roster_model_get_type (void);
   (G_TYPE_INSTANCE_GET_INTERFACE ((obj), \
     EMPATHY_TYPE_ROSTER_MODEL, \
     EmpathyRosterModelInterface))
+
+/* Restricted */
+
+void empathy_roster_model_fire_individual_added (EmpathyRosterModel *self,
+    FolksIndividual *individual);
+
+void empathy_roster_model_fire_individual_removed (EmpathyRosterModel *self,
+    FolksIndividual *individual);
+
+/* Public API */
+GList * empathy_roster_model_get_individuals (EmpathyRosterModel *self);
 
 G_END_DECLS
 
