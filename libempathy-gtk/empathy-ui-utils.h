@@ -86,14 +86,7 @@ GdkPixbuf * empathy_pixbuf_avatar_from_individual_scaled_finish (
     FolksIndividual *individual,
     GAsyncResult *result,
     GError **error);
-GdkPixbuf * empathy_pixbuf_from_avatar_scaled (EmpathyAvatar *avatar,
-    gint width,
-    gint height);
 GdkPixbuf * empathy_pixbuf_avatar_from_contact_scaled (EmpathyContact *contact,
-    gint width,
-    gint height);
-GdkPixbuf * empathy_pixbuf_protocol_from_contact_scaled (
-    EmpathyContact *contact,
     gint width,
     gint height);
 GdkPixbuf * empathy_pixbuf_contact_status_icon (EmpathyContact *contact,
@@ -110,18 +103,6 @@ GdkPixbuf * empathy_pixbuf_from_icon_name_sized (const gchar *icon_name,
     gint size);
 gchar * empathy_filename_from_icon_name (const gchar *icon_name,
     GtkIconSize icon_size);
-
-/* Text view */
-gboolean empathy_text_iter_forward_search (const GtkTextIter*iter,
-    const gchar *str,
-    GtkTextIter *match_start,
-    GtkTextIter *match_end,
-    const GtkTextIter*limit);
-gboolean empathy_text_iter_backward_search (const GtkTextIter*iter,
-    const gchar *str,
-    GtkTextIter *match_start,
-    GtkTextIter *match_end,
-    const GtkTextIter *limit);
 
 /* Windows */
 void empathy_window_present (GtkWindow *window);
