@@ -1283,6 +1283,25 @@ empathy_roster_view_get_individual_at_y (EmpathyRosterView *self,
   return empathy_roster_contact_get_individual (EMPATHY_ROSTER_CONTACT (child));
 }
 
+/**
+ * @out_child: (out) (allow-none)
+ */
+const gchar *
+empathy_roster_view_get_group_at_y (EmpathyRosterView *self,
+    gint y)
+{
+  GtkWidget *child;
+
+  child = egg_list_box_get_child_at_y (EGG_LIST_BOX (self), y);
+
+  if (EMPATHY_IS_ROSTER_CONTACT (child))
+    return empathy_roster_contact_get_group (EMPATHY_ROSTER_CONTACT (child));
+  else if (EMPATHY_IS_ROSTER_GROUP (child))
+    return empathy_roster_group_get_name (EMPATHY_ROSTER_GROUP (child));
+
+  return NULL;
+}
+
 static gboolean
 empathy_roster_view_query_tooltip (GtkWidget *widget,
     gint x,
