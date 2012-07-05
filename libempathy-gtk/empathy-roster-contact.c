@@ -499,3 +499,9 @@ empathy_roster_contact_set_event_icon (EmpathyRosterContact *self,
 
   update_presence_icon (self);
 }
+
+GdkPixbuf *
+empathy_roster_contact_get_avatar_pixbuf (EmpathyRosterContact *self)
+{
+  return gtk_image_get_pixbuf (GTK_IMAGE (self->priv->avatar));
+}
