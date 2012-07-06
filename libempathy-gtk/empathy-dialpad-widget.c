@@ -40,12 +40,30 @@ static guint signals[NUM_SIGNALS] = { 0, };
 struct _EmpathyDialpadWidgetPrivate
 {
   GtkWidget *entry;
+
+  /* gchar representing the button (like '7') -> GtkButton */
+  GHashTable *buttons;
 };
+
+static void
+empathy_dialpad_widget_dispose (GObject *object)
+{
+  EmpathyDialpadWidget *self = EMPATHY_DIALPAD_WIDGET (object);
+  void (*chain_up) (GObject *) =
+      ((GObjectClass *) empathy_dialpad_widget_parent_class)->dispose;
+
+  g_hash_table_unref (self->priv->buttons);
+
+  if (chain_up != NULL)
+    chain_up (object);
+}
 
 static void
 empathy_dialpad_widget_class_init (EmpathyDialpadWidgetClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+
+  gobject_class->dispose = empathy_dialpad_widget_dispose;
 
   signals[START_TONE] = g_signal_new ("start-tone",
       G_TYPE_FROM_CLASS (klass),
@@ -138,6 +156,8 @@ empathy_dialpad_widget_init (EmpathyDialpadWidget *self)
   gtk_grid_set_column_homogeneous (GTK_GRID (grid), TRUE);
   gtk_grid_set_row_homogeneous (GTK_GRID (grid), TRUE);
 
+  self->priv->buttons = g_hash_table_new (NULL, NULL);
+
   for (i = 0; dtmfbuttons[i].label != NULL; i++)
     {
       GtkWidget *vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -178,6 +198,9 @@ empathy_dialpad_widget_init (EmpathyDialpadWidget *self)
         G_CALLBACK (dtmf_dialpad_button_pressed_cb), self);
       g_signal_connect (G_OBJECT (button), "button-release-event",
         G_CALLBACK (dtmf_dialpad_button_released_cb), self);
+
+      g_hash_table_insert (self->priv->buttons,
+          GUINT_TO_POINTER (dtmfbuttons[i].label[0]), button);
     }
 
   gtk_box_pack_start (GTK_BOX (self), grid, FALSE, FALSE, 3);
