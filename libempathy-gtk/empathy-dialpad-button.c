@@ -109,9 +109,35 @@ empathy_dialpad_button_constructed (GObject *object)
   EmpathyDialpadButton *self = EMPATHY_DIALPAD_BUTTON (object);
   void (*chain_up) (GObject *) =
       ((GObjectClass *) empathy_dialpad_button_parent_class)->constructed;
+  GtkWidget *vbox;
+  GtkWidget *label;
+  gchar *str;
 
   g_assert (self->priv->label != NULL);
   g_assert (self->priv->sub_label != NULL);
+
+  vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+
+  gtk_container_add (GTK_CONTAINER (self), vbox);
+
+  /* main label */
+  label = gtk_label_new ("");
+  str = g_strdup_printf ("<span size='x-large'>%s</span>",
+      self->priv->label);
+  gtk_label_set_markup (GTK_LABEL (label), str);
+  g_free (str);
+
+  gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 3);
+
+  /* sub label */
+  label = gtk_label_new ("");
+  str = g_strdup_printf (
+      "<span foreground='#555555'>%s</span>",
+      self->priv->sub_label);
+  gtk_label_set_markup (GTK_LABEL (label), str);
+  g_free (str);
+
+  gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
 
   if (chain_up != NULL)
     chain_up (object);

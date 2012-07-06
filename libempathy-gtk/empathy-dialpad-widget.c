@@ -21,9 +21,9 @@
 
 #include <config.h>
 
-#include <telepathy-glib/telepathy-glib.h>
-
 #include "empathy-dialpad-widget.h"
+
+#include <libempathy-gtk/empathy-dialpad-button.h>
 
 G_DEFINE_TYPE (EmpathyDialpadWidget, empathy_dialpad_widget, GTK_TYPE_BOX);
 
@@ -86,14 +86,16 @@ empathy_dialpad_widget_class_init (EmpathyDialpadWidgetClass *klass)
 }
 
 static gboolean
-dtmf_dialpad_button_pressed_cb (GtkWidget *button,
+dtmf_dialpad_button_pressed_cb (EmpathyDialpadButton *button,
     GdkEventButton *event,
     EmpathyDialpadWidget *self)
 {
   GtkEntryBuffer *buffer = gtk_entry_get_buffer (GTK_ENTRY (self->priv->entry));
-  TpDTMFEvent tone = GPOINTER_TO_UINT (g_object_get_data (
-        G_OBJECT (button), "dtmf-value"));
-  const gchar *label = g_object_get_data (G_OBJECT (button), "string-value");
+  TpDTMFEvent tone;
+  const gchar *label;
+
+  tone = empathy_dialpad_button_get_event (button);
+  label = empathy_dialpad_button_get_label (button);
 
   g_signal_emit (self, signals[START_TONE], 0, tone);
 
@@ -104,12 +106,13 @@ dtmf_dialpad_button_pressed_cb (GtkWidget *button,
 }
 
 static gboolean
-dtmf_dialpad_button_released_cb (GtkWidget *button,
+dtmf_dialpad_button_released_cb (EmpathyDialpadButton *button,
     GdkEventButton *event,
     EmpathyDialpadWidget *self)
 {
-  TpDTMFEvent tone = GPOINTER_TO_UINT (g_object_get_data (
-        G_OBJECT (button), "dtmf-value"));
+  TpDTMFEvent tone;
+
+  tone = empathy_dialpad_button_get_event (button);
 
   g_signal_emit (self, signals[STOP_TONE], 0, tone);
 
@@ -160,39 +163,13 @@ empathy_dialpad_widget_init (EmpathyDialpadWidget *self)
 
   for (i = 0; dtmfbuttons[i].label != NULL; i++)
     {
-      GtkWidget *vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-      GtkWidget *button = gtk_button_new ();
-      GtkWidget *label;
-      gchar *str;
+      GtkWidget *button;
 
-      gtk_container_add (GTK_CONTAINER (button), vbox);
-
-      /* main label */
-      label = gtk_label_new ("");
-      str = g_strdup_printf ("<span size='x-large'>%s</span>",
-          dtmfbuttons[i].label);
-      gtk_label_set_markup (GTK_LABEL (label), str);
-      g_free (str);
-
-      gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 3);
-
-      /* sub label */
-      label = gtk_label_new ("");
-      str = g_strdup_printf (
-          "<span foreground='#555555'>%s</span>",
-          dtmfbuttons[i].sublabel);
-      gtk_label_set_markup (GTK_LABEL (label), str);
-      g_free (str);
-
-      gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, TRUE, 0);
+      button = empathy_dialpad_button_new (dtmfbuttons[i].label,
+          dtmfbuttons[i].sublabel, dtmfbuttons[i].event);
 
       gtk_grid_attach (GTK_GRID (grid), button, i % 3, i / 3,
           1, 1);
-
-      g_object_set_data (G_OBJECT (button), "dtmf-value",
-        GUINT_TO_POINTER (dtmfbuttons[i].event));
-      g_object_set_data (G_OBJECT (button), "string-value",
-          (gpointer) dtmfbuttons[i].label);
 
       g_signal_connect (G_OBJECT (button), "button-press-event",
         G_CALLBACK (dtmf_dialpad_button_pressed_cb), self);
@@ -220,7 +197,7 @@ void
 empathy_dialpad_widget_press_key (EmpathyDialpadWidget *self,
     gchar key)
 {
-  GtkWidget *button;
+  EmpathyDialpadButton *button;
 
   button = g_hash_table_lookup (self->priv->buttons, GUINT_TO_POINTER (key));
 
@@ -230,6 +207,6 @@ empathy_dialpad_widget_press_key (EmpathyDialpadWidget *self,
   /* gtk_widget_activate() just does the button-pressed animation, it doesn't
    * fire the callbacks so we do it manually. */
   dtmf_dialpad_button_pressed_cb (button, NULL, self);
-  gtk_widget_activate (button);
+  gtk_widget_activate (GTK_WIDGET (button));
   dtmf_dialpad_button_released_cb (button, NULL, self);
 }
