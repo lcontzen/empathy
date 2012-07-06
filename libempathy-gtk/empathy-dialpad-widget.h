@@ -52,6 +52,9 @@ struct _EmpathyDialpadWidgetClass
 GType empathy_dialpad_widget_get_type (void);
 GtkWidget *empathy_dialpad_widget_new (void);
 
+void empathy_dialpad_widget_press_key (EmpathyDialpadWidget *self,
+    gchar key);
+
 G_END_DECLS
 
 #endif

@@ -215,3 +215,21 @@ empathy_dialpad_widget_new (void)
 {
   return g_object_new (EMPATHY_TYPE_DIALPAD_WIDGET, NULL);
 }
+
+void
+empathy_dialpad_widget_press_key (EmpathyDialpadWidget *self,
+    gchar key)
+{
+  GtkWidget *button;
+
+  button = g_hash_table_lookup (self->priv->buttons, GUINT_TO_POINTER (key));
+
+  if (button == NULL)
+    return;
+
+  /* gtk_widget_activate() just does the button-pressed animation, it doesn't
+   * fire the callbacks so we do it manually. */
+  dtmf_dialpad_button_pressed_cb (button, NULL, self);
+  gtk_widget_activate (button);
+  dtmf_dialpad_button_released_cb (button, NULL, self);
+}
