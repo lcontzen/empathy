@@ -9,10 +9,11 @@ msgstr ""
 "Project-Id-Version: empathy.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=empathy&keywords=I18N+L10N&component=General\n"
-"POT-Creation-Date: 2012-07-02 14:02+0000\n"
-"PO-Revision-Date: 2012-07-02 16:45+0200\n"
+"POT-Creation-Date: 2012-07-06 09:33+0000\n"
+"PO-Revision-Date: 2012-07-06 11:48+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español <gnome-es-list@gnome.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -352,7 +353,6 @@ msgid "Path of the Adium theme to use"
 msgstr "Ruta del tema Adium que usar"
 
 #: ../data/org.gnome.Empathy.gschema.xml.h:65
-#| msgid "Path of the Adium theme to use if the theme used for chat is Adium."
 msgid ""
 "Path of the Adium theme to use if the theme used for chat is Adium. "
 "Deprecated."
@@ -1575,7 +1575,7 @@ msgstr "Insertar emoticono"
 
 #. send button
 #: ../libempathy-gtk/empathy-chat.c:2413
-#: ../libempathy-gtk/empathy-ui-utils.c:1880
+#: ../libempathy-gtk/empathy-ui-utils.c:1179
 msgid "_Send"
 msgstr "E_nviar"
 
@@ -1647,7 +1647,7 @@ msgstr "Ahora %s se llama %s"
 #. We don't know if the incoming call has been accepted or not, so we
 #. * assume it hasn't and if it has, we'll set the proper status when
 #. * we get the new handler.
-#: ../libempathy-gtk/empathy-chat.c:2991 ../src/empathy-event-manager.c:1167
+#: ../libempathy-gtk/empathy-chat.c:2991 ../src/empathy-event-manager.c:1176
 #: ../src/empathy-call-window.c:1468 ../src/empathy-call-window.c:1518
 #: ../src/empathy-call-window.c:2571
 msgid "Disconnected"
@@ -1685,7 +1685,7 @@ msgstr "Esta sala está protegida por contraseña:"
 msgid "Join"
 msgstr "Unirse"
 
-#: ../libempathy-gtk/empathy-chat.c:4079 ../src/empathy-event-manager.c:1188
+#: ../libempathy-gtk/empathy-chat.c:4079 ../src/empathy-event-manager.c:1197
 msgid "Connected"
 msgstr "Conectado"
 
@@ -1727,7 +1727,7 @@ msgstr "Editar contactos bloqueados"
 #. Account and Identifier
 #: ../libempathy-gtk/empathy-contact-blocking-dialog.ui.h:1
 #: ../libempathy-gtk/empathy-contact-search-dialog.c:524
-#: ../libempathy-gtk/empathy-individual-widget.c:1474
+#: ../libempathy-gtk/empathy-individual-widget.c:1485
 #: ../src/empathy-chatrooms-window.ui.h:2
 #: ../src/empathy-new-chatroom-dialog.ui.h:6
 msgid "Account:"
@@ -1737,37 +1737,13 @@ msgstr "Cuenta:"
 msgid "Blocked Contacts"
 msgstr "Contactos bloqueados"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.c:325
+#: ../libempathy-gtk/empathy-contact-dialogs.c:190
 #: ../libempathy-gtk/empathy-individual-dialogs.c:118
 msgid "New Contact"
 msgstr "Contacto nuevo"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.c:394
-#: ../libempathy-gtk/empathy-individual-dialogs.c:197
-#, c-format
-msgid "Block %s?"
-msgstr "¿Bloquear a %s?"
-
-#: ../libempathy-gtk/empathy-contact-dialogs.c:399
-#: ../libempathy-gtk/empathy-individual-dialogs.c:252
-#, c-format
-msgid "Are you sure you want to block '%s' from contacting you again?"
-msgstr ""
-"¿Está seguro de que quiere bloquear a «%s» para que no le vuelva a contactar?"
-
-#: ../libempathy-gtk/empathy-contact-dialogs.c:404
-#: ../libempathy-gtk/empathy-individual-dialogs.c:274
-msgid "_Block"
-msgstr "_Bloquear"
-
-#: ../libempathy-gtk/empathy-contact-dialogs.c:422
-#: ../libempathy-gtk/empathy-individual-dialogs.c:283
-msgid "_Report this contact as abusive"
-msgid_plural "_Report these contacts as abusive"
-msgstr[0] "Info_rmar de este contacto como abusivo"
-msgstr[1] "Info_rmar de estos contacto como abusivos"
-
 #: ../libempathy-gtk/empathy-contact-dialogs.ui.h:1
+#: ../libempathy-gtk/empathy-subscription-dialog.c:235
 msgid "Subscription Request"
 msgstr "Petición de suscripción"
 
@@ -2097,6 +2073,19 @@ msgstr "Seleccionar"
 msgid "Group"
 msgstr "Grupo"
 
+#: ../libempathy-gtk/empathy-individual-dialogs.c:197
+#: ../libempathy-gtk/empathy-subscription-dialog.c:122
+#, c-format
+msgid "Block %s?"
+msgstr "¿Bloquear a %s?"
+
+#: ../libempathy-gtk/empathy-individual-dialogs.c:252
+#: ../libempathy-gtk/empathy-subscription-dialog.c:126
+#, c-format
+msgid "Are you sure you want to block '%s' from contacting you again?"
+msgstr ""
+"¿Está seguro de que quiere bloquear a «%s» para que no le vuelva a contactar?"
+
 #: ../libempathy-gtk/empathy-individual-dialogs.c:257
 msgid "The following identity will be blocked:"
 msgid_plural "The following identities will be blocked:"
@@ -2108,6 +2097,19 @@ msgid "The following identity can not be blocked:"
 msgid_plural "The following identities can not be blocked:"
 msgstr[0] "No se puede bloquear la siguiente identidad:"
 msgstr[1] "No se pueden bloquear la siguientes identidades:"
+
+#: ../libempathy-gtk/empathy-individual-dialogs.c:274
+#: ../libempathy-gtk/empathy-subscription-dialog.c:131
+#: ../libempathy-gtk/empathy-subscription-dialog.c:276
+msgid "_Block"
+msgstr "_Bloquear"
+
+#: ../libempathy-gtk/empathy-individual-dialogs.c:283
+#: ../libempathy-gtk/empathy-subscription-dialog.c:151
+msgid "_Report this contact as abusive"
+msgid_plural "_Report these contacts as abusive"
+msgstr[0] "Info_rmar de este contacto como abusivo"
+msgstr[1] "Info_rmar de estos contacto como abusivos"
 
 #: ../libempathy-gtk/empathy-individual-edit-dialog.c:247
 msgid "Edit Contact Information"
@@ -2215,7 +2217,7 @@ msgid "Share My Desktop"
 msgstr "Compartir mi escritorio"
 
 #: ../libempathy-gtk/empathy-individual-menu.c:1455
-#: ../libempathy-gtk/empathy-individual-widget.c:1357
+#: ../libempathy-gtk/empathy-individual-widget.c:1368
 msgid "Favorite"
 msgstr "Favorita"
 
@@ -2264,16 +2266,16 @@ msgid "Re_name"
 msgstr "Re_nombrar"
 
 #. Alias
-#: ../libempathy-gtk/empathy-individual-widget.c:1293
+#: ../libempathy-gtk/empathy-individual-widget.c:1304
 msgid "Alias:"
 msgstr "Apodo:"
 
 #. Translators: Identifier to connect to Instant Messaging network
-#: ../libempathy-gtk/empathy-individual-widget.c:1502
+#: ../libempathy-gtk/empathy-individual-widget.c:1513
 msgid "Identifier:"
 msgstr "Identificador:"
 
-#: ../libempathy-gtk/empathy-individual-widget.c:1641
+#: ../libempathy-gtk/empathy-individual-widget.c:1652
 #, c-format
 msgid "Linked contact containing %u contact"
 msgid_plural "Linked contacts containing %u contacts"
@@ -2688,7 +2690,7 @@ msgstr "Editar mensajes personalizados"
 msgid "Message edited at %s"
 msgstr "Mensaje editado a las %s"
 
-#: ../libempathy-gtk/empathy-theme-adium.c:1823
+#: ../libempathy-gtk/empathy-theme-adium.c:1843
 msgid "Normal"
 msgstr "Normal"
 
@@ -2770,19 +2772,19 @@ msgstr "Recordar esta opción para futuras conexiones"
 msgid "Certificate Details"
 msgstr "Detalles del certificado"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1754
+#: ../libempathy-gtk/empathy-ui-utils.c:1049
 msgid "Unable to open URI"
 msgstr "No se pudo abrir el URI"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1872
+#: ../libempathy-gtk/empathy-ui-utils.c:1173
 msgid "Select a file"
 msgstr "Seleccionar un archivo"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1947
+#: ../libempathy-gtk/empathy-ui-utils.c:1247
 msgid "Insufficient free space to save file"
 msgstr "No hay espacio suficiente para guardar el archivo"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1955
+#: ../libempathy-gtk/empathy-ui-utils.c:1255
 #, c-format
 msgid ""
 "%s of free space are required to save this file, but only %s is available. "
@@ -2791,7 +2793,7 @@ msgstr ""
 "Se requiere %s de espacio libre para guardar este archivo, pero sólo hay %s "
 "disponible. Elija otra ubicación."
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1999
+#: ../libempathy-gtk/empathy-ui-utils.c:1301
 #, c-format
 msgid "Incoming file from %s"
 msgstr "Archivo entrante de %s"
@@ -2980,6 +2982,22 @@ msgstr "Seleccionar…"
 #: ../libempathy-gtk/empathy-calendar-button.c:154
 msgid "_Select"
 msgstr "_Seleccionar"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:241
+#: ../src/empathy-event-manager.c:1114
+#, c-format
+msgid "%s would like permission to see when you are online"
+msgstr "%s quiere permiso para ver cuándo está en línea"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:282
+#: ../src/empathy-event-manager.c:731
+msgid "_Decline"
+msgstr "_Rechazar"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:283
+#| msgid "Accept"
+msgid "_Accept"
+msgstr "_Aceptar"
 
 #: ../nautilus-sendto-plugin/empathy-nautilus-sendto.c:225
 msgid "No error message"
@@ -3524,10 +3542,6 @@ msgstr "Invitación para unirse a %s"
 msgid "%s is inviting you to join %s"
 msgstr "%s le está invitando a unirse a %s"
 
-#: ../src/empathy-event-manager.c:731
-msgid "_Decline"
-msgstr "_Rechazar"
-
 #: ../src/empathy-event-manager.c:736
 msgid "_Join"
 msgstr "_Unirse"
@@ -3556,12 +3570,7 @@ msgstr "Transferencia de archivo entrante de %s"
 msgid "Password required"
 msgstr "Se requiere una contraseña"
 
-#: ../src/empathy-event-manager.c:1105
-#, c-format
-msgid "%s would like permission to see when you are online"
-msgstr "%s quiere permiso para ver cuándo está en línea"
-
-#: ../src/empathy-event-manager.c:1111
+#: ../src/empathy-event-manager.c:1120
 #, c-format
 msgid ""
 "\n"
