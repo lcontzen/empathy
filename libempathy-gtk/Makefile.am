@@ -52,6 +52,7 @@ libempathy_gtk_handwritten_source =            	\
 	empathy-contact-search-dialog.c		\
 	empathy-contact-widget.c		\
 	empathy-dialpad-widget.c		\
+	empathy-dialpad-button.c		\
 	empathy-geometry.c			\
 	empathy-groups-widget.c			\
 	empathy-individual-dialogs.c		\
@@ -119,6 +120,7 @@ libempathy_gtk_headers =			\
 	empathy-contact-widget.h		\
 	empathy-contactinfo-utils.h		\
 	empathy-dialpad-widget.h		\
+	empathy-dialpad-button.h		\
 	empathy-geometry.h			\
 	empathy-groups-widget.h			\
 	empathy-images.h			\
