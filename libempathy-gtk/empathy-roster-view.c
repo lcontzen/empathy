@@ -173,27 +173,6 @@ roster_contact_changed_cb (GtkWidget *child,
   egg_list_box_child_changed (EGG_LIST_BOX (self), child);
 }
 
-static gboolean
-is_xmpp_local_contact (FolksIndividual *individual)
-{
-  EmpathyContact *contact;
-  TpConnection *connection;
-  const gchar *protocol_name = NULL;
-  gboolean result;
-
-  contact = empathy_contact_dup_from_folks_individual (individual);
-
-  if (contact == NULL)
-    return FALSE;
-
-  connection = empathy_contact_get_connection (contact);
-  protocol_name = tp_connection_get_protocol_name (connection);
-  result = !tp_strdiff (protocol_name, "local-xmpp");
-  g_object_unref (contact);
-
-  return result;
-}
-
 static GtkWidget *
 add_roster_contact (EmpathyRosterView *self,
     FolksIndividual *individual,
@@ -331,10 +310,6 @@ individual_added (EmpathyRosterView *self,
   if (!self->priv->show_groups)
     {
       add_to_group (self, individual, NO_GROUP);
-    }
-  else if (is_xmpp_local_contact (individual))
-    {
-      add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_PEOPLE_NEARBY);
     }
   else
     {

@@ -27,6 +27,10 @@
 
 #include "empathy-roster-model.h"
 
+#include <glib/gi18n-lib.h>
+
+#include <libempathy/empathy-utils.h>
+
 static void roster_model_iface_init (EmpathyRosterModelInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (EmpathyRosterModelManager,
@@ -49,10 +53,33 @@ enum
 static guint signals[LAST_SIGNAL];
 */
 
+#define PEOPLE_NEARBY _("People Nearby")
+
 struct _EmpathyRosterModelManagerPriv
 {
   EmpathyIndividualManager *manager;
 };
+
+static gboolean
+is_xmpp_local_contact (FolksIndividual *individual)
+{
+  EmpathyContact *contact;
+  TpConnection *connection;
+  const gchar *protocol_name = NULL;
+  gboolean result;
+
+  contact = empathy_contact_dup_from_folks_individual (individual);
+
+  if (contact == NULL)
+    return FALSE;
+
+  connection = empathy_contact_get_connection (contact);
+  protocol_name = tp_connection_get_protocol_name (connection);
+  result = !tp_strdiff (protocol_name, "local-xmpp");
+  g_object_unref (contact);
+
+  return result;
+}
 
 static void
 members_changed_cb (EmpathyIndividualManager *manager,
@@ -222,6 +249,12 @@ empathy_roster_model_manager_get_groups_for_individual (EmpathyRosterModel *mode
 {
   GList *groups_list = NULL;
   GeeSet *groups_set;
+
+  if (is_xmpp_local_contact (individual))
+    {
+      groups_list = g_list_prepend (groups_list, PEOPLE_NEARBY);
+      return groups_list;
+    }
 
   groups_set = folks_group_details_get_groups (FOLKS_GROUP_DETAILS (individual));
   if (gee_collection_get_size (GEE_COLLECTION (groups_set)) > 0)
