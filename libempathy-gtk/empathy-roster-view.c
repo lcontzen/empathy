@@ -36,9 +36,6 @@ enum
 static guint signals[LAST_SIGNAL];
 
 #define NO_GROUP "X-no-group"
-#define UNGROUPED _("Ungrouped")
-#define TOP_GROUP _("Top Contacts")
-#define PEOPLE_NEARBY _("People Nearby")
 
 struct _EmpathyRosterViewPriv
 {
@@ -243,9 +240,9 @@ ensure_roster_group (EmpathyRosterView *self,
   if (roster_group != NULL)
     return EMPATHY_ROSTER_GROUP (roster_group);
 
-  if (!tp_strdiff (group, TOP_GROUP))
+  if (!tp_strdiff (group, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP))
     roster_group = empathy_roster_group_new (group, "emblem-favorite-symbolic");
-  else if (!tp_strdiff (group, PEOPLE_NEARBY))
+  else if (!tp_strdiff (group, EMPATHY_ROSTER_VIEW_GROUP_PEOPLE_NEARBY))
     roster_group = empathy_roster_group_new (group, "im-local-xmpp");
   else
     roster_group = empathy_roster_group_new (group, NULL);
@@ -327,7 +324,7 @@ individual_added (EmpathyRosterView *self,
     }
   else if (is_xmpp_local_contact (individual))
     {
-      add_to_group (self, individual, PEOPLE_NEARBY);
+      add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_PEOPLE_NEARBY);
     }
   else
     {
@@ -341,7 +338,7 @@ individual_added (EmpathyRosterView *self,
             FOLKS_FAVOURITE_DETAILS (individual)) ||
           g_list_index (tops, individual) != -1)
         {
-          add_to_group (self, individual, TOP_GROUP);
+          add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
         }
 
       groups = folks_group_details_get_groups (
@@ -365,7 +362,7 @@ individual_added (EmpathyRosterView *self,
       else
         {
           /* No group, adds to Ungrouped */
-          add_to_group (self, individual, UNGROUPED);
+          add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED);
         }
     }
 }
@@ -609,15 +606,15 @@ static gint
 compare_group_names (const gchar *group_a,
     const gchar *group_b)
 {
-  if (!tp_strdiff (group_a, TOP_GROUP))
+  if (!tp_strdiff (group_a, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP))
     return -1;
 
-  if (!tp_strdiff (group_b, TOP_GROUP))
+  if (!tp_strdiff (group_b, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP))
     return 1;
 
-  if (!tp_strdiff (group_a, UNGROUPED))
+  if (!tp_strdiff (group_a, EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED))
     return 1;
-  else if (!tp_strdiff (group_b, UNGROUPED))
+  else if (!tp_strdiff (group_b, EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED))
     return -1;
 
   return g_ascii_strcasecmp (group_a, group_b);
@@ -848,7 +845,7 @@ filter_contact (EmpathyRosterView *self,
       group_name = empathy_roster_contact_get_group (contact);
       group = lookup_roster_group (self, group_name);
 
-      if (!tp_strdiff (group_name, TOP_GROUP) &&
+      if (!tp_strdiff (group_name, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP) &&
           contact_is_favourite (contact))
         displayed = TRUE;
 
@@ -965,7 +962,7 @@ remove_from_group (EmpathyRosterView *self,
 
   if (g_hash_table_size (contacts) == 0)
     {
-      add_to_group (self, individual, UNGROUPED);
+      add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED);
     }
 
   roster_group = lookup_roster_group (self, group);
@@ -994,7 +991,8 @@ update_top_contacts (EmpathyRosterView *self)
 
   tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
 
-  group = g_hash_table_lookup (self->priv->roster_groups, TOP_GROUP);
+  group = g_hash_table_lookup (self->priv->roster_groups,
+      EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
   if (group == NULL)
     {
       to_add = g_list_copy (tops);
@@ -1031,10 +1029,10 @@ update_top_contacts (EmpathyRosterView *self)
     }
 
   for (l = to_add; l != NULL; l = g_list_next (l))
-    add_to_group (self, l->data, TOP_GROUP);
+    add_to_group (self, l->data, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
 
   for (l = to_remove; l != NULL; l = g_list_next (l))
-    remove_from_group (self, l->data, TOP_GROUP);
+    remove_from_group (self, l->data, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
 
   g_list_free (to_add);
   g_list_free (to_remove);
@@ -1083,9 +1081,10 @@ favourites_changed_cb (EmpathyIndividualManager *manager,
   if (self->priv->show_groups)
     {
       if (favourite)
-        add_to_group (self, individual, TOP_GROUP);
+        add_to_group (self, individual, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
       else
-        remove_from_group (self, individual, TOP_GROUP);
+        remove_from_group (self, individual,
+            EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);
     }
   else
     {
