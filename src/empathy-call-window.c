@@ -4047,7 +4047,7 @@ empathy_call_window_key_press_cb (GtkWidget *video_output,
   GdkEventKey *event, EmpathyCallWindow *window)
 {
   EmpathyCallWindowPriv *priv = GET_PRIV (window);
-  gchar key = 0;
+  gchar key;
 
   if (priv->is_fullscreen && event->keyval == GDK_KEY_Escape)
     {
@@ -4057,69 +4057,34 @@ empathy_call_window_key_press_cb (GtkWidget *video_output,
       return TRUE;
     }
 
-  switch (event->keyval)
+  key = gdk_keyval_to_unicode (event->keyval);
+  switch (key)
     {
-      case GDK_KEY_KP_0:
-      case GDK_KEY_0:
-        key = '0';
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+      case '*':
+      case '#':
         break;
-      case GDK_KEY_KP_1:
-      case GDK_KEY_1:
-        key = '1';
-        break;
-      case GDK_KEY_KP_2:
-      case GDK_KEY_2:
-        key = '2';
-        break;
-      case GDK_KEY_KP_3:
-      case GDK_KEY_3:
-        key = '3';
-        break;
-      case GDK_KEY_KP_4:
-      case GDK_KEY_4:
-        key = '4';
-        break;
-      case GDK_KEY_KP_5:
-      case GDK_KEY_5:
-        key = '5';
-        break;
-      case GDK_KEY_KP_6:
-      case GDK_KEY_6:
-        key = '6';
-        break;
-      case GDK_KEY_KP_7:
-      case GDK_KEY_7:
-        key = '7';
-        break;
-      case GDK_KEY_KP_8:
-      case GDK_KEY_8:
-        key = '8';
-        break;
-      case GDK_KEY_KP_9:
-      case GDK_KEY_9:
-        key = '9';
-        break;
-      case GDK_KEY_asterisk:
-      case GDK_KEY_KP_Multiply:
-        key = '*';
-        break;
-      case GDK_KEY_numbersign:
-      case GDK_KEY_KP_Add:
-        key = '#';
+      default:
+        return TRUE;
         break;
     }
 
-  if (key != 0)
-    {
-      gtk_toggle_tool_button_set_active (
-          GTK_TOGGLE_TOOL_BUTTON (priv->dialpad_button), TRUE);
+  gtk_toggle_tool_button_set_active (
+      GTK_TOGGLE_TOOL_BUTTON (priv->dialpad_button), TRUE);
 
-      empathy_dialpad_widget_press_key (
-          EMPATHY_DIALPAD_WIDGET (priv->dtmf_panel), key);
-      return TRUE;
-    }
+  empathy_dialpad_widget_press_key (
+      EMPATHY_DIALPAD_WIDGET (priv->dtmf_panel), key);
 
-  return FALSE;
+  return TRUE;
 }
 
 static gboolean
