@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
+#include <gio/gdesktopappinfo.h>
 
 #include <telepathy-glib/util.h>
 #include <folks/folks.h>
@@ -35,10 +36,14 @@
 
 #include <libempathy/empathy-individual-manager.h>
 #include <libempathy/empathy-utils.h>
+#include <libempathy/empathy-pkg-kit.h>
 
 #include "empathy-individual-information-dialog.h"
 #include "empathy-individual-widget.h"
 #include "empathy-ui-utils.h"
+
+#define DEBUG_FLAG EMPATHY_DEBUG_CONTACT
+#include <libempathy/empathy-debug.h>
 
 #define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyIndividualInformationDialog)
 typedef struct {
@@ -315,4 +320,137 @@ empathy_individual_information_dialog_init (
 
   g_signal_connect (dialog, "response",
       G_CALLBACK (individual_dialogs_response_cb), &information_dialogs);
+}
+
+static void
+show_gnome_contacts_error_dialog (void)
+{
+  GtkWidget *dialog;
+
+  dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL,
+      GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+      _("gnome-contacts not installed"));
+
+  gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+      _("Please install gnome-contacts to access contacts details."));
+
+  g_signal_connect_swapped (dialog, "response",
+          G_CALLBACK (gtk_widget_destroy), dialog);
+
+  gtk_widget_show (dialog);
+}
+
+static void
+start_gnome_contacts (FolksIndividual *individual,
+    gboolean try_installing);
+
+static void
+install_gnome_contacts_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  FolksIndividual *individual = user_data;
+  GError *error = NULL;
+
+  if (!empathy_pkg_kit_install_packages_finish (result, &error))
+    {
+      DEBUG ("Failed to install gnome-contacts: %s", error->message);
+      g_error_free (error);
+
+      show_gnome_contacts_error_dialog ();
+      goto out;
+    }
+
+  DEBUG ("gnome-contacts installed");
+
+  start_gnome_contacts (individual, FALSE);
+
+out:
+  g_object_unref (individual);
+}
+
+static void
+start_gnome_contacts (FolksIndividual *individual,
+    gboolean try_installing)
+{
+  GDesktopAppInfo *desktop_info;
+  gchar *cmd;
+  GAppInfo *app_info;
+  GError *error = NULL;
+  GdkAppLaunchContext *context = NULL;
+  GdkDisplay *display;
+
+  g_return_if_fail (FOLKS_IS_INDIVIDUAL (individual));
+
+  /* Start gnome-contacts */
+  display = gdk_display_get_default ();
+  context = gdk_display_get_app_launch_context (display);
+
+  desktop_info = g_desktop_app_info_new ("gnome-contacts.desktop");
+  if (desktop_info == NULL)
+    {
+      if (try_installing)
+        {
+          const gchar *packages[] = { "gnome-contacts", NULL };
+
+          DEBUG ("gnome-contacts not installed; try to install it");
+
+          empathy_pkg_kit_install_packages_async (0, packages, NULL,
+              NULL, install_gnome_contacts_cb, g_object_ref (individual));
+        }
+      else
+        {
+          show_gnome_contacts_error_dialog ();
+        }
+
+      return;
+    }
+
+  /* glib doesn't have API to start a desktop file with args... (#637875) */
+  cmd = g_strdup_printf ("%s -i %s", g_app_info_get_commandline (
+        (GAppInfo *) desktop_info), folks_individual_get_id (individual));
+
+  app_info = g_app_info_create_from_commandline (cmd, NULL, 0, &error);
+  if (app_info == NULL)
+    {
+      DEBUG ("Failed to create app_info: %s", error->message);
+      g_error_free (error);
+      return;
+    }
+
+  if (!g_app_info_launch (app_info, NULL, (GAppLaunchContext *) context,
+        &error))
+    {
+      g_critical ("Failed to start gnome-contacts: %s", error->message);
+      g_error_free (error);
+    }
+
+  g_object_unref (desktop_info);
+  g_object_unref (app_info);
+}
+
+/* Use gnome-contacts to display @individual or fallback to
+ * EmpathyIndividualInformationDialog if user is not not in Folks.
+ */
+void
+empathy_display_individual_info (FolksIndividual *individual)
+{
+  EmpathyIndividualManager *mgr;
+
+  mgr = empathy_individual_manager_dup_singleton ();
+
+  /* Only use gnome-contacts if that's a 'real' individual we got from
+   * Folks (and so the individual manager knows about it). If not that's a
+   * MUC contact and we use the simple dialog. */
+  if (empathy_individual_manager_lookup_member (mgr,
+        folks_individual_get_id (individual)) != NULL)
+    {
+      start_gnome_contacts (individual, TRUE);
+    }
+  else
+    {
+      empathy_individual_information_dialog_show (individual, NULL);
+    }
+
+  g_object_unref (mgr);
 }

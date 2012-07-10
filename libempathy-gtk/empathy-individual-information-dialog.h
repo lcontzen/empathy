@@ -55,6 +55,8 @@ GType empathy_individual_information_dialog_get_type (void) G_GNUC_CONST;
 void empathy_individual_information_dialog_show (FolksIndividual *individual,
     GtkWindow *parent);
 
+void empathy_display_individual_info (FolksIndividual *individual);
+
 G_END_DECLS
 
 #endif /*  __EMPATHY_INDIVIDUAL_INFORMATION_DIALOG_H__ */
