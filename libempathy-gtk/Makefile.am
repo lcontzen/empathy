@@ -45,7 +45,6 @@ libempathy_gtk_handwritten_source =            	\
 	empathy-cell-renderer-text.c		\
 	empathy-chat.c				\
 	empathy-contact-blocking-dialog.c	\
-	empathy-contact-dialogs.c		\
 	empathy-contact-chooser.c		\
 	empathy-contactinfo-utils.c		\
 	empathy-live-search.c			\
@@ -113,7 +112,6 @@ libempathy_gtk_headers =			\
 	empathy-cell-renderer-text.h		\
 	empathy-chat.h				\
 	empathy-contact-blocking-dialog.h	\
-	empathy-contact-dialogs.h		\
 	empathy-contact-chooser.h		\
 	empathy-live-search.h			\
 	empathy-contact-search-dialog.h		\
@@ -200,7 +198,6 @@ check-local: check-coding-style
 uidir = $(datadir)/empathy
 ui_DATA = 					\
 	empathy-contact-widget.ui		\
-	empathy-contact-dialogs.ui		\
 	empathy-contact-blocking-dialog.ui	\
 	empathy-account-widget-generic.ui	\
 	empathy-account-widget-jabber.ui	\

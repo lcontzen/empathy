@@ -32,8 +32,6 @@ libempathy-gtk/empathy-chat.c
 [type: gettext/glade]libempathy-gtk/empathy-chat.ui
 libempathy-gtk/empathy-contact-blocking-dialog.c
 [type: gettext/glade]libempathy-gtk/empathy-contact-blocking-dialog.ui
-libempathy-gtk/empathy-contact-dialogs.c
-[type: gettext/glade]libempathy-gtk/empathy-contact-dialogs.ui
 libempathy-gtk/empathy-contact-search-dialog.c
 libempathy-gtk/empathy-contact-widget.c
 libempathy-gtk/empathy-contactinfo-utils.c
