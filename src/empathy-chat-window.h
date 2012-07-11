@@ -60,11 +60,12 @@ G_BEGIN_DECLS
 
 typedef struct _EmpathyChatWindow EmpathyChatWindow;
 typedef struct _EmpathyChatWindowClass EmpathyChatWindowClass;
+typedef struct _EmpathyChatWindowPriv EmpathyChatWindowPriv;
 
 struct _EmpathyChatWindow
 {
   GObject parent;
-  gpointer priv;
+  EmpathyChatWindowPriv *priv;
 };
 
 struct _EmpathyChatWindowClass
