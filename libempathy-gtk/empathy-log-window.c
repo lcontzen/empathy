@@ -51,7 +51,7 @@
 #include "empathy-log-window.h"
 #include "empathy-account-chooser.h"
 #include "empathy-call-utils.h"
-#include "empathy-contact-dialogs.h"
+#include "empathy-individual-information-dialog.h"
 #include "empathy-images.h"
 #include "empathy-theme-manager.h"
 #include "empathy-ui-utils.h"
@@ -319,11 +319,17 @@ static void
 toolbutton_profile_clicked (GtkToolButton *toolbutton,
     EmpathyLogWindow *self)
 {
+  FolksIndividual *individual;
+
   g_return_if_fail (self != NULL);
   g_return_if_fail (EMPATHY_IS_CONTACT (self->priv->selected_contact));
 
-  empathy_contact_information_dialog_show (self->priv->selected_contact,
-      GTK_WINDOW (self));
+  individual = empathy_ensure_individual_from_tp_contact (
+      empathy_contact_get_tp_contact (self->priv->selected_contact));
+
+  empathy_display_individual_info (individual);
+
+  g_object_unref (individual);
 }
 
 static void
