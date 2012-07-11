@@ -48,7 +48,6 @@
 #include <libempathy/empathy-individual-manager.h>
 
 #include <libempathy-gtk/empathy-images.h>
-#include <libempathy-gtk/empathy-contact-dialogs.h>
 #include <libempathy-gtk/empathy-log-window.h>
 #include <libempathy-gtk/empathy-geometry.h>
 #include <libempathy-gtk/empathy-smiley-manager.h>

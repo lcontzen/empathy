@@ -24,7 +24,6 @@
 
 #include <libempathy/empathy-utils.h>
 #include <libempathy-gtk/empathy-individual-widget.h>
-#include <libempathy-gtk/empathy-contact-dialogs.h>
 
 #include <glib/gi18n-lib.h>
 
