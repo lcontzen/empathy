@@ -42,7 +42,7 @@
 #include "empathy-individual-menu.h"
 #include "empathy-images.h"
 #include "empathy-log-window.h"
-#include "empathy-contact-dialogs.h"
+#include "empathy-individual-dialogs.h"
 #include "empathy-gtk-enum-types.h"
 #include "empathy-individual-dialogs.h"
 #include "empathy-individual-edit-dialog.h"
@@ -1795,18 +1795,18 @@ add_menu_item_activated (GtkMenuItem *item,
     TpContact *tp_contact)
 {
   GtkWidget *toplevel;
-  EmpathyContact *contact;
+  FolksIndividual *individual;
 
   toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item));
   if (!gtk_widget_is_toplevel (toplevel) || !GTK_IS_WINDOW (toplevel))
     toplevel = NULL;
 
-  contact = empathy_contact_dup_from_tp_contact (tp_contact);
+  individual = empathy_ensure_individual_from_tp_contact (tp_contact);
 
-  empathy_new_contact_dialog_show_with_contact (GTK_WINDOW (toplevel),
-      contact);
+  empathy_new_individual_dialog_show_with_individual (GTK_WINDOW (toplevel),
+      individual);
 
-  g_object_unref (contact);
+  g_object_unref (individual);
 }
 
 static GtkWidget *
