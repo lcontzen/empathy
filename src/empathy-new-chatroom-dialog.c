@@ -779,6 +779,8 @@ empathy_new_chatroom_dialog_init (EmpathyNewChatroomDialog *self)
   self->priv->button_join = gtk_dialog_add_button (GTK_DIALOG (self),
       _("Join"), GTK_RESPONSE_OK);
 
+  gtk_dialog_set_default_response (GTK_DIALOG (self), GTK_RESPONSE_OK);
+
   gtk_window_set_title (GTK_WINDOW (self), _("Join Room"));
   gtk_window_set_role (GTK_WINDOW (self), "join_new_chatroom");
 
