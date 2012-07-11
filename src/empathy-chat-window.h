@@ -1,7 +1,6 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Copyright (C) 2003-2007 Imendio AB
- * Copyright (C) 2007-2008 Collabora Ltd.
+ * Copyright (C) 2007-2012 Collabora Ltd.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -37,33 +36,51 @@
 
 G_BEGIN_DECLS
 
-#define EMPATHY_TYPE_CHAT_WINDOW         (empathy_chat_window_get_type ())
-#define EMPATHY_CHAT_WINDOW(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), EMPATHY_TYPE_CHAT_WINDOW, EmpathyChatWindow))
-#define EMPATHY_CHAT_WINDOW_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST ((k), EMPATHY_TYPE_CHAT_WINDOW, EmpathyChatWindowClass))
-#define EMPATHY_IS_CHAT_WINDOW(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), EMPATHY_TYPE_CHAT_WINDOW))
-#define EMPATHY_IS_CHAT_WINDOW_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), EMPATHY_TYPE_CHAT_WINDOW))
-#define EMPATHY_CHAT_WINDOW_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), EMPATHY_TYPE_CHAT_WINDOW, EmpathyChatWindowClass))
+#define EMPATHY_TYPE_CHAT_WINDOW \
+  (empathy_chat_window_get_type ())
+#define EMPATHY_CHAT_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_CAST((obj), \
+    EMPATHY_TYPE_CHAT_WINDOW, \
+    EmpathyChatWindow))
+#define EMPATHY_CHAT_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_CAST((klass), \
+    EMPATHY_TYPE_CHAT_WINDOW, \
+    EmpathyChatWindowClass))
+#define EMPATHY_IS_CHAT_WINDOW(obj) \
+  (G_TYPE_CHECK_INSTANCE_TYPE((obj), \
+    EMPATHY_TYPE_CHAT_WINDOW))
+#define EMPATHY_IS_CHAT_WINDOW_CLASS(klass) \
+  (G_TYPE_CHECK_CLASS_TYPE((klass), \
+    EMPATHY_TYPE_CHAT_WINDOW))
+#define EMPATHY_CHAT_WINDOW_GET_CLASS(obj) \
+  (G_TYPE_INSTANCE_GET_CLASS ((obj), \
+    EMPATHY_TYPE_CHAT_WINDOW, \
+    EmpathyChatWindowClass))
 
-typedef struct _EmpathyChatWindow      EmpathyChatWindow;
+
+typedef struct _EmpathyChatWindow EmpathyChatWindow;
 typedef struct _EmpathyChatWindowClass EmpathyChatWindowClass;
 
-struct _EmpathyChatWindow {
-	GObject parent;
-	gpointer priv;
+struct _EmpathyChatWindow
+{
+  GObject parent;
+  gpointer priv;
 };
 
-struct _EmpathyChatWindowClass {
-	GObjectClass parent_class;
+struct _EmpathyChatWindowClass
+{
+  GObjectClass parent_class;
 };
 
-GType              empathy_chat_window_get_type       (void);
+GType empathy_chat_window_get_type (void);
 
-EmpathyChat *      empathy_chat_window_find_chat      (TpAccount        *account,
-						       const gchar      *id,
-						       gboolean          sms_channel);
-void               empathy_chat_window_present_chat   (EmpathyChat      *chat,
-						       gint64 timestamp);
+EmpathyChat * empathy_chat_window_find_chat (TpAccount *account,
+    const gchar *id,
+    gboolean sms_channel);
+
+void empathy_chat_window_present_chat (EmpathyChat *chat,
+    gint64 timestamp);
 
 G_END_DECLS
 
-#endif /* __EMPATHY_CHAT_WINDOW_H__ */
+#endif
