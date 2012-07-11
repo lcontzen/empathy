@@ -34,7 +34,7 @@
 #include <libempathy-gtk/empathy-account-chooser.h>
 #include <libempathy-gtk/empathy-cell-renderer-text.h>
 #include <libempathy-gtk/empathy-cell-renderer-activatable.h>
-#include <libempathy-gtk/empathy-contact-dialogs.h>
+#include <libempathy-gtk/empathy-individual-information-dialog.h>
 #include <libempathy-gtk/empathy-images.h>
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
@@ -454,6 +454,7 @@ on_profile_button_got_contact_cb (GObject *source,
 {
   GError *error = NULL;
   EmpathyContact *contact;
+  FolksIndividual *individual;
 
   contact = empathy_client_factory_dup_contact_by_id_finish (
         EMPATHY_CLIENT_FACTORY (source), result, &error);
@@ -464,9 +465,13 @@ on_profile_button_got_contact_cb (GObject *source,
       return;
     }
 
-  empathy_contact_information_dialog_show (contact, NULL);
+  individual = empathy_ensure_individual_from_tp_contact (
+    empathy_contact_get_tp_contact (contact));
+
+  empathy_display_individual_info (individual);
 
   g_object_unref (contact);
+  g_object_unref (individual);
 }
 
 static void
