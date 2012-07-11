@@ -48,7 +48,7 @@
 
 #include "empathy-chat.h"
 #include "empathy-spell.h"
-#include "empathy-contact-dialogs.h"
+#include "empathy-individual-information-dialog.h"
 #include "empathy-individual-store-channel.h"
 #include "empathy-individual-view.h"
 #include "empathy-input-text-view.h"
@@ -959,7 +959,7 @@ whois_got_contact_cb (GObject *source,
 {
 	EmpathyChat *chat = user_data;
 	EmpathyContact *contact;
-	GtkWidget *window;
+	FolksIndividual *individual;
 
 	contact = empathy_client_factory_dup_contact_by_id_finish (
 		EMPATHY_CLIENT_FACTORY (source), result, NULL);
@@ -969,12 +969,11 @@ whois_got_contact_cb (GObject *source,
 		goto out;
 	}
 
-	window = gtk_widget_get_toplevel (GTK_WIDGET (chat));
-	g_return_if_fail (window != NULL);
-	g_return_if_fail (gtk_widget_is_toplevel (window));
-	empathy_contact_information_dialog_show (contact,
-		GTK_WINDOW (window));
+	individual = empathy_ensure_individual_from_tp_contact (
+		empathy_contact_get_tp_contact (contact));
+	empathy_display_individual_info (individual);
 
+	g_object_unref (individual);
 	g_object_unref (contact);
 
 out:
