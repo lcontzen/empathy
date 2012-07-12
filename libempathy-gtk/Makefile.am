@@ -25,8 +25,6 @@ BUILT_SOURCES = 					\
 	empathy-gtk-enum-types.h			\
 	empathy-gtk-enum-types.c
 
-noinst_LTLIBRARIES = libempathy-gtk.la
-
 libempathy_gtk_handwritten_source =            	\
 	empathy-account-chooser.c		\
 	empathy-account-selector-dialog.c		\
@@ -163,6 +161,14 @@ libempathy_gtk_headers =			\
 	empathy-webkit-utils.h			\
 	$(NULL)
 
+pkglib_LTLIBRARIES = libempathy-gtk.la
+
+# libempathy-gtk's API is not stable and will never be, so use -release to make the
+# SONAME of the plugin library change with every Empathy release.
+libempathy_gtk_la_LDFLAGS = \
+   -no-undefined \
+   -release $(VERSION) \
+   $(NULL)
 
 libempathy_gtk_la_SOURCES =			\
 	$(libempathy_gtk_handwritten_source)	\
