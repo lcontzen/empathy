@@ -23,8 +23,6 @@ BUILT_SOURCES = 					\
 	empathy-enum-types.h				\
 	empathy-enum-types.c
 
-noinst_LTLIBRARIES = libempathy.la
-
 libempathy_headers =				\
 	action-chain-internal.h			\
 	empathy-account-settings.h		\
@@ -99,9 +97,30 @@ goa_sources = \
 	empathy-goa-auth-handler.h \
 	$(NULL)
 
+pkglib_LTLIBRARIES = libempathy.la
+
+# libempathy's API is not stable and will never be, so use -release to make the
+# SONAME of the plugin library change with every Empathy release.
+libempathy_la_LDFLAGS = \
+   -no-undefined \
+   -release $(VERSION) \
+   $(NULL)
+
 libempathy_la_SOURCES = \
 	$(libempathy_handwritten_source) \
 	cheese-camera-device-monitor.c cheese-camera-device-monitor.h
+
+libempathy_la_LIBADD =		\
+	$(top_builddir)/extensions/libemp-extensions.la \
+	$(GCR_LIBS) \
+	$(EMPATHY_LIBS) \
+	$(GEOCLUE_LIBS) \
+	$(GEOCODE_LIBS) \
+	$(NETWORK_MANAGER_LIBS) \
+	$(CONNMAN_LIBS) \
+	$(UDEV_LIBS) \
+	$(GOA_LIBS) \
+	$(LIBM)
 
 dtddir = $(datadir)/empathy
 dtd_DATA = 					\
@@ -131,18 +150,6 @@ endif
 # do not distribute generated files
 nodist_libempathy_la_SOURCES =\
 	$(BUILT_SOURCES)
-
-libempathy_la_LIBADD =		\
-	$(top_builddir)/extensions/libemp-extensions.la \
-	$(GCR_LIBS) \
-	$(EMPATHY_LIBS) \
-	$(GEOCLUE_LIBS) \
-	$(GEOCODE_LIBS) \
-	$(NETWORK_MANAGER_LIBS) \
-	$(CONNMAN_LIBS) \
-	$(UDEV_LIBS) \
-	$(GOA_LIBS) \
-	$(LIBM)
 
 check_c_sources = \
     $(libempathy_handwritten_source) \
