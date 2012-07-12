@@ -494,6 +494,35 @@ else
 fi
 AM_CONDITIONAL(BUILD_CHEESE, test x${have_cheese} = xyes)
 
+# -----------------------------------------------------------
+# ubuntu-online-accounts support
+# -----------------------------------------------------------
+AC_ARG_ENABLE(ubuntu-online-accounts,
+              AS_HELP_STRING([--enable-ubuntu-online-accounts=@<:@no/yes/auto@:>@],
+                             [build Ubuntu Online Accounts plugins]), ,
+                             enable_ubuntu_online_accounts=auto)
+
+if test "x$enable_ubuntu_online_accounts" != "xno"; then
+   PKG_CHECK_MODULES(UOA,
+    [
+       account-plugin
+    ], have_uoa="yes", have_uoa="no")
+else
+   have_uoa=no
+fi
+
+if test "x$enable_ubuntu_online_accounts" = "xyes" -a "x$have_uoa" != "xyes"; then
+   AC_MSG_ERROR([Could not find Ubuntu Online Accounts dependencies:
+
+$UOA_PKG_ERRORS])
+fi
+
+if test "x$have_uoa" = "xyes"; then
+   AC_DEFINE(HAVE_UOA, 1, [Define to 1 to build Ubuntu Online Accounts plugins])
+fi
+
+AM_CONDITIONAL(HAVE_UOA, test "x$have_uoa" = "xyes")
+
 # Help documentation
 YELP_HELP_INIT
 
@@ -552,4 +581,5 @@ Configure summary:
     Extras:
 	Nautilus-sendto plugin......:  ${have_nst}
 	GOA MC plugin...............:  ${have_goa}
+	Ubuntu Online plugins.......:  ${have_uoa}
 "
