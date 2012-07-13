@@ -24,66 +24,60 @@
 
 #include <string.h>
 
-#include <gnome-keyring.h>
+#include <libsecret/secret.h>
 
 #include "empathy-utils.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
 #include "empathy-debug.h"
 
-static GnomeKeyringPasswordSchema account_keyring_schema =
-  { GNOME_KEYRING_ITEM_GENERIC_SECRET,
-    { { "account-id", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
-      { "param-name", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+static const SecretSchema account_keyring_schema =
+  { "org.gnome.Empathy.Account", SECRET_SCHEMA_DONT_MATCH_NAME,
+    { { "account-id", SECRET_SCHEMA_ATTRIBUTE_STRING },
+      { "param-name", SECRET_SCHEMA_ATTRIBUTE_STRING },
       { NULL } } };
 
-static GnomeKeyringPasswordSchema room_keyring_schema =
-  { GNOME_KEYRING_ITEM_GENERIC_SECRET,
-    { { "account-id", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
-      { "room-id", GNOME_KEYRING_ATTRIBUTE_TYPE_STRING },
+static const SecretSchema room_keyring_schema =
+  { "org.gnome.Empathy.Room", SECRET_SCHEMA_DONT_MATCH_NAME,
+    { { "account-id", SECRET_SCHEMA_ATTRIBUTE_STRING },
+      { "room-id", SECRET_SCHEMA_ATTRIBUTE_STRING },
       { NULL } } };
 
 gboolean
 empathy_keyring_is_available (void)
 {
-  return gnome_keyring_is_available ();
+  return TRUE;
 }
 
 /* get */
 
 static void
-find_items_cb (GnomeKeyringResult result,
-    GList *list,
+lookup_item_cb (GObject *source,
+    GAsyncResult *result,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
-  GnomeKeyringFound *found;
+  GError *error = NULL;
+  gchar *password;
 
-  if (result != GNOME_KEYRING_RESULT_OK)
+  password = secret_password_lookup_finish (result, &error);
+  if (error != NULL)
     {
-      GError *error = g_error_new_literal (TP_ERROR,
-          TP_ERROR_DOES_NOT_EXIST,
-          gnome_keyring_result_to_message (result));
-      g_simple_async_result_set_from_error (simple, error);
+      g_simple_async_result_set_error (simple, TP_ERROR,
+          TP_ERROR_DOES_NOT_EXIST, "%s", error->message);
       g_clear_error (&error);
       goto out;
     }
 
-  if (list == NULL)
+  if (password == NULL)
     {
       g_simple_async_result_set_error (simple, TP_ERROR,
           TP_ERROR_DOES_NOT_EXIST, _("Password not found"));
       goto out;
     }
 
-  /* Get the first password returned. Ideally we should use the latest
-   * modified or something but we don't have this information from
-   * gnome-keyring atm. */
-  found = list->data;
-  DEBUG ("Got %d secrets; use the first one", g_list_length (list));
-
-  g_simple_async_result_set_op_res_gpointer (simple, g_strdup (found->secret),
-      g_free);
+  g_simple_async_result_set_op_res_gpointer (simple, password,
+      (GDestroyNotify) secret_password_free);
 
 out:
   g_simple_async_result_complete (simple);
@@ -96,7 +90,6 @@ empathy_keyring_get_account_password_async (TpAccount *account,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple;
-  GnomeKeyringAttributeList *match;
   const gchar *account_id;
 
   g_return_if_fail (TP_IS_ACCOUNT (account));
@@ -110,15 +103,11 @@ empathy_keyring_get_account_password_async (TpAccount *account,
 
   DEBUG ("Trying to get password for: %s", account_id);
 
-  match = gnome_keyring_attribute_list_new ();
-  gnome_keyring_attribute_list_append_string (match, "account-id",
-      account_id);
-  gnome_keyring_attribute_list_append_string (match, "param-name", "password");
-
-  gnome_keyring_find_items (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-      match, find_items_cb, simple, NULL);
-
-  gnome_keyring_attribute_list_free (match);
+  secret_password_lookup (&account_keyring_schema, NULL,
+          lookup_item_cb, simple,
+          "account-id", account_id,
+          "param-name", "password",
+          NULL);
 }
 
 void
@@ -128,7 +117,6 @@ empathy_keyring_get_room_password_async (TpAccount *account,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple;
-  GnomeKeyringAttributeList *match;
   const gchar *account_id;
 
   g_return_if_fail (TP_IS_ACCOUNT (account));
@@ -144,15 +132,11 @@ empathy_keyring_get_room_password_async (TpAccount *account,
   DEBUG ("Trying to get password for room '%s' on account '%s'",
       id, account_id);
 
-  match = gnome_keyring_attribute_list_new ();
-  gnome_keyring_attribute_list_append_string (match, "account-id",
-      account_id);
-  gnome_keyring_attribute_list_append_string (match, "room-id", id);
-
-  gnome_keyring_find_items (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-      match, find_items_cb, simple, NULL);
-
-  gnome_keyring_attribute_list_free (match);
+  secret_password_lookup (&room_keyring_schema, NULL,
+          lookup_item_cb, simple,
+          "account-id", account_id,
+          "room-id", id,
+          NULL);
 }
 
 const gchar *
@@ -176,18 +160,18 @@ empathy_keyring_get_room_password_finish (TpAccount *account,
 /* set */
 
 static void
-store_password_cb (GnomeKeyringResult result,
+store_password_cb (GObject *source,
+    GAsyncResult *result,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
+  GError *error = NULL;
 
-  if (result != GNOME_KEYRING_RESULT_OK)
+  if (!secret_password_store_finish (result, &error))
     {
-      GError *error = g_error_new_literal (TP_ERROR,
-          TP_ERROR_DOES_NOT_EXIST,
-          gnome_keyring_result_to_message (result));
-      g_simple_async_result_set_from_error (simple, error);
-      g_clear_error (&error);
+      g_simple_async_result_set_error (simple, TP_ERROR,
+          TP_ERROR_DOES_NOT_EXIST, error->message);
+      g_error_free (error);
     }
 
   g_simple_async_result_complete (simple);
@@ -218,8 +202,8 @@ empathy_keyring_set_account_password_async (TpAccount *account,
   name = g_strdup_printf (_("IM account password for %s (%s)"),
       tp_account_get_display_name (account), account_id);
 
-  gnome_keyring_store_password (&account_keyring_schema, NULL, name, password,
-      store_password_cb, simple, NULL,
+  secret_password_store (&account_keyring_schema, NULL, name, password,
+      NULL, store_password_cb, simple,
       "account-id", account_id,
       "param-name", "password",
       NULL);
@@ -253,8 +237,8 @@ empathy_keyring_set_room_password_async (TpAccount *account,
   name = g_strdup_printf (_("Password for chatroom '%s' on account %s (%s)"),
       id, tp_account_get_display_name (account), account_id);
 
-  gnome_keyring_store_password (&room_keyring_schema, NULL, name, password,
-      store_password_cb, simple, NULL,
+  secret_password_store (&room_keyring_schema, NULL, name, password,
+      NULL, store_password_cb, simple,
       "account-id", account_id,
       "room-id", id,
       NULL);
@@ -281,49 +265,22 @@ empathy_keyring_set_room_password_finish (TpAccount *account,
 /* delete */
 
 static void
-item_delete_cb (GnomeKeyringResult result,
+items_delete_cb (GObject *source,
+    GAsyncResult *result,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
+  GError *error = NULL;
 
-  if (result != GNOME_KEYRING_RESULT_OK)
+  if (!secret_password_clear_finish (result, &error))
     {
-      GError *error = g_error_new_literal (TP_ERROR,
-          TP_ERROR_DOES_NOT_EXIST,
-          gnome_keyring_result_to_message (result));
-      g_simple_async_result_set_from_error (simple, error);
-      g_clear_error (&error);
+      g_simple_async_result_set_error (simple, TP_ERROR,
+              TP_ERROR_DOES_NOT_EXIST, "%s", error->message);
+      g_error_free (error);
     }
 
   g_simple_async_result_complete (simple);
   g_object_unref (simple);
-}
-
-static void
-find_item_to_delete_cb (GnomeKeyringResult result,
-    GList *list,
-    gpointer user_data)
-{
-  GSimpleAsyncResult *simple = G_SIMPLE_ASYNC_RESULT (user_data);
-  GnomeKeyringFound *found;
-
-  if (result != GNOME_KEYRING_RESULT_OK || g_list_length (list) != 1)
-    {
-      GError *error = g_error_new_literal (TP_ERROR,
-          TP_ERROR_DOES_NOT_EXIST,
-          gnome_keyring_result_to_message (result));
-      g_simple_async_result_set_from_error (simple, error);
-      g_clear_error (&error);
-
-      g_simple_async_result_complete (simple);
-      g_object_unref (simple);
-      return;
-    }
-
-  found = list->data;
-
-  gnome_keyring_item_delete (NULL, found->item_id, item_delete_cb,
-      simple, NULL);
 }
 
 void
@@ -332,7 +289,6 @@ empathy_keyring_delete_account_password_async (TpAccount *account,
     gpointer user_data)
 {
   GSimpleAsyncResult *simple;
-  GnomeKeyringAttributeList *match;
   const gchar *account_id;
 
   g_return_if_fail (TP_IS_ACCOUNT (account));
@@ -343,15 +299,11 @@ empathy_keyring_delete_account_password_async (TpAccount *account,
   account_id = tp_proxy_get_object_path (account) +
     strlen (TP_ACCOUNT_OBJECT_PATH_BASE);
 
-  match = gnome_keyring_attribute_list_new ();
-  gnome_keyring_attribute_list_append_string (match, "account-id",
-      account_id);
-  gnome_keyring_attribute_list_append_string (match, "param-name", "password");
-
-  gnome_keyring_find_items (GNOME_KEYRING_ITEM_GENERIC_SECRET,
-      match, find_item_to_delete_cb, simple, NULL);
-
-  gnome_keyring_attribute_list_free (match);
+  secret_password_clear (&account_keyring_schema, NULL,
+          items_delete_cb, simple,
+          "account-id", account_id,
+          "param-name", "password",
+          NULL);
 }
 
 gboolean
@@ -361,4 +313,3 @@ empathy_keyring_delete_account_password_finish (TpAccount *account,
 {
   empathy_implement_finish_void (account, empathy_keyring_delete_account_password_async);
 }
-
