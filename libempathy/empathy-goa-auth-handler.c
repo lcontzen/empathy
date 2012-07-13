@@ -1,5 +1,5 @@
 /*
- * empathy-auth-goa.c - Source for Goa SASL authentication
+ * empathy-goa-auth-handler.c - Source for Goa SASL authentication
  * Copyright (C) 2011 Collabora Ltd.
  * @author Xavier Claessens <xavier.claessens@collabora.co.uk>
  *
@@ -23,21 +23,11 @@
 #define GOA_API_IS_SUBJECT_TO_CHANGE /* awesome! */
 #include <goa/goa.h>
 
-#include <libsoup/soup.h>
-#include <string.h>
-
 #define DEBUG_FLAG EMPATHY_DEBUG_SASL
 #include "empathy-debug.h"
 #include "empathy-utils.h"
 #include "empathy-goa-auth-handler.h"
-
-#define MECH_FACEBOOK "X-FACEBOOK-PLATFORM"
-#define MECH_MSN "X-MESSENGER-OAUTH2"
-
-static const gchar *supported_mechanisms[] = {
-    MECH_FACEBOOK,
-    MECH_MSN,
-    NULL};
+#include "empathy-sasl-mechanisms.h"
 
 struct _EmpathyGoaAuthHandlerPriv
 {
@@ -118,77 +108,25 @@ fail_auth (AuthData *data)
 }
 
 static void
-sasl_status_changed_cb (TpChannel *channel,
-    guint status,
-    const gchar *reason,
-    GHashTable *details,
-    gpointer user_data,
-    GObject *self)
+auth_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  switch (status)
-    {
-      case TP_SASL_STATUS_SERVER_SUCCEEDED:
-        tp_cli_channel_interface_sasl_authentication_call_accept_sasl (channel,
-            -1, NULL, NULL, NULL, NULL);
-        break;
-
-      case TP_SASL_STATUS_SUCCEEDED:
-      case TP_SASL_STATUS_SERVER_FAILED:
-      case TP_SASL_STATUS_CLIENT_FAILED:
-        tp_cli_channel_call_close (channel, -1, NULL, NULL, NULL, NULL);
-        break;
-
-      default:
-        break;
-    }
-}
-
-static void
-facebook_new_challenge_cb (TpChannel *channel,
-    const GArray *challenge,
-    gpointer user_data,
-    GObject *weak_object)
-{
+  TpChannel *channel = (TpChannel *) source;
   AuthData *data = user_data;
-  GoaOAuth2Based *oauth2;
-  const gchar *client_id;
-  GHashTable *h;
-  GHashTable *params;
-  gchar *response;
-  GArray *response_array;
+  GError *error = NULL;
 
-  DEBUG ("new challenge for %s:\n%s",
-      tp_proxy_get_object_path (data->account),
-      challenge->data);
+  if (!empathy_sasl_auth_finish (channel, result, &error))
+    {
+      DEBUG ("SASL Mechanism error: %s", error->message);
+      fail_auth (data);
+      g_clear_error (&error);
+      return;
+    }
 
-  h = soup_form_decode (challenge->data);
-
-  oauth2 = goa_object_get_oauth2_based (data->goa_object);
-  client_id = goa_oauth2_based_get_client_id (oauth2);
-
-  /* See https://developers.facebook.com/docs/chat/#platauth */
-  params = g_hash_table_new (g_str_hash, g_str_equal);
-  g_hash_table_insert (params, "method", g_hash_table_lookup (h, "method"));
-  g_hash_table_insert (params, "nonce", g_hash_table_lookup (h, "nonce"));
-  g_hash_table_insert (params, "access_token", data->access_token);
-  g_hash_table_insert (params, "api_key", (gpointer) client_id);
-  g_hash_table_insert (params, "call_id", "0");
-  g_hash_table_insert (params, "v", "1.0");
-
-  response = soup_form_encode_hash (params);
-  DEBUG ("Response: %s", response);
-
-  response_array = g_array_new (FALSE, FALSE, sizeof (gchar));
-  g_array_append_vals (response_array, response, strlen (response));
-
-  tp_cli_channel_interface_sasl_authentication_call_respond (data->channel, -1,
-      response_array, NULL, NULL, NULL, NULL);
-
-  g_hash_table_unref (h);
-  g_hash_table_unref (params);
-  g_object_unref (oauth2);
-  g_free (response);
-  g_array_unref (response_array);
+  /* Success! */
+  tp_channel_close_async (channel, NULL, NULL);
+  auth_data_free (data);
 }
 
 static void
@@ -198,11 +136,12 @@ got_oauth2_access_token_cb (GObject *source,
 {
   GoaOAuth2Based *oauth2 = (GoaOAuth2Based *) source;
   AuthData *data = user_data;
+  gchar *access_token;
   gint expires_in;
   GError *error = NULL;
 
   if (!goa_oauth2_based_call_get_access_token_finish (oauth2,
-      &data->access_token, &expires_in, result, &error))
+          &access_token, &expires_in, result, &error))
     {
       DEBUG ("Failed to get access token: %s", error->message);
       fail_auth (data);
@@ -212,55 +151,27 @@ got_oauth2_access_token_cb (GObject *source,
 
   DEBUG ("Got access token for %s:\n%s",
       tp_proxy_get_object_path (data->account),
-      data->access_token);
+      access_token);
 
-  tp_cli_channel_interface_sasl_authentication_connect_to_sasl_status_changed (
-      data->channel, sasl_status_changed_cb, NULL, NULL, NULL, NULL);
-  g_assert_no_error (error);
-
-  if (empathy_sasl_channel_supports_mechanism (data->channel, MECH_FACEBOOK))
+  switch (empathy_sasl_channel_select_mechanism (data->channel))
     {
-      /* Give ownership of data to signal connection */
-      tp_cli_channel_interface_sasl_authentication_connect_to_new_challenge (
-          data->channel, facebook_new_challenge_cb,
-          data, (GDestroyNotify) auth_data_free,
-          NULL, NULL);
+      case EMPATHY_SASL_MECHANISM_FACEBOOK:
+        empathy_sasl_auth_facebook_async (data->channel,
+            goa_oauth2_based_get_client_id (oauth2), access_token,
+            auth_cb, NULL);
+        break;
 
-      DEBUG ("Start %s mechanism for account %s", MECH_FACEBOOK,
-          tp_proxy_get_object_path (data->account));
+      case EMPATHY_SASL_MECHANISM_WLM:
+        empathy_sasl_auth_wlm_async (data->channel,
+            access_token,
+            auth_cb, NULL);
+        break;
 
-      tp_cli_channel_interface_sasl_authentication_call_start_mechanism (
-          data->channel, -1, MECH_FACEBOOK, NULL, NULL, NULL, NULL);
+      default:
+        g_assert_not_reached ();
     }
-  else if (empathy_sasl_channel_supports_mechanism (data->channel, MECH_MSN))
-    {
-      guchar *token_decoded;
-      gsize token_decoded_len;
-      GArray *token_decoded_array;
 
-      /* Wocky will base64 encode, but token actually already is base64, so we
-       * decode now and it will be re-encoded. */
-      token_decoded = g_base64_decode (data->access_token, &token_decoded_len);
-      token_decoded_array = g_array_new (FALSE, FALSE, sizeof (guchar));
-      g_array_append_vals (token_decoded_array, token_decoded, token_decoded_len);
-
-      DEBUG ("Start %s mechanism for account %s", MECH_MSN,
-          tp_proxy_get_object_path (data->account));
-
-      tp_cli_channel_interface_sasl_authentication_call_start_mechanism_with_data (
-          data->channel, -1, MECH_MSN, token_decoded_array,
-          NULL, NULL, NULL, NULL);
-
-      g_array_unref (token_decoded_array);
-      g_free (token_decoded);
-      auth_data_free (data);
-    }
-  else
-    {
-      /* We already checked it supports one of supported_mechanisms, so this
-       * can't happen */
-      g_assert_not_reached ();
-    }
+  g_free (access_token);
 }
 
 static void
@@ -417,7 +328,7 @@ empathy_goa_auth_handler_supports (EmpathyGoaAuthHandler *self,
     TpAccount *account)
 {
   const gchar *provider;
-  const gchar * const *iter;
+  EmpathySaslMechanism mech;
 
   g_return_val_if_fail (TP_IS_CHANNEL (channel), FALSE);
   g_return_val_if_fail (TP_IS_ACCOUNT (account), FALSE);
@@ -426,11 +337,7 @@ empathy_goa_auth_handler_supports (EmpathyGoaAuthHandler *self,
   if (tp_strdiff (provider, EMPATHY_GOA_PROVIDER))
     return FALSE;
 
-  for (iter = supported_mechanisms; *iter != NULL; iter++)
-    {
-      if (empathy_sasl_channel_supports_mechanism (channel, *iter))
-        return TRUE;
-    }
-
-  return FALSE;
+  mech = empathy_sasl_channel_select_mechanism (channel);
+  return mech == EMPATHY_SASL_MECHANISM_FACEBOOK ||
+      mech == EMPATHY_SASL_MECHANISM_WLM;
 }

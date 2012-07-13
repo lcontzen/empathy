@@ -27,6 +27,7 @@
 #define DEBUG_FLAG EMPATHY_DEBUG_TLS
 #include "empathy-debug.h"
 #include "empathy-keyring.h"
+#include "empathy-sasl-mechanisms.h"
 #include "empathy-server-sasl-handler.h"
 #include "empathy-server-tls-handler.h"
 #include "empathy-utils.h"

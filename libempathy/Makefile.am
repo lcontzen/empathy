@@ -49,6 +49,7 @@ libempathy_headers =				\
 	empathy-message.h			\
 	empathy-pkg-kit.h		\
 	empathy-request-util.h			\
+	empathy-sasl-mechanisms.h		\
 	empathy-server-sasl-handler.h		\
 	empathy-server-tls-handler.h		\
 	empathy-status-presets.h		\
@@ -83,6 +84,7 @@ libempathy_handwritten_source =				\
 	empathy-message.c				\
 	empathy-pkg-kit.c		\
 	empathy-request-util.c				\
+	empathy-sasl-mechanisms.c			\
 	empathy-server-sasl-handler.c			\
 	empathy-server-tls-handler.c			\
 	empathy-status-presets.c			\

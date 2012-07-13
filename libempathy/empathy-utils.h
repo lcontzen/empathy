@@ -115,9 +115,6 @@ void empathy_individual_can_audio_video_call (FolksIndividual *individual,
     gboolean *can_video_call,
     EmpathyContact **out_contact);
 
-gboolean empathy_sasl_channel_supports_mechanism (TpChannel *channel,
-    const gchar *mechanism);
-
 FolksIndividual * empathy_create_individual_from_tp_contact (
     TpContact *contact);
 

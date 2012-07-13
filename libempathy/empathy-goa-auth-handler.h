@@ -1,5 +1,5 @@
 /*
- * empathy-auth-goa.h - Header for Goa SASL authentication
+ * empathy-goa-auth-handler.h - Header for Goa SASL authentication
  * Copyright (C) 2011 Collabora Ltd.
  * @author Xavier Claessens <xavier.claessens@collabora.co.uk>
  *
