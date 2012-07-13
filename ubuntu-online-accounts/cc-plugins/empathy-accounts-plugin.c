@@ -26,10 +26,24 @@
 
 G_DEFINE_TYPE (EmpathyAccountsPlugin, empathy_accounts_plugin, AP_TYPE_PLUGIN)
 
+static void
+widget_done_cb (EmpathyAccountsPluginWidget *widget,
+    ApPlugin *plugin)
+{
+  ap_plugin_emit_finished (plugin);
+}
+
 static GtkWidget *
 empathy_accounts_plugin_build_widget (ApPlugin *plugin)
 {
-  return empathy_accounts_plugin_widget_new (ap_plugin_get_account (plugin));
+  GtkWidget *widget;
+
+  widget = empathy_accounts_plugin_widget_new (ap_plugin_get_account (plugin));
+
+  g_signal_connect (widget, "done",
+      G_CALLBACK (widget_done_cb), plugin);
+
+  return widget;
 }
 
 static void
@@ -43,7 +57,6 @@ empathy_accounts_plugin_delete_account (ApPlugin *plugin,
 static void
 empathy_accounts_plugin_act_headless (ApPlugin *plugin)
 {
-  /* TODO */
 }
 
 static void
