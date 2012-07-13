@@ -809,25 +809,29 @@ contact_should_be_displayed (EmpathyRosterView *self,
           empathy_live_search_get_text (self->priv->search),
           empathy_live_search_get_words (self->priv->search));
     }
-  else
+
+  if (self->priv->show_offline)
+      return TRUE;
+
+  if (contact_is_favourite (contact))
     {
-      if (self->priv->show_offline)
-        {
-          return TRUE;
-        }
-      else if (!self->priv->show_groups &&
-          contact_is_favourite (contact))
-        {
-          /* Always display favourite contacts in non-group mode. In the group
-           * mode we'll display only the one in the 'top' section. */
-          return TRUE;
-        }
-      else
-        {
-          return empathy_roster_contact_is_online (contact);
-        }
+      const gchar *group_name;
+
+      if (!self->priv->show_groups)
+        /* Always display favourite contacts in non-group mode. */
+        return TRUE;
+
+      group_name = empathy_roster_contact_get_group (contact);
+
+      if (!tp_strdiff (group_name, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP))
+        /* Always display favourite contact in group mode only in the
+         * 'top group'*/
+        return TRUE;
     }
+
+  return empathy_roster_contact_is_online (contact);
 }
+
 
 static gboolean
 filter_contact (EmpathyRosterView *self,
@@ -844,10 +848,6 @@ filter_contact (EmpathyRosterView *self,
 
       group_name = empathy_roster_contact_get_group (contact);
       group = lookup_roster_group (self, group_name);
-
-      if (!tp_strdiff (group_name, EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP) &&
-          contact_is_favourite (contact))
-        displayed = TRUE;
 
       if (group != NULL)
         {
