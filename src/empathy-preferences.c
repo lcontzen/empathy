@@ -33,6 +33,7 @@
 #include <telepathy-glib/dbus.h>
 #include <telepathy-glib/util.h>
 
+#include <libempathy/empathy-client-factory.h>
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-utils.h>
 
@@ -607,7 +608,7 @@ preferences_preview_theme_changed_cb (EmpathyThemeManager *manager,
 				      EmpathyPreferences  *preferences)
 {
 	EmpathyPreferencesPriv *priv = GET_PRIV (preferences);
-	TpDBusDaemon *dbus;
+	EmpathyClientFactory *factory;
 	TpAccount *account;
 	EmpathyContact *juliet;
 	EmpathyContact *romeo;
@@ -625,9 +626,11 @@ preferences_preview_theme_changed_cb (EmpathyThemeManager *manager,
 	/* FIXME: It is ugly to add a fake conversation like that.
 	 * Would be cool if we could request a TplLogManager for a fake
 	 * conversation */
-	dbus = tp_dbus_daemon_dup (NULL);
-	account = tp_account_new (dbus,
-		TP_ACCOUNT_OBJECT_PATH_BASE "cm/jabber/account", NULL);
+	factory = empathy_client_factory_dup ();
+
+	account = tp_simple_client_factory_ensure_account (
+		TP_SIMPLE_CLIENT_FACTORY (factory),
+		TP_ACCOUNT_OBJECT_PATH_BASE "cm/jabber/account", NULL, NULL);
 	juliet = g_object_new (EMPATHY_TYPE_CONTACT,
 		"account", account,
 		"id", "juliet",
@@ -666,7 +669,7 @@ preferences_preview_theme_changed_cb (EmpathyThemeManager *manager,
 	g_object_unref (juliet);
 	g_object_unref (romeo);
 	g_object_unref (account);
-	g_object_unref (dbus);
+	g_object_unref (factory);
 }
 
 static void
