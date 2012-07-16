@@ -247,7 +247,7 @@ empathy_subscription_dialog_constructed (GObject *object)
     {
       tmp = g_strdup_printf ("<i>%s</i>", self->priv->message);
       gtk_message_dialog_format_secondary_markup (GTK_MESSAGE_DIALOG (self),
-          tmp);
+          "%s", tmp);
       g_free (tmp);
     }
 
