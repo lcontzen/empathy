@@ -864,9 +864,9 @@ empathy_theme_adium_append_message (EmpathyThemeAdium *self,
   sender = empathy_message_get_sender (msg);
   account = empathy_contact_get_account (sender);
   service_name = empathy_protocol_name_to_display_name
-    (tp_account_get_protocol (account));
+    (tp_account_get_protocol_name (account));
   if (service_name == NULL)
-    service_name = tp_account_get_protocol (account);
+    service_name = tp_account_get_protocol_name (account);
   timestamp = empathy_message_get_timestamp (msg);
   body_escaped = theme_adium_parse_body (self,
     empathy_message_get_body (msg),

@@ -1351,8 +1351,8 @@ contact_get_avatar_filename (EmpathyContact *contact,
   avatar_path = g_build_filename (g_get_user_cache_dir (),
       "telepathy",
       "avatars",
-      tp_account_get_connection_manager (account),
-      tp_account_get_protocol (account),
+      tp_account_get_cm_name (account),
+      tp_account_get_protocol_name (account),
       NULL);
   g_mkdir_with_parents (avatar_path, 0700);
 

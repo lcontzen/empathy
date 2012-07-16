@@ -75,7 +75,7 @@ fix_xmpp_account_priority (TpAccountManager *am)
       GHashTable *params;
       gint priority;
 
-      if (tp_strdiff (tp_account_get_protocol (account), "jabber"))
+      if (tp_strdiff (tp_account_get_protocol_name (account), "jabber"))
         continue;
 
       params = (GHashTable *) tp_account_get_parameters (account);

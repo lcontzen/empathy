@@ -801,10 +801,10 @@ get_cm_display_name (EmpathyDebugWindow *self,
     {
       TpAccount *account = TP_ACCOUNT (ptr->data);
 
-      if (!tp_strdiff (tp_account_get_connection_manager (account), cm_name))
+      if (!tp_strdiff (tp_account_get_cm_name (account), cm_name))
         {
           g_hash_table_insert (protocols,
-              (char *) tp_account_get_protocol (account),
+              (char *) tp_account_get_protocol_name (account),
               GUINT_TO_POINTER (TRUE));
         }
     }

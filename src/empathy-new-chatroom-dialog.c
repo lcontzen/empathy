@@ -297,7 +297,7 @@ update_join_button_sensitivity (EmpathyNewChatroomDialog *self)
   gboolean sensitive = FALSE;
 
   room = gtk_entry_get_text (GTK_ENTRY (self->priv->entry_room));
-  protocol = tp_account_get_protocol (self->priv->account);
+  protocol = tp_account_get_protocol_name (self->priv->account);
   if (EMP_STR_EMPTY (room))
     goto out;
 
@@ -326,7 +326,7 @@ new_chatroom_dialog_update_widgets (EmpathyNewChatroomDialog *self)
   if (self->priv->account == NULL)
     return;
 
-  protocol = tp_account_get_protocol (self->priv->account);
+  protocol = tp_account_get_protocol_name (self->priv->account);
 
   gtk_entry_set_text (GTK_ENTRY (self->priv->entry_server), "");
 

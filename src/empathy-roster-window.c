@@ -501,8 +501,8 @@ roster_window_error_upgrade_sw_clicked_cb (GtkButton *button,
       GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR,
       GTK_BUTTONS_OK,
       _("Sorry, %s accounts can’t be used until your %s software is updated."),
-      tp_account_get_protocol (account),
-      tp_account_get_protocol (account));
+      tp_account_get_protocol_name (account),
+      tp_account_get_protocol_name (account));
 
   g_signal_connect_swapped (dialog, "response",
       G_CALLBACK (gtk_widget_destroy),

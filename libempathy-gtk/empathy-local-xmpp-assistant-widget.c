@@ -226,7 +226,7 @@ empathy_local_xmpp_assistant_widget_should_create_account (
     {
       TpAccount *account = TP_ACCOUNT (l->data);
 
-      if (!tp_strdiff (tp_account_get_protocol (account), "local-xmpp"))
+      if (!tp_strdiff (tp_account_get_protocol_name (account), "local-xmpp"))
         {
           salut_created = TRUE;
           break;

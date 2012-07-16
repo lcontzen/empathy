@@ -228,9 +228,9 @@ empathy_account_settings_constructed (GObject *object)
       g_free (priv->service);
 
       priv->cm_name =
-        g_strdup (tp_account_get_connection_manager (priv->account));
+        g_strdup (tp_account_get_cm_name (priv->account));
       priv->protocol =
-        g_strdup (tp_account_get_protocol (priv->account));
+        g_strdup (tp_account_get_protocol_name (priv->account));
       priv->service =
         g_strdup (tp_account_get_service (priv->account));
       priv->icon_name = g_strdup

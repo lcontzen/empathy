@@ -326,7 +326,7 @@ account_can_be_enabled (TpAccount *account)
     return FALSE;
 
   /* Butterfly accounts shouldn't be used any more */
-  if (!tp_strdiff (tp_account_get_connection_manager (account),
+  if (!tp_strdiff (tp_account_get_cm_name (account),
         "butterfly"))
     return FALSE;
 
@@ -482,7 +482,7 @@ accounts_dialog_update_status_infobar (EmpathyAccountsDialog *dialog,
     }
   else
     {
-      if (!tp_strdiff (tp_account_get_connection_manager (account),
+      if (!tp_strdiff (tp_account_get_cm_name (account),
             "butterfly"))
         {
           const gchar *packages[] = { "telepathy-haze", NULL };

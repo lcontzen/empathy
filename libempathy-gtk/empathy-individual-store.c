@@ -1132,8 +1132,8 @@ individual_store_contact_sort (FolksIndividual *individual_a,
       g_assert (account_b != NULL);
 
       /* protocol */
-      ret_val = g_strcmp0 (tp_account_get_protocol (account_a),
-          tp_account_get_protocol (account_b));
+      ret_val = g_strcmp0 (tp_account_get_protocol_name (account_a),
+          tp_account_get_protocol_name (account_b));
 
       if (ret_val != 0)
         goto out;
