@@ -1,3 +1,41 @@
+NEW in 3.5.4 (16/07/2012)
+============
+
+Legacy chat themes from Gossip have been removed and re-implemented using the
+Adium theme format.
+
+Dependencies:
+ • GLib ≥ 2.33.3
+ • telepathy-glib ≥ 0.19.3
+
+Bugs fixed:
+ - Fixed #645921, Drop old chat themes and make Adium theme mandatory (Danielle Madeley)
+ - Fixed #627948, Avatar option for irc superfous (Will Thompson)
+ - Fixed #678331, Sending a file from the conversation window silently fails (Guillaume Desmottes)
+ - Fixed #678524, [new roster] Re-Implement sending files using DnD (Guillaume Desmottes)
+ - Fixed #678807, empathy-chat crashed with SIGSEGV in _tp_base_client_handle_channels() (Guillaume Desmottes)
+ - Fixed #678845, Strip %senderPrefix% in Adium themes (Will Thompson)
+ - Fixed #678875, empathy-nautilus-sendto should use RosterView (Laurent Contzen)
+ - Fixed #679136, Stop using EmpathyContactWidget in the subscription request dialog (Guillaume Desmottes)
+ - Fixed #679255, Remove EmpathyChatView (Guillaume Desmottes)
+ - Fixed #679332, Handle Adium themes that use .AdiumMessagestyle (Guillaume Desmottes)
+ - Fixed #679396, Bind keyboard keys on DTMF events (Guillaume Desmottes)
+ - Fixed #679532, Contact names not aligned (Guillaume Desmottes)
+
+Translations:
+ - Updated be Translation (Ihar Hrachyshka)
+ - Updated el Translation (Tom Tryfonidis)
+ - Updated es Translation (Daniel Mustieles)
+ - Updated he Translation (Yaron Shahrabani)
+ - Updated lt Translation (Žygimantas Beručka)
+ - Updated nb Translation (Kjartan Maraas)
+ - Updated pa Translation (A S Alam)
+ - Updated zh_HK Translation (Cheng-Chia Tseng)
+ - Updated zh_TW Translation (Cheng-Chia Tseng)
+
+Documentation translations:
+ - Updated el Documentation translation (Tom Tryfonidis)
+
 NEW in 3.5.3 (26/06/2012)
 ============
 
