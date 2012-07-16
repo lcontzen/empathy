@@ -75,6 +75,7 @@ NAUTILUS_SENDTO_REQUIRED=2.90.0
 NETWORK_MANAGER_REQUIRED=0.7.0
 CHAMPLAIN_REQUIRED=0.12.1
 CHEESE_GTK_REQUIRED=3.4.0
+LIBACCOUNTS_REQUIRED=1.1
 
 # Use --enable-maintainer-mode to disable deprecated symbols,
 # disable single include and enable GSEAL. If this is not a released empathy,
@@ -228,6 +229,10 @@ PKG_CHECK_MODULES(EMPATHY_CALL,
 
 AC_DEFINE(EMPATHY_GOA_PROVIDER, "org.gnome.OnlineAccounts",
    [Name of provider for accounts imported from GOA])
+
+AC_DEFINE(EMPATHY_UOA_PROVIDER,
+    "im.telepathy.Account.Storage.UOA",
+   [Name of provider for accounts imported from libaccounts])
 
 # -----------------------------------------------------------
 # Enable debug
@@ -506,6 +511,8 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
    PKG_CHECK_MODULES(UOA,
     [
        account-plugin
+       mission-control-plugins
+       libaccounts-glib >= $LIBACCOUNTS_REQUIRED
     ], have_uoa="yes", have_uoa="no")
 else
    have_uoa=no
@@ -552,6 +559,8 @@ AC_CONFIG_FILES([
    src/Makefile
    nautilus-sendto-plugin/Makefile
    goa-mc-plugin/Makefile
+   ubuntu-online-accounts/Makefile
+   ubuntu-online-accounts/mc-plugin/Makefile
    help/Makefile
    tests/Makefile
    tests/interactive/Makefile

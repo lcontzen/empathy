@@ -1,0 +1,2 @@
+SUBDIRS = mc-plugin
+
