@@ -461,7 +461,9 @@ else
 fi
 
 if test "x$enable_goa" = "xyes" -a "x$have_goa" != "xyes"; then
-   AC_MSG_ERROR([Could not find GOA dependencies.])
+   AC_MSG_ERROR([Could not find GOA dependencies:
+
+$GOA_PKG_ERRORS])
 fi
 
 if test "x$have_goa" = "xyes"; then
