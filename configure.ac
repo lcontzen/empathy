@@ -76,6 +76,7 @@ NETWORK_MANAGER_REQUIRED=0.7.0
 CHAMPLAIN_REQUIRED=0.12.1
 CHEESE_GTK_REQUIRED=3.4.0
 LIBACCOUNTS_REQUIRED=1.1
+LIBSIGNON_REQUIRED=1.1
 MC_PLUGINS_REQUIRED=5.13.0
 
 # Use --enable-maintainer-mode to disable deprecated symbols,
@@ -514,6 +515,7 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
        account-plugin
        mission-control-plugins >= $MC_PLUGINS_REQUIRED
        libaccounts-glib >= $LIBACCOUNTS_REQUIRED
+       libsignon-glib >= $LIBSIGNON_REQUIRED
     ], have_uoa="yes", have_uoa="no")
 
    # MC plugins dir

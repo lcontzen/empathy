@@ -36,6 +36,10 @@
 #include "empathy-goa-auth-handler.h"
 #endif /* HAVE_GOA */
 
+#ifdef HAVE_UOA
+#include "empathy-uoa-auth-handler.h"
+#endif /* HAVE_UOA */
+
 #include "extensions/extensions.h"
 
 G_DEFINE_TYPE (EmpathyAuthFactory, empathy_auth_factory, TP_TYPE_BASE_CLIENT);
@@ -53,6 +57,10 @@ struct _EmpathyAuthFactoryPriv {
 #ifdef HAVE_GOA
   EmpathyGoaAuthHandler *goa_handler;
 #endif /* HAVE_GOA */
+
+#ifdef HAVE_UOA
+  EmpathyUoaAuthHandler *uoa_handler;
+#endif /* HAVE_UOA */
 
   /* If an account failed to connect and user enters a new password to try, we
    * store it in this hash table and will try to use it next time the account
@@ -474,6 +482,32 @@ goa_claim_cb (GObject *source,
 }
 #endif /* HAVE_GOA */
 
+#ifdef HAVE_UOA
+static void
+uoa_claim_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  ObserveChannelsData *data = user_data;
+  EmpathyAuthFactory *self = data->self;
+  GError *error = NULL;
+
+  if (!tp_channel_dispatch_operation_claim_with_finish (data->dispatch_operation,
+          result, &error))
+    {
+      DEBUG ("Failed to claim: %s", error->message);
+      g_clear_error (&error);
+    }
+  else
+    {
+      empathy_uoa_auth_handler_start (self->priv->uoa_handler,
+          data->channel, data->account);
+    }
+
+  observe_channels_data_free (data);
+}
+#endif /* HAVE_UOA */
+
 static void
 observe_channels (TpBaseClient *client,
     TpAccount *account,
@@ -521,6 +555,20 @@ observe_channels (TpBaseClient *client,
       return;
     }
 #endif /* HAVE_GOA */
+
+#ifdef HAVE_UOA
+  /* UOA auth? */
+  if (empathy_uoa_auth_handler_supports (self->priv->uoa_handler, channel, account))
+    {
+      DEBUG ("Supported UOA account (%s), claim SASL channel",
+          tp_proxy_get_object_path (account));
+
+      tp_channel_dispatch_operation_claim_with_async (dispatch_operation,
+          client, uoa_claim_cb, data);
+      tp_observe_channels_context_accept (context);
+      return;
+    }
+#endif /* HAVE_UOA */
 
   /* Password auth? */
   if (empathy_sasl_channel_supports_mechanism (data->channel,
@@ -589,6 +637,10 @@ empathy_auth_factory_init (EmpathyAuthFactory *self)
   self->priv->goa_handler = empathy_goa_auth_handler_new ();
 #endif /* HAVE_GOA */
 
+#ifdef HAVE_UOA
+  self->priv->uoa_handler = empathy_uoa_auth_handler_new ();
+#endif /* HAVE_UOA */
+
   self->priv->retry_passwords = g_hash_table_new_full (NULL, NULL,
       g_object_unref, g_free);
 }
@@ -656,6 +708,10 @@ empathy_auth_factory_dispose (GObject *object)
 #ifdef HAVE_GOA
   g_object_unref (priv->goa_handler);
 #endif /* HAVE_GOA */
+
+#ifdef HAVE_UOA
+  g_object_unref (priv->uoa_handler);
+#endif /* HAVE_UOA */
 
   g_hash_table_unref (priv->retry_passwords);
 

@@ -16,6 +16,7 @@ AM_CPPFLAGS =                                           \
 	$(CONNMAN_CFLAGS)				\
 	$(UDEV_CFLAGS)					\
 	$(GOA_CFLAGS)					\
+	$(UOA_CFLAGS)					\
 	$(WARN_CFLAGS)					\
 	$(DISABLE_DEPRECATED)
 
@@ -99,6 +100,12 @@ goa_sources = \
 	empathy-goa-auth-handler.h \
 	$(NULL)
 
+# these are sources that depend on Ubuntu Online Accounts
+uoa_sources = \
+	empathy-uoa-auth-handler.c \
+	empathy-uoa-auth-handler.h \
+	$(NULL)
+
 pkglib_LTLIBRARIES = libempathy.la
 
 # libempathy's API is not stable and will never be, so use -release to make the
@@ -122,6 +129,7 @@ libempathy_la_LIBADD =		\
 	$(CONNMAN_LIBS) \
 	$(UDEV_LIBS) \
 	$(GOA_LIBS) \
+	$(UOA_LIBS) \
 	$(LIBM)
 
 dtddir = $(datadir)/empathy
@@ -149,6 +157,12 @@ else
 EXTRA_DIST += $(goa_sources)
 endif
 
+if HAVE_UOA
+libempathy_la_SOURCES += $(uoa_sources)
+else
+EXTRA_DIST += $(uoa_sources)
+endif
+
 # do not distribute generated files
 nodist_libempathy_la_SOURCES =\
 	$(BUILT_SOURCES)
@@ -156,6 +170,7 @@ nodist_libempathy_la_SOURCES =\
 check_c_sources = \
     $(libempathy_handwritten_source) \
     $(goa_sources) \
+    $(uoa_sources) \
     $(NULL)
 
 include $(top_srcdir)/tools/check-coding-style.mk
