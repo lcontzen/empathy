@@ -463,81 +463,9 @@ empathy_account_settings_get_password_cb (GObject *source,
   g_signal_emit (self, signals[PASSWORD_RETRIEVED], 0);
 }
 
-static void
-empathy_account_settings_migrate_password_cb (GObject *source,
-    GAsyncResult *result,
-    gpointer user_data)
-{
-  TpAccount *account = TP_ACCOUNT (source);
-  GError *error = NULL;
-  EmpathyAccountSettings *self = user_data;
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
-  GVariantBuilder *builder;
-  const gchar *unset[] = { "password", NULL };
-
-  if (!empathy_keyring_set_account_password_finish (account, result, &error))
-    {
-      DEBUG ("Failed to set password: %s", error->message);
-      g_clear_error (&error);
-      return;
-    }
-
-  /* Now clear the password MC has stored. */
-  builder = g_variant_builder_new (G_VARIANT_TYPE_VARDICT);
-
-  tp_account_update_parameters_vardict_async (priv->account,
-      g_variant_builder_end (builder), unset, NULL, NULL);
-
-  g_hash_table_remove (priv->parameters, "password");
-}
-
 static GVariant * empathy_account_settings_dup (
     EmpathyAccountSettings *settings,
     const gchar *param);
-
-static void
-empathy_account_settings_try_migrating_password (EmpathyAccountSettings *self)
-{
-  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
-  GVariant *v;
-  const gchar *password;
-
-  v = empathy_account_settings_dup (self, "password");
-  if (v == NULL)
-    return;
-
-  if (!priv->supports_sasl)
-    goto out;
-
-  /* mission-control still has our password, although the CM
-   * supports SASL. Let's try migrating it. */
-
-  DEBUG ("Trying to migrate password parameter from MC to the "
-      "keyring ourselves for account %s",
-      tp_account_get_path_suffix (priv->account));
-
-  /* I can't imagine why this would fail. */
-  if (!g_variant_is_of_type (v, G_VARIANT_TYPE_STRING))
-    goto out;
-
-  password = g_variant_get_string (v, NULL);
-
-  if (EMP_STR_EMPTY (password))
-    goto out;
-
-  empathy_keyring_set_account_password_async (priv->account, password,
-      empathy_account_settings_migrate_password_cb, self);
-
-  /* We don't want to request the password again, we
-   * already know it. */
-  priv->password_requested = TRUE;
-
-  priv->password = g_strdup (password);
-  priv->password_original = g_strdup (password);
-
-out:
-  g_variant_unref (v);
-}
 
 static void
 empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
@@ -623,10 +551,6 @@ empathy_account_settings_check_readyness (EmpathyAccountSettings *self)
        g_list_free_full (params,
            (GDestroyNotify) tp_connection_manager_param_free);
     }
-
-  /* NOTE: When removing MC migration code, remove this call, and the
-   * function it's calling. That's it. */
-  empathy_account_settings_try_migrating_password (self);
 
   /* priv->account won't be a proper account if it's the account
    * assistant showing this widget. */
