@@ -515,6 +515,13 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
        libaccounts-glib >= $LIBACCOUNTS_REQUIRED
     ], have_uoa="yes", have_uoa="no")
 
+   # MC plugins dir
+   AC_MSG_CHECKING([Mission Control plugins dir])
+   MISSION_CONTROL_PLUGINS_DIR=`pkg-config --variable=plugindir mission-control-plugins`
+
+   AC_MSG_RESULT([$MISSION_CONTROL_PLUGINS_DIR])
+   AC_SUBST(MISSION_CONTROL_PLUGINS_DIR)
+
    # provider plugin dir
    AC_MSG_CHECKING([Accounts provider plugin dir])
    ACCOUNTS_PROVIDER_PLUGIN_DIR=`pkg-config --variable=provider_plugindir account-plugin`
