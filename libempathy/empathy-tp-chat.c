@@ -940,13 +940,14 @@ static const TpProxyFeature *
 tp_chat_list_features (TpProxyClass *cls G_GNUC_UNUSED)
 {
   static TpProxyFeature features[N_FEAT + 1] = { { 0 } };
-  static GQuark need[2] = {0, 0};
+  static GQuark need[3] = {0, 0, 0};
 
   if (G_LIKELY (features[0].name != 0))
     return features;
 
   features[FEAT_READY].name = EMPATHY_TP_CHAT_FEATURE_READY;
   need[0] = TP_TEXT_CHANNEL_FEATURE_INCOMING_MESSAGES;
+  need[1] = TP_CHANNEL_FEATURE_PASSWORD;
   features[FEAT_READY].depends_on = need;
   features[FEAT_READY].prepare_async =
     tp_chat_prepare_ready_async;
