@@ -765,6 +765,8 @@ empathy_app_constructed (GObject *object)
   tp_proxy_prepare_async (self->account_manager, NULL,
       account_manager_ready_cb, self);
 
+  tp_account_manager_enable_restart (self->account_manager);
+
   migrate_config_to_xdg_dir ();
 
   /* Logging */
