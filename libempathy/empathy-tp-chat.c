@@ -59,6 +59,7 @@ struct _EmpathyTpChatPrivate
 
   /* GSimpleAsyncResult used when preparing EMPATHY_TP_CHAT_FEATURE_CORE */
   GSimpleAsyncResult *ready_result;
+  gboolean preparing_password;
 };
 
 enum
@@ -703,6 +704,9 @@ check_almost_ready (EmpathyTpChat *self)
   if (self->priv->user == NULL)
     return;
 
+  if (self->priv->preparing_password)
+    return;
+
   /* We need either the members (room) or the remote contact (private chat).
    * If the chat is protected by a password we can't get these information so
    * consider the chat as ready so it can be presented to the user. */
@@ -1250,6 +1254,25 @@ empathy_tp_chat_get_feature_ready (void)
 }
 
 static void
+password_feature_prepare_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  EmpathyTpChat *self = user_data;
+  GError *error;
+
+  if (!tp_proxy_prepare_finish (source, result, &error))
+    {
+      DEBUG ("Failed to prepare Password: %s", error->message);
+      g_error_free (error);
+    }
+
+  self->priv->preparing_password = FALSE;
+
+  check_almost_ready (self);
+}
+
+static void
 tp_chat_prepare_ready_async (TpProxy *proxy,
   const TpProxyFeature *feature,
   GAsyncReadyCallback callback,
@@ -1265,6 +1288,21 @@ tp_chat_prepare_ready_async (TpProxy *proxy,
     callback, user_data, tp_chat_prepare_ready_async);
 
   connection = tp_channel_borrow_connection (channel);
+
+  if (tp_proxy_has_interface_by_id (self,
+        TP_IFACE_QUARK_CHANNEL_INTERFACE_PASSWORD))
+    {
+      /* The password feature can't be a hard dep on our own feature has we
+       * depend on it only if the channel implements the
+       * Password interface.
+       */
+      GQuark features[] = { TP_CHANNEL_FEATURE_PASSWORD , 0 };
+
+      self->priv->preparing_password = TRUE;
+
+      tp_proxy_prepare_async (self, features, password_feature_prepare_cb,
+          self);
+    }
 
   if (tp_proxy_has_interface_by_id (self,
             TP_IFACE_QUARK_CHANNEL_INTERFACE_GROUP))
