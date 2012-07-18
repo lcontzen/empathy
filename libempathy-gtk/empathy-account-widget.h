@@ -82,6 +82,8 @@ void empathy_account_widget_set_other_accounts_exist (
 
 void empathy_account_widget_hide_buttons (EmpathyAccountWidget *self);
 
+void empathy_account_widget_apply_and_log_in (EmpathyAccountWidget *self);
+
 /* protected methods */
 void empathy_account_widget_changed (EmpathyAccountWidget *widget);
 

@@ -134,8 +134,6 @@ enum {
   LAST_SIGNAL
 };
 
-static void account_widget_apply_and_log_in (EmpathyAccountWidget *);
-
 enum {
   RESPONSE_LAUNCH
 };
@@ -511,7 +509,7 @@ password_entry_activated_cb (GtkEntry *entry,
     EmpathyAccountWidget *self)
 {
     if (gtk_widget_get_sensitive (self->priv->apply_button))
-        account_widget_apply_and_log_in (self);
+        empathy_account_widget_apply_and_log_in (self);
 }
 
 static void
@@ -519,7 +517,7 @@ account_entry_activated_cb (GtkEntry *entry,
     EmpathyAccountWidget *self)
 {
     if (gtk_widget_get_sensitive (self->priv->apply_button))
-        account_widget_apply_and_log_in (self);
+        empathy_account_widget_apply_and_log_in (self);
 }
 
 void
@@ -993,8 +991,8 @@ account_widget_applied_cb (GObject *source_object,
   g_object_unref (self);
 }
 
-static void
-account_widget_apply_and_log_in (EmpathyAccountWidget *self)
+void
+empathy_account_widget_apply_and_log_in (EmpathyAccountWidget *self)
 {
   gboolean display_name_overridden;
 
@@ -1035,7 +1033,7 @@ static void
 account_widget_apply_clicked_cb (GtkWidget *button,
     EmpathyAccountWidget *self)
 {
-    account_widget_apply_and_log_in (self);
+    empathy_account_widget_apply_and_log_in (self);
 }
 
 static void
