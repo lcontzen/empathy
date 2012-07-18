@@ -30,6 +30,7 @@
 
 #define MECH_FACEBOOK "X-FACEBOOK-PLATFORM"
 #define MECH_WLM "X-MESSENGER-OAUTH2"
+#define MECH_GOOGLE "X-OAUTH2"
 
 typedef struct
 {
@@ -40,6 +41,7 @@ typedef struct
 static SupportedMech supported_mechanisms[] = {
   { EMPATHY_SASL_MECHANISM_FACEBOOK, MECH_FACEBOOK },
   { EMPATHY_SASL_MECHANISM_WLM, MECH_WLM },
+  { EMPATHY_SASL_MECHANISM_GOOGLE, MECH_GOOGLE },
 };
 
 static void
@@ -251,6 +253,42 @@ empathy_sasl_auth_wlm_async (TpChannel *channel,
 
   g_array_unref (token_decoded_array);
   g_free (token_decoded);
+  g_object_unref (result);
+}
+
+void
+empathy_sasl_auth_google_async (TpChannel *channel,
+    const gchar *username,
+    const gchar *access_token,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *result;
+  GArray *credential;
+
+  result = empathy_sasl_auth_common_async (channel, callback, user_data);
+
+  g_return_if_fail (result != NULL);
+  g_return_if_fail (empathy_sasl_channel_supports_mechanism (channel,
+      MECH_GOOGLE));
+  g_return_if_fail (!tp_str_empty (username));
+  g_return_if_fail (!tp_str_empty (access_token));
+
+  DEBUG ("Start %s mechanism", MECH_GOOGLE);
+
+  credential = g_array_sized_new (FALSE, FALSE, sizeof (gchar),
+      strlen (access_token) + strlen (username) + 2);
+
+  g_array_append_val (credential, "\0");
+  g_array_append_vals (credential, username, strlen (username));
+  g_array_append_val (credential, "\0");
+  g_array_append_vals (credential, access_token, strlen (access_token));
+
+  tp_cli_channel_interface_sasl_authentication_call_start_mechanism_with_data (
+      channel, -1, MECH_GOOGLE, credential,
+      generic_cb, g_object_ref (result), g_object_unref, NULL);
+
+  g_array_unref (credential);
   g_object_unref (result);
 }
 

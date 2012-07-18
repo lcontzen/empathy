@@ -30,6 +30,7 @@ typedef enum
   EMPATHY_SASL_MECHANISM_UNSUPPORTED,
   EMPATHY_SASL_MECHANISM_FACEBOOK,
   EMPATHY_SASL_MECHANISM_WLM,
+  EMPATHY_SASL_MECHANISM_GOOGLE,
 } EmpathySaslMechanism;
 
 void empathy_sasl_auth_facebook_async (TpChannel *channel,
@@ -39,6 +40,12 @@ void empathy_sasl_auth_facebook_async (TpChannel *channel,
     gpointer user_data);
 
 void empathy_sasl_auth_wlm_async (TpChannel *channel,
+    const gchar *access_token,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+void empathy_sasl_auth_google_async (TpChannel *channel,
+    const gchar *username,
     const gchar *access_token,
     GAsyncReadyCallback callback,
     gpointer user_data);
