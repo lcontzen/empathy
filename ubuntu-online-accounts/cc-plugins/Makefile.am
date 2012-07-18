@@ -1,3 +1,5 @@
+# Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+# Do NOT edit manually
 SUBDIRS = providers services
 
 plugindir = $(ACCOUNTS_PROVIDER_PLUGIN_DIR)
