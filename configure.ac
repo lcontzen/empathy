@@ -596,6 +596,9 @@ AC_CONFIG_FILES([
    goa-mc-plugin/Makefile
    ubuntu-online-accounts/Makefile
    ubuntu-online-accounts/mc-plugin/Makefile
+   ubuntu-online-accounts/cc-plugins/Makefile
+   ubuntu-online-accounts/cc-plugins/providers/Makefile
+   ubuntu-online-accounts/cc-plugins/services/Makefile
    help/Makefile
    tests/Makefile
    tests/interactive/Makefile

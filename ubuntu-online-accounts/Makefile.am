@@ -1,4 +1,4 @@
-SUBDIRS = mc-plugin
+SUBDIRS = mc-plugin cc-plugins
 
 appdir = $(ACCOUNTS_APPLICATION_FILES_DIR)
 
