@@ -76,6 +76,7 @@ struct _EmpathyAccountSettingsPriv
   gchar *service;
   gchar *display_name;
   gchar *icon_name;
+  gchar *storage_provider;
   gboolean display_name_overridden;
   gboolean ready;
 
@@ -397,6 +398,7 @@ empathy_account_settings_finalize (GObject *object)
   g_free (priv->icon_name);
   g_free (priv->password);
   g_free (priv->password_original);
+  g_free (priv->storage_provider);
 
   if (priv->required_params != NULL)
     {
@@ -1456,6 +1458,12 @@ empathy_account_settings_do_create_account (EmpathyAccountSettings *self)
       tp_account_request_set_parameter (account_req, key, value);
     }
 
+  if (priv->storage_provider != NULL)
+    {
+      tp_account_request_set_storage_provider (account_req,
+          priv->storage_provider);
+    }
+
   tp_account_request_create_account_async (account_req,
       empathy_account_settings_created_cb, self);
 }
@@ -1707,4 +1715,14 @@ empathy_account_settings_has_uri_scheme_tel (
   EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
 
   return priv->uri_scheme_tel;
+}
+
+void
+empathy_account_settings_set_storage_provider (EmpathyAccountSettings *self,
+    const gchar *storage)
+{
+  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
+
+  g_free (priv->storage_provider);
+  priv->storage_provider = g_strdup (storage);
 }

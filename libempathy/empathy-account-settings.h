@@ -193,6 +193,10 @@ void empathy_account_settings_set_uri_scheme_tel (EmpathyAccountSettings *self,
 gboolean empathy_account_settings_has_uri_scheme_tel (
     EmpathyAccountSettings *self);
 
+void empathy_account_settings_set_storage_provider (
+    EmpathyAccountSettings *self,
+    const gchar *storage);
+
 G_END_DECLS
 
 #endif /* #ifndef __EMPATHY_ACCOUNT_SETTINGS_H__*/
