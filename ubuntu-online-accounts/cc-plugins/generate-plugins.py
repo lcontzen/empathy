@@ -2,7 +2,20 @@
 
 # (name, CM, protocol, icon)
 ALL = [
+        ('AIM', 'haze', 'aim', 'aim'),
+        ('GaduGadu', 'haze', 'gadugadu', 'gadugadu'),
+        ('Groupwise', 'haze', 'groupwise', 'groupwise'),
+        ('ICQ', 'haze', 'icq', 'icq'),
+        ('IRC', 'idle', 'irc', 'irc'),
         ('Jabber', 'gabble', 'jabber', 'jabber'),
+        ('Mxit', 'haze', 'mxit', 'mxit'),
+        ('Myspace', 'haze', 'myspace', 'myspace'),
+        ('SIP', 'sofiasip', 'sip', 'sip'),
+        ('Salut', 'salut', 'local-xmpp', 'people-nearby'),
+        ('Sametime', 'haze', 'sametime', 'sametime'),
+        ('Yahoo Japan', 'haze', 'yahoojp', 'yahoo'),
+        ('Yahoo!', 'haze', 'yahoo', 'yahoo'),
+        ('Zephyr', 'haze', 'zephyr', 'zephyr'),
       ]
 
 class Plugin:

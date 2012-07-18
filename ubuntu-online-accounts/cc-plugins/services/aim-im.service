@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+     Do NOT edit manually -->
+<service id="aim-im">
+  <type>IM</type>
+  <name>AIM</name>
+  <icon>aim</icon>
+  <provider>aim</provider>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="telepathy">
+      <setting name="manager">haze</setting>
+      <setting name="protocol">aim</setting>
+    </group>
+  </template>
+
+</service>

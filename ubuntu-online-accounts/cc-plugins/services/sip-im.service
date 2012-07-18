@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+     Do NOT edit manually -->
+<service id="sip-im">
+  <type>IM</type>
+  <name>SIP</name>
+  <icon>sip</icon>
+  <provider>sip</provider>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="telepathy">
+      <setting name="manager">sofiasip</setting>
+      <setting name="protocol">sip</setting>
+    </group>
+  </template>
+
+</service>

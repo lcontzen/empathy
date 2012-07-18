@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+     Do NOT edit manually -->
+<service id="mxit-im">
+  <type>IM</type>
+  <name>Mxit</name>
+  <icon>mxit</icon>
+  <provider>mxit</provider>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="telepathy">
+      <setting name="manager">haze</setting>
+      <setting name="protocol">mxit</setting>
+    </group>
+  </template>
+
+</service>

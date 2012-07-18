@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+     Do NOT edit manually -->
+<service id="icq-im">
+  <type>IM</type>
+  <name>ICQ</name>
+  <icon>icq</icon>
+  <provider>icq</provider>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="telepathy">
+      <setting name="manager">haze</setting>
+      <setting name="protocol">icq</setting>
+    </group>
+  </template>
+
+</service>

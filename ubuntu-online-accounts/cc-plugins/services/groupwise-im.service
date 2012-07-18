@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
+     Do NOT edit manually -->
+<service id="groupwise-im">
+  <type>IM</type>
+  <name>Groupwise</name>
+  <icon>groupwise</icon>
+  <provider>groupwise</provider>
+
+  <!-- default settings (account settings have precedence over these) -->
+  <template>
+    <group name="telepathy">
+      <setting name="manager">haze</setting>
+      <setting name="protocol">groupwise</setting>
+    </group>
+  </template>
+
+</service>
