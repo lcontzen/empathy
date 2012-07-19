@@ -532,6 +532,14 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
 
    AC_MSG_RESULT([$ACCOUNTS_SERVICE_FILES_DIR])
    AC_SUBST(ACCOUNTS_SERVICE_FILES_DIR)
+
+   # application files dir
+   AC_MSG_CHECKING([Accounts applications files dir])
+   ACCOUNTS_APPLICATION_FILES_DIR=`pkg-config --variable=applicationfilesdir libaccounts-glib`
+
+   AC_MSG_RESULT([$ACCOUNTS_APPLICATION_FILES_DIR])
+   AC_SUBST(ACCOUNTS_APPLICATION_FILES_DIR)
+
 else
    have_uoa=no
 fi
