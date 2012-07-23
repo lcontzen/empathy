@@ -1259,7 +1259,7 @@ password_feature_prepare_cb (GObject *source,
     gpointer user_data)
 {
   EmpathyTpChat *self = user_data;
-  GError *error;
+  GError *error = NULL;
 
   if (!tp_proxy_prepare_finish (source, result, &error))
     {

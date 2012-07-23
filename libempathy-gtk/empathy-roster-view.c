@@ -1458,7 +1458,7 @@ empathy_roster_view_new (EmpathyIndividualManager *manager,
 {
   g_return_val_if_fail (EMPATHY_IS_INDIVIDUAL_MANAGER (manager), NULL);
   g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (model), NULL);
-  
+
   return g_object_new (EMPATHY_TYPE_ROSTER_VIEW,
       "manager", manager,
       "model", model,
