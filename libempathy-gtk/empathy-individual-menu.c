@@ -107,6 +107,7 @@ individual_menu_add_personas (GtkMenuShell *menu,
   GeeSet *personas;
   GeeIterator *iter;
   guint persona_count = 0;
+  gboolean c;
 
   g_return_if_fail (GTK_IS_MENU (menu));
   g_return_if_fail (FOLKS_IS_INDIVIDUAL (individual));
@@ -136,8 +137,7 @@ individual_menu_add_personas (GtkMenuShell *menu,
   gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
   gtk_widget_show (item);
 
-  iter = gee_iterable_iterator (GEE_ITERABLE (personas));
-  while (gee_iterator_next (iter))
+  for (c = gee_iterator_first (iter); c; c = gee_iterator_next (iter))
     {
       GtkWidget *image;
       GtkWidget *contact_item;

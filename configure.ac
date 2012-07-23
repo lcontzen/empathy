@@ -217,7 +217,7 @@ PKG_CHECK_MODULES(EMPATHY,
    libpulse-mainloop-glib
    webkitgtk-3.0 >= $WEBKIT_REQUIRED
    libsoup-2.4
-   gee-0.8
+   gee-1.0
 ])
 
 PKG_CHECK_MODULES(EMPATHY_CALL,

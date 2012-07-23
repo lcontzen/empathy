@@ -926,7 +926,7 @@ empathy_contact_change_group (EmpathyContact *contact, const gchar *group,
   if (priv->groups == NULL)
     {
       priv->groups = gee_hash_set_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup,
-          g_free, NULL, NULL, NULL, NULL, NULL, NULL);
+          g_free, g_str_hash, g_str_equal);
     }
 
   gee_collection_add (GEE_COLLECTION (priv->groups), group);

@@ -1783,12 +1783,13 @@ personas_changed_cb (FolksIndividual *individual,
     }
   else if (!was_showing_personas && will_show_personas)
     {
+      gboolean c;
+
       /* Remove the old Individual grid */
       individual_grid_destroy (self);
 
       /* Set up all the Persona grids instead */
-      iter = gee_iterable_iterator (GEE_ITERABLE (personas));
-      while (gee_iterator_next (iter))
+      for (c = gee_iterator_first (iter); c; c = gee_iterator_next (iter))
         {
           FolksPersona *persona = gee_iterator_get (iter);
           add_persona (self, persona);
@@ -1797,9 +1798,10 @@ personas_changed_cb (FolksIndividual *individual,
     }
   else if (was_showing_personas && !will_show_personas)
     {
+      gboolean c;
+
       /* Remove all Personas */
-      iter = gee_iterable_iterator (GEE_ITERABLE (personas));
-      while (gee_iterator_next (iter))
+      for (c = gee_iterator_first (iter); c; c = gee_iterator_next (iter))
         {
           FolksPersona *persona = gee_iterator_get (iter);
           remove_persona (self, persona);

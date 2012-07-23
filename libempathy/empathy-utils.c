@@ -1129,7 +1129,7 @@ create_individual_from_persona (FolksPersona *persona)
 
   personas = GEE_SET (
       gee_hash_set_new (FOLKS_TYPE_PERSONA, g_object_ref, g_object_unref,
-      NULL, NULL, NULL, NULL, NULL, NULL));
+      g_direct_hash, g_direct_equal));
 
   gee_collection_add (GEE_COLLECTION (personas), persona);
 
