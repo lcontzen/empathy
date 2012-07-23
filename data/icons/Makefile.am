@@ -251,9 +251,13 @@ uninstall-icons:
 		rm -f $(DESTDIR)$(pkgdatadir)/icons/$$THEME/$$SIZE/$$CONTEXT/$$ICONFILE; \
 	done
 
-install-data-local: install-icons update-icon-cache
+install-data-local:
+	$(MAKE) install-icons
+	$(MAKE) update-icon-cache
 
-uninstall-local: uninstall-icons update-icon-cache
+uninstall-local:
+	$(MAKE) uninstall-icons
+	$(MAKE) update-icon-cache
 
 # Local copy of the "installed" icon. This is used to be able to run empathy
 # from source (see bgo #616159)
