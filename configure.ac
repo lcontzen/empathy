@@ -458,12 +458,6 @@ if test "x$enable_goa" != "xno"; then
        mission-control-plugins
        goa-1.0 >= $GOA_REQUIRED
     ], have_goa="yes", have_goa="no")
-
-   AC_MSG_CHECKING([Mission Control plugins dir])
-   MISSION_CONTROL_PLUGINS_DIR=`pkg-config --variable=plugindir mission-control-plugins`
-
-   AC_MSG_RESULT([$MISSION_CONTROL_PLUGINS_DIR])
-   AC_SUBST(MISSION_CONTROL_PLUGINS_DIR)
 else
    have_goa=no
 fi
@@ -518,13 +512,6 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
        libsignon-glib >= $LIBSIGNON_REQUIRED
     ], have_uoa="yes", have_uoa="no")
 
-   # MC plugins dir
-   AC_MSG_CHECKING([Mission Control plugins dir])
-   MISSION_CONTROL_PLUGINS_DIR=`pkg-config --variable=plugindir mission-control-plugins`
-
-   AC_MSG_RESULT([$MISSION_CONTROL_PLUGINS_DIR])
-   AC_SUBST(MISSION_CONTROL_PLUGINS_DIR)
-
    # provider plugin dir
    AC_MSG_CHECKING([Accounts provider plugin dir])
    ACCOUNTS_PROVIDER_PLUGIN_DIR=`pkg-config --variable=provider_plugindir account-plugin`
@@ -560,6 +547,15 @@ if test "x$have_uoa" = "xyes"; then
 fi
 
 AM_CONDITIONAL(HAVE_UOA, test "x$have_uoa" = "xyes")
+
+if test "x$have_uoa" = "xyes" -o "x$have_goa" = "xyes"; then
+   AC_MSG_CHECKING([Mission Control plugins dir])
+   MISSION_CONTROL_PLUGINS_DIR=${libdir}/mission-control-plugins.`pkg-config --variable=MCP_ABI_VERSION mission-control-plugins`
+
+   AC_MSG_RESULT([$MISSION_CONTROL_PLUGINS_DIR])
+   AC_SUBST(MISSION_CONTROL_PLUGINS_DIR)
+fi
+
 
 # Help documentation
 YELP_HELP_INIT
