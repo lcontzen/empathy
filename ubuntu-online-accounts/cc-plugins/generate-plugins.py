@@ -59,7 +59,7 @@ def generate_makefile_am(plugins):
     f.write(
 '''# Generated using empathy/ubuntu-online-accounts/cc-plugins/generate-plugins.py
 # Do NOT edit manually
-SUBDIRS = providers services
+SUBDIRS = providers services app-plugin
 
 plugindir = $(ACCOUNTS_PROVIDER_PLUGIN_DIR)
 

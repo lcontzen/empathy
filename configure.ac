@@ -519,6 +519,13 @@ if test "x$enable_ubuntu_online_accounts" != "xno"; then
    AC_MSG_RESULT([$ACCOUNTS_PROVIDER_PLUGIN_DIR])
    AC_SUBST(ACCOUNTS_PROVIDER_PLUGIN_DIR)
 
+   # app plugin dir
+   AC_MSG_CHECKING([Accounts provider app plugin dir])
+   ACCOUNTS_APP_PLUGIN_DIR=`pkg-config --variable=application_plugindir account-plugin`
+
+   AC_MSG_RESULT([$ACCOUNTS_APP_PLUGIN_DIR])
+   AC_SUBST(ACCOUNTS_APP_PLUGIN_DIR)
+
    # provider files dir
    AC_MSG_CHECKING([Accounts provider files dir])
    ACCOUNTS_PROVIDER_FILES_DIR=`pkg-config --variable=providerfilesdir libaccounts-glib`
@@ -599,6 +606,7 @@ AC_CONFIG_FILES([
    ubuntu-online-accounts/cc-plugins/Makefile
    ubuntu-online-accounts/cc-plugins/providers/Makefile
    ubuntu-online-accounts/cc-plugins/services/Makefile
+   ubuntu-online-accounts/cc-plugins/app-plugin/Makefile
    help/Makefile
    tests/Makefile
    tests/interactive/Makefile
