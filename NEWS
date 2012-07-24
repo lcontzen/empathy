@@ -1,3 +1,25 @@
+NEW in 3.5.4.1 (24/07/2012)
+==============
+
+Empathy gains support for the Ubuntu Online Accounts framework. If built
+with --enable-ubuntu-online-accounts Empathy will be able to connect (using
+SSO) to GTalk, Facebook and Windows Live accounts configured in the Ubuntu
+Online Accounts pane.
+
+Dependencies:
+ • telepathy-glib ≥ 0.19.4
+ • mission-control-plugins ≥ 5.13.0 (optional)
+ • libaccounts-glib ≥ 1.1 (optional)
+ • libsignon-glib ≥ 1.1 (optional)
+ • account-plugin (optional)
+
+Bugs fixed:
+ - Fixed #677180, Doesn't save updated password (Guillaume Desmottes)
+ - Fixed #679786, Turn libempathy(-gtk) to private public libs (Guillaume Desmottes)
+ - Fixed #679868, [New roster] The Top Contacts group name isn't displayed above the top contacts if all of them are offline (Laurent Contzen)
+ - Fixed #680076, Fail to join password protected room (Guillaume Desmottes)
+ - Fixed #680160, Auth client code should make easier to add other account storages (Xavier Claessens)
+
 NEW in 3.5.4 (16/07/2012)
 ============
 
