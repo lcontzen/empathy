@@ -131,6 +131,9 @@ create_account_settings (AgAccount *account)
   empathy_account_settings_set_storage_provider (settings,
       EMPATHY_UOA_PROVIDER);
 
+  empathy_account_settings_set_icon_name_async (settings,
+    ag_service_get_icon_name (service), NULL, NULL);
+
   g_free (manager);
   g_free (protocol);
 
