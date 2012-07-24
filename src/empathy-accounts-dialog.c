@@ -659,6 +659,22 @@ start_external_app (GAppInfo *app_info)
 }
 
 static void
+start_from_desktop_file (const char *desktop)
+{
+  GDesktopAppInfo *desktop_info;
+
+  desktop_info = g_desktop_app_info_new (desktop);
+  if (desktop_info == NULL)
+    {
+      g_critical ("Could not locate '%s'", desktop);
+      return;
+    }
+
+  start_external_app (G_APP_INFO (desktop_info));
+  g_object_unref (desktop_info);
+}
+
+static void
 use_external_storage_provider (EmpathyAccountsDialog *self,
     TpAccount *account)
 {
@@ -702,20 +718,7 @@ use_external_storage_provider (EmpathyAccountsDialog *self,
     }
   else if (!tp_strdiff (provider, "org.gnome.OnlineAccounts"))
     {
-      GDesktopAppInfo *desktop_info;
-
-      desktop_info = g_desktop_app_info_new (
-          "gnome-online-accounts-panel.desktop");
-      if (desktop_info == NULL)
-        {
-          g_critical ("Could not locate 'gnome-online-accounts-panel.desktop'");
-        }
-      else
-        {
-          start_external_app (G_APP_INFO (desktop_info));
-          g_object_unref (desktop_info);
-        }
-
+      start_from_desktop_file ("gnome-online-accounts-panel.desktop");
       return;
     }
   else
