@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-10 22:51+0300\n"
-"PO-Revision-Date: 2012-07-10 22:52+0200\n"
+"POT-Creation-Date: 2012-07-24 22:30+0300\n"
+"PO-Revision-Date: 2012-07-24 22:31+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -482,6 +482,20 @@ msgstr "הקובץ הנבחר אינו קובץ רגיל"
 msgid "The selected file is empty"
 msgstr "הקובץ הנבחר ריק"
 
+#: ../libempathy/empathy-keyring.c:75
+msgid "Password not found"
+msgstr "הססמה לא נמצאה"
+
+#: ../libempathy/empathy-keyring.c:218
+#, c-format
+msgid "IM account password for %s (%s)"
+msgstr "ססמת חשבון המסרים המידיים עבור %s‏ (%s)"
+
+#: ../libempathy/empathy-keyring.c:253
+#, c-format
+msgid "Password for chatroom '%s' on account %s (%s)"
+msgstr "הססמה עבור החדר '%s' דרך החשבון %s ‏(%s)"
+
 #: ../libempathy/empathy-message.c:407
 #: ../src/empathy-call-observer.c:116
 #, c-format
@@ -498,6 +512,52 @@ msgstr "התקשרת ל%s"
 #, c-format
 msgid "Call from %s"
 msgstr "שיחה מאת %s"
+
+#: ../libempathy/empathy-time.c:90
+#, c-format
+msgid "%d second ago"
+msgid_plural "%d seconds ago"
+msgstr[0] "לפני שנייה"
+msgstr[1] "לפני %d שניות"
+
+#: ../libempathy/empathy-time.c:96
+#, c-format
+msgid "%d minute ago"
+msgid_plural "%d minutes ago"
+msgstr[0] "לפני דקה"
+msgstr[1] "לפני %d דקות"
+
+#: ../libempathy/empathy-time.c:102
+#, c-format
+msgid "%d hour ago"
+msgid_plural "%d hours ago"
+msgstr[0] "לפני שעה"
+msgstr[1] "לפני %d שעות"
+
+#: ../libempathy/empathy-time.c:108
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "לפני יום"
+msgstr[1] "לפני %d ימים"
+
+#: ../libempathy/empathy-time.c:114
+#, c-format
+msgid "%d week ago"
+msgid_plural "%d weeks ago"
+msgstr[0] "לפני שבוע"
+msgstr[1] "לפני %d שבועות"
+
+#: ../libempathy/empathy-time.c:120
+#, c-format
+msgid "%d month ago"
+msgid_plural "%d months ago"
+msgstr[0] "לפני חודש"
+msgstr[1] "לפני %d חודשים"
+
+#: ../libempathy/empathy-time.c:142
+msgid "in the future"
+msgstr "בעתיד"
 
 #: ../libempathy/empathy-utils.c:232
 msgid "Available"
@@ -666,143 +726,9 @@ msgstr "Google Talk"
 msgid "Facebook Chat"
 msgstr "צ׳אט Facebook"
 
-#: ../libempathy/empathy-time.c:90
-#, c-format
-msgid "%d second ago"
-msgid_plural "%d seconds ago"
-msgstr[0] "לפני שנייה"
-msgstr[1] "לפני %d שניות"
-
-#: ../libempathy/empathy-time.c:96
-#, c-format
-msgid "%d minute ago"
-msgid_plural "%d minutes ago"
-msgstr[0] "לפני דקה"
-msgstr[1] "לפני %d דקות"
-
-#: ../libempathy/empathy-time.c:102
-#, c-format
-msgid "%d hour ago"
-msgid_plural "%d hours ago"
-msgstr[0] "לפני שעה"
-msgstr[1] "לפני %d שעות"
-
-#: ../libempathy/empathy-time.c:108
-#, c-format
-msgid "%d day ago"
-msgid_plural "%d days ago"
-msgstr[0] "לפני יום"
-msgstr[1] "לפני %d ימים"
-
-#: ../libempathy/empathy-time.c:114
-#, c-format
-msgid "%d week ago"
-msgid_plural "%d weeks ago"
-msgstr[0] "לפני שבוע"
-msgstr[1] "לפני %d שבועות"
-
-#: ../libempathy/empathy-time.c:120
-#, c-format
-msgid "%d month ago"
-msgid_plural "%d months ago"
-msgstr[0] "לפני חודש"
-msgstr[1] "לפני %d חודשים"
-
-#: ../libempathy/empathy-time.c:142
-msgid "in the future"
-msgstr "בעתיד"
-
-#: ../libempathy/empathy-keyring.c:75
-msgid "Password not found"
-msgstr "הססמה לא נמצאה"
-
-#: ../libempathy/empathy-keyring.c:218
-#, c-format
-msgid "IM account password for %s (%s)"
-msgstr "ססמת חשבון המסרים המידיים עבור %s‏ (%s)"
-
-#: ../libempathy/empathy-keyring.c:253
-#, c-format
-msgid "Password for chatroom '%s' on account %s (%s)"
-msgstr "הססמה עבור החדר '%s' דרך החשבון %s ‏(%s)"
-
 #: ../libempathy-gtk/empathy-account-chooser.c:692
 msgid "All accounts"
 msgstr "כל החשבונות"
-
-#: ../libempathy-gtk/empathy-account-widget.c:680
-#: ../libempathy-gtk/empathy-contact-widget.ui.h:1
-#: ../src/empathy-import-widget.c:323
-msgid "Account"
-msgstr "חשבון"
-
-#: ../libempathy-gtk/empathy-account-widget.c:681
-#: ../libempathy-gtk/empathy-account-widget-irc.ui.h:12
-msgid "Password"
-msgstr "ססמה"
-
-#: ../libempathy-gtk/empathy-account-widget.c:682
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:12
-#: ../libempathy-gtk/empathy-irc-network-dialog.c:511
-msgid "Server"
-msgstr "שרת"
-
-#: ../libempathy-gtk/empathy-account-widget.c:683
-#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:20
-#: ../libempathy-gtk/empathy-irc-network-dialog.c:529
-msgid "Port"
-msgstr "פתחה"
-
-#: ../libempathy-gtk/empathy-account-widget.c:767
-#, c-format
-msgid "%s"
-msgstr "%s"
-
-#: ../libempathy-gtk/empathy-account-widget.c:822
-#, c-format
-msgid "%s:"
-msgstr "%s:"
-
-#: ../libempathy-gtk/empathy-account-widget.c:1434
-msgid "Username:"
-msgstr "ש_ם משתמש:"
-
-#: ../libempathy-gtk/empathy-account-widget.c:1751
-msgid "A_pply"
-msgstr "ה_חלה"
-
-#: ../libempathy-gtk/empathy-account-widget.c:1780
-msgid "L_og in"
-msgstr "_כניסה"
-
-#: ../libempathy-gtk/empathy-account-widget.c:1850
-msgid "This account already exists on the server"
-msgstr "חשבון זה כבר קיים על השרת"
-
-#: ../libempathy-gtk/empathy-account-widget.c:1854
-msgid "Create a new account on the server"
-msgstr "יצירת חשבון חדש על השרת"
-
-#. To translators: The first parameter is the login id and the
-#. * second one is the network. The resulting string will be something
-#. * like: "MyUserName on freenode".
-#. * You should reverse the order of these arguments if the
-#. * server should come before the login id in your locale.
-#: ../libempathy-gtk/empathy-account-widget.c:2271
-#, c-format
-msgid "%1$s on %2$s"
-msgstr "‏%1$s על גבי %2$s"
-
-#. To translators: The parameter is the protocol name. The resulting
-#. * string will be something like: "Jabber Account"
-#: ../libempathy-gtk/empathy-account-widget.c:2297
-#, c-format
-msgid "%s Account"
-msgstr "חשבון %s"
-
-#: ../libempathy-gtk/empathy-account-widget.c:2301
-msgid "New account"
-msgstr "חשבון חדש"
 
 #: ../libempathy-gtk/empathy-account-widget-aim.ui.h:1
 #: ../libempathy-gtk/empathy-account-widget-groupwise.ui.h:1
@@ -855,8 +781,8 @@ msgstr "_שרת"
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:8
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:16
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:23
-#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:7
+#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:7
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:22
 #: ../libempathy-gtk/empathy-account-widget-yahoo.ui.h:9
 msgid "Advanced"
@@ -878,6 +804,80 @@ msgstr "מהי ססמת ה־AIM שלך?"
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:25
 msgid "Remember Password"
 msgstr "שמירת הססמה"
+
+#: ../libempathy-gtk/empathy-account-widget.c:678
+#: ../libempathy-gtk/empathy-contact-widget.ui.h:1
+#: ../src/empathy-import-widget.c:323
+msgid "Account"
+msgstr "חשבון"
+
+#: ../libempathy-gtk/empathy-account-widget.c:679
+#: ../libempathy-gtk/empathy-account-widget-irc.ui.h:12
+msgid "Password"
+msgstr "ססמה"
+
+#: ../libempathy-gtk/empathy-account-widget.c:680
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:12
+#: ../libempathy-gtk/empathy-irc-network-dialog.c:511
+msgid "Server"
+msgstr "שרת"
+
+#: ../libempathy-gtk/empathy-account-widget.c:681
+#: ../libempathy-gtk/empathy-account-widget-sip.ui.h:20
+#: ../libempathy-gtk/empathy-irc-network-dialog.c:529
+msgid "Port"
+msgstr "פתחה"
+
+#: ../libempathy-gtk/empathy-account-widget.c:765
+#, c-format
+msgid "%s"
+msgstr "%s"
+
+#: ../libempathy-gtk/empathy-account-widget.c:820
+#, c-format
+msgid "%s:"
+msgstr "%s:"
+
+#: ../libempathy-gtk/empathy-account-widget.c:1432
+msgid "Username:"
+msgstr "ש_ם משתמש:"
+
+#: ../libempathy-gtk/empathy-account-widget.c:1749
+msgid "A_pply"
+msgstr "ה_חלה"
+
+#: ../libempathy-gtk/empathy-account-widget.c:1778
+msgid "L_og in"
+msgstr "_כניסה"
+
+#: ../libempathy-gtk/empathy-account-widget.c:1848
+msgid "This account already exists on the server"
+msgstr "חשבון זה כבר קיים על השרת"
+
+#: ../libempathy-gtk/empathy-account-widget.c:1852
+msgid "Create a new account on the server"
+msgstr "יצירת חשבון חדש על השרת"
+
+#. To translators: The first parameter is the login id and the
+#. * second one is the network. The resulting string will be something
+#. * like: "MyUserName on freenode".
+#. * You should reverse the order of these arguments if the
+#. * server should come before the login id in your locale.
+#: ../libempathy-gtk/empathy-account-widget.c:2269
+#, c-format
+msgid "%1$s on %2$s"
+msgstr "‏%1$s על גבי %2$s"
+
+#. To translators: The parameter is the protocol name. The resulting
+#. * string will be something like: "Jabber Account"
+#: ../libempathy-gtk/empathy-account-widget.c:2295
+#, c-format
+msgid "%s Account"
+msgstr "חשבון %s"
+
+#: ../libempathy-gtk/empathy-account-widget.c:2299
+msgid "New account"
+msgstr "חשבון חדש"
 
 #: ../libempathy-gtk/empathy-account-widget-groupwise.ui.h:2
 #: ../libempathy-gtk/empathy-account-widget-jabber.ui.h:13
@@ -917,35 +917,6 @@ msgstr "מספר מנוי ה־ICQ שלך?"
 #: ../libempathy-gtk/empathy-account-widget-icq.ui.h:10
 msgid "What is your ICQ password?"
 msgstr "ססמת ה־ICQ שלך?"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:207
-#: ../libempathy-gtk/empathy-account-widget-sip.c:240
-msgid "Auto"
-msgstr "אוטומטי"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:210
-msgid "UDP"
-msgstr "UDP"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:213
-msgid "TCP"
-msgstr "TCP"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:216
-msgid "TLS"
-msgstr "TLS"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:245
-msgid "Register"
-msgstr "הרשמה"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:250
-msgid "Options"
-msgstr "אפשרויות"
-
-#: ../libempathy-gtk/empathy-account-widget-sip.c:253
-msgid "None"
-msgstr "ללא"
 
 #: ../libempathy-gtk/empathy-account-widget-irc.ui.h:1
 msgid "Network"
@@ -1085,18 +1056,6 @@ msgstr "מהי ססמת ה־Jabber שלך?"
 msgid "What is your desired Jabber password?"
 msgstr "מהי ססמת ה־Jabber המועדפת עליך?"
 
-#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:3
-msgid "<b>Example:</b> user@hotmail.com"
-msgstr "<span size=\"small\"><b>דוגמה:</b> user@hotmail.com</span>"
-
-#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:8
-msgid "What is your Windows Live ID?"
-msgstr "מהו שם המשתמש שלך ב־Windows Live?"
-
-#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:9
-msgid "What is your Windows Live password?"
-msgstr "מהי ססמתך ב־Windows Live?"
-
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:1
 msgid "Nic_kname"
 msgstr "_כינוי"
@@ -1120,6 +1079,47 @@ msgstr "מ_זהה Jabber"
 #: ../libempathy-gtk/empathy-account-widget-local-xmpp.ui.h:6
 msgid "E-_mail address"
 msgstr "כתובת _דוא״ל"
+
+#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:3
+msgid "<b>Example:</b> user@hotmail.com"
+msgstr "<span size=\"small\"><b>דוגמה:</b> user@hotmail.com</span>"
+
+#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:8
+msgid "What is your Windows Live ID?"
+msgstr "מהו שם המשתמש שלך ב־Windows Live?"
+
+#: ../libempathy-gtk/empathy-account-widget-msn.ui.h:9
+msgid "What is your Windows Live password?"
+msgstr "מהי ססמתך ב־Windows Live?"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:207
+#: ../libempathy-gtk/empathy-account-widget-sip.c:240
+msgid "Auto"
+msgstr "אוטומטי"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:210
+msgid "UDP"
+msgstr "UDP"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:213
+msgid "TCP"
+msgstr "TCP"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:216
+msgid "TLS"
+msgstr "TLS"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:245
+msgid "Register"
+msgstr "הרשמה"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:250
+msgid "Options"
+msgstr "אפשרויות"
+
+#: ../libempathy-gtk/empathy-account-widget-sip.c:253
+msgid "None"
+msgstr "ללא"
 
 #: ../libempathy-gtk/empathy-account-widget-sip.ui.h:2
 msgid "_Username"
@@ -1266,6 +1266,34 @@ msgstr "כל הקבצים"
 msgid "Click to enlarge"
 msgstr "יש ללחוץ כדי להגדיל"
 
+#: ../libempathy-gtk/empathy-bad-password-dialog.c:130
+#, c-format
+msgid "Authentication failed for account <b>%s</b>"
+msgstr "האימות עבור החשבון <b>%s</b> נכשל"
+
+#: ../libempathy-gtk/empathy-bad-password-dialog.c:142
+#: ../libempathy-gtk/empathy-chat.c:3725
+msgid "Retry"
+msgstr "ניסיון חוזר"
+
+#: ../libempathy-gtk/empathy-base-password-dialog.c:224
+#: ../libempathy-gtk/empathy-password-dialog.c:134
+#, c-format
+msgid ""
+"Enter your password for account\n"
+"<b>%s</b>"
+msgstr ""
+"נא להזין את הססמה לחשבון\n"
+"<b>%s</b>"
+
+#: ../libempathy-gtk/empathy-calendar-button.c:66
+msgid "Select..."
+msgstr "בחירה..."
+
+#: ../libempathy-gtk/empathy-calendar-button.c:154
+msgid "_Select"
+msgstr "_בחירה"
+
 #: ../libempathy-gtk/empathy-call-utils.c:42
 #: ../libempathy-gtk/empathy-call-utils.c:60
 msgid "There was an error starting the call"
@@ -1307,177 +1335,177 @@ msgstr "אין לך הרשאה לשנות את הנושא"
 msgid "Invalid contact ID"
 msgstr "מזהה איש קשר לא תקין"
 
-#: ../libempathy-gtk/empathy-chat.c:1056
+#: ../libempathy-gtk/empathy-chat.c:1055
 msgid "/clear: clear all messages from the current conversation"
 msgstr "/clear: פינוי כל ההודעות מהדיון הנוכחי"
 
-#: ../libempathy-gtk/empathy-chat.c:1059
+#: ../libempathy-gtk/empathy-chat.c:1058
 msgid "/topic <topic>: set the topic of the current conversation"
 msgstr "/topic <נושא>:‎ הגדרת נושא השיחה הנוכחית"
 
-#: ../libempathy-gtk/empathy-chat.c:1062
+#: ../libempathy-gtk/empathy-chat.c:1061
 msgid "/join <chat room ID>: join a new chat room"
 msgstr "/join <זיהוי החדר>:‎ הצטרפות לחדר שיחה חדש"
 
-#: ../libempathy-gtk/empathy-chat.c:1065
+#: ../libempathy-gtk/empathy-chat.c:1064
 msgid "/j <chat room ID>: join a new chat room"
 msgstr "/j <זיהוי החדר>:‎ הצטרפות לחדר שיחה חדש"
 
-#: ../libempathy-gtk/empathy-chat.c:1069
+#: ../libempathy-gtk/empathy-chat.c:1068
 msgid "/part [<chat room ID>] [<reason>]: leave the chat room, by default the current one"
 msgstr "/part [<זיהוי החדר>]‎ [<סיבה>]:‎ עזיבת ערוץ השיחה, הנוכחי הוא בררת המחדל"
 
-#: ../libempathy-gtk/empathy-chat.c:1073
+#: ../libempathy-gtk/empathy-chat.c:1072
 msgid "/query <contact ID> [<message>]: open a private chat"
 msgstr "/query <זיהוי איש הקשר> ‎[<הודעה>]:‎ פתיחת צ׳אט אישי"
 
-#: ../libempathy-gtk/empathy-chat.c:1076
+#: ../libempathy-gtk/empathy-chat.c:1075
 msgid "/msg <contact ID> <message>: open a private chat"
 msgstr "/msg <זיהוי איש הקשר>‎ <הודעה>:‎ פתיחת צ׳אט פרטי"
 
-#: ../libempathy-gtk/empathy-chat.c:1079
+#: ../libempathy-gtk/empathy-chat.c:1078
 msgid "/nick <nickname>: change your nickname on the current server"
 msgstr "/nick <כינוי>:‎ שינוי הכינוי שלך בשרת הנוכחי"
 
-#: ../libempathy-gtk/empathy-chat.c:1082
+#: ../libempathy-gtk/empathy-chat.c:1081
 msgid "/me <message>: send an ACTION message to the current conversation"
 msgstr "/me <הודעה>:‎ שליחת הודעת ACTION לדיון הנוכחי"
 
-#: ../libempathy-gtk/empathy-chat.c:1085
+#: ../libempathy-gtk/empathy-chat.c:1084
 msgid "/say <message>: send <message> to the current conversation. This is used to send a message starting with a '/'. For example: \"/say /join is used to join a new chat room\""
 msgstr "/say <הודעה>:‎ שליחת <הודעה> לדיון הנוכחי. פקודה זו משמשת לשליחת הודעות המתחילות ב־'/'. לדוגמה: \"/say /join משמשת לצורך התחברות לחדר שיחה חדש\""
 
-#: ../libempathy-gtk/empathy-chat.c:1090
+#: ../libempathy-gtk/empathy-chat.c:1089
 msgid "/whois <contact ID>: display information about a contact"
 msgstr "/whois <מזהה המשתמש>:‎ הצגת פרטים על איש הקשר"
 
-#: ../libempathy-gtk/empathy-chat.c:1093
+#: ../libempathy-gtk/empathy-chat.c:1092
 msgid "/help [<command>]: show all supported commands. If <command> is defined, show its usage."
 msgstr "/help [<פקודה>]:‎ הצגת כל הפקודות הנתמכות. אם יש הגדרה ל־<פקודה> יוצג אופן הפעלתה."
 
-#: ../libempathy-gtk/empathy-chat.c:1112
+#: ../libempathy-gtk/empathy-chat.c:1111
 #, c-format
 msgid "Usage: %s"
 msgstr "שימוש: %s"
 
-#: ../libempathy-gtk/empathy-chat.c:1157
+#: ../libempathy-gtk/empathy-chat.c:1156
 msgid "Unknown command"
 msgstr "פקודה לא ידועה"
 
-#: ../libempathy-gtk/empathy-chat.c:1283
+#: ../libempathy-gtk/empathy-chat.c:1282
 msgid "Unknown command; see /help for the available commands"
 msgstr "פקודה בלתי מוכרת; יש לעיין ב־‎/help לצפייה בפקודות הזמינות"
 
-#: ../libempathy-gtk/empathy-chat.c:1540
+#: ../libempathy-gtk/empathy-chat.c:1539
 msgid "insufficient balance to send message"
 msgstr "המאזן אינו מאפשר לשלוח הודעה"
 
-#: ../libempathy-gtk/empathy-chat.c:1544
-#: ../libempathy-gtk/empathy-chat.c:1558
-#: ../libempathy-gtk/empathy-chat.c:1621
+#: ../libempathy-gtk/empathy-chat.c:1543
+#: ../libempathy-gtk/empathy-chat.c:1557
+#: ../libempathy-gtk/empathy-chat.c:1620
 #, c-format
 msgid "Error sending message '%s': %s"
 msgstr "שגיאה בשליחת ההודעה '%s': ‏%s"
 
-#: ../libempathy-gtk/empathy-chat.c:1546
-#: ../libempathy-gtk/empathy-chat.c:1563
-#: ../libempathy-gtk/empathy-chat.c:1625
+#: ../libempathy-gtk/empathy-chat.c:1545
+#: ../libempathy-gtk/empathy-chat.c:1562
+#: ../libempathy-gtk/empathy-chat.c:1624
 #, c-format
 msgid "Error sending message: %s"
 msgstr "שגיאה בשליחת ההודעה: ‏%s"
 
 #. translators: error used when user doesn't have enough credit on his
 #. * account to send the message.
-#: ../libempathy-gtk/empathy-chat.c:1552
+#: ../libempathy-gtk/empathy-chat.c:1551
 #, c-format
 msgid "insufficient balance to send message. <a href='%s'>Top up</a>."
 msgstr "המאזן אינו מאפשר לשלוח הודעה. <a href='%s'>Top up</a>."
 
-#: ../libempathy-gtk/empathy-chat.c:1592
+#: ../libempathy-gtk/empathy-chat.c:1591
 msgid "not capable"
 msgstr "ללא יכולת"
 
-#: ../libempathy-gtk/empathy-chat.c:1599
+#: ../libempathy-gtk/empathy-chat.c:1598
 msgid "offline"
 msgstr "לא מחובר"
 
-#: ../libempathy-gtk/empathy-chat.c:1602
+#: ../libempathy-gtk/empathy-chat.c:1601
 msgid "invalid contact"
 msgstr "איש קשר לא תקין"
 
-#: ../libempathy-gtk/empathy-chat.c:1605
+#: ../libempathy-gtk/empathy-chat.c:1604
 msgid "permission denied"
 msgstr "איש קשר לא תקין"
 
-#: ../libempathy-gtk/empathy-chat.c:1608
+#: ../libempathy-gtk/empathy-chat.c:1607
 msgid "too long message"
 msgstr "הודעה ארוכה מדי"
 
-#: ../libempathy-gtk/empathy-chat.c:1611
+#: ../libempathy-gtk/empathy-chat.c:1610
 msgid "not implemented"
 msgstr "לא ממומש"
 
-#: ../libempathy-gtk/empathy-chat.c:1615
+#: ../libempathy-gtk/empathy-chat.c:1614
 msgid "unknown"
 msgstr "לא ידוע"
 
-#: ../libempathy-gtk/empathy-chat.c:1682
-#: ../src/empathy-chat-window.c:942
+#: ../libempathy-gtk/empathy-chat.c:1681
+#: ../src/empathy-chat-window.c:969
 msgid "Topic:"
 msgstr "נושא:"
 
-#: ../libempathy-gtk/empathy-chat.c:1697
+#: ../libempathy-gtk/empathy-chat.c:1696
 #, c-format
 msgid "Topic set to: %s"
 msgstr "הנושא הוגדר ל־: %s"
 
-#: ../libempathy-gtk/empathy-chat.c:1699
+#: ../libempathy-gtk/empathy-chat.c:1698
 #, c-format
 msgid "Topic set by %s to: %s"
 msgstr "הנושא הוגדר על ידי %s בתור: %s"
 
 #. No need to display this 'event' is no topic can be defined anyway
-#: ../libempathy-gtk/empathy-chat.c:1704
+#: ../libempathy-gtk/empathy-chat.c:1703
 msgid "No topic defined"
 msgstr "לא נקבע נושא"
 
-#: ../libempathy-gtk/empathy-chat.c:2220
+#: ../libempathy-gtk/empathy-chat.c:2219
 msgid "(No Suggestions)"
 msgstr "(אין הצעות)"
 
 #. translators: %s is the selected word
-#: ../libempathy-gtk/empathy-chat.c:2288
+#: ../libempathy-gtk/empathy-chat.c:2287
 #, c-format
 msgid "Add '%s' to Dictionary"
 msgstr "הוספת '%s' למילון"
 
 #. translators: first %s is the selected word,
 #. * second %s is the language name of the target dictionary
-#: ../libempathy-gtk/empathy-chat.c:2325
+#: ../libempathy-gtk/empathy-chat.c:2324
 #, c-format
 msgid "Add '%s' to %s Dictionary"
 msgstr "הוספת '%s' למילון %s"
 
-#: ../libempathy-gtk/empathy-chat.c:2395
+#: ../libempathy-gtk/empathy-chat.c:2394
 msgid "Insert Smiley"
 msgstr "הכנס סמיילי"
 
 #. send button
-#: ../libempathy-gtk/empathy-chat.c:2413
+#: ../libempathy-gtk/empathy-chat.c:2412
 #: ../libempathy-gtk/empathy-ui-utils.c:1179
 msgid "_Send"
 msgstr "_שלח"
 
 #. Spelling suggestions
-#: ../libempathy-gtk/empathy-chat.c:2470
+#: ../libempathy-gtk/empathy-chat.c:2469
 msgid "_Spelling Suggestions"
 msgstr "הצעות _איות"
 
-#: ../libempathy-gtk/empathy-chat.c:2576
+#: ../libempathy-gtk/empathy-chat.c:2575
 msgid "Failed to retrieve recent logs"
 msgstr "ארע כשל בקבלת הדוחות האחרונים"
 
-#: ../libempathy-gtk/empathy-chat.c:2720
+#: ../libempathy-gtk/empathy-chat.c:2719
 #, c-format
 msgid "%s has disconnected"
 msgstr "‏%s התנתק"
@@ -1485,12 +1513,12 @@ msgstr "‏%s התנתק"
 #. translators: reverse the order of these arguments
 #. * if the kicked should come before the kicker in your locale.
 #.
-#: ../libempathy-gtk/empathy-chat.c:2727
+#: ../libempathy-gtk/empathy-chat.c:2726
 #, c-format
 msgid "%1$s was kicked by %2$s"
 msgstr "‏%1$s סולק על ידי %2$s"
 
-#: ../libempathy-gtk/empathy-chat.c:2730
+#: ../libempathy-gtk/empathy-chat.c:2729
 #, c-format
 msgid "%s was kicked"
 msgstr "‏%s סולק"
@@ -1498,17 +1526,17 @@ msgstr "‏%s סולק"
 #. translators: reverse the order of these arguments
 #. * if the banned should come before the banner in your locale.
 #.
-#: ../libempathy-gtk/empathy-chat.c:2738
+#: ../libempathy-gtk/empathy-chat.c:2737
 #, c-format
 msgid "%1$s was banned by %2$s"
 msgstr "‏%1$s נחסם על ידי %2$s"
 
-#: ../libempathy-gtk/empathy-chat.c:2741
+#: ../libempathy-gtk/empathy-chat.c:2740
 #, c-format
 msgid "%s was banned"
 msgstr "‏%s נחסם"
 
-#: ../libempathy-gtk/empathy-chat.c:2745
+#: ../libempathy-gtk/empathy-chat.c:2744
 #, c-format
 msgid "%s has left the room"
 msgstr "‏%s עזב את החדר"
@@ -1518,17 +1546,17 @@ msgstr "‏%s עזב את החדר"
 #. * given by the user living the room. If this poses a problem,
 #. * please let us know. :-)
 #.
-#: ../libempathy-gtk/empathy-chat.c:2754
+#: ../libempathy-gtk/empathy-chat.c:2753
 #, c-format
 msgid " (%s)"
 msgstr " (%s)"
 
-#: ../libempathy-gtk/empathy-chat.c:2779
+#: ../libempathy-gtk/empathy-chat.c:2778
 #, c-format
 msgid "%s has joined the room"
 msgstr "‏%s הצטרף לחדר"
 
-#: ../libempathy-gtk/empathy-chat.c:2804
+#: ../libempathy-gtk/empathy-chat.c:2803
 #, c-format
 msgid "%s is now known as %s"
 msgstr "‏%s נודע כעת בכינוי %s"
@@ -1536,58 +1564,53 @@ msgstr "‏%s נודע כעת בכינוי %s"
 #. We don't know if the incoming call has been accepted or not, so we
 #. * assume it hasn't and if it has, we'll set the proper status when
 #. * we get the new handler.
-#: ../libempathy-gtk/empathy-chat.c:2991
-#: ../src/empathy-event-manager.c:1176
+#: ../libempathy-gtk/empathy-chat.c:2990
 #: ../src/empathy-call-window.c:1468
 #: ../src/empathy-call-window.c:1518
 #: ../src/empathy-call-window.c:2571
+#: ../src/empathy-event-manager.c:1176
 msgid "Disconnected"
 msgstr "מנותק"
 
 #. Add message
-#: ../libempathy-gtk/empathy-chat.c:3666
+#: ../libempathy-gtk/empathy-chat.c:3665
 msgid "Would you like to store this password?"
 msgstr "האם ברצונך לאחסן ססמה זו?"
 
-#: ../libempathy-gtk/empathy-chat.c:3672
+#: ../libempathy-gtk/empathy-chat.c:3671
 msgid "Remember"
 msgstr "שמירה"
 
-#: ../libempathy-gtk/empathy-chat.c:3682
+#: ../libempathy-gtk/empathy-chat.c:3681
 msgid "Not now"
 msgstr "לא כעת"
 
-#: ../libempathy-gtk/empathy-chat.c:3726
-#: ../libempathy-gtk/empathy-bad-password-dialog.c:142
-msgid "Retry"
-msgstr "ניסיון חוזר"
-
-#: ../libempathy-gtk/empathy-chat.c:3730
+#: ../libempathy-gtk/empathy-chat.c:3729
 msgid "Wrong password; please try again:"
 msgstr "ססמה שגויה; נא לנסות שוב:"
 
 #. Add message
-#: ../libempathy-gtk/empathy-chat.c:3860
+#: ../libempathy-gtk/empathy-chat.c:3859
 msgid "This room is protected by a password:"
 msgstr "חדר זה מוגן בססמה:"
 
-#: ../libempathy-gtk/empathy-chat.c:3887
+#: ../libempathy-gtk/empathy-chat.c:3886
 #: ../src/empathy-new-chatroom-dialog.c:780
 msgid "Join"
 msgstr "הצטרפות"
 
-#: ../libempathy-gtk/empathy-chat.c:4079
+#: ../libempathy-gtk/empathy-chat.c:4078
 #: ../src/empathy-event-manager.c:1197
 msgid "Connected"
 msgstr "מחובר"
 
-#: ../libempathy-gtk/empathy-chat.c:4134
+#: ../libempathy-gtk/empathy-chat.c:4133
 msgid "Conversation"
 msgstr "שיחה"
 
 #. Translators: this string is a something like
 #. * "Escher Cat (SMS)"
-#: ../libempathy-gtk/empathy-chat.c:4139
+#: ../libempathy-gtk/empathy-chat.c:4138
 #, c-format
 msgid "%s (SMS)"
 msgstr "%s (SMS)"
@@ -1618,7 +1641,7 @@ msgstr "עריכת אנשי הקשר החסומים"
 
 #. Account and Identifier
 #: ../libempathy-gtk/empathy-contact-blocking-dialog.ui.h:1
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:524
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:529
 #: ../libempathy-gtk/empathy-individual-widget.c:1485
 #: ../src/empathy-chatrooms-window.ui.h:2
 #: ../src/empathy-new-chatroom-dialog.ui.h:6
@@ -1629,46 +1652,97 @@ msgstr "חשבון:"
 msgid "Blocked Contacts"
 msgstr "אנשי קשר חסומים"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.c:190
-#: ../libempathy-gtk/empathy-individual-dialogs.c:118
-msgid "New Contact"
-msgstr "איש קשר חדש"
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:104
+msgid "Full name"
+msgstr "שם מלא"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.ui.h:1
-#: ../libempathy-gtk/empathy-subscription-dialog.c:235
-msgid "Subscription Request"
-msgstr "בקשת הצטרפות"
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:105
+msgid "Phone number"
+msgstr "מספר טלפון"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.ui.h:2
-msgid "_Block User"
-msgstr "_חסימת משתמש"
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:106
+msgid "E-mail address"
+msgstr "כתובת דוא״ל"
 
-#: ../libempathy-gtk/empathy-contact-dialogs.ui.h:3
-msgid "Decide _Later"
-msgstr "ה_חלטה מאוחר יותר"
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:107
+msgid "Website"
+msgstr "אתר אינטרנט"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:108
+msgid "Birthday"
+msgstr "יום הולדת"
+
+#. Note to translators: this is the caption for a string of the form "5
+#. * minutes ago", and refers to the time since the contact last interacted
+#. * with their IM client.
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:113
+msgid "Last seen:"
+msgstr "צפייה אחרונה:"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:114
+msgid "Server:"
+msgstr "שרת:"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:115
+msgid "Connected from:"
+msgstr "מחובר דרך:"
+
+#. FIXME: once Idle implements SimplePresence using this information, we can
+#. * and should bin this.
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:119
+msgid "Away message:"
+msgstr "הודעת התרחקות:"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:132
+msgid "work"
+msgstr "עבודה"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:133
+msgid "home"
+msgstr "בית"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:134
+msgid "mobile"
+msgstr "ֹסלולרי"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:135
+msgid "voice"
+msgstr "קול"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:136
+msgid "preferred"
+msgstr "מועדף"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:137
+msgid "postal"
+msgstr "מיקוד"
+
+#: ../libempathy-gtk/empathy-contactinfo-utils.c:138
+msgid "parcel"
+msgstr "כתובת למשלוחים"
 
 #. Title
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:517
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:522
 msgid "Search contacts"
 msgstr "חיפוש בין אנשי הקשר"
 
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:547
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:552
 msgid "Search: "
 msgstr "חיפוש:"
 
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:605
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:610
 msgid "_Add Contact"
 msgstr "הוספת _איש קשר"
 
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:623
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:628
 msgid "No contacts found"
 msgstr "לא נמצאו אנשי קשר"
 
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:639
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:644
 msgid "Your message introducing yourself:"
 msgstr "ההודעה המציגה אותך:"
 
-#: ../libempathy-gtk/empathy-contact-search-dialog.c:647
+#: ../libempathy-gtk/empathy-contact-search-dialog.c:652
 msgid "Please let me see when you're online. Thanks!"
 msgstr "נא לאפשר לי לראות מתי מצבך הוא מחובר. תודה!"
 
@@ -1837,75 +1911,6 @@ msgstr "פרטים אישיים"
 msgid "Contact Details"
 msgstr "פרטי איש קשר"
 
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:104
-msgid "Full name"
-msgstr "שם מלא"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:105
-msgid "Phone number"
-msgstr "מספר טלפון"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:106
-msgid "E-mail address"
-msgstr "כתובת דוא״ל"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:107
-msgid "Website"
-msgstr "אתר אינטרנט"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:108
-msgid "Birthday"
-msgstr "יום הולדת"
-
-#. Note to translators: this is the caption for a string of the form "5
-#. * minutes ago", and refers to the time since the contact last interacted
-#. * with their IM client.
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:113
-msgid "Last seen:"
-msgstr "צפייה אחרונה:"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:114
-msgid "Server:"
-msgstr "שרת:"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:115
-msgid "Connected from:"
-msgstr "מחובר דרך:"
-
-#. FIXME: once Idle implements SimplePresence using this information, we can
-#. * and should bin this.
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:119
-msgid "Away message:"
-msgstr "הודעת התרחקות:"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:132
-msgid "work"
-msgstr "עבודה"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:133
-msgid "home"
-msgstr "בית"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:134
-msgid "mobile"
-msgstr "ֹסלולרי"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:135
-msgid "voice"
-msgstr "קול"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:136
-msgid "preferred"
-msgstr "מועדף"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:137
-msgid "postal"
-msgstr "מיקוד"
-
-#: ../libempathy-gtk/empathy-contactinfo-utils.c:138
-msgid "parcel"
-msgstr "כתובת למשלוחים"
-
 #. Identifier to connect to Instant Messaging network
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:3
 msgid "Identifier"
@@ -1961,14 +1966,18 @@ msgstr "בחירה"
 msgid "Group"
 msgstr "קבוצה"
 
+#: ../libempathy-gtk/empathy-individual-dialogs.c:118
+msgid "New Contact"
+msgstr "איש קשר חדש"
+
 #: ../libempathy-gtk/empathy-individual-dialogs.c:197
-#: ../libempathy-gtk/empathy-subscription-dialog.c:122
+#: ../libempathy-gtk/empathy-subscription-dialog.c:121
 #, c-format
 msgid "Block %s?"
 msgstr "האם לחסום את %s?"
 
 #: ../libempathy-gtk/empathy-individual-dialogs.c:252
-#: ../libempathy-gtk/empathy-subscription-dialog.c:126
+#: ../libempathy-gtk/empathy-subscription-dialog.c:125
 #, c-format
 msgid "Are you sure you want to block '%s' from contacting you again?"
 msgstr "האם אכן ברצונך לחסום את אפשרות ההתקשרות של '%s' אליך?"
@@ -1986,13 +1995,13 @@ msgstr[0] "לא ניתן לחסום את הזהות הבאה:"
 msgstr[1] "לא ניתן לחסום את בעלי הזהות הבאים:"
 
 #: ../libempathy-gtk/empathy-individual-dialogs.c:274
-#: ../libempathy-gtk/empathy-subscription-dialog.c:131
-#: ../libempathy-gtk/empathy-subscription-dialog.c:276
+#: ../libempathy-gtk/empathy-subscription-dialog.c:130
+#: ../libempathy-gtk/empathy-subscription-dialog.c:275
 msgid "_Block"
 msgstr "ח_סימה"
 
 #: ../libempathy-gtk/empathy-individual-dialogs.c:283
-#: ../libempathy-gtk/empathy-subscription-dialog.c:151
+#: ../libempathy-gtk/empathy-subscription-dialog.c:150
 msgid "_Report this contact as abusive"
 msgid_plural "_Report these contacts as abusive"
 msgstr[0] "_דיווח על משתמש זה כמטרידן"
@@ -2003,135 +2012,135 @@ msgid "Edit Contact Information"
 msgstr "עריכת מידע איש קשר"
 
 #. Translators: the heading at the top of the Information dialogue
-#: ../libempathy-gtk/empathy-individual-information-dialog.c:288
+#: ../libempathy-gtk/empathy-individual-information-dialog.c:293
 msgid "Linked Contacts"
 msgstr "אנשי קשר מקושרים"
+
+#: ../libempathy-gtk/empathy-individual-information-dialog.c:332
+msgid "gnome-contacts not installed"
+msgstr "לא הותקנה התכנית gnome-contacts"
+
+#: ../libempathy-gtk/empathy-individual-information-dialog.c:335
+msgid "Please install gnome-contacts to access contacts details."
+msgstr "נא להתקין את gnome-contacts כדי לכשת לפרטי אנשי הקשר."
 
 #. Translators: this is used in the context menu for a contact. The first
 #. * parameter is a contact ID (e.g. foo@jabber.org) and the second is one
 #. * of the user's account IDs (e.g. me@hotmail.com).
-#: ../libempathy-gtk/empathy-individual-menu.c:174
+#: ../libempathy-gtk/empathy-individual-menu.c:172
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:349
+#: ../libempathy-gtk/empathy-individual-menu.c:347
 msgid "Select account to use to place the call"
 msgstr "נא לבחור את החשבון לשימוש לצורך ההתקשרות"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:353
+#: ../libempathy-gtk/empathy-individual-menu.c:351
 #: ../libempathy-gtk/empathy-log-window.ui.h:6
 #: ../src/empathy-call-window.ui.h:18
 msgid "Call"
 msgstr "התקשרות"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:418
+#: ../libempathy-gtk/empathy-individual-menu.c:416
 msgid "Mobile"
 msgstr "סלולרי"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:420
+#: ../libempathy-gtk/empathy-individual-menu.c:418
 msgid "Work"
 msgstr "עבודה"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:422
+#: ../libempathy-gtk/empathy-individual-menu.c:420
 msgid "HOME"
 msgstr "בית"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:663
+#: ../libempathy-gtk/empathy-individual-menu.c:661
 msgid "_Block Contact"
 msgstr "ח_סימת איש קשר"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:719
+#: ../libempathy-gtk/empathy-individual-menu.c:717
 msgid "Delete and _Block"
 msgstr "מחיקה ו_חסימה"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:781
+#: ../libempathy-gtk/empathy-individual-menu.c:779
 #, c-format
 msgid "Do you really want to remove the contact '%s'?"
 msgstr "להסיר את איש הקשר '%s'?"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:790
+#: ../libempathy-gtk/empathy-individual-menu.c:788
 #, c-format
 msgid "Do you really want to remove the linked contact '%s'? Note that this will remove all the contacts which make up this linked contact."
 msgstr "האם אכן ברצונך להסיר את איש הקשר המקושר '%s'? נא לשים לב שפעולה זו תסיר את כל אנשי הקשר המתאגדים לאיש קשר מקושר זה."
 
-#: ../libempathy-gtk/empathy-individual-menu.c:801
+#: ../libempathy-gtk/empathy-individual-menu.c:799
 msgid "Removing contact"
 msgstr "איש קשר מוסר"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:865
+#: ../libempathy-gtk/empathy-individual-menu.c:863
 #: ../libempathy-gtk/empathy-individual-view.c:2454
 msgid "_Remove"
 msgstr "ה_סרה"
 
 #. add chat button
-#: ../libempathy-gtk/empathy-individual-menu.c:1228
+#: ../libempathy-gtk/empathy-individual-menu.c:1226
 #: ../libempathy-gtk/empathy-new-message-dialog.c:318
 msgid "_Chat"
 msgstr "_שיחה"
 
 #. add SMS button
-#: ../libempathy-gtk/empathy-individual-menu.c:1263
+#: ../libempathy-gtk/empathy-individual-menu.c:1261
 #: ../libempathy-gtk/empathy-new-message-dialog.c:312
 msgid "_SMS"
 msgstr "_SMS"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1296
+#: ../libempathy-gtk/empathy-individual-menu.c:1294
 msgctxt "menu item"
 msgid "_Audio Call"
 msgstr "שיחה _קולית"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1329
+#: ../libempathy-gtk/empathy-individual-menu.c:1327
 msgctxt "menu item"
 msgid "_Video Call"
 msgstr "שיחת _וידאו"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1370
+#: ../libempathy-gtk/empathy-individual-menu.c:1368
 #: ../src/empathy-roster-window-menubar.ui.h:11
 msgid "_Previous Conversations"
 msgstr "שיחות _קודמות"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1399
+#: ../libempathy-gtk/empathy-individual-menu.c:1397
 msgid "Send File"
 msgstr "שליחת קובץ"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1429
+#: ../libempathy-gtk/empathy-individual-menu.c:1427
 msgid "Share My Desktop"
 msgstr "שיתוף שולחן העבודה שלי"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1455
+#: ../libempathy-gtk/empathy-individual-menu.c:1453
 #: ../libempathy-gtk/empathy-individual-widget.c:1368
 msgid "Favorite"
 msgstr "מועדף"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1474
-msgid "gnome-contacts not installed"
-msgstr "לא הותקנה התכנית gnome-contacts"
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1477
-msgid "Please install gnome-contacts to access contacts details."
-msgstr "נא להתקין את gnome-contacts כדי לכשת לפרטי אנשי הקשר."
-
-#: ../libempathy-gtk/empathy-individual-menu.c:1608
+#: ../libempathy-gtk/empathy-individual-menu.c:1482
 msgid "Infor_mation"
 msgstr "_מידע"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1657
+#: ../libempathy-gtk/empathy-individual-menu.c:1531
 msgctxt "Edit individual (contextual menu)"
 msgid "_Edit"
 msgstr "ע_ריכה"
 
 #. send invitation
-#: ../libempathy-gtk/empathy-individual-menu.c:1773
-#: ../src/empathy-chat-window.c:1213
+#: ../libempathy-gtk/empathy-individual-menu.c:1647
+#: ../src/empathy-chat-window.c:1235
 msgid "Inviting you to this room"
 msgstr "מזמין/ה אותך לחדר זה"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:1819
+#: ../libempathy-gtk/empathy-individual-menu.c:1693
 msgid "_Invite to Chat Room"
 msgstr "ה_זמנה לחדר שיחה"
 
-#: ../libempathy-gtk/empathy-individual-menu.c:2015
+#: ../libempathy-gtk/empathy-individual-menu.c:1889
 msgid "_Add Contact…"
 msgstr "הוספת _איש קשר…"
 
@@ -2198,135 +2207,147 @@ msgstr "שרת חדש"
 msgid "SSL"
 msgstr "SSL"
 
-#: ../libempathy-gtk/empathy-log-window.c:616
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:81
+msgid "Empathy can automatically discover and chat with the people connected on the same network as you. If you want to use this feature, please check that the details below are correct."
+msgstr "באפשרות Empathy לגלות ולנהל שיחות עם אנשים המחוברים לאותה הרשת כמוך. אם ברצונך להשתמש בתכונה זו, נא לבדוק שהפרטים שלהלן נכונים."
+
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:98
+msgid "People nearby"
+msgstr "אנשים בקרבתי"
+
+#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:113
+msgid "You can change these details later or disable this feature by choosing <span style=\"italic\">Edit → Accounts</span> in the Contact List."
+msgstr "באפשרותך לשנות פרטים אלה מאוחר יותר או לנטרל תכונה זו על ידי בחירה ב<span style=\"italic\">עריכה ← חשבונות</span> ברשימת אנשי הקשר."
+
+#: ../libempathy-gtk/empathy-log-window.c:622
 msgid "History"
 msgstr "היסטוריה"
 
-#: ../libempathy-gtk/empathy-log-window.c:671
+#: ../libempathy-gtk/empathy-log-window.c:677
 msgid "Show"
 msgstr "הצגה"
 
-#: ../libempathy-gtk/empathy-log-window.c:693
+#: ../libempathy-gtk/empathy-log-window.c:699
 msgid "Search"
 msgstr "חיפוש"
 
-#: ../libempathy-gtk/empathy-log-window.c:1144
+#: ../libempathy-gtk/empathy-log-window.c:1150
 #, c-format
 msgid "Chat in %s"
 msgstr "שיחה תחת %s"
 
-#: ../libempathy-gtk/empathy-log-window.c:1146
+#: ../libempathy-gtk/empathy-log-window.c:1152
 #, c-format
 msgid "Chat with %s"
 msgstr "שיחה עם %s"
 
-#: ../libempathy-gtk/empathy-log-window.c:1196
-#: ../libempathy-gtk/empathy-log-window.c:1340
+#: ../libempathy-gtk/empathy-log-window.c:1202
+#: ../libempathy-gtk/empathy-log-window.c:1346
 msgctxt "A date with the time"
 msgid "%A, %e %B %Y %X"
 msgstr "%A %d ב%B %Y %X"
 
 #. Translators: this is an emote: '* Danielle waves'
-#: ../libempathy-gtk/empathy-log-window.c:1283
+#: ../libempathy-gtk/empathy-log-window.c:1289
 #, c-format
 msgid "<i>* %s %s</i>"
 msgstr "* %s %s"
 
 #. Translators: this is a message: 'Danielle: hello'
 #. * The string in bold is the sender's name
-#: ../libempathy-gtk/empathy-log-window.c:1289
+#: ../libempathy-gtk/empathy-log-window.c:1295
 #, c-format
 msgid "<b>%s:</b> %s"
 msgstr "<b>%s:</b> %s"
 
-#: ../libempathy-gtk/empathy-log-window.c:1364
+#: ../libempathy-gtk/empathy-log-window.c:1370
 #, c-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "שנייה אחת"
 msgstr[1] "%s שניות"
 
-#: ../libempathy-gtk/empathy-log-window.c:1371
+#: ../libempathy-gtk/empathy-log-window.c:1377
 #, c-format
 msgid "%s minute"
 msgid_plural "%s minutes"
 msgstr[0] "דקה אחת"
 msgstr[1] "%s דקות"
 
-#: ../libempathy-gtk/empathy-log-window.c:1379
+#: ../libempathy-gtk/empathy-log-window.c:1385
 #, c-format
 msgid "Call took %s, ended at %s"
 msgstr "השיחה ארכה %s, הסתיימה ב־%s"
 
-#: ../libempathy-gtk/empathy-log-window.c:1710
+#: ../libempathy-gtk/empathy-log-window.c:1716
 msgid "Today"
 msgstr "היום"
 
-#: ../libempathy-gtk/empathy-log-window.c:1714
+#: ../libempathy-gtk/empathy-log-window.c:1720
 msgid "Yesterday"
 msgstr "אתמול"
 
 #. Translators: A date such as '23 May 2010' (strftime format)
-#: ../libempathy-gtk/empathy-log-window.c:1729
+#: ../libempathy-gtk/empathy-log-window.c:1735
 msgid "%e %B %Y"
 msgstr "ה־%e ב%B %Y"
 
-#: ../libempathy-gtk/empathy-log-window.c:1833
-#: ../libempathy-gtk/empathy-log-window.c:3456
+#: ../libempathy-gtk/empathy-log-window.c:1839
+#: ../libempathy-gtk/empathy-log-window.c:3462
 msgid "Anytime"
 msgstr "כל זמן שהוא"
 
-#: ../libempathy-gtk/empathy-log-window.c:1932
-#: ../libempathy-gtk/empathy-log-window.c:2391
+#: ../libempathy-gtk/empathy-log-window.c:1938
+#: ../libempathy-gtk/empathy-log-window.c:2397
 msgid "Anyone"
 msgstr "כל אחד"
 
-#: ../libempathy-gtk/empathy-log-window.c:2704
+#: ../libempathy-gtk/empathy-log-window.c:2710
 msgid "Who"
 msgstr "מי"
 
-#: ../libempathy-gtk/empathy-log-window.c:2913
+#: ../libempathy-gtk/empathy-log-window.c:2919
 msgid "When"
 msgstr "מתי"
 
-#: ../libempathy-gtk/empathy-log-window.c:3031
+#: ../libempathy-gtk/empathy-log-window.c:3037
 msgid "Anything"
 msgstr "כל דבר"
 
-#: ../libempathy-gtk/empathy-log-window.c:3033
+#: ../libempathy-gtk/empathy-log-window.c:3039
 msgid "Text chats"
 msgstr "מלל הצ׳אטים"
 
-#: ../libempathy-gtk/empathy-log-window.c:3034
+#: ../libempathy-gtk/empathy-log-window.c:3040
 #: ../src/empathy-preferences.ui.h:29
 msgid "Calls"
 msgstr "שיחות"
 
-#: ../libempathy-gtk/empathy-log-window.c:3038
+#: ../libempathy-gtk/empathy-log-window.c:3044
 msgid "Incoming calls"
 msgstr "שיחות נכנסות"
 
-#: ../libempathy-gtk/empathy-log-window.c:3039
+#: ../libempathy-gtk/empathy-log-window.c:3045
 msgid "Outgoing calls"
 msgstr "שיחות יוצאות"
 
-#: ../libempathy-gtk/empathy-log-window.c:3040
+#: ../libempathy-gtk/empathy-log-window.c:3046
 msgid "Missed calls"
 msgstr "שיחות שלא נענו"
 
-#: ../libempathy-gtk/empathy-log-window.c:3060
+#: ../libempathy-gtk/empathy-log-window.c:3066
 msgid "What"
 msgstr "מה"
 
-#: ../libempathy-gtk/empathy-log-window.c:3749
+#: ../libempathy-gtk/empathy-log-window.c:3755
 msgid "Are you sure you want to delete all logs of previous conversations?"
 msgstr "האם אכן ברצונך למחוק את כל היומנים של הדיונים האחרונים שלך?"
 
-#: ../libempathy-gtk/empathy-log-window.c:3753
+#: ../libempathy-gtk/empathy-log-window.c:3759
 msgid "Clear All"
 msgstr "מחיקת הכול"
 
-#: ../libempathy-gtk/empathy-log-window.c:3760
+#: ../libempathy-gtk/empathy-log-window.c:3766
 msgid "Delete from:"
 msgstr "מחיקה עד מ־:"
 
@@ -2366,6 +2387,34 @@ msgstr "עמוד 2"
 #: ../libempathy-gtk/empathy-log-window.ui.h:9
 msgid "<span size=\"x-large\">Loading...</span>"
 msgstr "<span size=\"x-large\">בטעינה...</span>"
+
+#: ../libempathy-gtk/empathy-new-account-dialog.c:129
+msgid "What kind of chat account do you have?"
+msgstr "אילו חשבונות יש לך?"
+
+#: ../libempathy-gtk/empathy-new-account-dialog.c:151
+msgid "Adding new account"
+msgstr "נוסף חשבון חדש"
+
+#: ../libempathy-gtk/empathy-new-call-dialog.c:199
+#: ../libempathy-gtk/empathy-new-message-dialog.c:289
+msgid "Enter a contact identifier or phone number:"
+msgstr "יש להזין מזהה לאיש הקשר או מספר טלפון:"
+
+#. add video button
+#: ../libempathy-gtk/empathy-new-call-dialog.c:222
+msgid "_Video Call"
+msgstr "שיֹחת _וידאו"
+
+#. add audio button
+#: ../libempathy-gtk/empathy-new-call-dialog.c:232
+msgid "_Audio Call"
+msgstr "ֹשיחה _קולית"
+
+#. Tweak the dialog
+#: ../libempathy-gtk/empathy-new-call-dialog.c:242
+msgid "New Call"
+msgstr "שיחה חדשה"
 
 #: ../libempathy-gtk/empathy-new-message-dialog.c:82
 msgid "The contact is offline"
@@ -2411,45 +2460,10 @@ msgstr "ההרשאה נדחתה"
 msgid "There was an error starting the conversation"
 msgstr "אירעה שגיאה בעת התחלת הדיון"
 
-#: ../libempathy-gtk/empathy-new-message-dialog.c:289
-#: ../libempathy-gtk/empathy-new-call-dialog.c:199
-msgid "Enter a contact identifier or phone number:"
-msgstr "יש להזין מזהה לאיש הקשר או מספר טלפון:"
-
 #. Tweak the dialog
 #: ../libempathy-gtk/empathy-new-message-dialog.c:332
 msgid "New Conversation"
 msgstr "שיחה חדשה"
-
-#. add video button
-#: ../libempathy-gtk/empathy-new-call-dialog.c:222
-msgid "_Video Call"
-msgstr "שיֹחת _וידאו"
-
-#. add audio button
-#: ../libempathy-gtk/empathy-new-call-dialog.c:232
-msgid "_Audio Call"
-msgstr "ֹשיחה _קולית"
-
-#. Tweak the dialog
-#: ../libempathy-gtk/empathy-new-call-dialog.c:242
-msgid "New Call"
-msgstr "שיחה חדשה"
-
-#: ../libempathy-gtk/empathy-bad-password-dialog.c:130
-#, c-format
-msgid "Authentication failed for account <b>%s</b>"
-msgstr "האימות עבור החשבון <b>%s</b> נכשל"
-
-#: ../libempathy-gtk/empathy-base-password-dialog.c:224
-#: ../libempathy-gtk/empathy-password-dialog.c:134
-#, c-format
-msgid ""
-"Enter your password for account\n"
-"<b>%s</b>"
-msgstr ""
-"נא להזין את הססמה לחשבון\n"
-"<b>%s</b>"
 
 #. COL_STATUS_TEXT
 #. COL_STATE_ICON_NAME
@@ -2502,6 +2516,10 @@ msgstr "הודעות מותאמות אישית…"
 #, c-format
 msgid "New %s account"
 msgstr "חשבון %s חדש"
+
+#: ../libempathy-gtk/empathy-search-bar.c:243
+msgid "_Match case"
+msgstr "התאמת _רישיות"
 
 #: ../libempathy-gtk/empathy-search-bar.ui.h:1
 msgid "Find:"
@@ -2566,6 +2584,25 @@ msgstr "שיחה קולית הסתיימה"
 #: ../libempathy-gtk/empathy-status-preset-dialog.c:296
 msgid "Edit Custom Messages"
 msgstr "עריכת הודעה מותאמת"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:234
+msgid "Subscription Request"
+msgstr "בקשת הצטרפות"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:240
+#: ../src/empathy-event-manager.c:1114
+#, c-format
+msgid "%s would like permission to see when you are online"
+msgstr "%s רוצה הרשאות לצפייה מתי המשתמש שלך מחובר"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:281
+#: ../src/empathy-event-manager.c:731
+msgid "_Decline"
+msgstr "_סירוב"
+
+#: ../libempathy-gtk/empathy-subscription-dialog.c:282
+msgid "_Accept"
+msgstr "_קבלה"
 
 #: ../libempathy-gtk/empathy-theme-adium.c:1126
 #, c-format
@@ -2671,6 +2708,16 @@ msgstr "נדרשים %s של מקום פנוי כדי לשמור קובץ זה, 
 #, c-format
 msgid "Incoming file from %s"
 msgstr "קובץ נכנס מ־%s"
+
+#. Copy Link Address menu item
+#: ../libempathy-gtk/empathy-webkit-utils.c:278
+msgid "_Copy Link Address"
+msgstr "העתקת _מיקום הקישור"
+
+#. Open Link menu item
+#: ../libempathy-gtk/empathy-webkit-utils.c:285
+msgid "_Open Link"
+msgstr "_פתיחת קישור"
 
 #: ../libempathy-gtk/totem-subtitle-encoding.c:158
 msgid "Current Locale"
@@ -2839,73 +2886,13 @@ msgstr "מערבי"
 msgid "Vietnamese"
 msgstr "וייטנאמית"
 
-#. Copy Link Address menu item
-#: ../libempathy-gtk/empathy-webkit-utils.c:278
-msgid "_Copy Link Address"
-msgstr "העתקת _מיקום הקישור"
-
-#. Open Link menu item
-#: ../libempathy-gtk/empathy-webkit-utils.c:285
-msgid "_Open Link"
-msgstr "_פתיחת קישור"
-
-#: ../libempathy-gtk/empathy-calendar-button.c:66
-msgid "Select..."
-msgstr "בחירה..."
-
-#: ../libempathy-gtk/empathy-calendar-button.c:154
-msgid "_Select"
-msgstr "_בחירה"
-
-#: ../libempathy-gtk/empathy-subscription-dialog.c:241
-#: ../src/empathy-event-manager.c:1114
-#, c-format
-msgid "%s would like permission to see when you are online"
-msgstr "%s רוצה הרשאות לצפייה מתי המשתמש שלך מחובר"
-
-#: ../libempathy-gtk/empathy-subscription-dialog.c:282
-#: ../src/empathy-event-manager.c:731
-msgid "_Decline"
-msgstr "_סירוב"
-
-#: ../libempathy-gtk/empathy-subscription-dialog.c:283
-msgid "_Accept"
-msgstr "_קבלה"
-
-#: ../nautilus-sendto-plugin/empathy-nautilus-sendto.c:225
+#: ../nautilus-sendto-plugin/empathy-nautilus-sendto.c:231
 msgid "No error message"
 msgstr "אין הודעת שגיאה"
 
-#: ../nautilus-sendto-plugin/empathy-nautilus-sendto.c:298
+#: ../nautilus-sendto-plugin/empathy-nautilus-sendto.c:304
 msgid "Instant Message (Empathy)"
 msgstr "הודעה מיידית (Empathy)"
-
-#: ../src/empathy.c:432
-msgid "Don't connect on startup"
-msgstr "לא להתחבר בהפעלה"
-
-#: ../src/empathy.c:436
-msgid "Don't display the contact list or any other dialogs on startup"
-msgstr "אין להציג את רשימת אנשי הקשר או כל דו־שיח אחר בהפעלה"
-
-#: ../src/empathy.c:452
-msgid "- Empathy IM Client"
-msgstr "- לקוח המסרים המידיים Empathy"
-
-#: ../src/empathy.c:628
-msgid "Error contacting the Account Manager"
-msgstr "שגיאה ביצירת קשר עם מנהל החשבונות"
-
-#: ../src/empathy.c:630
-#, c-format
-msgid ""
-"There was an error while trying to connect to the Telepathy Account Manager. The error was:\n"
-"\n"
-"%s"
-msgstr ""
-"אירעה שגיאה בעת ניסיון ההתחברות למנהל החשבונות של Telepathy. השגיאה הייתה:\n"
-"\n"
-"%s"
 
 #: ../src/empathy-about-dialog.c:81
 msgid "Empathy is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
@@ -2931,6 +2918,30 @@ msgstr ""
 "\n"
 "פרוייקט תרגום GNOME לעברית:\n"
 "‏http://gnome-il.berlios.de"
+
+#: ../src/empathy-accounts.c:184
+msgid "Don't display any dialogs; do any work (eg, importing) and exit"
+msgstr "אין להציג דו־שיח כלשהו; תתבצע פעולה כלשהי (לדוגמה יבוא) ולאחריה התכנית תסגר"
+
+#: ../src/empathy-accounts.c:188
+msgid "Don't display any dialogs unless there are only \"People Nearby\" accounts"
+msgstr "אין להציג תיבות דו־שיח כלשהן אלא אם כן ישנן חשבונות \"אנשים בקרבתי\""
+
+#: ../src/empathy-accounts.c:192
+msgid "Initially select given account (eg, gabble/jabber/foo_40example_2eorg0)"
+msgstr "בחירת החשבון הנתון כבר בהתחלה (לדוגמה gabble/jabber/foo_40example_2eorg0)"
+
+#: ../src/empathy-accounts.c:194
+msgid "<account-id>"
+msgstr "<account-id>"
+
+#: ../src/empathy-accounts.c:199
+msgid "- Empathy Accounts"
+msgstr "- חשבונות Empathy"
+
+#: ../src/empathy-accounts.c:242
+msgid "Empathy Accounts"
+msgstr "חשבונות Empathy"
 
 #. The primary text of the dialog shown to the user when he is about to lose
 #. * unsaved changes
@@ -3059,6 +3070,200 @@ msgstr "- לקוח האימות של Empathy"
 msgid "Empathy authentication client"
 msgstr "לקוח האימות של Empathy"
 
+#: ../src/empathy.c:432
+msgid "Don't connect on startup"
+msgstr "לא להתחבר בהפעלה"
+
+#: ../src/empathy.c:436
+msgid "Don't display the contact list or any other dialogs on startup"
+msgstr "אין להציג את רשימת אנשי הקשר או כל דו־שיח אחר בהפעלה"
+
+#: ../src/empathy.c:452
+msgid "- Empathy IM Client"
+msgstr "- לקוח המסרים המידיים Empathy"
+
+#: ../src/empathy.c:628
+msgid "Error contacting the Account Manager"
+msgstr "שגיאה ביצירת קשר עם מנהל החשבונות"
+
+#: ../src/empathy.c:630
+#, c-format
+msgid ""
+"There was an error while trying to connect to the Telepathy Account Manager. The error was:\n"
+"\n"
+"%s"
+msgstr ""
+"אירעה שגיאה בעת ניסיון ההתחברות למנהל החשבונות של Telepathy. השגיאה הייתה:\n"
+"\n"
+"%s"
+
+#: ../src/empathy-call.c:195
+msgid "- Empathy Audio/Video Client"
+msgstr "- לקוח השמע/הווידאו Empathy"
+
+#: ../src/empathy-call.c:219
+msgid "Empathy Audio/Video Client"
+msgstr "לקוח השמע/הווידאו Empathy"
+
+#: ../src/empathy-call-observer.c:119
+#, c-format
+msgid "%s just tried to call you, but you were in another call."
+msgstr "התקבלה בקשת שיחה מאת %s, אך באותו הזמן כבר היית בשיחה אחרת."
+
+#. Translators: this is an "Info" label. It should be as short
+#. * as possible.
+#: ../src/empathy-call-window.c:1125
+#: ../src/empathy-call-window.c:1141
+msgid "i"
+msgstr "i"
+
+#: ../src/empathy-call-window.c:1485
+#: ../src/empathy-event-manager.c:510
+msgid "Incoming call"
+msgstr "שיחה נכנסת"
+
+#: ../src/empathy-call-window.c:1491
+#: ../src/empathy-event-manager.c:915
+#, c-format
+msgid "Incoming video call from %s"
+msgstr "שיחת וידאו נכנסת מ־%s"
+
+#: ../src/empathy-call-window.c:1491
+#: ../src/empathy-event-manager.c:518
+#: ../src/empathy-event-manager.c:915
+#, c-format
+msgid "Incoming call from %s"
+msgstr "שיחה נכנסת מ־%s"
+
+#: ../src/empathy-call-window.c:1495
+#: ../src/empathy-notifications-approver.c:197
+msgid "Reject"
+msgstr "דחייה"
+
+#: ../src/empathy-call-window.c:1496
+#: ../src/empathy-notifications-approver.c:202
+#: ../src/empathy-notifications-approver.c:207
+msgid "Answer"
+msgstr "מענה"
+
+#. translators: Call is a noun and %s is the contact name. This string
+#. * is used in the window title
+#: ../src/empathy-call-window.c:1862
+#, c-format
+msgid "Call with %s"
+msgstr "שיחה עם %s"
+
+#: ../src/empathy-call-window.c:2114
+msgid "The IP address as seen by the machine"
+msgstr "כתובת ה־IP כפי שנראית על ידי המחשב"
+
+#: ../src/empathy-call-window.c:2116
+msgid "The IP address as seen by a server on the Internet"
+msgstr "כתובת ה־IP כפי שנראית על ידי שרת באינטרנט"
+
+#: ../src/empathy-call-window.c:2118
+msgid "The IP address of the peer as seen by the other side"
+msgstr "כתובת ה־IP כדי שנראית על ידי עמית מהצד השני"
+
+#: ../src/empathy-call-window.c:2120
+msgid "The IP address of a relay server"
+msgstr "כתובת ה־IP של שרת הממסר"
+
+#: ../src/empathy-call-window.c:2122
+msgid "The IP address of the multicast group"
+msgstr "כתובת ה־IP של קבוצת התשדורת"
+
+#: ../src/empathy-call-window.c:2523
+#: ../src/empathy-call-window.c:2524
+#: ../src/empathy-call-window.c:2525
+#: ../src/empathy-call-window.c:2526
+#: ../src/empathy-call-window.ui.h:26
+msgid "Unknown"
+msgstr "לא ידוע"
+
+#: ../src/empathy-call-window.c:2869
+msgid "On hold"
+msgstr "בהמתנה"
+
+#: ../src/empathy-call-window.c:2871
+msgid "Mute"
+msgstr "השתק"
+
+#: ../src/empathy-call-window.c:2873
+msgid "Duration"
+msgstr "משך"
+
+#. Translators: 'status - minutes:seconds' the caller has been connected
+#: ../src/empathy-call-window.c:2876
+#, c-format
+msgid "%s — %d:%02dm"
+msgstr "%s — %d:%02d דק׳"
+
+#: ../src/empathy-call-window.c:2972
+msgid "Technical Details"
+msgstr "פרטים טכניים"
+
+#: ../src/empathy-call-window.c:3011
+#, c-format
+msgid "%s's software does not understand any of the audio formats supported by your computer"
+msgstr "התכנה של %s אינה מבינה את מבני השמע הנתמכים על ידי המחשב שלך"
+
+#: ../src/empathy-call-window.c:3016
+#, c-format
+msgid "%s's software does not understand any of the video formats supported by your computer"
+msgstr "התכנה של %s אינה מבינה את מבני הווידאו הנתמכים על ידי המחשב שלך"
+
+#: ../src/empathy-call-window.c:3022
+#, c-format
+msgid "Can't establish a connection to %s. One of you might be on a network that does not allow direct connections."
+msgstr "לא ניתן להפעיל את החיבור אל %s. כנראה אחד ממשתתפי השיחה מחובר לרשת שאינה מאפשרת חיבורים ישירים."
+
+#: ../src/empathy-call-window.c:3028
+msgid "There was a failure on the network"
+msgstr "אירעה שגיאה ברשת"
+
+#: ../src/empathy-call-window.c:3032
+msgid "The audio formats necessary for this call are not installed on your computer"
+msgstr "מבני השמע הדרושים לקיום שיחה זו אינם מותקנים במחשבך"
+
+#: ../src/empathy-call-window.c:3035
+msgid "The video formats necessary for this call are not installed on your computer"
+msgstr "מבני הווידאו הדרושים לקיום שיחה זו אינם מותקנים במחשבך"
+
+#: ../src/empathy-call-window.c:3047
+#, c-format
+msgid "Something unexpected happened in a Telepathy component. Please <a href=\"%s\">report this bug</a> and attach logs gathered from the 'Debug' window in the Help menu."
+msgstr "משהו בלתי צפוי ארע ברכיב של Telepathy. נא <a href=\"%s\">לדווח על באג זה</a> ולהוסיף דוחות שנאספו מחלון 'ניפוי השגיאות' שבתפריט העזרה."
+
+#: ../src/empathy-call-window.c:3056
+msgid "There was a failure in the call engine"
+msgstr "אירעה שגיאה במנוע הקריאה"
+
+#: ../src/empathy-call-window.c:3059
+msgid "The end of the stream was reached"
+msgstr "התזרים הגיע לסיומו"
+
+#: ../src/empathy-call-window.c:3099
+msgid "Can't establish audio stream"
+msgstr "לא ניתן לקיים תזרים שמע"
+
+#: ../src/empathy-call-window.c:3109
+msgid "Can't establish video stream"
+msgstr "לא ניתן לקיים תזרים וידאו"
+
+#: ../src/empathy-call-window.c:3146
+#, c-format
+msgid "Your current balance is %s."
+msgstr "המאזן הנוכחי שלך הוא %s."
+
+#: ../src/empathy-call-window.c:3150
+msgid "Sorry, you don’t have enough credit for that call."
+msgstr "אין לך מספיק אשראי כדי לבצע שיחה זו."
+
+#: ../src/empathy-call-window.c:3152
+msgid "Top Up"
+msgstr "Top Up"
+
 #: ../src/empathy-call-window.ui.h:1
 msgid "_Call"
 msgstr "_שיחה"
@@ -3149,14 +3354,6 @@ msgstr "החלפה בין העברה ואי העברה של שמע"
 msgid "Encoding Codec:"
 msgstr "מקודד ההצפנה:"
 
-#: ../src/empathy-call-window.ui.h:26
-#: ../src/empathy-call-window.c:2523
-#: ../src/empathy-call-window.c:2524
-#: ../src/empathy-call-window.c:2525
-#: ../src/empathy-call-window.c:2526
-msgid "Unknown"
-msgstr "לא ידוע"
-
 #: ../src/empathy-call-window.ui.h:27
 msgid "Decoding Codec:"
 msgstr "מקודד הפענוח:"
@@ -3174,23 +3371,43 @@ msgstr "מועמד מקומי:"
 msgid "Audio"
 msgstr "שמע"
 
-#: ../src/empathy-chat-window.c:288
+#: ../src/empathy-chat.c:106
+msgid "- Empathy Chat Client"
+msgstr "- לקוח הצ׳אטים Empathy"
+
+#: ../src/empathy-chatrooms-window.c:251
+msgid "Name"
+msgstr "שם"
+
+#: ../src/empathy-chatrooms-window.c:269
+msgid "Room"
+msgstr "חדר"
+
+#: ../src/empathy-chatrooms-window.c:277
+msgid "Auto-Connect"
+msgstr "חיבור אוטומטי"
+
+#: ../src/empathy-chatrooms-window.ui.h:1
+msgid "Manage Favorite Rooms"
+msgstr "ניהול חדרי שיחה מועדפים"
+
+#: ../src/empathy-chat-window.c:282
 msgid "Close this window?"
 msgstr "האם לסגור חלון זה?"
 
-#: ../src/empathy-chat-window.c:293
+#: ../src/empathy-chat-window.c:288
 #, c-format
 msgid "Closing this window will leave %s. You will not receive any further messages until you rejoin it."
 msgstr "סגירת חלון זה תגרום לעזיבת %s. לא יתקבלו עוד הודעות על להצטרפותך אליו מחדש."
 
-#: ../src/empathy-chat-window.c:304
+#: ../src/empathy-chat-window.c:301
 #, c-format
 msgid "Closing this window will leave a chat room. You will not receive any further messages until you rejoin it."
 msgid_plural "Closing this window will leave %u chat rooms. You will not receive any further messages until you rejoin them."
 msgstr[0] "סגירת חלון זה תוביל לעזיבת חדר הצ׳אט. לא יתקבלו עוד הודעות עד להתחברותך מחדש אליו."
 msgstr[1] "סגירת חלון זה תוביל לעזיבת %u חדרי הצ׳אט. לא יתקבלו עוד הודעות עד להתחברותך מחדש אליהם."
 
-#: ../src/empathy-chat-window.c:313
+#: ../src/empathy-chat-window.c:312
 #, c-format
 msgid "Leave %s?"
 msgstr "האם לעזוב את %s?"
@@ -3207,47 +3424,47 @@ msgstr "סגירת החלון"
 msgid "Leave room"
 msgstr "עזיבת החדר"
 
-#: ../src/empathy-chat-window.c:662
-#: ../src/empathy-chat-window.c:682
+#: ../src/empathy-chat-window.c:667
+#: ../src/empathy-chat-window.c:690
 #, c-format
 msgid "%s (%d unread)"
 msgid_plural "%s (%d unread)"
 msgstr[0] "‏%s (אחת שלא נקראה)"
 msgstr[1] "‏%s ‏(%d שלא נקראו)"
 
-#: ../src/empathy-chat-window.c:674
+#: ../src/empathy-chat-window.c:682
 #, c-format
 msgid "%s (and %u other)"
 msgid_plural "%s (and %u others)"
 msgstr[0] "‏%s (ואחד נוסף)"
 msgstr[1] "‏%s (ו־%u נוספים)"
 
-#: ../src/empathy-chat-window.c:690
+#: ../src/empathy-chat-window.c:698
 #, c-format
 msgid "%s (%d unread from others)"
 msgid_plural "%s (%d unread from others)"
 msgstr[0] "‏%s (אחת שלא נקראה מאחרים)"
 msgstr[1] "‏%s (%d שלא נקראו מאחרים)"
 
-#: ../src/empathy-chat-window.c:699
+#: ../src/empathy-chat-window.c:707
 #, c-format
 msgid "%s (%d unread from all)"
 msgid_plural "%s (%d unread from all)"
 msgstr[0] "‏%s (אחת שלא נקראה מכולם)"
 msgstr[1] "‏%s (%d שלא נקראו מכולם)"
 
-#: ../src/empathy-chat-window.c:914
+#: ../src/empathy-chat-window.c:944
 msgid "SMS:"
 msgstr "SMS:"
 
-#: ../src/empathy-chat-window.c:924
+#: ../src/empathy-chat-window.c:952
 #, c-format
 msgid "Sending %d message"
 msgid_plural "Sending %d messages"
 msgstr[0] "נשלחת הודעה אחת"
 msgstr[1] "נשלחות %d הודעות"
 
-#: ../src/empathy-chat-window.c:946
+#: ../src/empathy-chat-window.c:972
 msgid "Typing a message."
 msgstr "הודעה מוקלדת."
 
@@ -3312,30 +3529,98 @@ msgstr "הזזת הלשונית _ימינה"
 msgid "_Detach Tab"
 msgstr "_ניתוק הלשונית"
 
-#: ../src/empathy-chatrooms-window.c:251
-msgid "Name"
-msgstr "שם"
+#: ../src/empathy-debugger.c:69
+msgid "Show a particular service"
+msgstr "הצגת שירות מסוים"
 
-#: ../src/empathy-chatrooms-window.c:269
-msgid "Room"
-msgstr "חדר"
+#: ../src/empathy-debugger.c:74
+msgid "- Empathy Debugger"
+msgstr "- מנפה השגיאות של Empathy"
 
-#: ../src/empathy-chatrooms-window.c:277
-msgid "Auto-Connect"
-msgstr "חיבור אוטומטי"
+#: ../src/empathy-debugger.c:113
+msgid "Empathy Debugger"
+msgstr "מנפה השגיאות של Empathy"
 
-#: ../src/empathy-chatrooms-window.ui.h:1
-msgid "Manage Favorite Rooms"
-msgstr "ניהול חדרי שיחה מועדפים"
+#: ../src/empathy-debug-window.c:1603
+msgid "Save"
+msgstr "שמירה"
+
+#: ../src/empathy-debug-window.c:1663
+msgid "Pastebin link"
+msgstr "קישור ל־Pastebin"
+
+#: ../src/empathy-debug-window.c:1672
+msgid "Pastebin response"
+msgstr "תגובה מ־Pastebin"
+
+#: ../src/empathy-debug-window.c:1679
+msgid "Data too large for a single paste. Please save logs to file."
+msgstr "הנתונים גדולים מדי להדבקה אחת. נא לשמור את היומנים לקובץ."
+
+#: ../src/empathy-debug-window.c:1860
+msgid "Debug Window"
+msgstr "חלון ניפוי שגיאות"
+
+#: ../src/empathy-debug-window.c:1920
+msgid "Send to pastebin"
+msgstr "שליחה ל־Pastebin"
+
+#: ../src/empathy-debug-window.c:1964
+msgid "Pause"
+msgstr "השהייה"
+
+#: ../src/empathy-debug-window.c:1976
+msgid "Level "
+msgstr "רמה"
+
+#: ../src/empathy-debug-window.c:1995
+msgid "Debug"
+msgstr "ניפוי שגיאות"
+
+#: ../src/empathy-debug-window.c:2000
+msgid "Info"
+msgstr "מידע"
+
+#: ../src/empathy-debug-window.c:2005
+#: ../src/empathy-debug-window.c:2054
+msgid "Message"
+msgstr "הודעה"
+
+#: ../src/empathy-debug-window.c:2010
+msgid "Warning"
+msgstr "אזהרה"
+
+#: ../src/empathy-debug-window.c:2015
+msgid "Critical"
+msgstr "קריטי"
+
+#: ../src/empathy-debug-window.c:2020
+msgid "Error"
+msgstr "שגיאה"
+
+#: ../src/empathy-debug-window.c:2039
+msgid "Time"
+msgstr "זמן"
+
+#: ../src/empathy-debug-window.c:2042
+msgid "Domain"
+msgstr "תחום"
+
+#: ../src/empathy-debug-window.c:2045
+msgid "Category"
+msgstr "קטגוריה"
+
+#: ../src/empathy-debug-window.c:2048
+msgid "Level"
+msgstr "רמה"
+
+#: ../src/empathy-debug-window.c:2077
+msgid "The selected connection manager does not support the remote debugging extension."
+msgstr "מנהל החיבורים שנבחר אינו תומך בהרחבת ניפוי שגיאות מרחוק."
 
 #: ../src/empathy-event-manager.c:510
 msgid "Incoming video call"
 msgstr "שיחה קולית נכנסת"
-
-#: ../src/empathy-event-manager.c:510
-#: ../src/empathy-call-window.c:1485
-msgid "Incoming call"
-msgstr "שיחה נכנסת"
 
 #: ../src/empathy-event-manager.c:514
 #, c-format
@@ -3346,13 +3631,6 @@ msgstr "‏%s מתקשר אליך עם וידאו, האם ברצונך לענו�
 #, c-format
 msgid "%s is calling you. Do you want to answer?"
 msgstr "‏%s מתקשר אליך, האם ברצונך לענות?"
-
-#: ../src/empathy-event-manager.c:518
-#: ../src/empathy-event-manager.c:915
-#: ../src/empathy-call-window.c:1491
-#, c-format
-msgid "Incoming call from %s"
-msgstr "שיחה נכנסת מ־%s"
 
 #: ../src/empathy-event-manager.c:543
 msgid "_Reject"
@@ -3395,19 +3673,13 @@ msgstr "‏%s הזמין/ה אותך להצטרף אל %s"
 msgid "You have been invited to join %s"
 msgstr "הוזמנת להצטרף אל %s"
 
-#: ../src/empathy-event-manager.c:915
-#: ../src/empathy-call-window.c:1491
-#, c-format
-msgid "Incoming video call from %s"
-msgstr "שיחת וידאו נכנסת מ־%s"
-
 #: ../src/empathy-event-manager.c:947
 #, c-format
 msgid "Incoming file transfer from %s"
 msgstr "העברת קבצים נכנסת מ־%s"
 
 #: ../src/empathy-event-manager.c:983
-#: ../src/empathy-roster-window.c:223
+#: ../src/empathy-roster-window.c:224
 msgid "Password required"
 msgstr "נדרשת ססמה"
 
@@ -3559,131 +3831,18 @@ msgstr "פרוטוקול"
 msgid "Source"
 msgstr "מקור"
 
-#: ../src/empathy-roster-window.c:240
-msgid "Provide Password"
-msgstr "הזנת ססמה"
+#: ../src/empathy-invite-participant-dialog.c:201
+#: ../src/empathy-invite-participant-dialog.c:229
+msgid "Invite Participant"
+msgstr "הזמנת משתתפים"
 
-#: ../src/empathy-roster-window.c:246
-msgid "Disconnect"
-msgstr "ניתוק"
+#: ../src/empathy-invite-participant-dialog.c:202
+msgid "Choose a contact to invite into the conversation:"
+msgstr "נא לבחור אנשי קשר להזמנה לדיון:"
 
-#: ../src/empathy-roster-window.c:417
-msgid "You need to setup an account to see contacts here."
-msgstr "עליך להגדיר חשבון כדי שיופיעו כאן אנשי קשר."
-
-#: ../src/empathy-roster-window.c:504
-#, c-format
-msgid "Sorry, %s accounts can’t be used until your %s software is updated."
-msgstr "לא ניתן להשתמש בחשבונות %s עד שהתכנה %s תעודכן, עמך הסליחה."
-
-#: ../src/empathy-roster-window.c:570
-msgid "Update software..."
-msgstr "עדכון התכנה..."
-
-#: ../src/empathy-roster-window.c:576
-#: ../src/empathy-roster-window.c:693
-msgid "Close"
-msgstr "סגירה"
-
-#: ../src/empathy-roster-window.c:681
-msgid "Reconnect"
-msgstr "התחברות מחדש"
-
-#: ../src/empathy-roster-window.c:687
-msgid "Edit Account"
-msgstr "עריכת חשבון"
-
-#: ../src/empathy-roster-window.c:867
-msgid "Top up account"
-msgstr "חשבון Top up"
-
-#: ../src/empathy-roster-window.c:1529
-msgid "You need to enable one of your accounts to see contacts here."
-msgstr "עליך להפעיל את אחד החשבונות שלך כדי שיופיעו כאן אנשי קשר."
-
-#. translators: argument is an account name
-#: ../src/empathy-roster-window.c:1537
-#, c-format
-msgid "You need to enable %s to see contacts here."
-msgstr "עליך להפעיל את %s כדי שיופיעו כאן אנשי קשר."
-
-#: ../src/empathy-roster-window.c:1901
-msgid "No match found"
-msgstr "לא נמצאה התאמה"
-
-#: ../src/empathy-roster-window.c:2132
-#: ../src/empathy-preferences.ui.h:4
-msgid "Contact List"
-msgstr "רשימת אנשי קשר"
-
-#: ../src/empathy-roster-window.ui.h:1
-msgid "Account settings"
-msgstr "הגדרות החשבון"
-
-#: ../src/empathy-roster-window-menubar.ui.h:1
-msgid "_New Conversation..."
-msgstr "_שיחה חדשה..."
-
-#: ../src/empathy-roster-window-menubar.ui.h:2
-msgid "New _Call..."
-msgstr "שיחה _חדשה..."
-
-#: ../src/empathy-roster-window-menubar.ui.h:3
-msgid "Contacts"
-msgstr "אנשי קשר"
-
-#: ../src/empathy-roster-window-menubar.ui.h:4
-msgid "_Add Contacts..."
-msgstr "הוספת _אנשי קשר..."
-
-#: ../src/empathy-roster-window-menubar.ui.h:5
-msgid "_Search for Contacts..."
-msgstr "_חיפוש אחר אנשי קשר…"
-
-#: ../src/empathy-roster-window-menubar.ui.h:6
-msgid "_Blocked Contacts"
-msgstr "אנשי קשר _חסומים"
-
-#: ../src/empathy-roster-window-menubar.ui.h:7
-msgid "_Rooms"
-msgstr "_חדרים"
-
-#: ../src/empathy-roster-window-menubar.ui.h:8
-msgid "_Join..."
-msgstr "_הצטרף..."
-
-#: ../src/empathy-roster-window-menubar.ui.h:9
-msgid "Join _Favorites"
-msgstr "_צירוף למועדפים"
-
-#: ../src/empathy-roster-window-menubar.ui.h:10
-msgid "_Manage Favorites"
-msgstr "ניהול המו_עדפים"
-
-#: ../src/empathy-roster-window-menubar.ui.h:12
-msgid "_File Transfers"
-msgstr "העברות _קבצים"
-
-#: ../src/empathy-roster-window-menubar.ui.h:13
-msgid "_Accounts"
-msgstr "_חשבונות"
-
-#: ../src/empathy-roster-window-menubar.ui.h:14
-msgid "P_references"
-msgstr "העד_פות"
-
-#: ../src/empathy-roster-window-menubar.ui.h:15
-msgid "Help"
-msgstr "עזרה"
-
-#: ../src/empathy-roster-window-menubar.ui.h:16
-msgid "About Empathy"
-msgstr "על אודות Empathy"
-
-#: ../src/empathy-roster-window-menubar.ui.h:17
-#: ../src/empathy-status-icon.ui.h:5
-msgid "_Quit"
-msgstr "יצי_אה"
+#: ../src/empathy-invite-participant-dialog.c:225
+msgid "Invite"
+msgstr "הזמנה"
 
 #: ../src/empathy-new-chatroom-dialog.c:194
 msgid "Chat Room"
@@ -3720,7 +3879,7 @@ msgstr "כן"
 msgid "No"
 msgstr "לא"
 
-#: ../src/empathy-new-chatroom-dialog.c:782
+#: ../src/empathy-new-chatroom-dialog.c:784
 msgid "Join Room"
 msgstr "הצטרפות לחדר"
 
@@ -3752,79 +3911,104 @@ msgstr "לא ניתן לטעון את רשימת החדרים"
 msgid "Room List"
 msgstr "רשימת חדרים"
 
-#: ../src/empathy-preferences.c:143
+#: ../src/empathy-notifications-approver.c:188
+msgid "Respond"
+msgstr "תגובה"
+
+#: ../src/empathy-notifications-approver.c:207
+msgid "Answer with video"
+msgstr "מענה עם וידאו"
+
+#: ../src/empathy-notifications-approver.c:215
+#: ../src/empathy-notifications-approver.c:225
+msgid "Decline"
+msgstr "סירוב"
+
+#: ../src/empathy-notifications-approver.c:219
+#: ../src/empathy-notifications-approver.c:230
+msgid "Accept"
+msgstr "אישור"
+
+#. translators: the 'Provide' button is displayed in a notification
+#. * bubble when Empathy is asking for an account password; clicking on it
+#. * brings the password popup.
+#: ../src/empathy-notifications-approver.c:240
+msgid "Provide"
+msgstr "הזנה"
+
+#: ../src/empathy-preferences.c:144
 msgid "Message received"
 msgstr "התקבלה הודעה"
 
-#: ../src/empathy-preferences.c:144
+#: ../src/empathy-preferences.c:145
 msgid "Message sent"
 msgstr "הודעה נשלחה"
 
-#: ../src/empathy-preferences.c:145
+#: ../src/empathy-preferences.c:146
 msgid "New conversation"
 msgstr "שיחה חדשה"
 
-#: ../src/empathy-preferences.c:146
+#: ../src/empathy-preferences.c:147
 msgid "Contact comes online"
 msgstr "איש הקשר מתחבר"
 
-#: ../src/empathy-preferences.c:147
+#: ../src/empathy-preferences.c:148
 msgid "Contact goes offline"
 msgstr "איש קשר מתנתק"
 
-#: ../src/empathy-preferences.c:148
+#: ../src/empathy-preferences.c:149
 msgid "Account connected"
 msgstr "חשבון מחובר"
 
-#: ../src/empathy-preferences.c:149
+#: ../src/empathy-preferences.c:150
 msgid "Account disconnected"
 msgstr "חשבון נותק"
 
-#: ../src/empathy-preferences.c:386
+#: ../src/empathy-preferences.c:387
 msgid "Language"
 msgstr "שפה"
 
 #. translators: Contact name for the chat theme preview
-#: ../src/empathy-preferences.c:635
+#: ../src/empathy-preferences.c:638
 msgid "Juliet"
 msgstr "יוליה"
 
 #. translators: Contact name for the chat theme preview
-#: ../src/empathy-preferences.c:642
+#: ../src/empathy-preferences.c:645
 msgid "Romeo"
 msgstr "רומיאו"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:648
+#: ../src/empathy-preferences.c:651
 msgid "O Romeo, Romeo, wherefore art thou Romeo?"
 msgstr "הו רומיאו, רומיאו, מן אין שבת רומיאו?"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:652
+#: ../src/empathy-preferences.c:655
 msgid "Deny thy father and refuse thy name;"
 msgstr "התכחש לאביך וסרב לשמו;"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:655
+#: ../src/empathy-preferences.c:658
 msgid "Or if thou wilt not, be but sworn my love"
 msgstr "או אם לא תסכים, אשבע לך באהבתי"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:658
+#: ../src/empathy-preferences.c:661
 msgid "And I'll no longer be a Capulet."
 msgstr "ולא אהיה עוד בת קפולט."
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:661
+#: ../src/empathy-preferences.c:664
 msgid "Shall I hear more, or shall I speak at this?"
 msgstr "האם דיברתי די או שמא אוסיף לדבר?"
 
 #. translators: Quote from Romeo & Julier, for chat theme preview
-#: ../src/empathy-preferences.c:664
+#: ../src/empathy-preferences.c:667
 msgid "Juliet has disconnected"
 msgstr "יוליה התנתקה"
 
-#: ../src/empathy-preferences.c:1030
+#: ../src/empathy-preferences.c:1033
 msgid "Preferences"
 msgstr "העדפות"
 
@@ -3835,6 +4019,11 @@ msgstr "הצגת קבוצות"
 #: ../src/empathy-preferences.ui.h:3
 msgid "Show account balances"
 msgstr "הצגת מאזני החשבונות"
+
+#: ../src/empathy-preferences.ui.h:4
+#: ../src/empathy-roster-window.c:2134
+msgid "Contact List"
+msgstr "רשימת אנשי קשר"
 
 #: ../src/empathy-preferences.ui.h:5
 msgid "Start chats in:"
@@ -3981,6 +4170,127 @@ msgstr "הגוון:"
 msgid "Themes"
 msgstr "ערכות נושא"
 
+#: ../src/empathy-roster-window.c:241
+msgid "Provide Password"
+msgstr "הזנת ססמה"
+
+#: ../src/empathy-roster-window.c:247
+msgid "Disconnect"
+msgstr "ניתוק"
+
+#: ../src/empathy-roster-window.c:418
+msgid "You need to setup an account to see contacts here."
+msgstr "עליך להגדיר חשבון כדי שיופיעו כאן אנשי קשר."
+
+#: ../src/empathy-roster-window.c:505
+#, c-format
+msgid "Sorry, %s accounts can’t be used until your %s software is updated."
+msgstr "לא ניתן להשתמש בחשבונות %s עד שהתכנה %s תעודכן, עמך הסליחה."
+
+#: ../src/empathy-roster-window.c:571
+msgid "Update software..."
+msgstr "עדכון התכנה..."
+
+#: ../src/empathy-roster-window.c:577
+#: ../src/empathy-roster-window.c:694
+msgid "Close"
+msgstr "סגירה"
+
+#: ../src/empathy-roster-window.c:682
+msgid "Reconnect"
+msgstr "התחברות מחדש"
+
+#: ../src/empathy-roster-window.c:688
+msgid "Edit Account"
+msgstr "עריכת חשבון"
+
+#: ../src/empathy-roster-window.c:868
+msgid "Top up account"
+msgstr "חשבון Top up"
+
+#: ../src/empathy-roster-window.c:1530
+msgid "You need to enable one of your accounts to see contacts here."
+msgstr "עליך להפעיל את אחד החשבונות שלך כדי שיופיעו כאן אנשי קשר."
+
+#. translators: argument is an account name
+#: ../src/empathy-roster-window.c:1538
+#, c-format
+msgid "You need to enable %s to see contacts here."
+msgstr "עליך להפעיל את %s כדי שיופיעו כאן אנשי קשר."
+
+#: ../src/empathy-roster-window.c:1902
+msgid "No match found"
+msgstr "לא נמצאה התאמה"
+
+#: ../src/empathy-roster-window-menubar.ui.h:1
+msgid "_New Conversation..."
+msgstr "_שיחה חדשה..."
+
+#: ../src/empathy-roster-window-menubar.ui.h:2
+msgid "New _Call..."
+msgstr "שיחה _חדשה..."
+
+#: ../src/empathy-roster-window-menubar.ui.h:3
+msgid "Contacts"
+msgstr "אנשי קשר"
+
+#: ../src/empathy-roster-window-menubar.ui.h:4
+msgid "_Add Contacts..."
+msgstr "הוספת _אנשי קשר..."
+
+#: ../src/empathy-roster-window-menubar.ui.h:5
+msgid "_Search for Contacts..."
+msgstr "_חיפוש אחר אנשי קשר…"
+
+#: ../src/empathy-roster-window-menubar.ui.h:6
+msgid "_Blocked Contacts"
+msgstr "אנשי קשר _חסומים"
+
+#: ../src/empathy-roster-window-menubar.ui.h:7
+msgid "_Rooms"
+msgstr "_חדרים"
+
+#: ../src/empathy-roster-window-menubar.ui.h:8
+msgid "_Join..."
+msgstr "_הצטרף..."
+
+#: ../src/empathy-roster-window-menubar.ui.h:9
+msgid "Join _Favorites"
+msgstr "_צירוף למועדפים"
+
+#: ../src/empathy-roster-window-menubar.ui.h:10
+msgid "_Manage Favorites"
+msgstr "ניהול המו_עדפים"
+
+#: ../src/empathy-roster-window-menubar.ui.h:12
+msgid "_File Transfers"
+msgstr "העברות _קבצים"
+
+#: ../src/empathy-roster-window-menubar.ui.h:13
+msgid "_Accounts"
+msgstr "_חשבונות"
+
+#: ../src/empathy-roster-window-menubar.ui.h:14
+msgid "P_references"
+msgstr "העד_פות"
+
+#: ../src/empathy-roster-window-menubar.ui.h:15
+msgid "Help"
+msgstr "עזרה"
+
+#: ../src/empathy-roster-window-menubar.ui.h:16
+msgid "About Empathy"
+msgstr "על אודות Empathy"
+
+#: ../src/empathy-roster-window-menubar.ui.h:17
+#: ../src/empathy-status-icon.ui.h:5
+msgid "_Quit"
+msgstr "יצי_אה"
+
+#: ../src/empathy-roster-window.ui.h:1
+msgid "Account settings"
+msgstr "הגדרות החשבון"
+
 #: ../src/empathy-status-icon.ui.h:2
 msgid "_New Conversation…"
 msgstr "_שיחה חדשה…"
@@ -3993,325 +4303,19 @@ msgstr "_שיחה חדשה…"
 msgid "Status"
 msgstr "מצב"
 
-#: ../src/empathy-debug-window.c:1603
-msgid "Save"
-msgstr "שמירה"
-
-#: ../src/empathy-debug-window.c:1663
-msgid "Pastebin link"
-msgstr "קישור ל־Pastebin"
-
-#: ../src/empathy-debug-window.c:1672
-msgid "Pastebin response"
-msgstr "תגובה מ־Pastebin"
-
-#: ../src/empathy-debug-window.c:1679
-msgid "Data too large for a single paste. Please save logs to file."
-msgstr "הנתונים גדולים מדי להדבקה אחת. נא לשמור את היומנים לקובץ."
-
-#: ../src/empathy-debug-window.c:1860
-msgid "Debug Window"
-msgstr "חלון ניפוי שגיאות"
-
-#: ../src/empathy-debug-window.c:1920
-msgid "Send to pastebin"
-msgstr "שליחה ל־Pastebin"
-
-#: ../src/empathy-debug-window.c:1964
-msgid "Pause"
-msgstr "השהייה"
-
-#: ../src/empathy-debug-window.c:1976
-msgid "Level "
-msgstr "רמה"
-
-#: ../src/empathy-debug-window.c:1995
-msgid "Debug"
-msgstr "ניפוי שגיאות"
-
-#: ../src/empathy-debug-window.c:2000
-msgid "Info"
-msgstr "מידע"
-
-#: ../src/empathy-debug-window.c:2005
-#: ../src/empathy-debug-window.c:2054
-msgid "Message"
-msgstr "הודעה"
-
-#: ../src/empathy-debug-window.c:2010
-msgid "Warning"
-msgstr "אזהרה"
-
-#: ../src/empathy-debug-window.c:2015
-msgid "Critical"
-msgstr "קריטי"
-
-#: ../src/empathy-debug-window.c:2020
-msgid "Error"
-msgstr "שגיאה"
-
-#: ../src/empathy-debug-window.c:2039
-msgid "Time"
-msgstr "זמן"
-
-#: ../src/empathy-debug-window.c:2042
-msgid "Domain"
-msgstr "תחום"
-
-#: ../src/empathy-debug-window.c:2045
-msgid "Category"
-msgstr "קטגוריה"
-
-#: ../src/empathy-debug-window.c:2048
-msgid "Level"
-msgstr "רמה"
-
-#: ../src/empathy-debug-window.c:2077
-msgid "The selected connection manager does not support the remote debugging extension."
-msgstr "מנהל החיבורים שנבחר אינו תומך בהרחבת ניפוי שגיאות מרחוק."
-
-#: ../src/empathy-invite-participant-dialog.c:201
-#: ../src/empathy-invite-participant-dialog.c:229
-msgid "Invite Participant"
-msgstr "הזמנת משתתפים"
-
-#: ../src/empathy-invite-participant-dialog.c:202
-msgid "Choose a contact to invite into the conversation:"
-msgstr "נא לבחור אנשי קשר להזמנה לדיון:"
-
-#: ../src/empathy-invite-participant-dialog.c:225
-msgid "Invite"
-msgstr "הזמנה"
-
-#: ../src/empathy-accounts.c:184
-msgid "Don't display any dialogs; do any work (eg, importing) and exit"
-msgstr "אין להציג דו־שיח כלשהו; תתבצע פעולה כלשהי (לדוגמה יבוא) ולאחריה התכנית תסגר"
-
-#: ../src/empathy-accounts.c:188
-msgid "Don't display any dialogs unless there are only \"People Nearby\" accounts"
-msgstr "אין להציג תיבות דו־שיח כלשהן אלא אם כן ישנן חשבונות \"אנשים בקרבתי\""
-
-#: ../src/empathy-accounts.c:192
-msgid "Initially select given account (eg, gabble/jabber/foo_40example_2eorg0)"
-msgstr "בחירת החשבון הנתון כבר בהתחלה (לדוגמה gabble/jabber/foo_40example_2eorg0)"
-
-#: ../src/empathy-accounts.c:194
-msgid "<account-id>"
-msgstr "<account-id>"
-
-#: ../src/empathy-accounts.c:199
-msgid "- Empathy Accounts"
-msgstr "- חשבונות Empathy"
-
-#: ../src/empathy-accounts.c:242
-msgid "Empathy Accounts"
-msgstr "חשבונות Empathy"
-
-#: ../src/empathy-debugger.c:69
-msgid "Show a particular service"
-msgstr "הצגת שירות מסוים"
-
-#: ../src/empathy-debugger.c:74
-msgid "- Empathy Debugger"
-msgstr "- מנפה השגיאות של Empathy"
-
-#: ../src/empathy-debugger.c:113
-msgid "Empathy Debugger"
-msgstr "מנפה השגיאות של Empathy"
-
-#: ../src/empathy-chat.c:106
-msgid "- Empathy Chat Client"
-msgstr "- לקוח הצ׳אטים Empathy"
-
-#: ../src/empathy-notifications-approver.c:188
-msgid "Respond"
-msgstr "תגובה"
-
-#: ../src/empathy-notifications-approver.c:197
-#: ../src/empathy-call-window.c:1495
-msgid "Reject"
-msgstr "דחייה"
-
-#: ../src/empathy-notifications-approver.c:202
-#: ../src/empathy-notifications-approver.c:207
-#: ../src/empathy-call-window.c:1496
-msgid "Answer"
-msgstr "מענה"
-
-#: ../src/empathy-notifications-approver.c:207
-msgid "Answer with video"
-msgstr "מענה עם וידאו"
-
-#: ../src/empathy-notifications-approver.c:215
-#: ../src/empathy-notifications-approver.c:225
-msgid "Decline"
-msgstr "סירוב"
-
-#: ../src/empathy-notifications-approver.c:219
-#: ../src/empathy-notifications-approver.c:230
-msgid "Accept"
-msgstr "אישור"
-
-#. translators: the 'Provide' button is displayed in a notification
-#. * bubble when Empathy is asking for an account password; clicking on it
-#. * brings the password popup.
-#: ../src/empathy-notifications-approver.c:240
-msgid "Provide"
-msgstr "הזנה"
-
-#: ../src/empathy-call-observer.c:119
-#, c-format
-msgid "%s just tried to call you, but you were in another call."
-msgstr "התקבלה בקשת שיחה מאת %s, אך באותו הזמן כבר היית בשיחה אחרת."
-
-#. Translators: this is an "Info" label. It should be as short
-#. * as possible.
-#: ../src/empathy-call-window.c:1125
-#: ../src/empathy-call-window.c:1141
-msgid "i"
-msgstr "i"
-
-#. translators: Call is a noun and %s is the contact name. This string
-#. * is used in the window title
-#: ../src/empathy-call-window.c:1862
-#, c-format
-msgid "Call with %s"
-msgstr "שיחה עם %s"
-
-#: ../src/empathy-call-window.c:2114
-msgid "The IP address as seen by the machine"
-msgstr "כתובת ה־IP כפי שנראית על ידי המחשב"
-
-#: ../src/empathy-call-window.c:2116
-msgid "The IP address as seen by a server on the Internet"
-msgstr "כתובת ה־IP כפי שנראית על ידי שרת באינטרנט"
-
-#: ../src/empathy-call-window.c:2118
-msgid "The IP address of the peer as seen by the other side"
-msgstr "כתובת ה־IP כדי שנראית על ידי עמית מהצד השני"
-
-#: ../src/empathy-call-window.c:2120
-msgid "The IP address of a relay server"
-msgstr "כתובת ה־IP של שרת הממסר"
-
-#: ../src/empathy-call-window.c:2122
-msgid "The IP address of the multicast group"
-msgstr "כתובת ה־IP של קבוצת התשדורת"
-
-#: ../src/empathy-call-window.c:2869
-msgid "On hold"
-msgstr "בהמתנה"
-
-#: ../src/empathy-call-window.c:2871
-msgid "Mute"
-msgstr "השתק"
-
-#: ../src/empathy-call-window.c:2873
-msgid "Duration"
-msgstr "משך"
-
-#. Translators: 'status - minutes:seconds' the caller has been connected
-#: ../src/empathy-call-window.c:2876
-#, c-format
-msgid "%s — %d:%02dm"
-msgstr "%s — %d:%02d דק׳"
-
-#: ../src/empathy-call-window.c:2972
-msgid "Technical Details"
-msgstr "פרטים טכניים"
-
-#: ../src/empathy-call-window.c:3011
-#, c-format
-msgid "%s's software does not understand any of the audio formats supported by your computer"
-msgstr "התכנה של %s אינה מבינה את מבני השמע הנתמכים על ידי המחשב שלך"
-
-#: ../src/empathy-call-window.c:3016
-#, c-format
-msgid "%s's software does not understand any of the video formats supported by your computer"
-msgstr "התכנה של %s אינה מבינה את מבני הווידאו הנתמכים על ידי המחשב שלך"
-
-#: ../src/empathy-call-window.c:3022
-#, c-format
-msgid "Can't establish a connection to %s. One of you might be on a network that does not allow direct connections."
-msgstr "לא ניתן להפעיל את החיבור אל %s. כנראה אחד ממשתתפי השיחה מחובר לרשת שאינה מאפשרת חיבורים ישירים."
-
-#: ../src/empathy-call-window.c:3028
-msgid "There was a failure on the network"
-msgstr "אירעה שגיאה ברשת"
-
-#: ../src/empathy-call-window.c:3032
-msgid "The audio formats necessary for this call are not installed on your computer"
-msgstr "מבני השמע הדרושים לקיום שיחה זו אינם מותקנים במחשבך"
-
-#: ../src/empathy-call-window.c:3035
-msgid "The video formats necessary for this call are not installed on your computer"
-msgstr "מבני הווידאו הדרושים לקיום שיחה זו אינם מותקנים במחשבך"
-
-#: ../src/empathy-call-window.c:3047
-#, c-format
-msgid "Something unexpected happened in a Telepathy component. Please <a href=\"%s\">report this bug</a> and attach logs gathered from the 'Debug' window in the Help menu."
-msgstr "משהו בלתי צפוי ארע ברכיב של Telepathy. נא <a href=\"%s\">לדווח על באג זה</a> ולהוסיף דוחות שנאספו מחלון 'ניפוי השגיאות' שבתפריט העזרה."
-
-#: ../src/empathy-call-window.c:3056
-msgid "There was a failure in the call engine"
-msgstr "אירעה שגיאה במנוע הקריאה"
-
-#: ../src/empathy-call-window.c:3059
-msgid "The end of the stream was reached"
-msgstr "התזרים הגיע לסיומו"
-
-#: ../src/empathy-call-window.c:3099
-msgid "Can't establish audio stream"
-msgstr "לא ניתן לקיים תזרים שמע"
-
-#: ../src/empathy-call-window.c:3109
-msgid "Can't establish video stream"
-msgstr "לא ניתן לקיים תזרים וידאו"
-
-#: ../src/empathy-call-window.c:3146
-#, c-format
-msgid "Your current balance is %s."
-msgstr "המאזן הנוכחי שלך הוא %s."
-
-#: ../src/empathy-call-window.c:3150
-msgid "Sorry, you don’t have enough credit for that call."
-msgstr "אין לך מספיק אשראי כדי לבצע שיחה זו."
-
-#: ../src/empathy-call-window.c:3152
-msgid "Top Up"
-msgstr "Top Up"
-
-#: ../src/empathy-call.c:195
-msgid "- Empathy Audio/Video Client"
-msgstr "- לקוח השמע/הווידאו Empathy"
-
-#: ../src/empathy-call.c:219
-msgid "Empathy Audio/Video Client"
-msgstr "לקוח השמע/הווידאו Empathy"
-
-#: ../libempathy-gtk/empathy-search-bar.c:243
-msgid "_Match case"
-msgstr "התאמת _רישיות"
-
-#: ../libempathy-gtk/empathy-new-account-dialog.c:129
-msgid "What kind of chat account do you have?"
-msgstr "אילו חשבונות יש לך?"
-
-#: ../libempathy-gtk/empathy-new-account-dialog.c:151
-msgid "Adding new account"
-msgstr "נוסף חשבון חדש"
-
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:81
-msgid "Empathy can automatically discover and chat with the people connected on the same network as you. If you want to use this feature, please check that the details below are correct."
-msgstr "באפשרות Empathy לגלות ולנהל שיחות עם אנשים המחוברים לאותה הרשת כמוך. אם ברצונך להשתמש בתכונה זו, נא לבדוק שהפרטים שלהלן נכונים."
-
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:98
-msgid "People nearby"
-msgstr "אנשים בקרבתי"
-
-#: ../libempathy-gtk/empathy-local-xmpp-assistant-widget.c:113
-msgid "You can change these details later or disable this feature by choosing <span style=\"italic\">Edit → Accounts</span> in the Contact List."
-msgstr "באפשרותך לשנות פרטים אלה מאוחר יותר או לנטרל תכונה זו על ידי בחירה ב<span style=\"italic\">עריכה ← חשבונות</span> ברשימת אנשי הקשר."
+#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:173
+msgid "Done"
+msgstr "בוצע"
+
+#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:181
+msgid "Please enter your account details"
+msgstr "נא להזין את פרטי החשבון שלך"
+
+#~ msgid "_Block User"
+#~ msgstr "_חסימת משתמש"
+
+#~ msgid "Decide _Later"
+#~ msgstr "ה_חלטה מאוחר יותר"
 
 #~ msgid "Show avatars"
 #~ msgstr "Show avatars"
@@ -4585,9 +4589,6 @@ msgstr "באפשרותך לשנות פרטים אלה מאוחר יותר או �
 
 #~ msgid "Do you have any other chat accounts you want to set up?"
 #~ msgstr "האם יש לך חשבונות נוספים שברצונך להגדיר?"
-
-#~ msgid "Enter your account details"
-#~ msgstr "נא להזין את פרטי החשבון שלך"
 
 #~ msgid "What kind of chat account do you want to create?"
 #~ msgstr "איזה חשבון שיחות ברצונך ליצור?"
