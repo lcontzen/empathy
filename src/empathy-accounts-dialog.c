@@ -716,9 +716,14 @@ use_external_storage_provider (EmpathyAccountsDialog *self,
       g_free (cmd);
       return;
     }
-  else if (!tp_strdiff (provider, "org.gnome.OnlineAccounts"))
+  else if (!tp_strdiff (provider, EMPATHY_GOA_PROVIDER))
     {
       start_from_desktop_file ("gnome-online-accounts-panel.desktop");
+      return;
+    }
+  else if (!tp_strdiff (provider, EMPATHY_UOA_PROVIDER))
+    {
+      start_from_desktop_file ("gnome-credentials-panel.desktop");
       return;
     }
   else
