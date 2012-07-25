@@ -163,28 +163,50 @@ response_cb (GtkWidget *widget,
 static GtkWidget *
 create_top_bar (EmpathyAccountsPluginWidget *self)
 {
-  GtkWidget *bar, *content, *label;
+  GtkWidget *bar, *content, *action, *label;
+  GtkCssProvider *css;
+  GError *error = NULL;
 
   bar = gtk_info_bar_new_with_buttons (
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+      _("Done"), GTK_RESPONSE_OK,
       NULL);
-
-  self->priv->done_button = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
-      _("Done"), GTK_RESPONSE_OK);
-
   gtk_widget_set_hexpand (bar, TRUE);
-
   gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_QUESTION);
+  action = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+  gtk_orientable_set_orientation (GTK_ORIENTABLE (action),
+      GTK_ORIENTATION_HORIZONTAL);
+  gtk_widget_set_name (bar, "authorization-infobar");
+  css = gtk_css_provider_new ();
+  if (gtk_css_provider_load_from_data (css,
+          "@define-color question_bg_color rgb (222, 222, 222);"
+          "GtkInfoBar#authorization-infobar"
+          "{"
+          "  color: @fg_color;"
+          "}",
+          -1, &error))
+    {
+      GtkStyleContext *context = gtk_widget_get_style_context (bar);
+
+      gtk_style_context_add_provider (context, (GtkStyleProvider *) css,
+          GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    }
+  else
+    {
+      g_warning ("Error processing CSS theme override: %s", error->message);
+      g_clear_error (&error);
+    }
+  g_object_unref (css);
 
   content = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
 
   label = gtk_label_new (_("Please enter your account details"));
   gtk_container_add (GTK_CONTAINER (content), label);
+  gtk_widget_show (label);
 
   g_signal_connect (bar, "response",
       G_CALLBACK (response_cb), self);
 
-  gtk_widget_show_all (bar);
   return bar;
 }
 
@@ -209,7 +231,7 @@ add_account_widget (EmpathyAccountsPluginWidget *self)
 {
   GtkWidget *alig;
 
-  alig = gtk_alignment_new (0.5, 0.1, 0, 0.1);
+  alig = gtk_alignment_new (0.5, 0, 0, 0);
 
   gtk_box_pack_start (GTK_BOX (self), alig, TRUE, TRUE, 0);
   gtk_widget_show (GTK_WIDGET (alig));
@@ -261,7 +283,7 @@ empathy_accounts_plugin_widget_constructed (GObject *object)
   /* Top bar */
   top = create_top_bar (self);
   gtk_widget_show (top);
-  gtk_box_pack_start (GTK_BOX (self), top, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (self), top, FALSE, FALSE, 0);
 
   self->priv->settings = create_account_settings (self->priv->account);
   g_return_if_fail (self->priv->settings != NULL);
@@ -275,8 +297,6 @@ empathy_accounts_plugin_widget_constructed (GObject *object)
       g_signal_connect (self->priv->settings, "notify::ready",
           G_CALLBACK (settings_ready_cb), self);
     }
-
-  gtk_widget_set_hexpand (GTK_WIDGET (self), TRUE);
 }
 
 static void
