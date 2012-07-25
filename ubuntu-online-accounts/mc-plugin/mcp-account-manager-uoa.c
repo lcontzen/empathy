@@ -39,6 +39,7 @@
 #define SERVICE_TYPE "IM"
 #define KEY_PREFIX "telepathy/"
 #define KEY_ACCOUNT_NAME "mc-account-name"
+#define KEY_READONLY_PARAMS "mc-readonly-params"
 
 static void account_storage_iface_init (McpAccountStorageIface *iface);
 
@@ -703,11 +704,30 @@ account_manager_uoa_get_identifier (const McpAccountStorage *storage,
 }
 
 static guint
-account_manager_uoa_get_restrictions (const McpAccountStorage *self,
+account_manager_uoa_get_restrictions (const McpAccountStorage *storage,
     const gchar *account_name)
 {
+  McpAccountManagerUoa *self = (McpAccountManagerUoa *) storage;
+  AgAccountService *service;
+  guint restrictions = TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_SERVICE;
+  GValue value = G_VALUE_INIT;
+
+  /* If we don't know this account, we cannot do anything */
+  service = g_hash_table_lookup (self->priv->accounts, account_name);
+  if (service == NULL)
+    return G_MAXUINT;
+
+  g_value_init (&value, G_TYPE_BOOLEAN);
+  ag_account_service_get_value (service,
+      KEY_PREFIX KEY_READONLY_PARAMS, &value);
+
+  if (g_value_get_boolean (&value))
+    restrictions |= TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_PARAMETERS;
+
+  g_value_unset (&value);
+
   /* FIXME: We can't set Icon either, but there is no flag for that */
-  return TP_STORAGE_RESTRICTION_FLAG_CANNOT_SET_SERVICE;
+  return restrictions;
 }
 
 static void
