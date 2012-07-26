@@ -25,6 +25,8 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <telepathy-glib/telepathy-glib.h>
+
 #include <libaccounts-glib/ag-service.h>
 #include <libaccounts-glib/ag-account-service.h>
 
@@ -103,6 +105,8 @@ create_account_settings (AgAccount *account)
   GValue v = G_VALUE_INIT;
   gchar *manager = NULL, *protocol = NULL;
   EmpathyAccountSettings *settings;
+
+  g_assert (account->id == 0);
 
   services = ag_account_list_services_by_type (account, "IM");
   g_return_val_if_fail (services != NULL, NULL);
@@ -260,11 +264,60 @@ add_account_widget (EmpathyAccountsPluginWidget *self)
 }
 
 static void
-settings_ready_cb (EmpathyAccountSettings *settings,
-    GParamSpec *spec,
-    EmpathyAccountsPluginWidget *self)
+maybe_add_account_widget (EmpathyAccountsPluginWidget *self)
 {
-  add_account_widget (self);
+  g_return_if_fail (self->priv->settings != NULL);
+
+  if (empathy_account_settings_is_ready (self->priv->settings))
+    {
+      add_account_widget (self);
+    }
+  else
+    {
+      g_signal_connect_swapped (self->priv->settings, "notify::ready",
+          G_CALLBACK (add_account_widget), self);
+    }
+}
+
+static void
+manager_prepared_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  EmpathyAccountsPluginWidget *self = user_data;
+  TpAccountManager *manager = (TpAccountManager *) source;
+  GList *accounts;
+  GError *error = NULL;
+
+  if (!tp_account_manager_prepare_all_finish (manager, result, &error))
+    {
+      g_debug ("Error preparing Account Manager: %s", error->message);
+      g_clear_error (&error);
+      goto out;
+    }
+
+  accounts = tp_account_manager_get_valid_accounts (manager);
+  while (accounts != NULL)
+    {
+      TpAccount *account = accounts->data;
+      const GValue *value;
+
+      value = tp_account_get_storage_identifier (account);
+      if (G_VALUE_HOLDS_UINT (value) &&
+          g_value_get_uint (value) == self->priv->account->id)
+        {
+          self->priv->settings = empathy_account_settings_new_for_account (
+              account);
+          maybe_add_account_widget (self);
+          break;
+        }
+
+      accounts = g_list_delete_link (accounts, accounts);
+    }
+  g_list_free (accounts);
+
+out:
+  g_object_unref (self);
 }
 
 static void
@@ -285,18 +338,26 @@ empathy_accounts_plugin_widget_constructed (GObject *object)
   gtk_widget_show (top);
   gtk_box_pack_start (GTK_BOX (self), top, FALSE, FALSE, 0);
 
-  self->priv->settings = create_account_settings (self->priv->account);
-  g_return_if_fail (self->priv->settings != NULL);
+  if (self->priv->account->id != 0)
+    {
+      TpAccountManager *manager;
+      TpSimpleClientFactory *factory;
 
-  if (empathy_account_settings_is_ready (self->priv->settings))
-    {
-      add_account_widget (self);
+      /* Prepare tp's account manager to find the TpAccount corresponding to our
+       * AgAccount */
+      manager = tp_account_manager_dup ();
+      factory = tp_proxy_get_factory (manager);
+      tp_simple_client_factory_add_account_features_varargs (factory,
+          TP_ACCOUNT_FEATURE_STORAGE,
+          0);
+      tp_account_manager_prepare_all_async (manager,
+          manager_prepared_cb, g_object_ref (self));
+      g_object_unref (manager);
+      return;
     }
-  else
-    {
-      g_signal_connect (self->priv->settings, "notify::ready",
-          G_CALLBACK (settings_ready_cb), self);
-    }
+
+  self->priv->settings = create_account_settings (self->priv->account);
+  maybe_add_account_widget (self);
 }
 
 static void
