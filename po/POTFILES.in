@@ -112,3 +112,4 @@ src/empathy-status-icon.c
 [type: gettext/glade]src/empathy-status-icon.ui
 
 ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c
+ubuntu-online-accounts/cc-plugins/app-plugin/empathy-app-plugin-widget.c

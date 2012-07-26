@@ -22,14 +22,31 @@
 
 #include "empathy-app-plugin.h"
 
+#include "empathy-app-plugin-widget.h"
 
 G_DEFINE_TYPE (EmpathyAppPlugin, empathy_app_plugin, AP_TYPE_APPLICATION_PLUGIN)
+
+static void
+widget_done_cb (EmpathyAppPluginWidget *widget,
+    ApApplicationPlugin *plugin)
+{
+  ap_application_plugin_emit_finished (plugin);
+}
 
 static GtkWidget *
 empathy_app_plugin_build_widget (ApApplicationPlugin *plugin)
 {
-  /* TODO */
-  return NULL;
+  GtkWidget *widget;
+
+  widget = empathy_app_plugin_widget_new (
+      ap_application_plugin_get_account (plugin));
+
+  g_signal_connect (widget, "done",
+      G_CALLBACK (widget_done_cb), plugin);
+
+  gtk_widget_show (widget);
+
+  return widget;
 }
 
 static void
