@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-07-24 18:19+0000\n"
-"PO-Revision-Date: 2012-07-26 13:46+0530\n"
+"PO-Revision-Date: 2012-07-26 14:35+0530\n"
 "Last-Translator: \n"
 "Language-Team: gu_IN <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -2203,7 +2203,7 @@ msgstr "શું %s ને બ્લોક કરવા માંગો છો?
 #: ../libempathy-gtk/empathy-subscription-dialog.c:125
 #, c-format
 msgid "Are you sure you want to block '%s' from contacting you again?"
-msgstr ""
+msgstr "શું તમે ફરી સંપર્ક કરીને '%s' ને બ્લોક કરવા માંગો છો?"
 
 #: ../libempathy-gtk/empathy-individual-dialogs.c:257
 msgid "The following identity will be blocked:"
