@@ -55,17 +55,13 @@ struct _EmpathyAvatarChooserClass
 
 GType empathy_avatar_chooser_get_type (void);
 
-GtkWidget *empathy_avatar_chooser_new (void);
+GtkWidget *empathy_avatar_chooser_new (TpAccount *account);
 
-void empathy_avatar_chooser_set (EmpathyAvatarChooser *self,
-    EmpathyAvatar *avatar);
-
-void empathy_avatar_chooser_get_image_data (EmpathyAvatarChooser *self,
-    const gchar **data,
-    gsize *data_size,
-    const gchar **mime_type);
-
-void empathy_avatar_chooser_set_account (EmpathyAvatarChooser *self,
-    TpAccount *account);
+void empathy_avatar_chooser_apply_async (EmpathyAvatarChooser *self,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+gboolean empathy_avatar_chooser_apply_finish (EmpathyAvatarChooser *self,
+    GAsyncResult *result,
+    GError **error);
 
 #endif /* __EMPATHY_AVATAR_CHOOSER_H__ */

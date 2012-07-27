@@ -78,28 +78,21 @@
 
 struct _EmpathyAvatarChooserPrivate
 {
-  TpConnection *connection;
+  TpAccount *account;
+
+  GArray *avatar;
+  gchar *mime_type;
+  gboolean changed;
+
   GtkFileChooser *chooser_dialog;
-
-  gulong ready_handler_id;
-
-  EmpathyAvatar *avatar;
   GSettings *gsettings_ui;
 };
 
 enum
 {
-  CHANGED,
-  LAST_SIGNAL
-};
-
-enum
-{
   PROP_0,
-  PROP_CONNECTION
+  PROP_ACCOUNT
 };
-
-static guint signals [LAST_SIGNAL];
 
 G_DEFINE_TYPE (EmpathyAvatarChooser, empathy_avatar_chooser, GTK_TYPE_BUTTON);
 
@@ -118,6 +111,88 @@ static const GtkTargetEntry drop_types[] =
   { URI_LIST_TYPE, 0, DND_TARGET_TYPE_URI_LIST },
 };
 
+static void avatar_chooser_set_image (EmpathyAvatarChooser *self,
+    GArray *avatar,
+    gchar *mime_type,
+    GdkPixbuf *pixbuf,
+    gboolean maybe_convert);
+static void avatar_chooser_clear_image (EmpathyAvatarChooser *self);
+
+static void
+get_avatar_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpWeakRef *weak = user_data;
+  EmpathyAvatarChooser *self = tp_weak_ref_dup_object (weak);
+  const GArray *avatar;
+  GdkPixbuf *pixbuf;
+  gchar *mime_type;
+  GError *error = NULL;
+
+  if (self == NULL)
+    goto out;
+
+  avatar = tp_account_get_avatar_finish (self->priv->account, result, &error);
+  if (avatar == NULL)
+    {
+      DEBUG ("Error getting account's avatar: %s", error->message);
+      g_clear_error (&error);
+      goto out;
+    }
+
+  if (avatar->len == 0)
+    {
+      avatar_chooser_clear_image (self);
+      goto out;
+    }
+
+  pixbuf = empathy_pixbuf_from_data_and_mime ((gchar *) avatar->data,
+      avatar->len, &mime_type);
+  if (pixbuf == NULL)
+    {
+      DEBUG ("couldn't make a pixbuf from avatar; giving up");
+      goto out;
+    }
+
+  avatar_chooser_set_image (self, (GArray *) avatar, mime_type, pixbuf, FALSE);
+  g_free (mime_type);
+
+  self->priv->changed = FALSE;
+  g_object_unref (self);
+
+out:
+  tp_weak_ref_destroy (weak);
+}
+
+static void
+avatar_changed_cb (TpAccount *account,
+    gpointer user_data,
+    GObject *weak_object)
+{
+  EmpathyAvatarChooser *self = (EmpathyAvatarChooser *) weak_object;
+
+  tp_account_get_avatar_async (self->priv->account,
+      get_avatar_cb, tp_weak_ref_new (self, NULL, NULL));
+}
+
+static void
+avatar_chooser_constructed (GObject *object)
+{
+  EmpathyAvatarChooser *self = (EmpathyAvatarChooser *) object;
+
+  G_OBJECT_CLASS (empathy_avatar_chooser_parent_class)->constructed (object);
+
+  tp_account_get_avatar_async (self->priv->account,
+      get_avatar_cb, tp_weak_ref_new (self, NULL, NULL));
+
+  /* FIXME: no signal on TpAccount, yet.
+   * See https://bugs.freedesktop.org/show_bug.cgi?id=52938 */
+  tp_cli_account_interface_avatar_connect_to_avatar_changed (
+      self->priv->account, avatar_changed_cb, NULL, NULL, (GObject *) self,
+      NULL);
+}
+
 static void
 avatar_chooser_get_property (GObject *object,
     guint param_id,
@@ -128,23 +203,13 @@ avatar_chooser_get_property (GObject *object,
 
   switch (param_id)
     {
-      case PROP_CONNECTION:
-        g_value_set_object (value, self->priv->connection);
+      case PROP_ACCOUNT:
+        g_value_set_object (value, self->priv->account);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
         break;
     }
-}
-
-static void
-avatar_chooser_set_connection (EmpathyAvatarChooser *self,
-    TpConnection *connection)
-{
-  tp_clear_object (&self->priv->connection);
-
-  if (connection != NULL)
-    self->priv->connection = g_object_ref (connection);
 }
 
 static void
@@ -157,8 +222,9 @@ avatar_chooser_set_property (GObject *object,
 
   switch (param_id)
     {
-      case PROP_CONNECTION:
-        avatar_chooser_set_connection (self, g_value_get_object (value));
+      case PROP_ACCOUNT:
+        g_assert (self->priv->account == NULL); /* construct-only */
+        self->priv->account = g_value_dup_object (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -171,8 +237,9 @@ avatar_chooser_dispose (GObject *object)
 {
   EmpathyAvatarChooser *self = (EmpathyAvatarChooser *) object;
 
-  tp_clear_object (&self->priv->connection);
-  tp_clear_pointer (&self->priv->avatar, empathy_avatar_unref);
+  tp_clear_object (&self->priv->account);
+  tp_clear_pointer (&self->priv->avatar, g_array_unref);
+  tp_clear_pointer (&self->priv->mime_type, g_free);
   tp_clear_object (&self->priv->gsettings_ui);
 
   G_OBJECT_CLASS (empathy_avatar_chooser_parent_class)->dispose (object);
@@ -184,41 +251,27 @@ empathy_avatar_chooser_class_init (EmpathyAvatarChooserClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GParamSpec *param_spec;
 
+  object_class->constructed = avatar_chooser_constructed;
   object_class->dispose = avatar_chooser_dispose;
   object_class->get_property = avatar_chooser_get_property;
   object_class->set_property = avatar_chooser_set_property;
 
   /**
-   * EmpathyAvatarChooser::changed:
-   * @self: an #EmpathyAvatarChooser
+   * EmpathyAvatarChooser:account:
    *
-   * Emitted when the chosen avatar has changed.
-   *
-   */
-  signals[CHANGED] =
-    g_signal_new ("changed",
-            G_TYPE_FROM_CLASS (klass),
-            G_SIGNAL_RUN_LAST,
-            0,
-            NULL, NULL,
-            g_cclosure_marshal_generic,
-            G_TYPE_NONE, 0);
-
-  /**
-   * EmpathyAvatarChooser:connection:
-   *
-   * The #TpConnection whose avatar should be shown and modified by
+   * The #TpAccount whose avatar should be shown and modified by
    * the #EmpathyAvatarChooser instance.
    */
-  param_spec = g_param_spec_object ("connection",
-            "TpConnection",
-            "TpConnection whose avatar should be "
+  param_spec = g_param_spec_object ("account",
+            "TpAccount",
+            "TpAccount whose avatar should be "
             "shown and modified by this widget",
-            TP_TYPE_CONNECTION,
+            TP_TYPE_ACCOUNT,
             G_PARAM_READWRITE |
+            G_PARAM_CONSTRUCT_ONLY |
             G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class,
-           PROP_CONNECTION,
+           PROP_ACCOUNT,
            param_spec);
 
   g_type_class_add_private (object_class, sizeof (EmpathyAvatarChooserPrivate));
@@ -295,12 +348,13 @@ avatar_chooser_clear_image (EmpathyAvatarChooser *self)
 {
   GtkWidget *image;
 
-  tp_clear_pointer (&self->priv->avatar, empathy_avatar_unref);
+  tp_clear_pointer (&self->priv->avatar, g_array_unref);
+  tp_clear_pointer (&self->priv->mime_type, g_free);
+  self->priv->changed = TRUE;
 
   image = gtk_image_new_from_icon_name (EMPATHY_IMAGE_AVATAR_DEFAULT,
     GTK_ICON_SIZE_DIALOG);
   gtk_button_set_image (GTK_BUTTON (self), image);
-  g_signal_emit (self, signals[CHANGED], 0);
 }
 
 static gboolean
@@ -426,10 +480,24 @@ avatar_chooser_error_show (EmpathyAvatarChooser *self,
 
 }
 
-static EmpathyAvatar *
+static TpAvatarRequirements *
+get_requirements (EmpathyAvatarChooser *self)
+{
+  TpConnection *connection;
+
+  /* FIXME: Should get on TpProtocol if account is offline */
+  connection = tp_account_get_connection (self->priv->account);
+  return tp_connection_get_avatar_requirements (connection);
+}
+
+
+static gboolean
 avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
     GdkPixbuf *pixbuf,
-    EmpathyAvatar *avatar)
+    GArray *avatar,
+    gchar *mime_type,
+    GArray **ret_avatar,
+    gchar **ret_mime_type)
 {
   TpAvatarRequirements *req;
   gboolean needs_conversion = FALSE;
@@ -442,11 +510,14 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
   gsize best_image_size = 0;
   guint count = 0;
 
-  req = tp_connection_get_avatar_requirements (self->priv->connection);
+  g_assert (ret_avatar != NULL);
+  g_assert (ret_mime_type != NULL);
+
+  req = get_requirements (self);
   if (req == NULL)
     {
       DEBUG ("Avatar requirements not ready");
-      return NULL;
+      return FALSE;
     }
 
   /* Smaller is the factor, smaller will be the image.
@@ -456,12 +527,12 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
   factor = 1;
 
   /* Check if we need to convert to another image format */
-  if (avatar_chooser_need_mime_type_conversion (avatar->format,
+  if (avatar_chooser_need_mime_type_conversion (mime_type,
         req->supported_mime_types, &new_format_name, &new_mime_type))
     {
       DEBUG ("Format conversion needed, we'll use mime type '%s' "
              "and format name '%s'. Current mime type is '%s'",
-             new_mime_type, new_format_name, avatar->format);
+             new_mime_type, new_format_name, mime_type);
       needs_conversion = TRUE;
     }
 
@@ -471,7 +542,7 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
       avatar_chooser_error_show (self, _("Couldn't convert image"),
           _("None of the accepted image formats are "
             "supported on your system"));
-      return NULL;
+      return FALSE;
     }
 
   /* If width or height are too big, it needs converting. */
@@ -497,7 +568,7 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
   if (req->maximum_bytes > 0 && avatar->len > req->maximum_bytes &&
       !needs_conversion)
     {
-      DEBUG ("Image data (%"G_GSIZE_FORMAT" bytes) is too big "
+      DEBUG ("Image data (%u bytes) is too big "
              "(max is %u bytes), conversion needed.",
              avatar->len, req->maximum_bytes);
 
@@ -508,9 +579,9 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
   /* If no conversion is needed, return the avatar */
   if (!needs_conversion)
     {
-      g_free (new_format_name);
-      g_free (new_mime_type);
-      return empathy_avatar_ref (avatar);
+      *ret_avatar = g_array_ref (avatar);
+      *ret_mime_type = g_strdup (mime_type);
+      return TRUE;
     }
 
   do
@@ -556,7 +627,7 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
             _("Couldn't convert image"),
             error ? error->message : NULL);
           g_clear_error (&error);
-          return NULL;
+          return FALSE;
         }
 
       DEBUG ("Produced an image data of %"G_GSIZE_FORMAT" bytes.",
@@ -604,20 +675,24 @@ avatar_chooser_maybe_convert_and_scale (EmpathyAvatarChooser *self,
 
   g_free (new_format_name);
 
-  avatar = empathy_avatar_new ((guchar *) best_image_data,
-    best_image_size, new_mime_type, NULL);
-
+  /* FIXME: there is no way to create a GArray with zero copy? */
+  *ret_avatar = g_array_sized_new (FALSE, FALSE, sizeof (gchar),
+      best_image_size);
+  g_array_append_vals (*ret_avatar, best_image_data, best_image_size);
   g_free (best_image_data);
-  g_free (new_mime_type);
 
-  return avatar;
+  *ret_mime_type = new_mime_type;
+
+  return TRUE;
 }
 
+/* Take ownership of @pixbuf */
 static void
 avatar_chooser_set_image (EmpathyAvatarChooser *self,
-    EmpathyAvatar *avatar,
+    GArray *avatar,
+    gchar *mime_type,
     GdkPixbuf *pixbuf,
-    gboolean set_locally)
+    gboolean maybe_convert)
 {
   GdkPixbuf *pixbuf_view;
   GtkWidget *image;
@@ -625,30 +700,38 @@ avatar_chooser_set_image (EmpathyAvatarChooser *self,
   g_assert (avatar != NULL);
   g_assert (pixbuf != NULL);
 
-  if (set_locally)
+  if (maybe_convert)
     {
-      EmpathyAvatar *conv;
+      GArray *conv_avatar = NULL;
+      gchar *conv_mime_type = NULL;
 
-      conv = avatar_chooser_maybe_convert_and_scale (self,
-        pixbuf, avatar);
-      empathy_avatar_unref (avatar);
-
-      if (conv == NULL)
-        /* An error occured; don't change the avatar. */
+      if (!avatar_chooser_maybe_convert_and_scale (self,
+              pixbuf, avatar, mime_type, &conv_avatar, &conv_mime_type))
         return;
 
-      avatar = conv;
+      /* Transfer ownership */
+      tp_clear_pointer (&self->priv->avatar, g_array_unref);
+      self->priv->avatar = conv_avatar;
+
+      g_free (self->priv->mime_type);
+      self->priv->mime_type = conv_mime_type;
+    }
+  else
+    {
+      tp_clear_pointer (&self->priv->avatar, g_array_unref);
+      self->priv->avatar = g_array_ref (avatar);
+
+      g_free (self->priv->mime_type);
+      self->priv->mime_type = g_strdup (mime_type);
     }
 
-  tp_clear_pointer (&self->priv->avatar, empathy_avatar_unref);
-  self->priv->avatar = avatar;
+  self->priv->changed = TRUE;
 
   pixbuf_view = empathy_pixbuf_scale_down_if_necessary (pixbuf,
       AVATAR_SIZE_VIEW);
   image = gtk_image_new_from_pixbuf (pixbuf_view);
 
   gtk_button_set_image (GTK_BUTTON (self), image);
-  g_signal_emit (self, signals[CHANGED], 0);
 
   g_object_unref (pixbuf_view);
   g_object_unref (pixbuf);
@@ -658,11 +741,10 @@ avatar_chooser_set_image (EmpathyAvatarChooser *self,
 static void
 avatar_chooser_set_image_from_data (EmpathyAvatarChooser *self,
     gchar *data,
-    gsize size,
-    gboolean set_locally)
+    gsize size)
 {
   GdkPixbuf *pixbuf;
-  EmpathyAvatar *avatar = NULL;
+  GArray *avatar;
   gchar *mime_type = NULL;
 
   if (data == NULL)
@@ -675,15 +757,17 @@ avatar_chooser_set_image_from_data (EmpathyAvatarChooser *self,
   if (pixbuf == NULL)
     {
       g_free (data);
-      data = NULL;
       return;
     }
 
-  avatar = empathy_avatar_new ((guchar *) data, size, mime_type, NULL);
+  /* FIXME: there is no way to create a GArray with zero copy? */
+  avatar = g_array_sized_new (FALSE, FALSE, sizeof (gchar), size);
+  g_array_append_vals (avatar, data, size);
 
-  avatar_chooser_set_image (self, avatar, pixbuf, set_locally);
+  avatar_chooser_set_image (self, avatar, mime_type, pixbuf, TRUE);
 
   g_free (mime_type);
+  g_array_unref (avatar);
   g_free (data);
 }
 
@@ -733,7 +817,7 @@ avatar_chooser_drag_data_received_cb (GtkWidget          *widget,
       if (handled)
         {
           /* pass data to the avatar_chooser_set_image_from_data */
-          avatar_chooser_set_image_from_data (self, data, bytes_read, TRUE);
+          avatar_chooser_set_image_from_data (self, data, bytes_read);
         }
 
       g_object_unref (file);
@@ -800,7 +884,7 @@ avatar_chooser_set_image_from_file (EmpathyAvatarChooser *self,
     }
 
   /* pass image_data to the avatar_chooser_set_image_from_data */
-  avatar_chooser_set_image_from_data (self, image_data, image_size, TRUE);
+  avatar_chooser_set_image_from_data (self, image_data, image_size);
 }
 
 #ifdef HAVE_CHEESE
@@ -810,7 +894,7 @@ avatar_chooser_set_avatar_from_pixbuf (EmpathyAvatarChooser *self,
 {
   gsize size;
   gchar *buf;
-  EmpathyAvatar *avatar = NULL;
+  GArray *avatar;
   GError *error = NULL;
 
   if (!gdk_pixbuf_save_to_buffer (pb, &buf, &size, "png", &error, NULL))
@@ -822,10 +906,14 @@ avatar_chooser_set_avatar_from_pixbuf (EmpathyAvatarChooser *self,
       return;
     }
 
-  avatar = empathy_avatar_new ((guchar *) buf, size, "image/png", NULL);
-  avatar_chooser_set_image (self, avatar, pb, TRUE);
+  /* FIXME: there is no way to create a GArray with zero copy? */
+  avatar = g_array_sized_new (FALSE, FALSE, sizeof (gchar), size);
+  g_array_append_vals (avatar, buf, size);
+
+  avatar_chooser_set_image (self, avatar, "image/png", pb, TRUE);
 
   g_free (buf);
+  g_array_unref (avatar);
 }
 
 static gboolean
@@ -1062,125 +1150,76 @@ empathy_avatar_chooser_init (EmpathyAvatarChooser *self)
       G_CALLBACK (avatar_chooser_clicked_cb),
       self);
 
-  empathy_avatar_chooser_set (self, NULL);
-}
-
-static void
-avatar_chooser_set_image_from_avatar (EmpathyAvatarChooser *self,
-    EmpathyAvatar *avatar,
-    gboolean set_locally)
-{
-  GdkPixbuf *pixbuf;
-  gchar *mime_type = NULL;
-
-  g_assert (avatar != NULL);
-
-  pixbuf = empathy_pixbuf_from_data_and_mime ((gchar *) avatar->data,
-      avatar->len, &mime_type);
-
-  if (pixbuf == NULL)
-    {
-      DEBUG ("couldn't make a pixbuf from avatar; giving up");
-      return;
-    }
-
-  if (avatar->format == NULL)
-    {
-      avatar->format = mime_type;
-    }
-  else
-    {
-      if (strcmp (mime_type, avatar->format))
-        DEBUG ("avatar->format is %s; gdkpixbuf yields %s!",
-          avatar->format, mime_type);
-
-      g_free (mime_type);
-    }
-
-  empathy_avatar_ref (avatar);
-
-  avatar_chooser_set_image (self, avatar, pixbuf, set_locally);
+  avatar_chooser_clear_image (self);
 }
 
 /**
  * empathy_avatar_chooser_new:
+ * @account: a #TpAccount
  *
  * Creates a new #EmpathyAvatarChooser.
  *
  * Return value: a new #EmpathyAvatarChooser
  */
 GtkWidget *
-empathy_avatar_chooser_new (void)
+empathy_avatar_chooser_new (TpAccount *account)
 {
-  return g_object_new (EMPATHY_TYPE_AVATAR_CHOOSER, NULL);
+  g_return_val_if_fail (TP_IS_ACCOUNT (account), NULL);
+
+  return g_object_new (EMPATHY_TYPE_AVATAR_CHOOSER,
+      "account", account,
+      NULL);
 }
 
-/**
- * empathy_avatar_chooser_set:
- * @self: an #EmpathyAvatarChooser
- * @avatar: a new #EmpathyAvatar
- *
- * Sets the @self to display the avatar indicated by @avatar.
- */
-void
-empathy_avatar_chooser_set (EmpathyAvatarChooser *self,
-    EmpathyAvatar *avatar)
+static void
+set_avatar_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  g_return_if_fail (EMPATHY_IS_AVATAR_CHOOSER (self));
+  GSimpleAsyncResult *my_result = user_data;
+  GError *error = NULL;
 
-  if (avatar != NULL)
-    avatar_chooser_set_image_from_avatar (self, avatar, FALSE);
-  else
-    avatar_chooser_clear_image (self);
+  if (!tp_account_set_avatar_finish (TP_ACCOUNT (source), result, &error))
+    g_simple_async_result_take_error (my_result, error);
+
+  g_simple_async_result_complete (my_result);
+  g_object_unref (my_result);
 }
 
-/**
- * empathy_avatar_chooser_get_image_data:
- * @self: an #EmpathyAvatarChooser
- * @data: avatar bytes
- * @data_size: size of @data
- * @mime_type: avatar mime-type
- *
- * Gets image data about the currently selected avatar.
- */
 void
-empathy_avatar_chooser_get_image_data (EmpathyAvatarChooser  *self,
-    const gchar **data,
-    gsize *data_size,
-    const gchar **mime_type)
+empathy_avatar_chooser_apply_async (EmpathyAvatarChooser *self,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
 {
+  GSimpleAsyncResult *result;
+
   g_return_if_fail (EMPATHY_IS_AVATAR_CHOOSER (self));
 
-  if (self->priv->avatar != NULL)
+  result = g_simple_async_result_new ((GObject *) self, callback, user_data,
+      empathy_avatar_chooser_apply_async);
+
+  if (!self->priv->changed)
     {
-      if (data != NULL)
-        *data = (gchar *) self->priv->avatar->data;
-
-      if (data_size != NULL)
-        *data_size = self->priv->avatar->len;
-
-      if (mime_type != NULL)
-        *mime_type = self->priv->avatar->format;
-  }
-  else
-    {
-      if (data != NULL)
-        *data = NULL;
-
-      if (data_size != NULL)
-        *data_size = 0;
-
-      if (mime_type != NULL)
-        *mime_type = NULL;
+      g_simple_async_result_complete_in_idle (result);
+      g_object_unref (result);
+      return;
     }
+
+  self->priv->changed = FALSE;
+
+  DEBUG ("%s Account.Avatar on %s", self->priv->avatar != NULL ? "Set": "Clear",
+      tp_proxy_get_object_path (self->priv->account));
+
+  tp_account_set_avatar_async (self->priv->account,
+      self->priv->avatar != NULL ? (guchar *) self->priv->avatar->data : NULL,
+      self->priv->avatar != NULL ? self->priv->avatar->len : 0,
+      self->priv->mime_type, set_avatar_cb, result);
 }
 
-void
-empathy_avatar_chooser_set_account (EmpathyAvatarChooser *self,
-    TpAccount *account)
+gboolean
+empathy_avatar_chooser_apply_finish (EmpathyAvatarChooser *self,
+    GAsyncResult *result,
+    GError **error)
 {
-  g_return_if_fail (account != NULL);
-
-  avatar_chooser_set_connection (self, tp_account_get_connection (account));
-  g_object_notify (G_OBJECT (self), "connection");
+  empathy_implement_finish_void (self, empathy_avatar_chooser_apply_async);
 }
