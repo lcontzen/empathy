@@ -77,8 +77,6 @@ GType empathy_contact_widget_get_type (void);
  *  information about a contact.
  * @EMPATHY_CONTACT_WIDGET_EDIT_ALIAS: Show a #GtkEntry allowing changes to the
  *  contact's alias.
- * @EMPATHY_CONTACT_WIDGET_EDIT_AVATAR: Show an #EmpathyAvatarChooser allowing
- *  changes to the contact's avatar.
  * @EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT: Show an #EmpathyAccountChooser allowing
  *  changes to the contact's account.
  * @EMPATHY_CONTACT_WIDGET_EDIT_ID: Show a #GtkEntry allowing changes to the
@@ -95,7 +93,6 @@ typedef enum
 {
   EMPATHY_CONTACT_WIDGET_EDIT_NONE    = 0,
   EMPATHY_CONTACT_WIDGET_EDIT_ALIAS   = 1 << 0,
-  EMPATHY_CONTACT_WIDGET_EDIT_AVATAR  = 1 << 1,
   EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT = 1 << 2,
   EMPATHY_CONTACT_WIDGET_EDIT_ID      = 1 << 3,
   EMPATHY_CONTACT_WIDGET_EDIT_GROUPS  = 1 << 4,

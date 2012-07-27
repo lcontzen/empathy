@@ -799,7 +799,6 @@ create_contact_info_editor (EmpathyAccountsDialog *self,
   GtkWidget *editor, *alig;
   EmpathyContact *contact;
   EmpathyContactWidgetFlags flags;
-  TpConnection *conn;
 
   contact = empathy_contact_dup_from_tp_contact (tp_contact);
 
@@ -809,11 +808,6 @@ create_contact_info_editor (EmpathyAccountsDialog *self,
       EMPATHY_CONTACT_WIDGET_NO_STATUS |
       EMPATHY_CONTACT_WIDGET_EDIT_DETAILS |
       EMPATHY_CONTACT_WIDGET_NO_ACCOUNT;
-
-  conn = tp_contact_get_connection (tp_contact);
-  if (tp_proxy_has_interface_by_id (conn,
-        TP_IFACE_QUARK_CONNECTION_INTERFACE_AVATARS))
-    flags |= EMPATHY_CONTACT_WIDGET_EDIT_AVATAR;
 
   /* create the contact info editor for this account */
   editor = empathy_contact_widget_new (contact, flags);

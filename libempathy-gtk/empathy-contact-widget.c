@@ -1122,49 +1122,6 @@ widget_avatar_button_press_event_cb (GtkWidget *widget,
 }
 
 static void
-set_avatar_cb (GObject *source,
-    GAsyncResult *res,
-    gpointer user_data)
-{
-  GError *error = NULL;
-
-  if (!tp_account_set_avatar_finish (TP_ACCOUNT (source), res, &error)) {
-      DEBUG ("Failed to set Account.Avatar: %s", error->message);
-      g_error_free (error);
-  }
-}
-
-static void
-set_avatar_on_account (TpAccount *account,
-    const gchar *data,
-    gsize size,
-    const gchar *mime_type)
-{
-  DEBUG ("%s Account.Avatar on %s", size > 0 ? "Set": "Clear",
-      tp_proxy_get_object_path (account));
-
-  tp_account_set_avatar_async (account, (const guchar *) data, size,
-      mime_type, set_avatar_cb, NULL);
-}
-
-static void
-contact_widget_avatar_changed_cb (EmpathyAvatarChooser *chooser,
-    EmpathyContactWidget *self)
-{
-  const gchar *data;
-  gsize size;
-  const gchar *mime_type;
-  TpAccount *account;
-
-  empathy_avatar_chooser_get_image_data (
-      EMPATHY_AVATAR_CHOOSER (self->priv->widget_avatar),
-      &data, &size, &mime_type);
-
-  account = empathy_contact_get_account (self->priv->contact);
-  set_avatar_on_account (account, data, size, mime_type);
-}
-
-static void
 set_nickname_cb (GObject *source,
     GAsyncResult *res,
     gpointer user_data)
@@ -1258,42 +1215,6 @@ contact_widget_entry_alias_focus_event_cb (GtkEditable *editable,
 }
 
 static void
-update_avatar_chooser_account_cb (EmpathyAccountChooser *account_chooser,
-                                  EmpathyAvatarChooser *avatar_chooser)
-{
-  TpAccount *account;
-
-  account = empathy_account_chooser_get_account (account_chooser);
-  if (account == NULL)
-    return;
-
-  empathy_avatar_chooser_set_account (avatar_chooser, account);
-}
-
-static void
-contact_widget_avatar_notify_cb (EmpathyContactWidget *self)
-{
-  EmpathyAvatar *avatar = NULL;
-
-  if (self->priv->contact)
-      avatar = empathy_contact_get_avatar (self->priv->contact);
-
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_AVATAR)
-    {
-      g_signal_handlers_block_by_func (self->priv->widget_avatar,
-          contact_widget_avatar_changed_cb,
-          self);
-      empathy_avatar_chooser_set (
-          EMPATHY_AVATAR_CHOOSER (self->priv->widget_avatar), avatar);
-      g_signal_handlers_unblock_by_func (self->priv->widget_avatar,
-          contact_widget_avatar_changed_cb, self);
-    }
-  else
-      empathy_avatar_image_set (
-          EMPATHY_AVATAR_IMAGE (self->priv->widget_avatar), avatar);
-}
-
-static void
 contact_widget_name_notify_cb (EmpathyContactWidget *self)
 {
   if (GTK_IS_ENTRY (self->priv->widget_alias))
@@ -1335,8 +1256,6 @@ contact_widget_remove_contact (EmpathyContactWidget *self)
           contact_widget_name_notify_cb, self);
       g_signal_handlers_disconnect_by_func (self->priv->contact,
           contact_widget_presence_notify_cb, self);
-      g_signal_handlers_disconnect_by_func (self->priv->contact,
-          contact_widget_avatar_notify_cb, self);
 
       tp_contact = empathy_contact_get_tp_contact (self->priv->contact);
       if (tp_contact != NULL)
@@ -1374,8 +1293,6 @@ contact_widget_contact_update (EmpathyContactWidget *self)
       g_signal_connect_swapped (self->priv->contact,
           "notify::presence-message",
           G_CALLBACK (contact_widget_presence_notify_cb), self);
-      g_signal_connect_swapped (self->priv->contact, "notify::avatar",
-          G_CALLBACK (contact_widget_avatar_notify_cb), self);
 
       account = empathy_contact_get_account (self->priv->contact);
       id = empathy_contact_get_id (self->priv->contact);
@@ -1397,12 +1314,6 @@ contact_widget_contact_update (EmpathyContactWidget *self)
     }
   else
     {
-      if (EMPATHY_IS_AVATAR_CHOOSER (self->priv->widget_avatar))
-        {
-          empathy_avatar_chooser_set_account (
-              EMPATHY_AVATAR_CHOOSER (self->priv->widget_avatar), account);
-        }
-
       if ((self->priv->flags & EMPATHY_CONTACT_WIDGET_NO_ACCOUNT) == 0)
         {
           if (account)
@@ -1432,7 +1343,6 @@ contact_widget_contact_update (EmpathyContactWidget *self)
     {
       contact_widget_name_notify_cb (self);
       contact_widget_presence_notify_cb (self);
-      contact_widget_avatar_notify_cb (self);
 
       gtk_widget_show (self->priv->label_alias);
       gtk_widget_show (self->priv->widget_alias);
@@ -1639,24 +1549,7 @@ contact_widget_contact_setup (EmpathyContactWidget *self)
       gtk_widget_show (self->priv->widget_account);
     }
 
-  /* Set up avatar chooser/display */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_AVATAR)
-    {
-      self->priv->widget_avatar = empathy_avatar_chooser_new ();
-      g_signal_connect (self->priv->widget_avatar, "changed",
-            G_CALLBACK (contact_widget_avatar_changed_cb),
-            self);
-      if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT)
-        {
-          g_signal_connect (self->priv->widget_account, "changed",
-              G_CALLBACK (update_avatar_chooser_account_cb),
-              self->priv->widget_avatar);
-          update_avatar_chooser_account_cb (
-              EMPATHY_ACCOUNT_CHOOSER (self->priv->widget_account),
-              EMPATHY_AVATAR_CHOOSER (self->priv->widget_avatar));
-        }
-    }
-  else
+  /* Set up avatar display */
     {
       self->priv->widget_avatar = empathy_avatar_image_new ();
 
