@@ -204,6 +204,7 @@ empathy_calendar_button_init (EmpathyCalendarButton *self)
   gtk_button_set_alignment (GTK_BUTTON (self->priv->button_date), 0, 0.5);
 
   gtk_box_pack_start (GTK_BOX (self), self->priv->button_date, TRUE, TRUE, 0);
+  gtk_widget_show (self->priv->button_date);
 
   /* Clear */
   self->priv->button_clear = gtk_button_new ();
@@ -211,12 +212,14 @@ empathy_calendar_button_init (EmpathyCalendarButton *self)
   image = gtk_image_new_from_stock (GTK_STOCK_CLEAR,
       GTK_ICON_SIZE_MENU);
   gtk_button_set_image (GTK_BUTTON (self->priv->button_clear), image);
+  gtk_widget_show (image);
 
   g_signal_connect (self->priv->button_clear, "clicked",
       G_CALLBACK (empathy_calendar_button_clear_clicked), self);
 
   gtk_box_pack_start (GTK_BOX (self), self->priv->button_clear,
       FALSE, FALSE, 0);
+  gtk_widget_show (self->priv->button_clear);
 }
 
 static void

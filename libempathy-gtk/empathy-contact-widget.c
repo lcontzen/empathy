@@ -468,7 +468,7 @@ contact_widget_details_update_edit (EmpathyContactWidget *self)
             G_CALLBACK (contact_widget_details_changed_cb), self);
         }
 
-      gtk_widget_show_all (w);
+      gtk_widget_show (w);
       add_row (GTK_GRID (self->priv->grid_contact), label, w);
 
       g_object_set_data ((GObject *) w, DATA_FIELD, field);
