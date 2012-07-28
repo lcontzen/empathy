@@ -48,7 +48,7 @@
 #include <libempathy-gtk/empathy-account-widget-irc.h>
 #include <libempathy-gtk/empathy-account-widget-sip.h>
 #include <libempathy-gtk/empathy-cell-renderer-activatable.h>
-#include <libempathy-gtk/empathy-contact-widget.h>
+#include <libempathy-gtk/empathy-user-info.h>
 #include <libempathy-gtk/empathy-images.h>
 #include <libempathy-gtk/empathy-local-xmpp-assistant-widget.h>
 #include <libempathy-gtk/empathy-new-account-dialog.h>
@@ -105,6 +105,7 @@ typedef struct {
   GtkWidget *label_name;
   GtkWidget *label_type;
   GtkWidget *dialog_content;
+  GtkWidget *user_info;
 
   GtkWidget *notebook_account;
   GtkWidget *spinner;
@@ -764,71 +765,14 @@ account_dialow_show_edit_params_dialog (EmpathyAccountsDialog *dialog,
 }
 
 static void
-account_dialog_show_contact_details_failed (EmpathyAccountsDialog *dialog,
-    gboolean error)
-{
-  EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
-  GtkWidget *infobar, *label;
-
-  infobar = gtk_info_bar_new ();
-
-  if (error)
-    {
-      gtk_info_bar_set_message_type (GTK_INFO_BAR (infobar), GTK_MESSAGE_ERROR);
-      label = gtk_label_new (_("Failed to retrieve your personal information "
-                               "from the server."));
-    }
-  else
-    {
-      gtk_info_bar_set_message_type (GTK_INFO_BAR (infobar), GTK_MESSAGE_INFO);
-      label = gtk_label_new (_("Go online to edit your personal information."));
-    }
-
-  gtk_container_add (
-      GTK_CONTAINER (gtk_info_bar_get_content_area (GTK_INFO_BAR (infobar))),
-      label);
-  gtk_box_pack_start (GTK_BOX (priv->dialog_content), infobar, FALSE, FALSE, 0);
-  gtk_widget_show_all (infobar);
-}
-
-static void
-create_contact_info_editor (EmpathyAccountsDialog *self,
-    TpContact *tp_contact)
-{
-  EmpathyAccountsDialogPriv *priv = GET_PRIV (self);
-  GtkWidget *editor, *alig;
-  EmpathyContact *contact;
-  EmpathyContactWidgetFlags flags;
-
-  contact = empathy_contact_dup_from_tp_contact (tp_contact);
-
-  alig = gtk_alignment_new (0.5, 0, 1, 1);
-
-  flags = EMPATHY_CONTACT_WIDGET_EDIT_ALIAS |
-      EMPATHY_CONTACT_WIDGET_NO_STATUS |
-      EMPATHY_CONTACT_WIDGET_EDIT_DETAILS |
-      EMPATHY_CONTACT_WIDGET_NO_ACCOUNT;
-
-  /* create the contact info editor for this account */
-  editor = empathy_contact_widget_new (contact, flags);
-
-  gtk_box_pack_start (GTK_BOX (priv->dialog_content), alig, TRUE, TRUE, 0);
-  gtk_container_add (GTK_CONTAINER (alig), editor);
-  gtk_widget_show (alig);
-  gtk_widget_show (editor);
-  g_object_unref (contact);
-}
-
-static void
 account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
     EmpathyAccountSettings *settings)
 {
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
   const gchar *icon_name;
   TpAccount *account;
-  TpConnection *conn = NULL;
-  TpContact *contact = NULL;
   GtkWidget *bbox, *button;
+  GtkWidget *alig;
 
   account = empathy_account_settings_get_account (settings);
 
@@ -837,24 +781,12 @@ account_dialog_create_dialog_content (EmpathyAccountsDialog *dialog,
       priv->dialog_content);
   gtk_widget_show (priv->dialog_content);
 
-  /* request the self contact */
-  if (account != NULL)
-    conn = tp_account_get_connection (account);
-
-  if (conn != NULL &&
-      tp_proxy_get_invalidated (conn) == NULL)
-    {
-      contact = tp_connection_get_self_contact (conn);
-    }
-
-  if (contact != NULL)
-    {
-      create_contact_info_editor (dialog, contact);
-    }
-  else
-    {
-      account_dialog_show_contact_details_failed (dialog, FALSE);
-    }
+  alig = gtk_alignment_new (0.5, 0, 1, 1);
+  priv->user_info = empathy_user_info_new (account);
+  gtk_container_add (GTK_CONTAINER (alig), priv->user_info);
+  gtk_box_pack_start (GTK_BOX (priv->dialog_content), alig, TRUE, TRUE, 0);
+  gtk_widget_show (alig);
+  gtk_widget_show (priv->user_info);
 
   bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
   gtk_button_box_set_layout (GTK_BUTTON_BOX (bbox), GTK_BUTTONBOX_END);
@@ -1074,6 +1006,12 @@ accounts_dialog_update_settings (EmpathyAccountsDialog *dialog,
    * one for the account selected */
   gtk_widget_show (priv->vbox_details);
 
+  if (priv->user_info != NULL)
+    {
+      empathy_user_info_apply_async ((EmpathyUserInfo *) priv->user_info,
+          NULL, NULL);
+      priv->user_info = NULL;
+    }
   if (priv->dialog_content)
     {
       gtk_widget_destroy (priv->dialog_content);
@@ -2556,6 +2494,13 @@ do_dispose (GObject *obj)
 {
   EmpathyAccountsDialog *dialog = EMPATHY_ACCOUNTS_DIALOG (obj);
   EmpathyAccountsDialogPriv *priv = GET_PRIV (dialog);
+
+  if (priv->user_info != NULL)
+    {
+      empathy_user_info_apply_async ((EmpathyUserInfo *) priv->user_info,
+          NULL, NULL);
+      priv->user_info = NULL;
+    }
 
   if (priv->connecting_id != 0)
     {
