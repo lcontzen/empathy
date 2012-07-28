@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=empathy&keywords=I18N+L10N&component=General\n"
 "POT-Creation-Date: 2012-07-26 13:26+0000\n"
-"PO-Revision-Date: 2012-07-28 17:43+0200\n"
+"PO-Revision-Date: 2012-07-28 18:00+0200\n"
 "Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
 "Language-Team: Magyar <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -329,13 +329,13 @@ msgid "Path of the Adium theme to use"
 msgstr "A használandó Adium téma útvonala"
 
 #: ../data/org.gnome.Empathy.gschema.xml.h:65
-#, fuzzy
 #| msgid "Path of the Adium theme to use if the theme used for chat is Adium."
 msgid ""
 "Path of the Adium theme to use if the theme used for chat is Adium. "
 "Deprecated."
 msgstr ""
-"A használandó Adium téma útvonala, ha a csevegéshez használ téma Adium."
+"A használandó Adium téma útvonala, ha a csevegéshez használ téma Adium. "
+"Elavult."
 
 #: ../data/org.gnome.Empathy.gschema.xml.h:66
 msgid "Enable WebKit Developer Tools"
@@ -2688,10 +2688,9 @@ msgid "_Decline"
 msgstr "_Elutasítás"
 
 #: ../libempathy-gtk/empathy-subscription-dialog.c:282
-#, fuzzy
 #| msgid "Accept"
 msgid "_Accept"
-msgstr "Elfogadás"
+msgstr "_Elfogadás"
 
 #: ../libempathy-gtk/empathy-theme-adium.c:1126
 #, c-format
@@ -4493,10 +4492,9 @@ msgstr "Állapot"
 
 #: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:173
 msgid "Done"
-msgstr ""
+msgstr "Kész"
 
 #: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:181
-#, fuzzy
 #| msgid "Enter your account details"
 msgid "Please enter your account details"
 msgstr "Adja meg fiókjának adatait"
