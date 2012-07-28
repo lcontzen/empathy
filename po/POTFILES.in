@@ -68,6 +68,7 @@ libempathy-gtk/empathy-theme-adium.c
 libempathy-gtk/empathy-theme-manager.c
 libempathy-gtk/empathy-tls-dialog.c
 libempathy-gtk/empathy-ui-utils.c
+libempathy-gtk/empathy-user-info.c
 libempathy-gtk/empathy-webkit-utils.c
 libempathy-gtk/totem-subtitle-encoding.c
 
