@@ -70,36 +70,7 @@ GType empathy_contact_widget_get_type (void);
     EMPATHY_TYPE_CONTACT_WIDGET, \
     EmpathyContactWidgetClass))
 
-/**
- * EmpathyContactWidgetFlags:
- * @EMPATHY_CONTACT_WIDGET_EDIT_NONE: Don't show any widgets to edit any details
- *  of the contact. This should be the option for widgets that merely display
- *  information about a contact.
- * @EMPATHY_CONTACT_WIDGET_EDIT_ALIAS: Show a #GtkEntry allowing changes to the
- *  contact's alias.
- * @EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT: Show an #EmpathyAccountChooser allowing
- *  changes to the contact's account.
- * @EMPATHY_CONTACT_WIDGET_EDIT_ID: Show a #GtkEntry allowing changes to the
- *  contact's identifier.
- * @EMPATHY_CONTACT_WIDGET_EDIT_GROUPS: Show a widget to change the groups the
- *  contact is in.
- * @EMPATHY_CONTACT_WIDGET_FOR_TOOLTIP: Make widgets more designed for a tooltip.
- *  For example, make widgets not selectable.
- *
- * Flags used when creating an #EmpathyContactWidget to specify which features
- * should be available.
- */
-typedef enum
-{
-  EMPATHY_CONTACT_WIDGET_EDIT_NONE    = 0,
-  EMPATHY_CONTACT_WIDGET_EDIT_ALIAS   = 1 << 0,
-  EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT = 1 << 2,
-  EMPATHY_CONTACT_WIDGET_EDIT_ID      = 1 << 3,
-  EMPATHY_CONTACT_WIDGET_EDIT_GROUPS  = 1 << 4,
-} EmpathyContactWidgetFlags;
-
-GtkWidget * empathy_contact_widget_new (EmpathyContact *contact,
-    EmpathyContactWidgetFlags flags);
+GtkWidget * empathy_contact_widget_new (EmpathyContact *contact);
 EmpathyContact *empathy_contact_widget_get_contact (GtkWidget *widget);
 void empathy_contact_widget_set_contact (GtkWidget *widget,
     EmpathyContact *contact);

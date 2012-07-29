@@ -77,7 +77,6 @@ G_DEFINE_TYPE (EmpathyContactWidget, empathy_contact_widget, GTK_TYPE_BOX)
 struct _EmpathyContactWidgetPriv
 {
   EmpathyContact *contact;
-  EmpathyContactWidgetFlags flags;
   guint widget_id_timeout;
   gulong fav_sig_id;
 
@@ -140,8 +139,7 @@ contact_widget_client_setup (EmpathyContactWidget *self)
 static void
 contact_widget_groups_update (EmpathyContactWidget *self)
 {
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_GROUPS &&
-      self->priv->contact != NULL)
+  if (self->priv->contact != NULL)
     {
       FolksPersona *persona =
           empathy_contact_get_persona (self->priv->contact);
@@ -423,25 +421,19 @@ contact_widget_contact_update (EmpathyContactWidget *self)
     }
 
   /* Update account widget */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT)
+  if (account)
     {
-      if (account)
-        {
-          g_signal_handlers_block_by_func (self->priv->widget_account,
-                   contact_widget_change_contact,
-                   self);
-          empathy_account_chooser_set_account (
-              EMPATHY_ACCOUNT_CHOOSER (self->priv->widget_account), account);
-          g_signal_handlers_unblock_by_func (self->priv->widget_account,
-              contact_widget_change_contact, self);
-        }
+      g_signal_handlers_block_by_func (self->priv->widget_account,
+               contact_widget_change_contact,
+               self);
+      empathy_account_chooser_set_account (
+          EMPATHY_ACCOUNT_CHOOSER (self->priv->widget_account), account);
+      g_signal_handlers_unblock_by_func (self->priv->widget_account,
+          contact_widget_change_contact, self);
     }
 
   /* Update id widget */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ID)
-      gtk_entry_set_text (GTK_ENTRY (self->priv->widget_id), id ? id : "");
-  else
-      gtk_label_set_label (GTK_LABEL (self->priv->widget_id), id ? id : "");
+  gtk_entry_set_text (GTK_ENTRY (self->priv->widget_id), id ? id : "");
 
   /* Update other widgets */
   if (self->priv->contact)
@@ -518,38 +510,24 @@ static void
 contact_widget_change_contact (EmpathyContactWidget *self)
 {
   TpConnection *connection;
+  const gchar *id;
 
   connection = empathy_account_chooser_get_connection (
       EMPATHY_ACCOUNT_CHOOSER (self->priv->widget_account));
   if (!connection)
       return;
 
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ID)
+  id = gtk_entry_get_text (GTK_ENTRY (self->priv->widget_id));
+  if (!EMP_STR_EMPTY (id))
     {
-      const gchar *id;
+      EmpathyClientFactory *factory;
 
-      id = gtk_entry_get_text (GTK_ENTRY (self->priv->widget_id));
-      if (!EMP_STR_EMPTY (id))
-        {
-          EmpathyClientFactory *factory;
+      factory = empathy_client_factory_dup ();
 
-          factory = empathy_client_factory_dup ();
+      empathy_client_factory_dup_contact_by_id_async (factory, connection,
+          id, contact_widget_got_contact_cb, g_object_ref (self));
 
-          empathy_client_factory_dup_contact_by_id_async (factory, connection,
-              id, contact_widget_got_contact_cb, g_object_ref (self));
-
-          g_object_unref (factory);
-        }
-    }
-  else
-    {
-      EmpathyContact *contact;
-
-      contact = empathy_contact_dup_from_tp_contact (
-          tp_connection_get_self_contact (connection));
-
-      contact_widget_set_contact (self, contact);
-      g_object_unref (contact);
+      g_object_unref (factory);
     }
 }
 
@@ -599,84 +577,53 @@ contact_widget_contact_setup (EmpathyContactWidget *self)
         self->priv->label_status, TRUE, TRUE, 0);
   gtk_widget_show (self->priv->label_status);
 
-  /* Setup account label/chooser */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT)
-    {
-      self->priv->widget_account = empathy_account_chooser_new ();
-
-      g_signal_connect_swapped (self->priv->widget_account, "changed",
-            G_CALLBACK (contact_widget_change_contact),
-            self);
-    }
-
-  if (self->priv->widget_account != NULL)
-    {
-      gtk_grid_attach (GTK_GRID (self->priv->grid_contact),
-          self->priv->widget_account,
-          2, 0, 1, 1);
-
-      gtk_widget_show (self->priv->widget_account);
-    }
+  /* Setup account chooser */
+  self->priv->widget_account = empathy_account_chooser_new ();
+  g_signal_connect_swapped (self->priv->widget_account, "changed",
+        G_CALLBACK (contact_widget_change_contact),
+        self);
+  gtk_grid_attach (GTK_GRID (self->priv->grid_contact),
+      self->priv->widget_account,
+      2, 0, 1, 1);
+  gtk_widget_show (self->priv->widget_account);
 
   /* Set up avatar display */
-    {
-      self->priv->widget_avatar = empathy_avatar_image_new ();
+  self->priv->widget_avatar = empathy_avatar_image_new ();
 
-      g_signal_connect (self->priv->widget_avatar, "popup-menu",
-          G_CALLBACK (widget_avatar_popup_menu_cb), self);
-      g_signal_connect (self->priv->widget_avatar, "button-press-event",
-          G_CALLBACK (widget_avatar_button_press_event_cb), self);
-    }
-
+  g_signal_connect (self->priv->widget_avatar, "popup-menu",
+      G_CALLBACK (widget_avatar_popup_menu_cb), self);
+  g_signal_connect (self->priv->widget_avatar, "button-press-event",
+      G_CALLBACK (widget_avatar_button_press_event_cb), self);
   gtk_box_pack_start (GTK_BOX (self->priv->vbox_avatar),
           self->priv->widget_avatar,
           FALSE, FALSE,
           6);
   gtk_widget_show (self->priv->widget_avatar);
 
-  /* Setup id label/entry */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ID)
-    {
-      self->priv->widget_id = gtk_entry_new ();
-      g_signal_connect (self->priv->widget_id, "focus-out-event",
-            G_CALLBACK (contact_widget_id_focus_out_cb),
-            self);
-      g_signal_connect (self->priv->widget_id, "changed",
-            G_CALLBACK (contact_widget_id_changed_cb),
-            self);
-    }
-  else
-    {
-      self->priv->widget_id = gtk_label_new (NULL);
-      gtk_label_set_selectable (GTK_LABEL (self->priv->widget_id), TRUE);
-      gtk_misc_set_alignment (GTK_MISC (self->priv->widget_id), 0, 0.5);
-    }
-
+  /* Setup id entry */
+  self->priv->widget_id = gtk_entry_new ();
+  g_signal_connect (self->priv->widget_id, "focus-out-event",
+        G_CALLBACK (contact_widget_id_focus_out_cb),
+        self);
+  g_signal_connect (self->priv->widget_id, "changed",
+        G_CALLBACK (contact_widget_id_changed_cb),
+        self);
   gtk_grid_attach (GTK_GRID (self->priv->grid_contact), self->priv->widget_id,
       2, 1, 1, 1);
   gtk_widget_set_hexpand (self->priv->widget_id, TRUE);
 
   gtk_widget_show (self->priv->widget_id);
 
-  /* Setup alias label/entry */
-  if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ALIAS)
-    {
-      self->priv->widget_alias = gtk_entry_new ();
+  /* Setup alias entry */
+  self->priv->widget_alias = gtk_entry_new ();
 
-      g_signal_connect (self->priv->widget_alias, "focus-out-event",
-            G_CALLBACK (contact_widget_entry_alias_focus_event_cb),
-            self);
+  g_signal_connect (self->priv->widget_alias, "focus-out-event",
+        G_CALLBACK (contact_widget_entry_alias_focus_event_cb),
+        self);
 
-      /* Make return activate the window default (the Close button) */
-      gtk_entry_set_activates_default (GTK_ENTRY (self->priv->widget_alias),
-          TRUE);
-    }
-  else
-    {
-      self->priv->widget_alias = gtk_label_new (NULL);
-      gtk_label_set_selectable (GTK_LABEL (self->priv->widget_alias), TRUE);
-      gtk_misc_set_alignment (GTK_MISC (self->priv->widget_alias), 0, 0.5);
-    }
+  /* Make return activate the window default (the Close button) */
+  gtk_entry_set_activates_default (GTK_ENTRY (self->priv->widget_alias),
+      TRUE);
 
   gtk_grid_attach (GTK_GRID (self->priv->grid_contact),
       self->priv->widget_alias, 2, 2, 1, 1);
@@ -708,15 +655,13 @@ empathy_contact_widget_finalize (GObject *object)
 /**
  * empathy_contact_widget_new:
  * @contact: an #EmpathyContact
- * @flags: #EmpathyContactWidgetFlags for the new contact widget
  *
  * Creates a new #EmpathyContactWidget.
  *
  * Return value: a new #EmpathyContactWidget
  */
 GtkWidget *
-empathy_contact_widget_new (EmpathyContact *contact,
-                            EmpathyContactWidgetFlags flags)
+empathy_contact_widget_new (EmpathyContact *contact)
 {
   EmpathyContactWidget *self;
   gchar *filename;
@@ -726,8 +671,6 @@ empathy_contact_widget_new (EmpathyContact *contact,
   g_return_val_if_fail (contact == NULL || EMPATHY_IS_CONTACT (contact), NULL);
 
   self = g_object_new (EMPATHY_TYPE_CONTACT_WIDGET, NULL);
-
-  self->priv->flags = flags;
 
   filename = empathy_file_lookup ("empathy-contact-widget.ui",
       "libempathy-gtk");
@@ -758,8 +701,7 @@ empathy_contact_widget_new (EmpathyContact *contact,
 
   if (contact != NULL)
     contact_widget_set_contact (self, contact);
-  else if (self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT ||
-      self->priv->flags & EMPATHY_CONTACT_WIDGET_EDIT_ID)
+  else
     contact_widget_change_contact (self);
 
   g_object_unref (gui);

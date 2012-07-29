@@ -134,11 +134,7 @@ empathy_new_individual_dialog_show_with_individual (GtkWindow *parent,
   if (individual != NULL)
     contact = empathy_contact_dup_from_folks_individual (individual);
 
-  contact_widget = empathy_contact_widget_new (contact,
-      EMPATHY_CONTACT_WIDGET_EDIT_ALIAS |
-      EMPATHY_CONTACT_WIDGET_EDIT_ACCOUNT |
-      EMPATHY_CONTACT_WIDGET_EDIT_ID |
-      EMPATHY_CONTACT_WIDGET_EDIT_GROUPS);
+  contact_widget = empathy_contact_widget_new (contact);
   gtk_container_set_border_width (GTK_CONTAINER (contact_widget), 8);
   gtk_box_pack_start (
       GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
