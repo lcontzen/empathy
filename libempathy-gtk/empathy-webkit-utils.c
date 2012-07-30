@@ -20,7 +20,7 @@
 
 #include "config.h"
 
-#include <glib/gi18n.h>
+#include <glib/gi18n-lib.h>
 
 #include "empathy-webkit-utils.h"
 #include "empathy-smiley-manager.h"

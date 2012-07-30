@@ -25,8 +25,6 @@
 
 #include "config.h"
 
-#include <glib/gi18n.h>
-
 #include <telepathy-glib/util.h>
 
 #define GOA_API_IS_SUBJECT_TO_CHANGE /* awesome! */
