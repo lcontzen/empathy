@@ -4341,10 +4341,8 @@ msgid "Help"
 msgstr "ヘルプ(_H)"
 
 #: ../src/empathy-roster-window-menubar.ui.h:16
-#, fuzzy
-#| msgid "Empathy"
 msgid "About Empathy"
-msgstr "Empathy"
+msgstr "このアプリケーションについて"
 
 #: ../src/empathy-roster-window-menubar.ui.h:17
 #: ../src/empathy-status-icon.ui.h:5
