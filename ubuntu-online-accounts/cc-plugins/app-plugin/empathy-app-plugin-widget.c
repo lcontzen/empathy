@@ -181,7 +181,7 @@ manager_prepared_cb (GObject *source,
   GList *accounts;
   GError *error = NULL;
 
-  if (!tp_account_manager_prepare_all_finish (manager, result, &error))
+  if (!tp_proxy_prepare_finish (manager, result, &error))
     {
       g_debug ("Error preparing Account Manager: %s", error->message);
       g_clear_error (&error);
@@ -226,7 +226,6 @@ empathy_app_plugin_widget_constructed (GObject *object)
       ((GObjectClass *) empathy_app_plugin_widget_parent_class)->constructed;
   GtkWidget *top;
   TpAccountManager *manager;
-  TpSimpleClientFactory *factory;
 
   if (chain_up != NULL)
     chain_up (object);
@@ -241,22 +240,7 @@ empathy_app_plugin_widget_constructed (GObject *object)
   /* Prepare tp's account manager to find the TpAccount corresponding to our
    * AgAccount */
   manager = tp_account_manager_dup ();
-  factory = tp_proxy_get_factory (manager);
-  tp_simple_client_factory_add_account_features_varargs (factory,
-      TP_ACCOUNT_FEATURE_STORAGE,
-      TP_ACCOUNT_FEATURE_CONNECTION,
-      0);
-  tp_simple_client_factory_add_connection_features_varargs (factory,
-      TP_CONNECTION_FEATURE_AVATAR_REQUIREMENTS,
-      TP_CONNECTION_FEATURE_CONTACT_INFO,
-      0);
-  tp_simple_client_factory_add_contact_features_varargs (factory,
-      TP_CONTACT_FEATURE_ALIAS,
-      TP_CONTACT_FEATURE_AVATAR_DATA,
-      TP_CONTACT_FEATURE_CONTACT_INFO,
-      TP_CONTACT_FEATURE_INVALID,
-      0);
-  tp_account_manager_prepare_all_async (manager,
+  tp_proxy_prepare_async (manager, NULL,
       manager_prepared_cb, g_object_ref (self));
   g_object_unref (manager);
 }

@@ -289,7 +289,7 @@ manager_prepared_cb (GObject *source,
   GList *accounts;
   GError *error = NULL;
 
-  if (!tp_account_manager_prepare_all_finish (manager, result, &error))
+  if (!tp_proxy_prepare_finish (manager, result, &error))
     {
       g_debug ("Error preparing Account Manager: %s", error->message);
       g_clear_error (&error);
@@ -341,16 +341,12 @@ empathy_accounts_plugin_widget_constructed (GObject *object)
   if (self->priv->account->id != 0)
     {
       TpAccountManager *manager;
-      TpSimpleClientFactory *factory;
 
       /* Prepare tp's account manager to find the TpAccount corresponding to our
        * AgAccount */
       manager = tp_account_manager_dup ();
-      factory = tp_proxy_get_factory (manager);
-      tp_simple_client_factory_add_account_features_varargs (factory,
-          TP_ACCOUNT_FEATURE_STORAGE,
-          0);
-      tp_account_manager_prepare_all_async (manager,
+
+      tp_proxy_prepare_async (manager, NULL,
           manager_prepared_cb, g_object_ref (self));
       g_object_unref (manager);
       return;

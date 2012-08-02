@@ -22,6 +22,8 @@
 
 #include "empathy-app-plugin.h"
 
+#include <libempathy/empathy-client-factory.h>
+
 #include "empathy-app-plugin-widget.h"
 
 G_DEFINE_TYPE (EmpathyAppPlugin, empathy_app_plugin, AP_TYPE_APPLICATION_PLUGIN)
@@ -60,6 +62,19 @@ empathy_app_plugin_class_init (EmpathyAppPluginClass *klass)
 static void
 empathy_app_plugin_init (EmpathyAppPlugin *self)
 {
+  if (tp_account_manager_can_set_default ())
+    {
+      EmpathyClientFactory *factory;
+      TpAccountManager *am;
+
+      factory = empathy_client_factory_dup ();
+      am = tp_account_manager_new_with_factory (
+          TP_SIMPLE_CLIENT_FACTORY (factory));
+      tp_account_manager_set_default (am);
+
+      g_object_unref (factory);
+      g_object_unref (am);
+    }
 }
 
 GType
