@@ -2658,9 +2658,8 @@ empathy_accounts_dialog_show (GtkWindow *parent,
   return GTK_WIDGET (dialog);
 }
 
-void
-empathy_accounts_dialog_show_application (GdkScreen *screen,
-    TpAccount *selected_account,
+static void
+launch_empathy_accounts (TpAccount *selected_account,
     gboolean if_needed,
     gboolean hidden)
 {
@@ -2688,6 +2687,15 @@ empathy_accounts_dialog_show_application (GdkScreen *screen,
   empathy_launch_program (BIN_DIR, "empathy-accounts", args->str);
 
   g_string_free (args, TRUE);
+}
+
+void
+empathy_accounts_dialog_show_application (GdkScreen *screen,
+    TpAccount *selected_account,
+    gboolean if_needed,
+    gboolean hidden)
+{
+  launch_empathy_accounts (selected_account, if_needed, hidden);
 }
 
 gboolean
