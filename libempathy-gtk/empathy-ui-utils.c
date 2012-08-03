@@ -37,6 +37,7 @@
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <gio/gdesktopappinfo.h>
 
 #include <telepathy-glib/util.h>
 #include <folks/folks.h>
@@ -1640,4 +1641,51 @@ empathy_set_css_provider (GtkWidget *widget)
 out:
   g_free (filename);
   g_object_unref (provider);
+}
+
+static gboolean
+launch_app_info (GAppInfo *app_info,
+    GError **error)
+{
+  GdkAppLaunchContext *context = NULL;
+  GdkDisplay *display;
+  GError *err = NULL;
+
+  display = gdk_display_get_default ();
+  context = gdk_display_get_app_launch_context (display);
+
+  if (!g_app_info_launch (app_info, NULL, (GAppLaunchContext *) context,
+        &err))
+    {
+      DEBUG ("Failed to launch %s: %s",
+          g_app_info_get_display_name (app_info), err->message);
+      g_propagate_error (error, err);
+      return FALSE;
+    }
+
+  tp_clear_object (&context);
+  return TRUE;
+}
+
+gboolean
+empathy_launch_external_app (const gchar *desktop_file,
+    GError **error)
+{
+  GDesktopAppInfo *desktop_info;
+  gboolean result;
+
+  desktop_info = g_desktop_app_info_new (desktop_file);
+  if (desktop_info == NULL)
+    {
+      DEBUG ("%s not found", desktop_file);
+
+      g_set_error (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+          "%s not found", desktop_file);
+      return FALSE;
+    }
+
+  result = launch_app_info (G_APP_INFO (desktop_info), error);
+  g_object_unref (desktop_info);
+
+  return result;
 }

@@ -662,22 +662,6 @@ start_external_app (GAppInfo *app_info)
 }
 
 static void
-start_from_desktop_file (const char *desktop)
-{
-  GDesktopAppInfo *desktop_info;
-
-  desktop_info = g_desktop_app_info_new (desktop);
-  if (desktop_info == NULL)
-    {
-      g_critical ("Could not locate '%s'", desktop);
-      return;
-    }
-
-  start_external_app (G_APP_INFO (desktop_info));
-  g_object_unref (desktop_info);
-}
-
-static void
 use_external_storage_provider (EmpathyAccountsDialog *self,
     TpAccount *account)
 {
@@ -721,12 +705,12 @@ use_external_storage_provider (EmpathyAccountsDialog *self,
     }
   else if (!tp_strdiff (provider, EMPATHY_GOA_PROVIDER))
     {
-      start_from_desktop_file ("gnome-online-accounts-panel.desktop");
+      empathy_launch_external_app ("gnome-online-accounts-panel.desktop", NULL);
       return;
     }
   else if (!tp_strdiff (provider, EMPATHY_UOA_PROVIDER))
     {
-      start_from_desktop_file ("gnome-credentials-panel.desktop");
+      empathy_launch_external_app ("gnome-credentials-panel.desktop", NULL);
       return;
     }
   else

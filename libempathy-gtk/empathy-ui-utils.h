@@ -147,6 +147,9 @@ void empathy_launch_program (const gchar *dir,
 
 void empathy_set_css_provider (GtkWidget *widget);
 
+gboolean empathy_launch_external_app (const gchar *desktop_file,
+    GError **error);
+
 G_END_DECLS
 
 #endif /*  __EMPATHY_UI_UTILS_H__ */
