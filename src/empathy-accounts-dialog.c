@@ -652,7 +652,9 @@ start_external_app (GAppInfo *app_info)
   if (!g_app_info_launch (app_info, NULL, (GAppLaunchContext *) context,
         &error))
     {
-      g_critical ("Failed to bisho: %s", error->message);
+      g_critical ("Failed to launch %s: %s",
+          g_app_info_get_display_name (app_info),
+          error->message);
       g_clear_error (&error);
     }
 
