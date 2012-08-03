@@ -148,6 +148,8 @@ get_tp_parameters (GoaAccount *account)
       PARAM ("param-account", "messenger.live.com");
       PARAM ("param-require-encryption", "true");
       PARAM ("param-fallback-servers", "xmpp.messenger.live.com");
+      PARAM ("param-extra-certificate-identities",
+          "*.gateway.messenger.live.com");
     }
   else
     {
