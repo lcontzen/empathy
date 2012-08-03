@@ -2595,6 +2595,92 @@ empathy_accounts_dialog_show (GtkWindow *parent,
   return GTK_WIDGET (dialog);
 }
 
+#ifdef HAVE_UOA
+typedef struct
+{
+  TpAccount *account;
+  gboolean if_needed;
+} LaunchUOACtx;
+
+static LaunchUOACtx *
+launch_uoa_ctx_new (TpAccount *account,
+    gboolean if_needed)
+{
+  LaunchUOACtx *ctx;
+
+  ctx = g_slice_new0 (LaunchUOACtx);
+  if (account != NULL)
+    ctx->account = g_object_ref (account);
+  ctx->if_needed = if_needed;
+
+  return ctx;
+}
+
+static void
+launch_uoa_ctx_free (LaunchUOACtx *ctx)
+{
+  g_clear_object (&ctx->account);
+  g_slice_free (LaunchUOACtx, ctx);
+}
+
+static void
+am_prepare_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccountManager *manager = TP_ACCOUNT_MANAGER (source);
+  GError *error = NULL;
+  LaunchUOACtx *ctx = user_data;
+  gchar *args = NULL;
+
+  if (!tp_proxy_prepare_finish (manager, result, &error))
+    {
+      DEBUG ("Failed to prepare account manager: %s", error->message);
+      g_error_free (error);
+      goto out;
+    }
+
+  if (ctx->if_needed && empathy_accounts_has_non_salut_accounts (manager))
+    goto out;
+
+  if (ctx->account != NULL)
+    {
+      const GValue *value;
+
+      value = tp_account_get_storage_identifier (ctx->account);
+
+      if (G_VALUE_HOLDS_UINT (value))
+        args = g_strdup_printf ("account-details=%u", g_value_get_uint (value));
+    }
+
+  empathy_launch_external_app ("gnome-credentials-panel.desktop", args, NULL);
+
+  g_free (args);
+out:
+  launch_uoa_ctx_free (ctx);
+}
+
+static void
+launch_uoa_panel (TpAccount *selected_account,
+    gboolean if_needed,
+    gboolean hidden)
+{
+  TpAccountManager *manager;
+
+  if (hidden)
+    /* Nothing to do */
+    return;
+
+  manager = tp_account_manager_dup ();
+
+  tp_proxy_prepare_async (manager, NULL, am_prepare_cb,
+      launch_uoa_ctx_new (selected_account, if_needed));
+
+  g_object_unref (manager);
+}
+
+#else /* HAVE_UOA */
+
 static void
 launch_empathy_accounts (TpAccount *selected_account,
     gboolean if_needed,
@@ -2625,6 +2711,7 @@ launch_empathy_accounts (TpAccount *selected_account,
 
   g_string_free (args, TRUE);
 }
+#endif /* HAVE_UOA */
 
 void
 empathy_accounts_dialog_show_application (GdkScreen *screen,
@@ -2632,7 +2719,11 @@ empathy_accounts_dialog_show_application (GdkScreen *screen,
     gboolean if_needed,
     gboolean hidden)
 {
+#ifdef HAVE_UOA
+  launch_uoa_panel (selected_account, if_needed, hidden);
+#else
   launch_empathy_accounts (selected_account, if_needed, hidden);
+#endif
 }
 
 gboolean
