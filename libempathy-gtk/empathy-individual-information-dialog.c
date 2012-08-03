@@ -373,60 +373,34 @@ static void
 start_gnome_contacts (FolksIndividual *individual,
     gboolean try_installing)
 {
-  GDesktopAppInfo *desktop_info;
-  gchar *cmd;
-  GAppInfo *app_info;
+  gchar *args;
   GError *error = NULL;
-  GdkAppLaunchContext *context = NULL;
-  GdkDisplay *display;
 
   g_return_if_fail (FOLKS_IS_INDIVIDUAL (individual));
 
-  /* Start gnome-contacts */
-  display = gdk_display_get_default ();
-  context = gdk_display_get_app_launch_context (display);
+  args = g_strdup_printf ("-i %s", folks_individual_get_id (individual));
 
-  desktop_info = g_desktop_app_info_new ("gnome-contacts.desktop");
-  if (desktop_info == NULL)
+  if (!empathy_launch_external_app ("gnome-contacts.desktop", args, &error))
     {
-      if (try_installing)
+      if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))
         {
-          const gchar *packages[] = { "gnome-contacts", NULL };
+          if (try_installing)
+            {
+              const gchar *packages[] = { "gnome-contacts", NULL };
 
-          DEBUG ("gnome-contacts not installed; try to install it");
+              DEBUG ("gnome-contacts not installed; try to install it");
 
-          empathy_pkg_kit_install_packages_async (0, packages, NULL,
-              NULL, install_gnome_contacts_cb, g_object_ref (individual));
+              empathy_pkg_kit_install_packages_async (0, packages, NULL,
+                  NULL, install_gnome_contacts_cb, g_object_ref (individual));
+            }
+          else
+            {
+              show_gnome_contacts_error_dialog ();
+            }
         }
-      else
-        {
-          show_gnome_contacts_error_dialog ();
-        }
-
-      return;
     }
 
-  /* glib doesn't have API to start a desktop file with args... (#637875) */
-  cmd = g_strdup_printf ("%s -i %s", g_app_info_get_commandline (
-        (GAppInfo *) desktop_info), folks_individual_get_id (individual));
-
-  app_info = g_app_info_create_from_commandline (cmd, NULL, 0, &error);
-  if (app_info == NULL)
-    {
-      DEBUG ("Failed to create app_info: %s", error->message);
-      g_error_free (error);
-      return;
-    }
-
-  if (!g_app_info_launch (app_info, NULL, (GAppLaunchContext *) context,
-        &error))
-    {
-      g_critical ("Failed to start gnome-contacts: %s", error->message);
-      g_error_free (error);
-    }
-
-  g_object_unref (desktop_info);
-  g_object_unref (app_info);
+  g_free (args);
 }
 
 /* Use gnome-contacts to display @individual or fallback to
