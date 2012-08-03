@@ -86,6 +86,21 @@ typedef struct
   gchar *access_token;
 } AuthData;
 
+static AuthData *
+auth_data_new (EmpathyGoaAuthHandler *self,
+    TpChannel *channel,
+    TpAccount *account)
+{
+  AuthData *data;
+
+  data = g_slice_new0 (AuthData);
+  data->self = g_object_ref (self);
+  data->channel = g_object_ref (channel);
+  data->account = g_object_ref (account);
+
+  return data;
+}
+
 static void
 auth_data_free (AuthData *data)
 {
@@ -300,10 +315,7 @@ empathy_goa_auth_handler_start (EmpathyGoaAuthHandler *self,
   DEBUG ("Start Goa auth for account: %s",
       tp_proxy_get_object_path (account));
 
-  data = g_slice_new0 (AuthData);
-  data->self = g_object_ref (self);
-  data->channel = g_object_ref (channel);
-  data->account = g_object_ref (account);
+  data = auth_data_new (self, channel, account);
 
   if (self->priv->client == NULL)
     {
