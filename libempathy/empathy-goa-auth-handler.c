@@ -173,13 +173,13 @@ got_oauth2_access_token_cb (GObject *source,
       case EMPATHY_SASL_MECHANISM_FACEBOOK:
         empathy_sasl_auth_facebook_async (data->channel,
             goa_oauth2_based_get_client_id (oauth2), access_token,
-            auth_cb, NULL);
+            auth_cb, data);
         break;
 
       case EMPATHY_SASL_MECHANISM_WLM:
         empathy_sasl_auth_wlm_async (data->channel,
             access_token,
-            auth_cb, NULL);
+            auth_cb, data);
         break;
 
       default:
