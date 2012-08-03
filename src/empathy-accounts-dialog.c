@@ -640,28 +640,6 @@ account_dialog_create_edit_params_dialog (EmpathyAccountsDialog *dialog)
 }
 
 static void
-start_external_app (GAppInfo *app_info)
-{
-  GError *error = NULL;
-  GdkAppLaunchContext *context = NULL;
-  GdkDisplay *display;
-
-  display = gdk_display_get_default ();
-  context = gdk_display_get_app_launch_context (display);
-
-  if (!g_app_info_launch (app_info, NULL, (GAppLaunchContext *) context,
-        &error))
-    {
-      g_critical ("Failed to launch %s: %s",
-          g_app_info_get_display_name (app_info),
-          error->message);
-      g_clear_error (&error);
-    }
-
-  tp_clear_object (&context);
-}
-
-static void
 use_external_storage_provider (EmpathyAccountsDialog *self,
     TpAccount *account)
 {
@@ -670,47 +648,20 @@ use_external_storage_provider (EmpathyAccountsDialog *self,
   provider = tp_account_get_storage_provider (account);
   if (!tp_strdiff (provider, "com.meego.libsocialweb"))
     {
-      GDesktopAppInfo *desktop_info;
-      gchar *cmd;
-      GAppInfo *app_info;
-      GError *error = NULL;
-
-      desktop_info = g_desktop_app_info_new ("gnome-control-center.desktop");
-      if (desktop_info == NULL)
-        {
-          g_critical ("Could not locate 'gnome-control-center.desktop'");
-          return;
-        }
-
-      /* glib doesn't have API to start a desktop file with args... (#637875) */
-      cmd = g_strdup_printf ("%s bisho.desktop", g_app_info_get_commandline (
-            (GAppInfo *) desktop_info));
-
-      app_info = g_app_info_create_from_commandline (cmd, NULL, 0, &error);
-
-      if (app_info == NULL)
-        {
-          DEBUG ("Failed to create app info: %s", error->message);
-          g_error_free (error);
-        }
-      else
-        {
-          start_external_app (app_info);
-          g_object_unref (app_info);
-        }
-
-      g_object_unref (desktop_info);
-      g_free (cmd);
+      empathy_launch_external_app ("gnome-control-center.desktop",
+          "bisho.desktop", NULL);
       return;
     }
   else if (!tp_strdiff (provider, EMPATHY_GOA_PROVIDER))
     {
-      empathy_launch_external_app ("gnome-online-accounts-panel.desktop", NULL);
+      empathy_launch_external_app ("gnome-online-accounts-panel.desktop",
+          NULL, NULL);
       return;
     }
   else if (!tp_strdiff (provider, EMPATHY_UOA_PROVIDER))
     {
-      empathy_launch_external_app ("gnome-credentials-panel.desktop", NULL);
+      empathy_launch_external_app ("gnome-credentials-panel.desktop",
+          NULL, NULL);
       return;
     }
   else

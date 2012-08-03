@@ -1669,10 +1669,12 @@ launch_app_info (GAppInfo *app_info,
 
 gboolean
 empathy_launch_external_app (const gchar *desktop_file,
+    const gchar *args,
     GError **error)
 {
   GDesktopAppInfo *desktop_info;
   gboolean result;
+  GError *err = NULL;
 
   desktop_info = g_desktop_app_info_new (desktop_file);
   if (desktop_info == NULL)
@@ -1684,8 +1686,35 @@ empathy_launch_external_app (const gchar *desktop_file,
       return FALSE;
     }
 
-  result = launch_app_info (G_APP_INFO (desktop_info), error);
-  g_object_unref (desktop_info);
+  if (args == NULL)
+    {
+      result = launch_app_info (G_APP_INFO (desktop_info), error);
+    }
+  else
+    {
+      gchar *cmd;
+      GAppInfo *app_info;
 
+      /* glib doesn't have API to start a desktop file with args... (#637875) */
+      cmd = g_strdup_printf ("%s %s", g_app_info_get_commandline (
+            (GAppInfo *) desktop_info), args);
+
+      app_info = g_app_info_create_from_commandline (cmd, NULL, 0, &err);
+      if (app_info == NULL)
+        {
+          DEBUG ("Failed to launch '%s': %s", cmd, err->message);
+          g_free (cmd);
+          g_object_unref (desktop_info);
+          g_propagate_error (error, err);
+          return FALSE;
+        }
+
+      result = launch_app_info (app_info, error);
+
+      g_object_unref (app_info);
+      g_free (cmd);
+    }
+
+  g_object_unref (desktop_info);
   return result;
 }
