@@ -275,5 +275,6 @@ static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
   iface->get_individuals = empathy_roster_model_manager_get_individuals;
-  iface->get_groups_for_individual = empathy_roster_model_manager_get_groups_for_individual;
+  iface->get_groups_for_individual =
+    empathy_roster_model_manager_get_groups_for_individual;
 }
