@@ -510,37 +510,6 @@ compare_roster_contacts_by_alias (EmpathyRosterContact *a,
   return g_ascii_strcasecmp (alias_a, alias_b);
 }
 
-static gboolean
-contact_is_favourite (EmpathyRosterContact *contact)
-{
-  FolksIndividual *individual;
-
-  individual = empathy_roster_contact_get_individual (contact);
-
-  return folks_favourite_details_get_is_favourite (
-      FOLKS_FAVOURITE_DETAILS (individual));
-}
-
-static gboolean
-contact_in_top (EmpathyRosterView *self,
-    EmpathyRosterContact *contact)
-{
-  FolksIndividual *individual;
-  GList *tops;
-
-  if (contact_is_favourite (contact))
-    return TRUE;
-
-  individual = empathy_roster_contact_get_individual (contact);
-
-  tops = empathy_roster_model_get_top_individuals (self->priv->model);
-
-  if (g_list_index (tops, individual) != -1)
-    return TRUE;
-
-  return FALSE;
-}
-
 static gint
 compare_roster_contacts_no_group (EmpathyRosterView *self,
     EmpathyRosterContact *a,
@@ -548,8 +517,8 @@ compare_roster_contacts_no_group (EmpathyRosterView *self,
 {
   gboolean top_a, top_b;
 
-  top_a = contact_in_top (self, a);
-  top_b = contact_in_top (self, b);
+  top_a = empathy_roster_model_contact_in_top (self->priv->model, a);
+  top_b = empathy_roster_model_contact_in_top (self->priv->model, b);
 
   if (top_a == top_b)
     /* Both contacts are in the top of the roster (or not). Sort them
@@ -772,7 +741,8 @@ contact_should_be_displayed (EmpathyRosterView *self,
   if (self->priv->show_offline)
       return TRUE;
 
-  if (contact_is_favourite (contact))
+  if (empathy_roster_model_contact_in_top (self->priv->model,
+          contact))
     {
       const gchar *group_name;
 
@@ -968,7 +938,8 @@ update_top_contacts (EmpathyRosterView *self)
           EmpathyRosterContact *contact = l->data;
           FolksIndividual *individual;
 
-          if (contact_is_favourite (contact))
+          if (empathy_roster_model_contact_in_top (self->priv->model,
+                  contact))
             continue;
 
           individual = empathy_roster_contact_get_individual (contact);

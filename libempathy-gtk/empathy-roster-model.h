@@ -24,6 +24,8 @@
 
 #include <folks/folks.h>
 
+#include <libempathy-gtk/empathy-roster-contact.h>
+
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModel EmpathyRosterModel;
@@ -39,6 +41,8 @@ struct _EmpathyRosterModelInterface
   GList * (*get_groups_for_individual) (EmpathyRosterModel *self,
       FolksIndividual *individual);
   GList * (*get_top_individuals) (EmpathyRosterModel *self);
+  gboolean (*contact_in_top) (EmpathyRosterModel *self,
+      EmpathyRosterContact *contact);
 };
 
 GType empathy_roster_model_get_type (void);
@@ -85,6 +89,9 @@ GList * empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self
     FolksIndividual *individual);
 
 GList * empathy_roster_model_get_top_individuals (EmpathyRosterModel *self);
+
+gboolean empathy_roster_model_contact_in_top (EmpathyRosterModel *self,
+    EmpathyRosterContact *contact);
 
 G_END_DECLS
 

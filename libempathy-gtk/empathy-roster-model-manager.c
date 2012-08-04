@@ -81,6 +81,17 @@ is_xmpp_local_contact (FolksIndividual *individual)
   return result;
 }
 
+static gboolean
+contact_is_favourite (EmpathyRosterContact *contact)
+{
+  FolksIndividual *individual;
+
+  individual = empathy_roster_contact_get_individual (contact);
+
+  return folks_favourite_details_get_is_favourite (
+      FOLKS_FAVOURITE_DETAILS (individual));
+}
+
 static void
 members_changed_cb (EmpathyIndividualManager *manager,
     const gchar *message,
@@ -302,6 +313,26 @@ empathy_roster_model_manager_get_top_individuals (EmpathyRosterModel *model)
   return empathy_individual_manager_get_top_individuals (self->priv->manager);
 }
 
+static gboolean
+empathy_roster_model_manager_contact_in_top (EmpathyRosterModel *model,
+    EmpathyRosterContact *contact)
+{
+  FolksIndividual *individual;
+  GList *tops;
+
+  if (contact_is_favourite (contact))
+    return TRUE;
+
+  individual = empathy_roster_contact_get_individual (contact);
+
+  tops = empathy_roster_model_get_top_individuals (model);
+
+  if (g_list_index (tops, individual) != -1)
+    return TRUE;
+
+  return FALSE;
+}
+
 static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
@@ -309,4 +340,5 @@ roster_model_iface_init (EmpathyRosterModelInterface *iface)
   iface->get_groups_for_individual =
     empathy_roster_model_manager_get_groups_for_individual;
   iface->get_top_individuals = empathy_roster_model_manager_get_top_individuals;
+  iface->contact_in_top = empathy_roster_model_manager_contact_in_top;
 }
