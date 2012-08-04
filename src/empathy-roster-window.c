@@ -2233,8 +2233,7 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
     }
 
   self->priv->view = EMPATHY_ROSTER_VIEW (
-      empathy_roster_view_new (self->priv->individual_manager,
-          model));
+      empathy_roster_view_new (model));
 
   g_object_unref (model);
 

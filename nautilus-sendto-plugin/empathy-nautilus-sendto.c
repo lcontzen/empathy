@@ -114,15 +114,15 @@ get_contacts_widget (NstPlugin *plugin)
   GtkWidget *roster_view, *box, *scrolled;
   EmpathyIndividualManager *mgr;
   EmpathyRosterModel *model;
-  
+
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
   mgr = empathy_individual_manager_dup_singleton ();
   model = EMPATHY_ROSTER_MODEL (empathy_roster_model_manager_new (mgr));
-  roster_view = empathy_roster_view_new (mgr, model);
+  roster_view = empathy_roster_view_new (model);
 
   g_object_unref (model);
-  
+
   scrolled = gtk_scrolled_window_new (NULL, NULL);
 
   g_object_unref (mgr);

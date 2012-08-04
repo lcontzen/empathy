@@ -110,7 +110,7 @@ main (int argc,
   mgr = empathy_individual_manager_dup_singleton ();
 
   model = EMPATHY_ROSTER_MODEL (empathy_roster_model_manager_new (mgr));
-  view = empathy_roster_view_new (mgr, model);
+  view = empathy_roster_view_new (model);
 
   g_object_unref (model);
   g_signal_connect (view, "individual-activated",

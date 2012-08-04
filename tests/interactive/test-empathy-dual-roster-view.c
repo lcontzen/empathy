@@ -78,8 +78,7 @@ create_view_box (EmpathyRosterModel *model,
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
-  view = empathy_roster_view_new (empathy_individual_manager_dup_singleton (),
-      model);
+  view = empathy_roster_view_new (model);
 
   g_signal_connect (view, "individual-activated",
       G_CALLBACK (individual_activated_cb), NULL);

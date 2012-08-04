@@ -17,8 +17,7 @@ G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
 enum
 {
-  PROP_MANAGER = 1,
-  PROP_MODEL,
+  PROP_MODEL = 1,
   PROP_SHOW_OFFLINE,
   PROP_SHOW_GROUPS,
   PROP_EMPTY,
@@ -40,8 +39,6 @@ static guint signals[LAST_SIGNAL];
 
 struct _EmpathyRosterViewPriv
 {
-  EmpathyIndividualManager *manager;
-
   /* FolksIndividual (borrowed) -> GHashTable (
    * (gchar * group_name) -> EmpathyRosterContact (borrowed))
    *
@@ -114,9 +111,6 @@ empathy_roster_view_get_property (GObject *object,
 
   switch (property_id)
     {
-      case PROP_MANAGER:
-        g_value_set_object (value, self->priv->manager);
-        break;
       case PROP_MODEL:
         g_value_set_object (value, self->priv->model);
         break;
@@ -145,10 +139,6 @@ empathy_roster_view_set_property (GObject *object,
 
   switch (property_id)
     {
-      case PROP_MANAGER:
-        g_assert (self->priv->manager == NULL); /* construct only */
-        self->priv->manager = g_value_dup_object (value);
-        break;
       case PROP_MODEL:
         g_assert (self->priv->model == NULL);
         self->priv->model = g_value_dup_object (value);
@@ -1076,7 +1066,6 @@ empathy_roster_view_constructed (GObject *object)
   if (chain_up != NULL)
     chain_up (object);
 
-  g_assert (EMPATHY_IS_INDIVIDUAL_MANAGER (self->priv->manager));
   g_assert (EMPATHY_IS_ROSTER_MODEL (self->priv->model));
 
   populate_view (self);
@@ -1113,7 +1102,6 @@ empathy_roster_view_dispose (GObject *object)
   stop_flashing (self);
 
   empathy_roster_view_set_live_search (self, NULL);
-  g_clear_object (&self->priv->manager);
   g_clear_object (&self->priv->model);
 
   if (chain_up != NULL)
@@ -1341,12 +1329,6 @@ empathy_roster_view_class_init (
 
   box_class->child_activated = empathy_roster_view_child_activated;
 
-  spec = g_param_spec_object ("manager", "Manager",
-      "EmpathyIndividualManager",
-      EMPATHY_TYPE_INDIVIDUAL_MANAGER,
-      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
-  g_object_class_install_property (oclass, PROP_MANAGER, spec);
-
   spec = g_param_spec_object ("model", "Model",
       "EmpathyRosterModel",
       EMPATHY_TYPE_ROSTER_MODEL,
@@ -1420,22 +1402,13 @@ empathy_roster_view_init (EmpathyRosterView *self)
 }
 
 GtkWidget *
-empathy_roster_view_new (EmpathyIndividualManager *manager,
-    EmpathyRosterModel *model)
+empathy_roster_view_new (EmpathyRosterModel *model)
 {
-  g_return_val_if_fail (EMPATHY_IS_INDIVIDUAL_MANAGER (manager), NULL);
   g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (model), NULL);
 
   return g_object_new (EMPATHY_TYPE_ROSTER_VIEW,
-      "manager", manager,
       "model", model,
       NULL);
-}
-
-EmpathyIndividualManager *
-empathy_roster_view_get_manager (EmpathyRosterView *self)
-{
-  return self->priv->manager;
 }
 
 void
