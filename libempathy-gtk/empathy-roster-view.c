@@ -316,8 +316,7 @@ individual_added (EmpathyRosterView *self,
       GList *groups, *l;
       GList *tops;
 
-      tops = empathy_individual_manager_get_top_individuals (
-          self->priv->manager);
+      tops = empathy_roster_model_get_top_individuals (self->priv->model);
 
       if (folks_favourite_details_get_is_favourite (
             FOLKS_FAVOURITE_DETAILS (individual)) ||
@@ -544,7 +543,7 @@ contact_in_top (EmpathyRosterView *self,
 
   individual = empathy_roster_contact_get_individual (contact);
 
-  tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
+  tops = empathy_roster_model_get_top_individuals (self->priv->model);
 
   if (g_list_index (tops, individual) != -1)
     return TRUE;
@@ -959,7 +958,7 @@ update_top_contacts (EmpathyRosterView *self)
       return;
     }
 
-  tops = empathy_individual_manager_get_top_individuals (self->priv->manager);
+  tops = empathy_roster_model_get_top_individuals (self->priv->model);
 
   group = g_hash_table_lookup (self->priv->roster_groups,
       EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP);

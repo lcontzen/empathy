@@ -134,3 +134,24 @@ empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
 
   return (* iface->get_groups_for_individual) (self, individual);
 }
+
+/**
+ * empathy_roster_model_get_top_individuals:
+ * @self: a #EmpathyRosterModel
+ *
+ * Returns a list of the top_individuals.
+ *
+ * Return value: (transfer none): a #GList of #FolksIndividual
+ */
+GList *
+empathy_roster_model_get_top_individuals (EmpathyRosterModel *self)
+{
+  EmpathyRosterModelInterface *iface;
+
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (self), NULL);
+
+  iface = EMPATHY_ROSTER_MODEL_GET_IFACE (self);
+  g_return_val_if_fail (iface->get_top_individuals != NULL, NULL);
+
+  return (* iface->get_top_individuals) (self);
+}

@@ -38,6 +38,7 @@ struct _EmpathyRosterModelInterface
   GList * (* get_individuals) (EmpathyRosterModel *self);
   GList * (*get_groups_for_individual) (EmpathyRosterModel *self,
       FolksIndividual *individual);
+  GList * (*get_top_individuals) (EmpathyRosterModel *self);
 };
 
 GType empathy_roster_model_get_type (void);
@@ -75,6 +76,8 @@ GList * empathy_roster_model_get_individuals (EmpathyRosterModel *self);
 
 GList * empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
     FolksIndividual *individual);
+
+GList * empathy_roster_model_get_top_individuals (EmpathyRosterModel *self);
 
 G_END_DECLS
 
