@@ -53,8 +53,6 @@ enum
 static guint signals[LAST_SIGNAL];
 */
 
-#define PEOPLE_NEARBY _("People Nearby")
-
 struct _EmpathyRosterModelManagerPriv
 {
   EmpathyIndividualManager *manager;
@@ -286,7 +284,8 @@ empathy_roster_model_manager_get_groups_for_individual (EmpathyRosterModel *mode
 
   if (is_xmpp_local_contact (individual))
     {
-      groups_list = g_list_prepend (groups_list, PEOPLE_NEARBY);
+      groups_list = g_list_prepend (groups_list,
+          EMPATHY_ROSTER_MODEL_GROUP_PEOPLE_NEARBY);
       return groups_list;
     }
 

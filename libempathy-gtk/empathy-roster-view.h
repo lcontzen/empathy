@@ -9,10 +9,6 @@
 
 G_BEGIN_DECLS
 
-#define EMPATHY_ROSTER_VIEW_GROUP_UNGROUPED _("Ungrouped")
-#define EMPATHY_ROSTER_VIEW_GROUP_TOP_GROUP _("Top Contacts")
-#define EMPATHY_ROSTER_VIEW_GROUP_PEOPLE_NEARBY _("People Nearby")
-
 typedef struct _EmpathyRosterView EmpathyRosterView;
 typedef struct _EmpathyRosterViewClass EmpathyRosterViewClass;
 typedef struct _EmpathyRosterViewPriv EmpathyRosterViewPriv;

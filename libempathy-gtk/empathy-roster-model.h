@@ -28,6 +28,10 @@
 
 G_BEGIN_DECLS
 
+#define EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP _("Top Contacts")
+#define EMPATHY_ROSTER_MODEL_GROUP_PEOPLE_NEARBY _("People Nearby")
+#define EMPATHY_ROSTER_MODEL_GROUP_UNGROUPED _("Ungrouped")
+
 typedef struct _EmpathyRosterModel EmpathyRosterModel;
 typedef struct _EmpathyRosterModelInterface EmpathyRosterModelInterface;
 
