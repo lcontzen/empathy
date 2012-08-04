@@ -1028,8 +1028,7 @@ groups_changed_cb (EmpathyRosterModel *model,
 }
 
 static void
-top_individuals_changed_cb (EmpathyIndividualManager *manager,
-    GParamSpec *spec,
+top_individuals_changed_cb (EmpathyRosterModel *model,
     EmpathyRosterView *self)
 {
   update_top_contacts (self);
@@ -1088,7 +1087,7 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (individual_removed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->model, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
-  tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
+  tp_g_signal_connect_object (self->priv->model, "top-individuals-changed",
       G_CALLBACK (top_individuals_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "notify::favourites-changed",
       G_CALLBACK (favourites_changed_cb), self, 0);

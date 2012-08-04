@@ -116,6 +116,15 @@ groups_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+top_individuals_changed_cb (EmpathyIndividualManager *manager,
+    GParamSpec *spec,
+    EmpathyRosterModelManager *self)
+{
+  empathy_roster_model_fire_top_individuals_changed (
+      EMPATHY_ROSTER_MODEL (self));
+}
+
+static void
 empathy_roster_model_manager_get_property (GObject *object,
     guint property_id,
     GValue *value,
@@ -170,6 +179,8 @@ empathy_roster_model_manager_constructed (GObject *object)
       G_CALLBACK (members_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
+      G_CALLBACK (top_individuals_changed_cb), self, 0);
 }
 
 static void

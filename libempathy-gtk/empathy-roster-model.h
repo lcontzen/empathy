@@ -71,6 +71,9 @@ void empathy_roster_model_fire_groups_changed (EmpathyRosterModel *self,
     const gchar *group,
     gboolean is_member);
 
+void empathy_roster_model_fire_top_individuals_changed (
+    EmpathyRosterModel *self);
+
 /* Public API */
 GList * empathy_roster_model_get_individuals (EmpathyRosterModel *self);
 
