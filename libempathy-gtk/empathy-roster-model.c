@@ -29,6 +29,7 @@ enum
   SIG_INDIVIDUAL_REMOVED,
   SIG_GROUPS_CHANGED,
   SIG_TOP_INDIVIDUALS_CHANGED,
+  SIG_FAVOURITES_CHANGED,
   LAST_SIGNAL
 };
 
@@ -69,6 +70,15 @@ empathy_roster_model_default_init (EmpathyRosterModelInterface *iface)
         G_SIGNAL_RUN_LAST,
         0, NULL, NULL, NULL,
         G_TYPE_NONE, 0);
+
+  signals[SIG_FAVOURITES_CHANGED] =
+    g_signal_new ("favourites-changed",
+        EMPATHY_TYPE_ROSTER_MODEL,
+        G_SIGNAL_RUN_LAST,
+        0, NULL, NULL, NULL,
+        G_TYPE_NONE, 2,
+        FOLKS_TYPE_INDIVIDUAL,
+        G_TYPE_BOOLEAN);
 }
 
 /***** Restricted *****/
@@ -101,6 +111,15 @@ empathy_roster_model_fire_top_individuals_changed (EmpathyRosterModel *self)
 {
   g_signal_emit (self, signals[SIG_TOP_INDIVIDUALS_CHANGED], 0);
 }
+
+void
+empathy_roster_model_fire_favourites_changed (EmpathyRosterModel *self,
+    FolksIndividual *individual,
+    gboolean favourite)
+{
+  g_signal_emit (self, signals[SIG_FAVOURITES_CHANGED], 0, individual, favourite);
+}
+
 
 /***** Public *****/
 

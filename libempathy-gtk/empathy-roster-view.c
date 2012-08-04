@@ -1035,7 +1035,7 @@ top_individuals_changed_cb (EmpathyRosterModel *model,
 }
 
 static void
-favourites_changed_cb (EmpathyIndividualManager *manager,
+favourites_changed_cb (EmpathyRosterModel *model,
     FolksIndividual *individual,
     gboolean favourite,
     EmpathyRosterView *self)
@@ -1089,7 +1089,7 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (groups_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->model, "top-individuals-changed",
       G_CALLBACK (top_individuals_changed_cb), self, 0);
-  tp_g_signal_connect_object (self->priv->manager, "notify::favourites-changed",
+  tp_g_signal_connect_object (self->priv->model, "favourites-changed",
       G_CALLBACK (favourites_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),

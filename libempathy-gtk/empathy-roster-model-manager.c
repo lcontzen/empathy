@@ -125,6 +125,16 @@ top_individuals_changed_cb (EmpathyIndividualManager *manager,
 }
 
 static void
+favourites_changed_cb (EmpathyIndividualManager *manager,
+    FolksIndividual *individual,
+    gboolean favourite,
+    EmpathyRosterModelManager *self)
+{
+  empathy_roster_model_fire_favourites_changed (EMPATHY_ROSTER_MODEL (self),
+      individual, favourite);
+}
+
+static void
 empathy_roster_model_manager_get_property (GObject *object,
     guint property_id,
     GValue *value,
@@ -181,6 +191,8 @@ empathy_roster_model_manager_constructed (GObject *object)
       G_CALLBACK (groups_changed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->manager, "notify::top-individuals",
       G_CALLBACK (top_individuals_changed_cb), self, 0);
+  tp_g_signal_connect_object (self->priv->manager, "notify::favourites-changed",
+      G_CALLBACK (favourites_changed_cb), self, 0);
 }
 
 static void
