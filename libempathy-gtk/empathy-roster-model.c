@@ -90,6 +90,14 @@ empathy_roster_model_fire_groups_changed (EmpathyRosterModel *self,
 
 /***** Public *****/
 
+/**
+ * empathy_roster_model_get_individuals:
+ * @self: a #EmpathyRosterModel
+ *
+ * Returns all the individuals stored by @self.
+ *
+ * Returns: (transfer container): a #GList of #FolksIndividual
+ */
 GList *
 empathy_roster_model_get_individuals (EmpathyRosterModel *self)
 {
@@ -103,6 +111,16 @@ empathy_roster_model_get_individuals (EmpathyRosterModel *self)
   return (* iface->get_individuals) (self);
 }
 
+/**
+ * empathy_roster_model_get_groups_for_individual:
+ * @self: a #EmpathyRosterModel
+ * @individual: a #FolksIndidivual
+ *
+ * Returns the groups of which @individual is a member of.
+ *
+ * Returns: (transfer container): a #GList of (const gchar *) representing the
+ * groups of @individual
+ */
 GList *
 empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
     FolksIndividual *individual)
