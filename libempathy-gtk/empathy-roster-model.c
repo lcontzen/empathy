@@ -103,7 +103,8 @@ empathy_roster_model_fire_groups_changed (EmpathyRosterModel *self,
     const gchar *group,
     gboolean is_member)
 {
-  g_signal_emit (self, signals[SIG_GROUPS_CHANGED], 0, individual, group, is_member);
+  g_signal_emit (self, signals[SIG_GROUPS_CHANGED], 0, individual, group,
+      is_member);
 }
 
 void
@@ -117,7 +118,8 @@ empathy_roster_model_fire_favourites_changed (EmpathyRosterModel *self,
     FolksIndividual *individual,
     gboolean favourite)
 {
-  g_signal_emit (self, signals[SIG_FAVOURITES_CHANGED], 0, individual, favourite);
+  g_signal_emit (self, signals[SIG_FAVOURITES_CHANGED], 0, individual,
+      favourite);
 }
 
 

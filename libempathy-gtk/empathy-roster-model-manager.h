@@ -68,7 +68,8 @@ GType empathy_roster_model_manager_get_type (void);
     EMPATHY_TYPE_ROSTER_MODEL_MANAGER, \
     EmpathyRosterModelManagerClass))
 
-EmpathyRosterModelManager * empathy_roster_model_manager_new (EmpathyIndividualManager *manager);
+EmpathyRosterModelManager * empathy_roster_model_manager_new (
+    EmpathyIndividualManager *manager);
 
 G_END_DECLS
 

@@ -276,7 +276,8 @@ empathy_roster_model_manager_get_individuals (EmpathyRosterModel *model)
 }
 
 static GList *
-empathy_roster_model_manager_get_groups_for_individual (EmpathyRosterModel *model,
+empathy_roster_model_manager_get_groups_for_individual (
+    EmpathyRosterModel *model,
     FolksIndividual *individual)
 {
   GList *groups_list = NULL;
@@ -289,7 +290,8 @@ empathy_roster_model_manager_get_groups_for_individual (EmpathyRosterModel *mode
       return groups_list;
     }
 
-  groups_set = folks_group_details_get_groups (FOLKS_GROUP_DETAILS (individual));
+  groups_set = folks_group_details_get_groups (
+      FOLKS_GROUP_DETAILS (individual));
   if (gee_collection_get_size (GEE_COLLECTION (groups_set)) > 0)
     {
       GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (groups_set));

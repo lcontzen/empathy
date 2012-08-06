@@ -89,7 +89,8 @@ void empathy_roster_model_fire_favourites_changed (EmpathyRosterModel *self,
 /* Public API */
 GList * empathy_roster_model_get_individuals (EmpathyRosterModel *self);
 
-GList * empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
+GList * empathy_roster_model_get_groups_for_individual (
+    EmpathyRosterModel *self,
     FolksIndividual *individual);
 
 GList * empathy_roster_model_get_top_individuals (EmpathyRosterModel *self);
