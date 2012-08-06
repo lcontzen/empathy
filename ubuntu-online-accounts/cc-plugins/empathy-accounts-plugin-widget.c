@@ -173,8 +173,11 @@ create_top_bar (EmpathyAccountsPluginWidget *self)
 
   bar = gtk_info_bar_new_with_buttons (
       GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-      _("Done"), GTK_RESPONSE_OK,
       NULL);
+
+  self->priv->done_button = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+      _("Done"), GTK_RESPONSE_OK);
+
   gtk_widget_set_hexpand (bar, TRUE);
   gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_QUESTION);
   action = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
