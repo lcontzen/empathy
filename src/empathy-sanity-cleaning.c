@@ -27,6 +27,7 @@
 
 #include <telepathy-glib/telepathy-glib.h>
 
+#include <libempathy/empathy-account-settings.h>
 #include <libempathy/empathy-gsettings.h>
 
 #include <libempathy-gtk/empathy-theme-manager.h>
@@ -40,7 +41,7 @@
  * If the number stored in gsettings is lower than it, all the tasks will
  * be executed.
  */
-#define SANITY_CLEANING_NUMBER 3
+#define SANITY_CLEANING_NUMBER 4
 
 static void
 account_update_parameters_cb (GObject *source,
@@ -198,6 +199,111 @@ finally:
   g_object_unref (gsettings_chat);
 }
 
+#ifdef HAVE_UOA
+static void
+uoa_account_created_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccountRequest *ar = (TpAccountRequest *) source;
+  TpAccount *old_account = user_data;
+  TpAccount *new_account;
+  GError *error = NULL;
+
+  new_account = tp_account_request_create_account_finish (ar, result, &error);
+  if (new_account == NULL)
+    {
+      DEBUG ("Failed to migrate account '%s' to UOA: %s",
+          tp_account_get_path_suffix (old_account), error->message);
+      g_clear_error (&error);
+    }
+  else
+    {
+      DEBUG ("New account %s created to superseed %s",
+          tp_account_get_path_suffix (new_account),
+          tp_account_get_path_suffix (old_account));
+      tp_account_remove_async (old_account, NULL, NULL);
+    }
+
+  g_object_unref (old_account);
+  g_object_unref (new_account);
+}
+
+static void
+migrate_accounts_to_uoa (TpAccountManager *am)
+{
+  GList *accounts, *l;
+
+  DEBUG ("Start migrating accounts to UOA");
+
+  accounts = tp_account_manager_get_valid_accounts (am);
+  for (l = accounts; l != NULL; l = g_list_next (l))
+    {
+      TpAccount *account = l->data;
+      TpAccountRequest *ar;
+      GVariant *params;
+      GVariant *param;
+      GVariantIter iter;
+      const gchar * const *supersedes;
+
+      /* If account is already in a specific storage (like UOA or GOA),
+       * don't migrate it.
+       * Note that we cannot migrate GOA accounts anyway, since we can't delete
+       * them it would create duplicated accounts. */
+      if (!tp_str_empty (tp_account_get_storage_provider (account)))
+        continue;
+
+      DEBUG ("Migrating account %s to UOA storage\n",
+          tp_account_get_path_suffix (account));
+
+      ar = tp_account_request_new (am,
+          tp_account_get_cm_name (account),
+          tp_account_get_protocol_name (account),
+          tp_account_get_display_name (account));
+      tp_account_request_set_storage_provider (ar, EMPATHY_UOA_PROVIDER);
+      tp_account_request_set_enabled (ar,
+          tp_account_is_enabled (account));
+      tp_account_request_set_icon_name (ar,
+          tp_account_get_icon_name (account));
+      tp_account_request_set_nickname (ar,
+          tp_account_get_nickname (account));
+      tp_account_request_set_service (ar,
+          tp_account_get_service (account));
+
+      supersedes = tp_account_get_supersedes (account);
+      while (*supersedes != NULL)
+        tp_account_request_add_supersedes (ar, *supersedes);
+      tp_account_request_add_supersedes (ar,
+          tp_proxy_get_object_path (account));
+
+      params = tp_account_dup_parameters_vardict (account);
+      g_variant_iter_init (&iter, params);
+      while ((param = g_variant_iter_next_value (&iter)))
+        {
+          GVariant *k, *v;
+          const gchar *key;
+
+          k = g_variant_get_child_value (param, 0);
+          key = g_variant_get_string (k, NULL);
+          v = g_variant_get_child_value (param, 1);
+
+          tp_account_request_set_parameter (ar, key,
+              g_variant_get_variant (v));
+
+          g_variant_unref (k);
+          g_variant_unref (v);
+        }
+
+      tp_account_set_enabled_async (account, FALSE, NULL, NULL);
+      tp_account_request_create_account_async (ar, uoa_account_created_cb,
+          g_object_ref (account));
+
+      g_variant_unref (params);
+      g_object_unref (ar);
+    }
+}
+#endif
+
 static void
 run_sanity_cleaning_tasks (TpAccountManager *am)
 {
@@ -206,6 +312,9 @@ run_sanity_cleaning_tasks (TpAccountManager *am)
   fix_xmpp_account_priority (am);
   set_facebook_account_fallback_server (am);
   upgrade_chat_theme_settings ();
+#ifdef HAVE_UOA
+  migrate_accounts_to_uoa (am);
+#endif
 }
 
 static void
