@@ -1,3 +1,37 @@
+NEW in 3.5.5 (06/08/2012)
+============
+
+Ubuntu Oncline Accounts support has been greatly improved as Empathy can now
+provides plugins to create any kind of IM account using UOA's panel.
+
+Empathy also migrated to libsecret [0].
+
+[0] https://live.gnome.org/GnomeGoals/LibsecretMigration
+
+Dependencies:
+ • telepathy-glib ≥ 0.19.6
+ • libsecret ≥ 0.5
+
+Bugs fixed:
+ - Fixed #679884, libsecret migration (Stef Walter)
+ - Fixed #680448, Generate UOA plugins (Guillaume Desmottes)
+ - Fixed #680449, Add UOA app plugin (Xavier Claessens)
+ - Fixed #680646, UOA: Web authentificated accounts shouldn't be modifiable (Xavier Claessens)
+ - Fixed #680952, empathy-auth-client crashed with SIGSEGV in auth_data_free() (Guillaume Desmottes)
+ - Fixed #681079, Claim that Windows Live certificate isn't valid (Guillaume Desmottes)
+
+Translations:
+ - Updated el Translation (Tom Tryfonidis)
+ - Updated es Translation (Daniel Mustieles)
+ - Updated gl Translation (Fran Diéguez)
+ - Updated gu Translation (Sweta Kothari)
+ - Updated he Translation (Yaron Shahrabani)
+ - Updated hu Translation (Gabor Kelemen)
+ - Updated id Translation (Andika Triwidada)
+ - Updated ja Translation (Jiro Matsuzawa)
+ - Updated nb Translation (Kjartan Maraas)
+ - Updated sl Translation (Matej Urbančič)
+
 NEW in 3.5.4.1 (24/07/2012)
 ==============
 
