@@ -17,7 +17,7 @@ plugin_LTLIBRARIES = \
 libempathy_la_SOURCES = \
 	empathy-app-plugin.c \
 	empathy-app-plugin.h \
-	empathy-app-plugin-widget.c
+	empathy-app-plugin-widget.c \
 	empathy-app-plugin-widget.h
 libempathy_la_LDFLAGS = -module -avoid-version
 libempathy_la_LIBADD = \
