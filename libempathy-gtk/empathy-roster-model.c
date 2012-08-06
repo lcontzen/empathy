@@ -174,7 +174,7 @@ empathy_roster_model_get_groups_for_individual (EmpathyRosterModel *self,
  *
  * Returns a list of the top_individuals.
  *
- * Return value: (transfer none): a #GList of #FolksIndividual
+ * Returns: (transfer none): a #GList of #FolksIndividual
  */
 GList *
 empathy_roster_model_get_top_individuals (EmpathyRosterModel *self)
@@ -197,7 +197,7 @@ empathy_roster_model_get_top_individuals (EmpathyRosterModel *self)
  * Checks if the passed #EmpathyRosterContact should be displayed in
  * top contacts.
  *
- * Return value: %TRUE if it should be displayed in top contacts, %FALSE
+ * Returns: %TRUE if it should be displayed in top contacts, %FALSE
  * if not
  */
 gboolean
