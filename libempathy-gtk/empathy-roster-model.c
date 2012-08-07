@@ -156,28 +156,3 @@ empathy_roster_model_get_top_individuals (EmpathyRosterModel *self)
 
   return (* iface->get_top_individuals) (self);
 }
-
-/**
- * empathy_roster_model_contact_in_top:
- * @self: a #EmpathyRosterModel
- * @contact: a #EmpathyRosterContact
- *
- * Checks if the passed #EmpathyRosterContact should be displayed in
- * top contacts.
- *
- * Returns: %TRUE if it should be displayed in top contacts, %FALSE
- * if not
- */
-gboolean
-empathy_roster_model_contact_in_top (EmpathyRosterModel *self,
-    EmpathyRosterContact *contact)
-{
-  EmpathyRosterModelInterface *iface;
-
-  g_return_val_if_fail (EMPATHY_IS_ROSTER_MODEL (self), FALSE);
-
-  iface = EMPATHY_ROSTER_MODEL_GET_IFACE (self);
-  g_return_val_if_fail (iface->contact_in_top != NULL, FALSE);
-
-  return (* iface->contact_in_top) (self, contact);
-}

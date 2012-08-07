@@ -407,20 +407,6 @@ empathy_roster_model_manager_get_top_individuals (EmpathyRosterModel *model)
   return empathy_individual_manager_get_top_individuals (self->priv->manager);
 }
 
-static gboolean
-empathy_roster_model_manager_contact_in_top (EmpathyRosterModel *model,
-    EmpathyRosterContact *contact)
-{
-  FolksIndividual *individual;
-  EmpathyRosterModelManager *self;
-
-  self = EMPATHY_ROSTER_MODEL_MANAGER (model);
-
-  individual = empathy_roster_contact_get_individual (contact);
-
-  return individual_in_top_group_members (self, individual);
-}
-
 static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
@@ -428,5 +414,4 @@ roster_model_iface_init (EmpathyRosterModelInterface *iface)
   iface->get_groups_for_individual =
     empathy_roster_model_manager_get_groups_for_individual;
   iface->get_top_individuals = empathy_roster_model_manager_get_top_individuals;
-  iface->contact_in_top = empathy_roster_model_manager_contact_in_top;
 }

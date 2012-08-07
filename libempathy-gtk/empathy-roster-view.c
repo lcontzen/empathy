@@ -484,6 +484,40 @@ individual_removed_cb (EmpathyRosterModel *model,
   individual_removed (self, individual);
 }
 
+static gboolean
+contact_in_top (EmpathyRosterView *self,
+    EmpathyRosterContact *contact)
+{
+  if (!self->priv->show_groups)
+    {
+      /* Always display top contacts in non-group mode. */
+      GList *groups;
+      FolksIndividual *individual;
+      gboolean result = FALSE;
+
+      individual = empathy_roster_contact_get_individual (contact);
+
+      groups = empathy_roster_model_get_groups_for_individual (
+          self->priv->model, individual);
+
+      if (g_list_find (groups, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP) != NULL)
+        result = TRUE;
+
+      g_list_free (groups);
+
+      return result;
+    }
+
+  if (!tp_strdiff (empathy_roster_contact_get_group (contact),
+          EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP))
+    /* If we are displaying contacts, we only want to *always* display the
+     * RosterContact which is displayed at the top; not the ones displayed in
+     * the 'normal' group sections */
+    return TRUE;
+
+  return FALSE;
+}
+
 static gint
 compare_roster_contacts_by_alias (EmpathyRosterContact *a,
     EmpathyRosterContact *b)
@@ -507,8 +541,8 @@ compare_roster_contacts_no_group (EmpathyRosterView *self,
 {
   gboolean top_a, top_b;
 
-  top_a = empathy_roster_model_contact_in_top (self->priv->model, a);
-  top_b = empathy_roster_model_contact_in_top (self->priv->model, b);
+  top_a = contact_in_top (self, a);
+  top_b = contact_in_top (self, b);
 
   if (top_a == top_b)
     /* Both contacts are in the top of the roster (or not). Sort them
@@ -731,22 +765,8 @@ contact_should_be_displayed (EmpathyRosterView *self,
   if (self->priv->show_offline)
       return TRUE;
 
-  if (empathy_roster_model_contact_in_top (self->priv->model,
-          contact))
-    {
-      const gchar *group_name;
-
-      if (!self->priv->show_groups)
-        /* Always display favourite contacts in non-group mode. */
-        return TRUE;
-
-      group_name = empathy_roster_contact_get_group (contact);
-
-      if (!tp_strdiff (group_name, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP))
-        /* Always display favourite contact in group mode only in the
-         * 'top group'*/
-        return TRUE;
-    }
+  if (contact_in_top (self, contact))
+    return TRUE;
 
   return empathy_roster_contact_is_online (contact);
 }
