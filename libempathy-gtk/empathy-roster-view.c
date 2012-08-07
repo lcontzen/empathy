@@ -304,16 +304,6 @@ individual_added (EmpathyRosterView *self,
   else
     {
       GList *groups, *l;
-      GList *tops;
-
-      tops = empathy_roster_model_get_top_individuals (self->priv->model);
-
-      if (folks_favourite_details_get_is_favourite (
-            FOLKS_FAVOURITE_DETAILS (individual)) ||
-          g_list_index (tops, individual) != -1)
-        {
-          add_to_group (self, individual, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-        }
 
       groups = empathy_roster_model_get_groups_for_individual (self->priv->model,
           individual);
@@ -833,27 +823,6 @@ filter_list (GtkWidget *child,
   g_return_val_if_reached (FALSE);
 }
 
-/* @list: GList of EmpathyRosterContact
- *
- * Returns: %TRUE if @list contains an EmpathyRosterContact associated with
- * @individual */
-static gboolean
-individual_in_list (FolksIndividual *individual,
-    GList *list)
-{
-  GList *l;
-
-  for (l = list; l != NULL; l = g_list_next (l))
-    {
-      EmpathyRosterContact *contact = l->data;
-
-      if (empathy_roster_contact_get_individual (contact) == individual)
-        return TRUE;
-    }
-
-  return FALSE;
-}
-
 static void
 populate_view (EmpathyRosterView *self)
 {
@@ -906,69 +875,6 @@ remove_from_group (EmpathyRosterView *self,
 }
 
 static void
-update_top_contacts (EmpathyRosterView *self)
-{
-  GList *tops, *l;
-  GList *to_add = NULL, *to_remove = NULL;
-  EmpathyRosterGroup *group;
-
-  if (!self->priv->show_groups)
-    {
-      egg_list_box_resort (EGG_LIST_BOX (self));
-      return;
-    }
-
-  tops = empathy_roster_model_get_top_individuals (self->priv->model);
-
-  group = g_hash_table_lookup (self->priv->roster_groups,
-      EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-  if (group == NULL)
-    {
-      to_add = g_list_copy (tops);
-    }
-  else
-    {
-      GList *contacts;
-
-      contacts = empathy_roster_group_get_widgets (group);
-
-      /* Check which EmpathyRosterContact have to be removed */
-      for (l = contacts; l != NULL; l = g_list_next (l))
-        {
-          EmpathyRosterContact *contact = l->data;
-          FolksIndividual *individual;
-
-          if (empathy_roster_model_contact_in_top (self->priv->model,
-                  contact))
-            continue;
-
-          individual = empathy_roster_contact_get_individual (contact);
-
-          if (g_list_find (tops, individual) == NULL)
-            to_remove = g_list_prepend (to_remove, individual);
-        }
-
-      /* Check which EmpathyRosterContact have to be added */
-      for (l = tops; l != NULL; l = g_list_next (l))
-        {
-          FolksIndividual *individual = l->data;
-
-          if (!individual_in_list (individual, contacts))
-            to_add = g_list_prepend (to_add, individual);
-        }
-    }
-
-  for (l = to_add; l != NULL; l = g_list_next (l))
-    add_to_group (self, l->data, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-
-  for (l = to_remove; l != NULL; l = g_list_next (l))
-    remove_from_group (self, l->data, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-
-  g_list_free (to_add);
-  g_list_free (to_remove);
-}
-
-static void
 groups_changed_cb (EmpathyRosterModel *model,
     FolksIndividual *individual,
     const gchar *group,
@@ -976,7 +882,10 @@ groups_changed_cb (EmpathyRosterModel *model,
     EmpathyRosterView *self)
 {
   if (!self->priv->show_groups)
-    return;
+    {
+      egg_list_box_resort (EGG_LIST_BOX (self));
+      return;
+    }
 
   if (is_member)
     {
@@ -985,45 +894,6 @@ groups_changed_cb (EmpathyRosterModel *model,
   else
     {
       remove_from_group (self, individual, group);
-    }
-}
-
-static void
-top_individuals_changed_cb (EmpathyRosterModel *model,
-    EmpathyRosterView *self)
-{
-  update_top_contacts (self);
-}
-
-static void
-favourites_changed_cb (EmpathyRosterModel *model,
-    FolksIndividual *individual,
-    gboolean favourite,
-    EmpathyRosterView *self)
-{
-  GHashTable *contacts;
-
-  contacts = g_hash_table_lookup (self->priv->roster_contacts, individual);
-  if (contacts == NULL)
-    return;
-
-  if (self->priv->show_groups)
-    {
-      if (favourite)
-        add_to_group (self, individual, EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-      else
-        remove_from_group (self, individual,
-            EMPATHY_ROSTER_MODEL_GROUP_TOP_GROUP);
-    }
-  else
-    {
-      GtkWidget *contact;
-
-      contact = g_hash_table_lookup (contacts, NO_GROUP);
-      if (contact == NULL)
-        return;
-
-      egg_list_box_child_changed (EGG_LIST_BOX (self), contact);
     }
 }
 
@@ -1047,10 +917,6 @@ empathy_roster_view_constructed (GObject *object)
       G_CALLBACK (individual_removed_cb), self, 0);
   tp_g_signal_connect_object (self->priv->model, "groups-changed",
       G_CALLBACK (groups_changed_cb), self, 0);
-  tp_g_signal_connect_object (self->priv->model, "top-individuals-changed",
-      G_CALLBACK (top_individuals_changed_cb), self, 0);
-  tp_g_signal_connect_object (self->priv->model, "favourites-changed",
-      G_CALLBACK (favourites_changed_cb), self, 0);
 
   egg_list_box_set_sort_func (EGG_LIST_BOX (self),
       roster_view_sort, self, NULL);
