@@ -591,7 +591,6 @@ AC_CONFIG_FILES([
    Makefile
    data/Makefile
    data/empathy.desktop.in
-   data/empathy-accounts.desktop.in
    data/icons/Makefile
    data/themes/Makefile
    extensions/Makefile
