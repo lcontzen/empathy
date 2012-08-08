@@ -93,6 +93,8 @@ auth_cb (GObject *source,
       g_clear_error (&error);
     }
 
+  DEBUG ("Auth on %s suceeded", tp_proxy_get_object_path (channel));
+
   tp_channel_close_async (channel, NULL, NULL);
 }
 

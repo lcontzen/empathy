@@ -84,11 +84,15 @@ sasl_status_changed_cb (TpChannel *channel,
           tp_proxy_dbus_error_to_gerror (channel, dbus_error,
               tp_asv_get_string (details, "debug-message"), &error);
 
+          DEBUG ("SASL failed: %s", error->message);
+
           g_simple_async_result_take_error (result, error);
         }
         break;
 
       case TP_SASL_STATUS_SUCCEEDED:
+        DEBUG ("SASL succeeded");
+
         g_simple_async_result_complete (result);
         break;
 
