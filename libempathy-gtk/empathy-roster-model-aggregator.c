@@ -80,7 +80,61 @@ static guint signals[LAST_SIGNAL];
 struct _EmpathyRosterModelAggregatorPriv
 {
   FolksIndividualAggregator *aggregator;
+  GHashTable *individuals; /* Individual -> Individual */
 };
+
+static void
+individual_group_changed_cb (FolksIndividual *individual,
+    gchar *group,
+    gboolean is_member,
+    EmpathyRosterModelAggregator *self)
+{
+  empathy_roster_model_fire_groups_changed (EMPATHY_ROSTER_MODEL (self),
+      individual, group, is_member);
+}
+
+static void
+add_individual (EmpathyRosterModelAggregator *self,
+    FolksIndividual *individual)
+{
+  g_hash_table_add (self->priv->individuals,
+      g_object_ref (individual));
+
+  g_signal_connect (individual, "group-changed",
+      G_CALLBACK (individual_group_changed_cb), self);
+
+  empathy_roster_model_fire_individual_added (EMPATHY_ROSTER_MODEL (self),
+      individual);
+}
+
+static void
+remove_individual (EmpathyRosterModelAggregator *self,
+    FolksIndividual *individual)
+{
+  g_signal_handlers_disconnect_by_func (individual,
+      individual_group_changed_cb, self);
+
+  g_hash_table_remove (self->priv->individuals, individual);
+
+  empathy_roster_model_fire_individual_removed (EMPATHY_ROSTER_MODEL (self),
+      individual);
+}
+
+static void
+populate_individuals (EmpathyRosterModelAggregator *self)
+{
+  GeeMap *individuals;
+  GeeMapIterator *iter;
+
+  individuals = folks_individual_aggregator_get_individuals (
+      self->priv->aggregator);
+  iter = gee_map_map_iterator (individuals);
+  while (gee_map_iterator_next (iter))
+    {
+      add_individual (self, gee_map_iterator_get_value (iter));
+    }
+  g_clear_object (&iter);
+}
 
 static void
 aggregator_individuals_changed_cb (FolksIndividualAggregator *aggregator,
@@ -97,8 +151,7 @@ aggregator_individuals_changed_cb (FolksIndividualAggregator *aggregator,
 
       while (iter != NULL && gee_iterator_next (iter))
         {
-          empathy_roster_model_fire_individual_added (
-              EMPATHY_ROSTER_MODEL (self), gee_iterator_get (iter));
+          add_individual (self, gee_iterator_get (iter));
         }
       g_clear_object (&iter);
     }
@@ -109,8 +162,7 @@ aggregator_individuals_changed_cb (FolksIndividualAggregator *aggregator,
 
       while (iter != NULL && gee_iterator_next (iter))
         {
-          empathy_roster_model_fire_individual_removed (
-              EMPATHY_ROSTER_MODEL (self), gee_iterator_get (iter));
+          remove_individual (self, gee_iterator_get (iter));
         }
       g_clear_object (&iter);
     }
@@ -168,12 +220,14 @@ empathy_roster_model_aggregator_constructed (GObject *object)
   if (self->priv->aggregator == NULL)
     self->priv->aggregator = folks_individual_aggregator_new ();
 
+  g_assert (FOLKS_IS_INDIVIDUAL_AGGREGATOR (self->priv->aggregator));
+
   tp_g_signal_connect_object (self->priv->aggregator, "individuals-changed",
       G_CALLBACK (aggregator_individuals_changed_cb), self, 0);
 
   folks_individual_aggregator_prepare (self->priv->aggregator, NULL, NULL);
 
-  g_assert (FOLKS_IS_INDIVIDUAL_AGGREGATOR (self->priv->aggregator));
+  populate_individuals (self);
 }
 
 static void
@@ -227,6 +281,9 @@ empathy_roster_model_aggregator_init (EmpathyRosterModelAggregator *self)
 {
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR, EmpathyRosterModelAggregatorPriv);
+
+  self->priv->individuals = g_hash_table_new_full (NULL, NULL, NULL,
+      g_object_unref);
 }
 
 EmpathyRosterModelAggregator *
@@ -247,8 +304,16 @@ empathy_roster_model_aggregator_new_with_aggregator (
       NULL);
 }
 
+static GList *
+empathy_roster_model_aggregator_get_individuals (EmpathyRosterModel *model)
+{
+  EmpathyRosterModelAggregator *self = EMPATHY_ROSTER_MODEL_AGGREGATOR (model);
+
+  return g_hash_table_get_values (self->priv->individuals);
+}
+
 static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
-
+  iface->get_individuals = empathy_roster_model_aggregator_get_individuals;
 }
