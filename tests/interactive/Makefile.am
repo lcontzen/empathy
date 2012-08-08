@@ -20,7 +20,8 @@ noinst_PROGRAMS =			\
 	test-empathy-account-chooser \
 	test-empathy-calendar-button \
 	test-empathy-roster-view \
-	test-empathy-dual-roster-view
+	test-empathy-dual-roster-view \
+	test-empathy-roster-model-aggregator
 
 empathy_logs_SOURCES = empathy-logs.c
 test_empathy_contact_blocking_dialog_SOURCES = test-empathy-contact-blocking-dialog.c
@@ -31,3 +32,4 @@ test_empathy_account_chooser_SOURCES = test-empathy-account-chooser.c
 test_empathy_calendar_button_SOURCES = test-empathy-calendar-button.c
 test_empathy_roster_view_SOURCES = test-empathy-roster-view.c
 test_empathy_dual_roster_view_SOURCES = test-empathy-dual-roster-view.c
+test_empathy_roster_model_aggregator_SOURCES = test-empathy-roster-model-aggregator.c
