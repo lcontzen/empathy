@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include <folks/folks.h>
+
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModelAggregator EmpathyRosterModelAggregator;
@@ -70,6 +72,10 @@ GType empathy_roster_model_aggregator_get_type (void);
     EmpathyRosterModelAggregatorClass))
 
 EmpathyRosterModelAggregator * empathy_roster_model_aggregator_new (void);
+
+EmpathyRosterModelAggregator *
+empathy_roster_model_aggregator_new_with_aggregator (
+    FolksIndividualAggregator *aggregator);
 
 G_END_DECLS
 
