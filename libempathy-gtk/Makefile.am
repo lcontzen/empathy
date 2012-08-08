@@ -77,6 +77,7 @@ libempathy_gtk_handwritten_source =            	\
 	empathy-roster-contact.c			\
 	empathy-roster-group.c			\
 	empathy-roster-model.c			\
+	empathy-roster-model-aggregator.c			\
 	empathy-roster-model-manager.c			\
 	empathy-roster-view.c			\
 	empathy-search-bar.c			\
@@ -148,6 +149,7 @@ libempathy_gtk_headers =			\
 	empathy-roster-contact.h			\
 	empathy-roster-group.h			\
 	empathy-roster-model.h			\
+	empathy-roster-model-aggregator.h			\
 	empathy-roster-model-manager.h			\
 	empathy-roster-view.h			\
 	empathy-search-bar.h			\
