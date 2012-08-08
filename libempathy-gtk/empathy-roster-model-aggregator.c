@@ -47,7 +47,8 @@
  * Since: UNRELEASED
  */
 
-G_DEFINE_TYPE (EmpathyRosterModelAggregator, empathy_roster_model_aggregator, G_TYPE_OBJECT)
+G_DEFINE_TYPE (EmpathyRosterModelAggregator, empathy_roster_model_aggregator,
+    G_TYPE_OBJECT)
 
 enum
 {

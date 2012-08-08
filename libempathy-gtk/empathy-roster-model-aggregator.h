@@ -27,8 +27,10 @@
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModelAggregator EmpathyRosterModelAggregator;
-typedef struct _EmpathyRosterModelAggregatorClass EmpathyRosterModelAggregatorClass;
-typedef struct _EmpathyRosterModelAggregatorPriv EmpathyRosterModelAggregatorPriv;
+typedef struct _EmpathyRosterModelAggregatorClass
+EmpathyRosterModelAggregatorClass;
+typedef struct _EmpathyRosterModelAggregatorPriv
+EmpathyRosterModelAggregatorPriv;
 
 struct _EmpathyRosterModelAggregatorClass
 {
