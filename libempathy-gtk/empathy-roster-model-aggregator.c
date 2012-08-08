@@ -83,6 +83,40 @@ struct _EmpathyRosterModelAggregatorPriv
 };
 
 static void
+aggregator_individuals_changed_cb (FolksIndividualAggregator *aggregator,
+    GeeSet *added,
+    GeeSet *removed,
+    gchar *message,
+    FolksPersona *actor,
+    FolksGroupDetailsChangeReason reason,
+    EmpathyRosterModelAggregator *self)
+{
+  if (gee_collection_get_size (GEE_COLLECTION (added)) > 0)
+    {
+      GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (added));
+
+      while (iter != NULL && gee_iterator_next (iter))
+        {
+          empathy_roster_model_fire_individual_added (
+              EMPATHY_ROSTER_MODEL (self), gee_iterator_get (iter));
+        }
+      g_clear_object (&iter);
+    }
+
+  if (gee_collection_get_size (GEE_COLLECTION (removed)) > 0)
+    {
+      GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (removed));
+
+      while (iter != NULL && gee_iterator_next (iter))
+        {
+          empathy_roster_model_fire_individual_removed (
+              EMPATHY_ROSTER_MODEL (self), gee_iterator_get (iter));
+        }
+      g_clear_object (&iter);
+    }
+}
+
+static void
 empathy_roster_model_aggregator_get_property (GObject *object,
     guint property_id,
     GValue *value,
@@ -133,6 +167,11 @@ empathy_roster_model_aggregator_constructed (GObject *object)
 
   if (self->priv->aggregator == NULL)
     self->priv->aggregator = folks_individual_aggregator_new ();
+
+  tp_g_signal_connect_object (self->priv->aggregator, "individuals-changed",
+      G_CALLBACK (aggregator_individuals_changed_cb), self, 0);
+
+  folks_individual_aggregator_prepare (self->priv->aggregator, NULL, NULL);
 
   g_assert (FOLKS_IS_INDIVIDUAL_AGGREGATOR (self->priv->aggregator));
 }
