@@ -312,8 +312,34 @@ empathy_roster_model_aggregator_get_individuals (EmpathyRosterModel *model)
   return g_hash_table_get_values (self->priv->individuals);
 }
 
+static GList *
+empathy_roster_model_aggregator_get_groups_for_individual (
+    EmpathyRosterModel *model,
+    FolksIndividual *individual)
+{
+  GList *groups_list = NULL;
+  GeeSet *groups_set;
+
+  groups_set = folks_group_details_get_groups (
+      FOLKS_GROUP_DETAILS (individual));
+  if (gee_collection_get_size (GEE_COLLECTION (groups_set)) > 0)
+    {
+      GeeIterator *iter = gee_iterable_iterator (GEE_ITERABLE (groups_set));
+
+      while (iter != NULL && gee_iterator_next (iter))
+        {
+          groups_list = g_list_prepend (groups_list, gee_iterator_get (iter));
+        }
+      g_clear_object (&iter);
+    }
+
+  return groups_list;
+}
+
 static void
 roster_model_iface_init (EmpathyRosterModelInterface *iface)
 {
   iface->get_individuals = empathy_roster_model_aggregator_get_individuals;
+  iface->get_groups_for_individual =
+    empathy_roster_model_aggregator_get_groups_for_individual;
 }
