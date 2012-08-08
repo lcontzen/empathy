@@ -1,6 +1,9 @@
 /*
  * empathy-roster-model-aggregator.c
  *
+ * Implementation of EmpathyRosterModel using FolksIndividualAggregator as
+ * source.
+ *
  * Copyright (C) 2012 Collabora Ltd. <http://www.collabora.co.uk/>
  *
  * This library is free software; you can redistribute it and/or
@@ -22,6 +25,8 @@
 #include "config.h"
 
 #include "empathy-roster-model-aggregator.h"
+
+#include "empathy-roster-model.h"
 
 /**
  * SECTION: empathy-roster-model-aggregator
@@ -47,8 +52,12 @@
  * Since: UNRELEASED
  */
 
-G_DEFINE_TYPE (EmpathyRosterModelAggregator, empathy_roster_model_aggregator,
-    G_TYPE_OBJECT)
+static void roster_model_iface_init (EmpathyRosterModelInterface *iface);
+
+G_DEFINE_TYPE_WITH_CODE (EmpathyRosterModelAggregator,
+    empathy_roster_model_aggregator,
+    G_TYPE_OBJECT,
+    G_IMPLEMENT_INTERFACE (EMPATHY_TYPE_ROSTER_MODEL, roster_model_iface_init))
 
 enum
 {
@@ -163,4 +172,10 @@ empathy_roster_model_aggregator_new (void)
 {
   return g_object_new (EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR,
       NULL);
+}
+
+static void
+roster_model_iface_init (EmpathyRosterModelInterface *iface)
+{
+
 }
