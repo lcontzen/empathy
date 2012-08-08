@@ -170,7 +170,7 @@ store_password_cb (GObject *source,
   if (!secret_password_store_finish (result, &error))
     {
       g_simple_async_result_set_error (simple, TP_ERROR,
-          TP_ERROR_DOES_NOT_EXIST, error->message);
+          TP_ERROR_DOES_NOT_EXIST, "%s", error->message);
       g_error_free (error);
     }
 
