@@ -79,6 +79,14 @@ empty_cb (EmpathyRosterView *view,
     g_print ("view is no longer empty\n");
 }
 
+static gboolean
+filter (EmpathyRosterModel *model,
+    FolksIndividual *individual,
+    gpointer user_data)
+{
+  return TRUE;
+}
+
 int
 main (int argc,
     char **argv)
@@ -106,7 +114,8 @@ main (int argc,
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 8);
 
-  model = EMPATHY_ROSTER_MODEL (empathy_roster_model_aggregator_new ());
+  model = EMPATHY_ROSTER_MODEL (empathy_roster_model_aggregator_new (
+          filter, NULL));
   view = empathy_roster_view_new (model);
 
   g_object_unref (model);

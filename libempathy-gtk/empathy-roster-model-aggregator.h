@@ -26,6 +26,8 @@
 
 #include <folks/folks.h>
 
+#include "empathy-roster-model.h"
+
 G_BEGIN_DECLS
 
 typedef struct _EmpathyRosterModelAggregator EmpathyRosterModelAggregator;
@@ -46,6 +48,11 @@ struct _EmpathyRosterModelAggregator
   GObject parent;
   EmpathyRosterModelAggregatorPriv *priv;
 };
+
+typedef gboolean (* EmpathyRosterModelAggregatorFilterFunc) (
+    EmpathyRosterModel *model,
+    FolksIndividual *individual,
+    gpointer user_data);
 
 GType empathy_roster_model_aggregator_get_type (void);
 
@@ -71,11 +78,15 @@ GType empathy_roster_model_aggregator_get_type (void);
     EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR, \
     EmpathyRosterModelAggregatorClass))
 
-EmpathyRosterModelAggregator * empathy_roster_model_aggregator_new (void);
+EmpathyRosterModelAggregator * empathy_roster_model_aggregator_new (
+    EmpathyRosterModelAggregatorFilterFunc filter_func,
+    gpointer user_data);
 
 EmpathyRosterModelAggregator *
 empathy_roster_model_aggregator_new_with_aggregator (
-    FolksIndividualAggregator *aggregator);
+    FolksIndividualAggregator *aggregator,
+    EmpathyRosterModelAggregatorFilterFunc filter_func,
+    gpointer user_data);
 
 G_END_DECLS
 

@@ -29,8 +29,6 @@
 
 #include "empathy-roster-model-aggregator.h"
 
-#include "empathy-roster-model.h"
-
 /**
  * SECTION: empathy-roster-model-aggregator
  * @title: EmpathyRosterModelAggregator
@@ -65,6 +63,8 @@ G_DEFINE_TYPE_WITH_CODE (EmpathyRosterModelAggregator,
 enum
 {
   PROP_AGGREGATOR = 1,
+  PROP_FILTER_FUNC,
+  PROP_FILTER_DATA,
   N_PROPS
 };
 
@@ -81,6 +81,9 @@ struct _EmpathyRosterModelAggregatorPriv
 {
   FolksIndividualAggregator *aggregator;
   GHashTable *individuals; /* Individual -> Individual */
+
+  EmpathyRosterModelAggregatorFilterFunc filter_func;
+  gpointer filter_data;
 };
 
 static void
@@ -97,6 +100,10 @@ static void
 add_individual (EmpathyRosterModelAggregator *self,
     FolksIndividual *individual)
 {
+  if (self->priv->filter_func != NULL && !self->priv->filter_func (
+          EMPATHY_ROSTER_MODEL (self), individual, self))
+        return;
+
   g_hash_table_add (self->priv->individuals,
       g_object_ref (individual));
 
@@ -181,6 +188,12 @@ empathy_roster_model_aggregator_get_property (GObject *object,
       case PROP_AGGREGATOR:
         g_value_set_object (value, self->priv->aggregator);
         break;
+      case PROP_FILTER_FUNC:
+        g_value_set_pointer (value, self->priv->filter_func);
+        break;
+      case PROP_FILTER_DATA:
+        g_value_set_pointer (value, self->priv->filter_data);
+        break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
         break;
@@ -200,6 +213,14 @@ empathy_roster_model_aggregator_set_property (GObject *object,
       case PROP_AGGREGATOR:
         g_assert (self->priv->aggregator == NULL); /* construct only */
         self->priv->aggregator = g_value_dup_object (value);
+        break;
+      case PROP_FILTER_FUNC:
+        g_assert (self->priv->filter_func == NULL); /* construct only */
+        self->priv->filter_func = g_value_get_pointer (value);
+        break;
+      case PROP_FILTER_DATA:
+        g_assert (self->priv->filter_data == NULL); /* construct only */
+        self->priv->filter_data = g_value_get_pointer (value);
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -273,6 +294,16 @@ empathy_roster_model_aggregator_class_init (
       G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (oclass, PROP_AGGREGATOR, spec);
 
+  spec = g_param_spec_pointer ("filter-func", "Filter-Func",
+      "EmpathyRosterModelAggregatorFilterFunc",
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_FILTER_FUNC, spec);
+
+  spec = g_param_spec_pointer ("filter-data", "Filter-Data",
+      "GPointer",
+      G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_property (oclass, PROP_FILTER_DATA, spec);
+
   g_type_class_add_private (klass, sizeof (EmpathyRosterModelAggregatorPriv));
 }
 
@@ -287,20 +318,28 @@ empathy_roster_model_aggregator_init (EmpathyRosterModelAggregator *self)
 }
 
 EmpathyRosterModelAggregator *
-empathy_roster_model_aggregator_new (void)
+empathy_roster_model_aggregator_new (
+    EmpathyRosterModelAggregatorFilterFunc filter_func,
+    gpointer user_data)
 {
   return g_object_new (EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR,
+      "filter-func", filter_func,
+      "filter-data", user_data,
       NULL);
 }
 
 EmpathyRosterModelAggregator *
 empathy_roster_model_aggregator_new_with_aggregator (
-    FolksIndividualAggregator *aggregator)
+    FolksIndividualAggregator *aggregator,
+    EmpathyRosterModelAggregatorFilterFunc filter_func,
+    gpointer user_data)
 {
   g_return_val_if_fail (FOLKS_IS_INDIVIDUAL_AGGREGATOR (aggregator), NULL);
 
   return g_object_new (EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR,
       "aggregator", aggregator,
+      "filter-func", filter_func,
+      "filter-data", user_data,
       NULL);
 }
 
