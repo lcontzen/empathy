@@ -237,14 +237,18 @@ static void
 add_account_widget (EmpathyAccountsPluginWidget *self)
 {
   GtkWidget *alig;
+  gboolean simple;
 
   alig = gtk_alignment_new (0.5, 0, 0, 0);
 
   gtk_box_pack_start (GTK_BOX (self), alig, TRUE, TRUE, 0);
   gtk_widget_show (GTK_WIDGET (alig));
 
+  /* Use the simple widget only when creating the account */
+  simple = (self->priv->account->id == 0);
+
   self->priv->account_widget = empathy_account_widget_new_for_protocol (
-      self->priv->settings, TRUE);
+      self->priv->settings, simple);
 
   empathy_account_widget_hide_buttons (self->priv->account_widget);
 
