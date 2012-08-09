@@ -123,15 +123,18 @@ get_avatar_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
-  TpWeakRef *weak = user_data;
-  EmpathyAvatarChooser *self = tp_weak_ref_dup_object (weak);
+  TpWeakRef *wr = user_data;
+  EmpathyAvatarChooser *self = tp_weak_ref_dup_object (wr);
   const GArray *avatar;
   GdkPixbuf *pixbuf;
   gchar *mime_type;
   GError *error = NULL;
 
   if (self == NULL)
-    goto out;
+    {
+      tp_weak_ref_destroy (wr);
+      return;
+    }
 
   avatar = tp_account_get_avatar_finish (self->priv->account, result, &error);
   if (avatar == NULL)
@@ -159,10 +162,10 @@ get_avatar_cb (GObject *source,
   g_free (mime_type);
 
   self->priv->changed = FALSE;
-  g_object_unref (self);
 
 out:
-  tp_weak_ref_destroy (weak);
+  tp_weak_ref_destroy (wr);
+  g_object_unref (self);
 }
 
 static void

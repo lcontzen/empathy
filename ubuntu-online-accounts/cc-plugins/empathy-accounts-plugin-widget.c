@@ -291,10 +291,17 @@ manager_prepared_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
-  EmpathyAccountsPluginWidget *self = user_data;
+  TpWeakRef *wr = user_data;
+  EmpathyAccountsPluginWidget *self = tp_weak_ref_dup_object (wr);
   TpAccountManager *manager = (TpAccountManager *) source;
   GList *accounts;
   GError *error = NULL;
+
+  if (self == NULL)
+    {
+      tp_weak_ref_destroy (wr);
+      return;
+    }
 
   if (!tp_proxy_prepare_finish (manager, result, &error))
     {
@@ -324,6 +331,7 @@ manager_prepared_cb (GObject *source,
   g_list_free (accounts);
 
 out:
+  tp_weak_ref_destroy (wr);
   g_object_unref (self);
 }
 
@@ -354,7 +362,7 @@ empathy_accounts_plugin_widget_constructed (GObject *object)
       manager = tp_account_manager_dup ();
 
       tp_proxy_prepare_async (manager, NULL,
-          manager_prepared_cb, g_object_ref (self));
+          manager_prepared_cb, tp_weak_ref_new (self, NULL, NULL));
       g_object_unref (manager);
       return;
     }
