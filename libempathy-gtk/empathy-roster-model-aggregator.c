@@ -80,7 +80,7 @@ static guint signals[LAST_SIGNAL];
 struct _EmpathyRosterModelAggregatorPriv
 {
   FolksIndividualAggregator *aggregator;
-  GHashTable *individuals; /* Individual -> Individual */
+  GHashTable *filtered_individuals; /* Individual -> Individual */
 
   EmpathyRosterModelAggregatorFilterFunc filter_func;
   gpointer filter_data;
@@ -97,34 +97,74 @@ individual_group_changed_cb (FolksIndividual *individual,
 }
 
 static void
-add_individual (EmpathyRosterModelAggregator *self,
+add_to_filtered_individuals (EmpathyRosterModelAggregator *self,
     FolksIndividual *individual)
 {
-  if (self->priv->filter_func != NULL && !self->priv->filter_func (
-          EMPATHY_ROSTER_MODEL (self), individual, self))
-        return;
-
-  g_hash_table_add (self->priv->individuals,
+  g_hash_table_add (self->priv->filtered_individuals,
       g_object_ref (individual));
 
-  g_signal_connect (individual, "group-changed",
-      G_CALLBACK (individual_group_changed_cb), self);
+  tp_g_signal_connect_object (individual, "group-changed",
+      G_CALLBACK (individual_group_changed_cb), self, 0);
 
   empathy_roster_model_fire_individual_added (EMPATHY_ROSTER_MODEL (self),
       individual);
 }
 
 static void
-remove_individual (EmpathyRosterModelAggregator *self,
+remove_from_filtered_individuals (EmpathyRosterModelAggregator *self,
     FolksIndividual *individual)
 {
   g_signal_handlers_disconnect_by_func (individual,
       individual_group_changed_cb, self);
 
-  g_hash_table_remove (self->priv->individuals, individual);
+  g_hash_table_remove (self->priv->filtered_individuals, individual);
 
   empathy_roster_model_fire_individual_removed (EMPATHY_ROSTER_MODEL (self),
       individual);
+}
+
+static void
+individual_notify_cb (FolksIndividual *individual,
+    GParamSpec *param,
+    EmpathyRosterModelAggregator *self)
+{
+  if (!self->priv->filter_func (EMPATHY_ROSTER_MODEL (self), individual, self)
+      && g_hash_table_contains (self->priv->filtered_individuals, individual))
+    remove_from_filtered_individuals (self, individual);
+
+  if (self->priv->filter_func (EMPATHY_ROSTER_MODEL (self), individual, self)
+      && !g_hash_table_contains (self->priv->filtered_individuals, individual))
+    add_to_filtered_individuals (self, individual);
+}
+
+static void
+add_individual (EmpathyRosterModelAggregator *self,
+    FolksIndividual *individual)
+{
+  if (self->priv->filter_func != NULL)
+    {
+      tp_g_signal_connect_object (individual, "notify",
+          G_CALLBACK (individual_notify_cb), self, 0);
+
+      if (!self->priv->filter_func (EMPATHY_ROSTER_MODEL (self), individual,
+              self))
+        return;
+    }
+
+  add_to_filtered_individuals (self, individual);
+}
+
+static void
+remove_individual (EmpathyRosterModelAggregator *self,
+    FolksIndividual *individual)
+{
+  if (self->priv->filter_func != NULL)
+    g_signal_handlers_disconnect_by_func (individual,
+        individual_notify_cb, self);
+
+  if (g_hash_table_contains (self->priv->filtered_individuals,
+          individual))
+    remove_from_filtered_individuals (self, individual);
 }
 
 static void
@@ -259,6 +299,7 @@ empathy_roster_model_aggregator_dispose (GObject *object)
       ((GObjectClass *) empathy_roster_model_aggregator_parent_class)->dispose;
 
   g_clear_object (&self->priv->aggregator);
+  g_clear_pointer (&self->priv->filtered_individuals, g_hash_table_unref);
 
   if (chain_up != NULL)
     chain_up (object);
@@ -313,7 +354,7 @@ empathy_roster_model_aggregator_init (EmpathyRosterModelAggregator *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_ROSTER_MODEL_AGGREGATOR, EmpathyRosterModelAggregatorPriv);
 
-  self->priv->individuals = g_hash_table_new_full (NULL, NULL, NULL,
+  self->priv->filtered_individuals = g_hash_table_new_full (NULL, NULL, NULL,
       g_object_unref);
 }
 
@@ -348,7 +389,7 @@ empathy_roster_model_aggregator_get_individuals (EmpathyRosterModel *model)
 {
   EmpathyRosterModelAggregator *self = EMPATHY_ROSTER_MODEL_AGGREGATOR (model);
 
-  return g_hash_table_get_values (self->priv->individuals);
+  return g_hash_table_get_values (self->priv->filtered_individuals);
 }
 
 static GList *
