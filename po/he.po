@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 22:30+0300\n"
-"PO-Revision-Date: 2012-07-24 22:31+0200\n"
+"POT-Creation-Date: 2012-08-10 15:39+0300\n"
+"PO-Revision-Date: 2012-08-10 15:39+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -32,16 +32,6 @@ msgstr "‏Empathy מסרים מידיים"
 #: ../data/empathy.desktop.in.in.h:4
 msgid "Chat on Google Talk, Facebook, MSN and many other chat services"
 msgstr "ניתן לשוחח דרך Google Talk,‏ Facebook,‏ MSN ושירותי שיחה רבים נוספים"
-
-#. Tweak the dialog
-#: ../data/empathy-accounts.desktop.in.in.h:1
-#: ../src/empathy-accounts-dialog.c:2523
-msgid "Messaging and VoIP Accounts"
-msgstr "חשבונות התכתבות ו־VoIP"
-
-#: ../data/empathy-accounts.desktop.in.in.h:2
-msgid "Manage Messaging and VoIP accounts"
-msgstr "ניהול חשבונות התכתבות ו־VoIP"
 
 #: ../data/org.gnome.Empathy.gschema.xml.h:1
 msgid "Connection managers should be used"
@@ -486,12 +476,12 @@ msgstr "הקובץ הנבחר ריק"
 msgid "Password not found"
 msgstr "הססמה לא נמצאה"
 
-#: ../libempathy/empathy-keyring.c:218
+#: ../libempathy/empathy-keyring.c:202
 #, c-format
 msgid "IM account password for %s (%s)"
 msgstr "ססמת חשבון המסרים המידיים עבור %s‏ (%s)"
 
-#: ../libempathy/empathy-keyring.c:253
+#: ../libempathy/empathy-keyring.c:237
 #, c-format
 msgid "Password for chatroom '%s' on account %s (%s)"
 msgstr "הססמה עבור החדר '%s' דרך החשבון %s ‏(%s)"
@@ -1229,36 +1219,36 @@ msgstr "מהו המזהה בחשבון ה־Yahoo! שלך?"
 msgid "What is your Yahoo! password?"
 msgstr "מהי ססמת חשבון ה־Yahoo! שלך?"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:471
-#: ../libempathy-gtk/empathy-avatar-chooser.c:556
+#: ../libempathy-gtk/empathy-avatar-chooser.c:542
+#: ../libempathy-gtk/empathy-avatar-chooser.c:627
 msgid "Couldn't convert image"
 msgstr "לא ניתן להמיר תמונה"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:472
+#: ../libempathy-gtk/empathy-avatar-chooser.c:543
 msgid "None of the accepted image formats are supported on your system"
 msgstr "אף אחד מסוגי התמונות המקובלים אינם נתמכים על ידי המערכת שלך"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:819
+#: ../libempathy-gtk/empathy-avatar-chooser.c:903
 msgid "Couldn't save picture to file"
 msgstr "לא ניתן לשמור את התמונה לקובץ"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:939
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1027
 msgid "Select Your Avatar Image"
 msgstr "נא לבחור את התמונה האישית שלך"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:947
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1035
 msgid "Take a picture..."
 msgstr "צילום תמונה..."
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:960
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1048
 msgid "No Image"
 msgstr "ללא תמונה"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1017
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1105
 msgid "Images"
 msgstr "תמונות"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1021
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1109
 msgid "All Files"
 msgstr "כל הקבצים"
 
@@ -1746,179 +1736,33 @@ msgstr "ההודעה המציגה אותך:"
 msgid "Please let me see when you're online. Thanks!"
 msgstr "נא לאפשר לי לראות מתי מצבך הוא מחובר. תודה!"
 
-#: ../libempathy-gtk/empathy-contact-widget.c:560
-#: ../libempathy-gtk/empathy-individual-widget.c:304
-msgid "Channels:"
-msgstr "ערוצים:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:738
-#: ../libempathy-gtk/empathy-individual-widget.c:455
-msgid "Country ISO Code:"
-msgstr "קוד המדינה בתקן ISO:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:740
-#: ../libempathy-gtk/empathy-individual-widget.c:457
-msgid "Country:"
-msgstr "ארץ:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:742
-#: ../libempathy-gtk/empathy-individual-widget.c:459
-msgid "State:"
-msgstr "מדינה:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:744
-#: ../libempathy-gtk/empathy-individual-widget.c:461
-msgid "City:"
-msgstr "עיר:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:746
-#: ../libempathy-gtk/empathy-individual-widget.c:463
-msgid "Area:"
-msgstr "אזור:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:748
-#: ../libempathy-gtk/empathy-individual-widget.c:465
-msgid "Postal Code:"
-msgstr "מיקוד:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:750
-#: ../libempathy-gtk/empathy-individual-widget.c:467
-msgid "Street:"
-msgstr "רחוב:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:752
-#: ../libempathy-gtk/empathy-individual-widget.c:469
-msgid "Building:"
-msgstr "מבנה:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:754
-#: ../libempathy-gtk/empathy-individual-widget.c:471
-msgid "Floor:"
-msgstr "קומה:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:756
-#: ../libempathy-gtk/empathy-individual-widget.c:473
-msgid "Room:"
-msgstr "חדר:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:758
-#: ../libempathy-gtk/empathy-individual-widget.c:475
-msgid "Text:"
-msgstr "טקסט:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:760
-#: ../libempathy-gtk/empathy-individual-widget.c:477
-msgid "Description:"
-msgstr "תיאור:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:762
-#: ../libempathy-gtk/empathy-individual-widget.c:479
-msgid "URI:"
-msgstr "כתובת:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:764
-#: ../libempathy-gtk/empathy-individual-widget.c:481
-msgid "Accuracy Level:"
-msgstr "רמת דיוק:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:766
-#: ../libempathy-gtk/empathy-individual-widget.c:483
-msgid "Error:"
-msgstr "שגיאה:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:768
-#: ../libempathy-gtk/empathy-individual-widget.c:485
-msgid "Vertical Error (meters):"
-msgstr "סטייה אנכית (מטרים):"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:770
-#: ../libempathy-gtk/empathy-individual-widget.c:487
-msgid "Horizontal Error (meters):"
-msgstr "סטייה אופקית (מטרים):"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:772
-#: ../libempathy-gtk/empathy-individual-widget.c:489
-msgid "Speed:"
-msgstr "מהירות:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:774
-#: ../libempathy-gtk/empathy-individual-widget.c:491
-msgid "Bearing:"
-msgstr "אזימוט:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:776
-#: ../libempathy-gtk/empathy-individual-widget.c:493
-msgid "Climb Speed:"
-msgstr "מהירות הטיפוס:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:778
-#: ../libempathy-gtk/empathy-individual-widget.c:495
-msgid "Last Updated on:"
-msgstr "עדכון אחרון ב־:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:780
-#: ../libempathy-gtk/empathy-individual-widget.c:497
-msgid "Longitude:"
-msgstr "קו אורך:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:782
-#: ../libempathy-gtk/empathy-individual-widget.c:499
-msgid "Latitude:"
-msgstr "קו רוחב:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:784
-#: ../libempathy-gtk/empathy-individual-widget.c:501
-msgid "Altitude:"
-msgstr "גובה:"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:837
-#: ../libempathy-gtk/empathy-contact-widget.c:852
-#: ../libempathy-gtk/empathy-individual-widget.c:593
-#: ../libempathy-gtk/empathy-individual-widget.c:608
-#: ../src/empathy-preferences.ui.h:39
-msgid "Location"
-msgstr "מיקום"
-
-#. translators: format is "Location, $date"
-#: ../libempathy-gtk/empathy-contact-widget.c:854
-#: ../libempathy-gtk/empathy-individual-widget.c:610
-#, c-format
-msgid "%s, %s"
-msgstr "%s, %s"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:906
-#: ../libempathy-gtk/empathy-individual-widget.c:659
-msgid "%B %e, %Y at %R UTC"
-msgstr "‏%B %e, %Y ב־‏%R ‏UTC"
-
-#: ../libempathy-gtk/empathy-contact-widget.c:988
+#: ../libempathy-gtk/empathy-contact-widget.c:170
 #: ../libempathy-gtk/empathy-individual-widget.c:900
 msgid "Save Avatar"
 msgstr "שמירת תמונה אישית"
 
-#: ../libempathy-gtk/empathy-contact-widget.c:1044
+#: ../libempathy-gtk/empathy-contact-widget.c:226
 #: ../libempathy-gtk/empathy-individual-widget.c:958
 msgid "Unable to save avatar"
 msgstr "לא ניתן לשמור תמונה אישית"
 
-#: ../libempathy-gtk/empathy-contact-widget.c:1446
-msgid "Personal Details"
-msgstr "פרטים אישיים"
+#. Identifier to connect to Instant Messaging network
+#. Setup id label
+#: ../libempathy-gtk/empathy-contact-widget.ui.h:3
+#: ../libempathy-gtk/empathy-user-info.c:444
+msgid "Identifier"
+msgstr "מזהה"
 
-#: ../libempathy-gtk/empathy-contact-widget.c:1449
+#. Setup nickname entry
+#: ../libempathy-gtk/empathy-contact-widget.ui.h:4
+#: ../libempathy-gtk/empathy-user-info.c:449
+msgid "Alias"
+msgstr "כינוי"
+
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:5
 #: ../libempathy-gtk/empathy-individual-widget.ui.h:3
 msgid "Contact Details"
 msgstr "פרטי איש קשר"
-
-#. Identifier to connect to Instant Messaging network
-#: ../libempathy-gtk/empathy-contact-widget.ui.h:3
-msgid "Identifier"
-msgstr "מזהה"
-
-#: ../libempathy-gtk/empathy-contact-widget.ui.h:4
-msgid "Alias"
-msgstr "כינוי"
 
 #: ../libempathy-gtk/empathy-contact-widget.ui.h:6
 #: ../libempathy-gtk/empathy-individual-widget.ui.h:4
@@ -1970,37 +1814,37 @@ msgstr "קבוצה"
 msgid "New Contact"
 msgstr "איש קשר חדש"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:197
+#: ../libempathy-gtk/empathy-individual-dialogs.c:193
 #: ../libempathy-gtk/empathy-subscription-dialog.c:121
 #, c-format
 msgid "Block %s?"
 msgstr "האם לחסום את %s?"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:252
+#: ../libempathy-gtk/empathy-individual-dialogs.c:248
 #: ../libempathy-gtk/empathy-subscription-dialog.c:125
 #, c-format
 msgid "Are you sure you want to block '%s' from contacting you again?"
 msgstr "האם אכן ברצונך לחסום את אפשרות ההתקשרות של '%s' אליך?"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:257
+#: ../libempathy-gtk/empathy-individual-dialogs.c:253
 msgid "The following identity will be blocked:"
 msgid_plural "The following identities will be blocked:"
 msgstr[0] "הזהות הבאה תיחסם:"
 msgstr[1] "בעלי הזהות הבאים ייחסמו:"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:264
+#: ../libempathy-gtk/empathy-individual-dialogs.c:260
 msgid "The following identity can not be blocked:"
 msgid_plural "The following identities can not be blocked:"
 msgstr[0] "לא ניתן לחסום את הזהות הבאה:"
 msgstr[1] "לא ניתן לחסום את בעלי הזהות הבאים:"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:274
+#: ../libempathy-gtk/empathy-individual-dialogs.c:270
 #: ../libempathy-gtk/empathy-subscription-dialog.c:130
 #: ../libempathy-gtk/empathy-subscription-dialog.c:275
 msgid "_Block"
 msgstr "ח_סימה"
 
-#: ../libempathy-gtk/empathy-individual-dialogs.c:283
+#: ../libempathy-gtk/empathy-individual-dialogs.c:279
 #: ../libempathy-gtk/empathy-subscription-dialog.c:150
 msgid "_Report this contact as abusive"
 msgid_plural "_Report these contacts as abusive"
@@ -2156,6 +2000,122 @@ msgstr "הקבוצה מוסרת"
 #: ../libempathy-gtk/empathy-individual-view.c:2445
 msgid "Re_name"
 msgstr "שנה _שם"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:304
+msgid "Channels:"
+msgstr "ערוצים:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:455
+msgid "Country ISO Code:"
+msgstr "קוד המדינה בתקן ISO:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:457
+msgid "Country:"
+msgstr "ארץ:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:459
+msgid "State:"
+msgstr "מדינה:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:461
+msgid "City:"
+msgstr "עיר:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:463
+msgid "Area:"
+msgstr "אזור:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:465
+msgid "Postal Code:"
+msgstr "מיקוד:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:467
+msgid "Street:"
+msgstr "רחוב:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:469
+msgid "Building:"
+msgstr "מבנה:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:471
+msgid "Floor:"
+msgstr "קומה:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:473
+msgid "Room:"
+msgstr "חדר:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:475
+msgid "Text:"
+msgstr "טקסט:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:477
+msgid "Description:"
+msgstr "תיאור:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:479
+msgid "URI:"
+msgstr "כתובת:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:481
+msgid "Accuracy Level:"
+msgstr "רמת דיוק:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:483
+msgid "Error:"
+msgstr "שגיאה:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:485
+msgid "Vertical Error (meters):"
+msgstr "סטייה אנכית (מטרים):"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:487
+msgid "Horizontal Error (meters):"
+msgstr "סטייה אופקית (מטרים):"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:489
+msgid "Speed:"
+msgstr "מהירות:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:491
+msgid "Bearing:"
+msgstr "אזימוט:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:493
+msgid "Climb Speed:"
+msgstr "מהירות הטיפוס:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:495
+msgid "Last Updated on:"
+msgstr "עדכון אחרון ב־:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:497
+msgid "Longitude:"
+msgstr "קו אורך:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:499
+msgid "Latitude:"
+msgstr "קו רוחב:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:501
+msgid "Altitude:"
+msgstr "גובה:"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:593
+#: ../libempathy-gtk/empathy-individual-widget.c:608
+#: ../src/empathy-preferences.ui.h:39
+msgid "Location"
+msgstr "מיקום"
+
+#. translators: format is "Location, $date"
+#: ../libempathy-gtk/empathy-individual-widget.c:610
+#, c-format
+msgid "%s, %s"
+msgstr "%s, %s"
+
+#: ../libempathy-gtk/empathy-individual-widget.c:659
+msgid "%B %e, %Y at %R UTC"
+msgstr "‏%B %e, %Y ב־‏%R ‏UTC"
 
 #. Alias
 #: ../libempathy-gtk/empathy-individual-widget.c:1304
@@ -2709,6 +2669,14 @@ msgstr "נדרשים %s של מקום פנוי כדי לשמור קובץ זה, 
 msgid "Incoming file from %s"
 msgstr "קובץ נכנס מ־%s"
 
+#: ../libempathy-gtk/empathy-user-info.c:384
+msgid "Go online to edit your personal information."
+msgstr "עליך להתחבר כדי לערוך את הפרטים האישיים שלך."
+
+#: ../libempathy-gtk/empathy-user-info.c:464
+msgid "<b>Personal Details</b>"
+msgstr "<b>פרטים אישיים</b>"
+
 #. Copy Link Address menu item
 #: ../libempathy-gtk/empathy-webkit-utils.c:278
 msgid "_Copy Link Address"
@@ -2956,63 +2924,55 @@ msgstr "ישנם שינויים שלא נשמרו בחשבון ה־%s שלך."
 msgid "Your new account has not been saved yet."
 msgstr "החשבון החדש שלך לא נשמר עדיין."
 
-#: ../src/empathy-accounts-dialog.c:403
+#: ../src/empathy-accounts-dialog.c:404
 #: ../src/empathy-call-window.c:1268
 msgid "Connecting…"
 msgstr "בהתחברות…"
 
-#: ../src/empathy-accounts-dialog.c:444
+#: ../src/empathy-accounts-dialog.c:445
 #, c-format
 msgid "Offline — %s"
 msgstr "לא מחובר — %s"
 
-#: ../src/empathy-accounts-dialog.c:456
+#: ../src/empathy-accounts-dialog.c:457
 #, c-format
 msgid "Disconnected — %s"
 msgstr "מנותק  — %s"
 
-#: ../src/empathy-accounts-dialog.c:467
+#: ../src/empathy-accounts-dialog.c:468
 msgid "Offline — No Network Connection"
 msgstr "מנותק — אין חיבור לרשת"
 
-#: ../src/empathy-accounts-dialog.c:474
+#: ../src/empathy-accounts-dialog.c:475
 msgid "Unknown Status"
 msgstr "מצב לא ידוע"
 
-#: ../src/empathy-accounts-dialog.c:491
+#: ../src/empathy-accounts-dialog.c:492
 msgid "This account has been disabled because it relies on an old, unsupported backend. Please install telepathy-haze and restart your session to migrate the account."
 msgstr "חשבון זה נוטרל כיוון שהוא נשען על מנגנון ישן שאינו נתמך עוד. נא להתקין את telepathy-haze ולצאת ולהיכנס לחשבון המשתמש שלך כדי לייבא את החשבון."
 
-#: ../src/empathy-accounts-dialog.c:501
+#: ../src/empathy-accounts-dialog.c:502
 msgid "Offline — Account Disabled"
 msgstr "מנותק — החשבון מנוטרל"
 
-#: ../src/empathy-accounts-dialog.c:607
+#: ../src/empathy-accounts-dialog.c:608
 msgid "Edit Connection Parameters"
 msgstr "עריכת הגדרות החיבור"
 
-#: ../src/empathy-accounts-dialog.c:770
-msgid "Failed to retrieve your personal information from the server."
-msgstr "אירע כשל בקבלת הפרטים האישיים שלך מהשרת."
-
-#: ../src/empathy-accounts-dialog.c:776
-msgid "Go online to edit your personal information."
-msgstr "עליך להתחבר כדי לערוך את הפרטים האישיים שלך."
-
-#: ../src/empathy-accounts-dialog.c:862
+#: ../src/empathy-accounts-dialog.c:796
 msgid "_Edit Connection Parameters..."
 msgstr "ע_ריכת הגדרות החיבור..."
 
-#: ../src/empathy-accounts-dialog.c:1358
+#: ../src/empathy-accounts-dialog.c:1298
 #, c-format
 msgid "Do you want to remove %s from your computer?"
 msgstr "האם ברצונך להסיר את החשבון '%s' ממחשבך?"
 
-#: ../src/empathy-accounts-dialog.c:1362
+#: ../src/empathy-accounts-dialog.c:1302
 msgid "This will not remove your account on the server."
 msgstr "פעולה זו לא תסיר את חשבונך מהשרת."
 
-#: ../src/empathy-accounts-dialog.c:1567
+#: ../src/empathy-accounts-dialog.c:1507
 msgid ""
 "You are about to select another account, which will discard\n"
 "your changes. Are you sure you want to proceed?"
@@ -3021,30 +2981,35 @@ msgstr ""
 "את השינויים שלך. האת אתה בטוח שברצונך להמשיך?"
 
 #. Menu item: to enabled/disable the account
-#: ../src/empathy-accounts-dialog.c:1758
+#: ../src/empathy-accounts-dialog.c:1698
 msgid "_Enabled"
 msgstr "מו_פעל"
 
 #. Menu item: Rename
-#: ../src/empathy-accounts-dialog.c:1781
+#: ../src/empathy-accounts-dialog.c:1721
 msgid "Rename"
 msgstr "שנה שם"
 
-#: ../src/empathy-accounts-dialog.c:2197
+#: ../src/empathy-accounts-dialog.c:2137
 msgid "_Skip"
 msgstr "_דילוג"
 
-#: ../src/empathy-accounts-dialog.c:2201
+#: ../src/empathy-accounts-dialog.c:2141
 msgid "_Connect"
 msgstr "הת_חברות"
 
-#: ../src/empathy-accounts-dialog.c:2380
+#: ../src/empathy-accounts-dialog.c:2320
 msgid ""
 "You are about to close the window, which will discard\n"
 "your changes. Are you sure you want to proceed?"
 msgstr ""
 "אתה עומד לסגור את החלון, מה שיבטל\n"
 "את השינויים שלך. האת אתה בטוח שברצונך להמשיך?"
+
+#. Tweak the dialog
+#: ../src/empathy-accounts-dialog.c:2463
+msgid "Messaging and VoIP Accounts"
+msgstr "חשבונות התכתבות ו־VoIP"
 
 #: ../src/empathy-accounts-dialog.ui.h:3
 msgid "_Import…"
@@ -4303,13 +4268,25 @@ msgstr "_שיחה חדשה…"
 msgid "Status"
 msgstr "מצב"
 
-#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:173
+#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:179
+#: ../ubuntu-online-accounts/cc-plugins/app-plugin/empathy-app-plugin-widget.c:126
 msgid "Done"
 msgstr "בוצע"
 
-#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:181
+#: ../ubuntu-online-accounts/cc-plugins/empathy-accounts-plugin-widget.c:210
 msgid "Please enter your account details"
 msgstr "נא להזין את פרטי החשבון שלך"
+
+#: ../ubuntu-online-accounts/cc-plugins/app-plugin/empathy-app-plugin-widget.c:160
+#, c-format
+msgid "Edit %s account options"
+msgstr "עריכת אפשרויות חשבון ה־%s"
+
+#~ msgid "Manage Messaging and VoIP accounts"
+#~ msgstr "ניהול חשבונות התכתבות ו־VoIP"
+
+#~ msgid "Failed to retrieve your personal information from the server."
+#~ msgstr "אירע כשל בקבלת הפרטים האישיים שלך מהשרת."
 
 #~ msgid "_Block User"
 #~ msgstr "_חסימת משתמש"
