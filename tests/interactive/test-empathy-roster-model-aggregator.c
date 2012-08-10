@@ -84,6 +84,10 @@ filter (EmpathyRosterModel *model,
     FolksIndividual *individual,
     gpointer user_data)
 {
+  if (folks_avatar_details_get_avatar (FOLKS_AVATAR_DETAILS (individual))
+      == NULL)
+    return FALSE;
+
   return TRUE;
 }
 
