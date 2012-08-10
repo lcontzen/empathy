@@ -38,6 +38,7 @@ def generate_build_block(p):
 %s_LDFLAGS = -module -avoid-version
 %s_LIBADD = \\
 	$(UOA_LIBS)					\\
+	$(top_builddir)/libempathy/libempathy.la \\
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 ''' % (la, la, la)
 

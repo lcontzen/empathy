@@ -39,6 +39,7 @@ libaim_la_SOURCES = \
 libaim_la_LDFLAGS = -module -avoid-version
 libaim_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -50,6 +51,7 @@ libgadugadu_la_SOURCES = \
 libgadugadu_la_LDFLAGS = -module -avoid-version
 libgadugadu_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -61,6 +63,7 @@ libgroupwise_la_SOURCES = \
 libgroupwise_la_LDFLAGS = -module -avoid-version
 libgroupwise_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -72,6 +75,7 @@ libicq_la_SOURCES = \
 libicq_la_LDFLAGS = -module -avoid-version
 libicq_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -83,6 +87,7 @@ libirc_la_SOURCES = \
 libirc_la_LDFLAGS = -module -avoid-version
 libirc_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -94,6 +99,7 @@ libjabber_la_SOURCES = \
 libjabber_la_LDFLAGS = -module -avoid-version
 libjabber_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -105,6 +111,7 @@ libmxit_la_SOURCES = \
 libmxit_la_LDFLAGS = -module -avoid-version
 libmxit_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -116,6 +123,7 @@ libmyspace_la_SOURCES = \
 libmyspace_la_LDFLAGS = -module -avoid-version
 libmyspace_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -127,6 +135,7 @@ libsip_la_SOURCES = \
 libsip_la_LDFLAGS = -module -avoid-version
 libsip_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -138,6 +147,7 @@ liblocal_xmpp_la_SOURCES = \
 liblocal_xmpp_la_LDFLAGS = -module -avoid-version
 liblocal_xmpp_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -149,6 +159,7 @@ libsametime_la_SOURCES = \
 libsametime_la_LDFLAGS = -module -avoid-version
 libsametime_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -160,6 +171,7 @@ libyahoojp_la_SOURCES = \
 libyahoojp_la_LDFLAGS = -module -avoid-version
 libyahoojp_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -171,6 +183,7 @@ libyahoo_la_SOURCES = \
 libyahoo_la_LDFLAGS = -module -avoid-version
 libyahoo_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 
 
@@ -182,4 +195,5 @@ libzephyr_la_SOURCES = \
 libzephyr_la_LDFLAGS = -module -avoid-version
 libzephyr_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la

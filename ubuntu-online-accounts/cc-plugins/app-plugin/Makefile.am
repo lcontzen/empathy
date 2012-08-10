@@ -22,4 +22,5 @@ libempathy_la_SOURCES = \
 libempathy_la_LDFLAGS = -module -avoid-version
 libempathy_la_LIBADD = \
 	$(UOA_LIBS)					\
+	$(top_builddir)/libempathy/libempathy.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
