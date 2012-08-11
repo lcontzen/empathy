@@ -17,6 +17,7 @@ AM_CPPFLAGS =						\
 	$(NULL)
 
 LDADD =								\
+	$(top_builddir)/libroster/libroster.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la	\
 	$(top_builddir)/libempathy/libempathy.la		\
 	$(top_builddir)/extensions/libemp-extensions.la		\
@@ -143,6 +144,7 @@ empathy_SOURCES =							\
 
 empathy_LDADD =								\
 	libempathy-accounts-common.la					\
+        $(top_builddir)/libroster/libroster.la \
         $(top_builddir)/libempathy-gtk/libempathy-gtk.la		\
         $(top_builddir)/libempathy/libempathy.la			\
         $(top_builddir)/extensions/libemp-extensions.la			\

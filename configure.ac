@@ -596,6 +596,7 @@ AC_CONFIG_FILES([
    extensions/Makefile
    po/Makefile.in
    libempathy/Makefile
+   libroster/Makefile
    libempathy-gtk/Makefile
    src/Makefile
    nautilus-sendto-plugin/Makefile

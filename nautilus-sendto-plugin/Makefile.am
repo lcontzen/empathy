@@ -16,5 +16,6 @@ libnstempathy_la_SOURCES = empathy-nautilus-sendto.c
 libnstempathy_la_LDFLAGS = -module -avoid-version
 libnstempathy_la_LIBADD =				\
 	$(NST_LIBS)					\
+	$(top_builddir)/libroster/libroster.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la
 

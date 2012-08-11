@@ -25,7 +25,7 @@
 
 #include "empathy-roster-model-manager.h"
 
-#include "empathy-roster-model.h"
+#include <libroster/empathy-roster-model.h>
 
 #include <glib/gi18n-lib.h>
 

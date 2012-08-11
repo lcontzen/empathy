@@ -5,7 +5,7 @@
 #include <libempathy-gtk/egg-list-box/egg-list-box.h>
 #include <libempathy-gtk/empathy-live-search.h>
 
-#include <libempathy-gtk/empathy-roster-model.h>
+#include <libroster/empathy-roster-model.h>
 
 G_BEGIN_DECLS
 

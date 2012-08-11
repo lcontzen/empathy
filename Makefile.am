@@ -1,4 +1,4 @@
-MY_SUBDIRS = tools extensions po data libempathy libempathy-gtk src help tests
+MY_SUBDIRS = tools extensions po data libempathy libroster libempathy-gtk src help tests
 NST_SUBDIRS = nautilus-sendto-plugin
 GOA_SUBDIRS = goa-mc-plugin
 UOA_SUBDIRS = ubuntu-online-accounts

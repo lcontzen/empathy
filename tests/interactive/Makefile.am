@@ -7,6 +7,7 @@ AM_CPPFLAGS =						\
 	$(DISABLE_DEPRECATED)
 
 LDADD =								\
+	$(top_builddir)/libroster/libroster.la \
 	$(top_builddir)/libempathy-gtk/libempathy-gtk.la	\
 	$(top_builddir)/libempathy/libempathy.la		\
 	$(EMPATHY_LIBS)

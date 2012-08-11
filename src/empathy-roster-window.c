@@ -49,9 +49,9 @@
 #include <libempathy-gtk/empathy-gtk-enum-types.h>
 #include <libempathy-gtk/empathy-individual-dialogs.h>
 #include <libempathy-gtk/empathy-individual-store-manager.h>
-#include <libempathy-gtk/empathy-roster-model.h>
+#include <libroster/empathy-roster-model.h>
 #include <libempathy-gtk/empathy-roster-model-manager.h>
-#include <libempathy-gtk/empathy-roster-view.h>
+#include <libroster/empathy-roster-view.h>
 #include <libempathy-gtk/empathy-new-message-dialog.h>
 #include <libempathy-gtk/empathy-new-call-dialog.h>
 #include <libempathy-gtk/empathy-log-window.h>
