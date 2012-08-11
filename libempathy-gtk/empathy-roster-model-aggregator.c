@@ -213,12 +213,20 @@ remove_individual (EmpathyRosterModelAggregator *self,
         {
           if (TPF_IS_PERSONA (gee_iterator_get (iter)))
             {
+<<<<<<< HEAD
               TpContact *tp_contact = tpf_persona_get_contact (
                   gee_iterator_get (iter));
 
               if (tp_contact != NULL)
                 g_signal_handlers_disconnect_by_func (tp_contact,
                     contact_capabilities_changed_cb, self);
+=======
+              TpContact *contact = tpf_persona_get_contact (
+                  gee_iterator_get (iter));
+
+              g_signal_handlers_disconnect_by_func (contact,
+                  contact_capabilities_changed_cb, self);
+>>>>>>> Refilter when the Telepathy capabilities of a tpf personna changes
             }
         }
     }
