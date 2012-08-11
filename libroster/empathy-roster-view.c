@@ -5,7 +5,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libroster/empathy-roster-contact.h>
-#include <libempathy-gtk/empathy-roster-group.h>
+#include <libroster/empathy-roster-group.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 
 #include <libempathy/empathy-utils.h>

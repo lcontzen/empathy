@@ -24,6 +24,7 @@ AM_CPPFLAGS =                                           \
 
 libroster_handwritten_source = \
 	empathy-roster-contact.c \
+	empathy-roster-group.c \
 	empathy-roster-model.c \
 	empathy-roster-model-aggregator.c \
 	empathy-roster-view.c \
@@ -31,6 +32,7 @@ libroster_handwritten_source = \
 
 libroster_headers = \
 	empathy-roster-contact.h \
+	empathy-roster-group.h \
 	empathy-roster-model.h \
 	empathy-roster-model-aggregator.h \
 	empathy-roster-view.h \

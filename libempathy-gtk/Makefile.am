@@ -74,7 +74,6 @@ libempathy_gtk_handwritten_source =            	\
 	empathy-password-dialog.c 		\
 	empathy-presence-chooser.c		\
 	empathy-protocol-chooser.c		\
-	empathy-roster-group.c			\
 	empathy-roster-model-manager.c			\
 	empathy-search-bar.c			\
 	empathy-share-my-desktop.c		\
@@ -142,7 +141,6 @@ libempathy_gtk_headers =			\
 	empathy-password-dialog.h		\
 	empathy-presence-chooser.h		\
 	empathy-protocol-chooser.h		\
-	empathy-roster-group.h			\
 	empathy-roster-model-manager.h			\
 	empathy-search-bar.h			\
 	empathy-share-my-desktop.h		\
