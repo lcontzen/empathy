@@ -39,7 +39,7 @@
 #include <libempathy-gtk/empathy-contact-chooser.h>
 #include <libempathy-gtk/empathy-ui-utils.h>
 #include <libroster/empathy-roster-view.h>
-#include <libempathy-gtk/empathy-roster-contact.h>
+#include <libroster/empathy-roster-contact.h>
 
 
 #include "nautilus-sendto-plugin.h"
