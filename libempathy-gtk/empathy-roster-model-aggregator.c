@@ -124,8 +124,7 @@ remove_from_filtered_individuals (EmpathyRosterModelAggregator *self,
 }
 
 static void
-individual_notify_cb (FolksIndividual *individual,
-    GParamSpec *param,
+refilter_individual (FolksIndividual *individual,
     EmpathyRosterModelAggregator *self)
 {
   if (!self->priv->filter_func (EMPATHY_ROSTER_MODEL (self), individual, self)
@@ -138,13 +137,54 @@ individual_notify_cb (FolksIndividual *individual,
 }
 
 static void
+individual_notify_cb (FolksIndividual *individual,
+    GParamSpec *param,
+    EmpathyRosterModelAggregator *self)
+{
+  refilter_individual (individual, self);
+}
+
+static void
+contact_capabilities_changed_cb (TpContact *contact,
+    GParamSpec *pspec,
+    EmpathyRosterModelAggregator *self)
+{
+  TpfPersona *tpf_persona;
+  FolksIndividual *individual;
+
+  tpf_persona = tpf_persona_dup_for_contact (contact);
+  individual = folks_persona_get_individual (FOLKS_PERSONA (tpf_persona));
+
+  refilter_individual (individual, self);
+}
+
+static void
 add_individual (EmpathyRosterModelAggregator *self,
     FolksIndividual *individual)
 {
   if (self->priv->filter_func != NULL)
     {
+      GeeSet *personas;
+      GeeIterator *iter;
+
       tp_g_signal_connect_object (individual, "notify",
           G_CALLBACK (individual_notify_cb), self, 0);
+
+      personas = folks_individual_get_personas (individual);
+
+      iter = gee_iterable_iterator (GEE_ITERABLE (personas));
+      while (gee_iterator_next (iter))
+        {
+          if (TPF_IS_PERSONA (gee_iterator_get (iter)))
+            {
+              TpContact *tp_contact = tpf_persona_get_contact (
+                  gee_iterator_get (iter));
+
+              if (tp_contact != NULL)
+                tp_g_signal_connect_object (tp_contact, "notify::capabilities",
+                    G_CALLBACK (contact_capabilities_changed_cb), self, 0);
+            }
+        }
 
       if (!self->priv->filter_func (EMPATHY_ROSTER_MODEL (self), individual,
               self))
@@ -159,8 +199,29 @@ remove_individual (EmpathyRosterModelAggregator *self,
     FolksIndividual *individual)
 {
   if (self->priv->filter_func != NULL)
-    g_signal_handlers_disconnect_by_func (individual,
-        individual_notify_cb, self);
+    {
+      GeeSet *personas;
+      GeeIterator *iter;
+
+      g_signal_handlers_disconnect_by_func (individual,
+          individual_notify_cb, self);
+
+      personas = folks_individual_get_personas (individual);
+
+      iter = gee_iterable_iterator (GEE_ITERABLE (personas));
+      while (gee_iterator_next (iter))
+        {
+          if (TPF_IS_PERSONA (gee_iterator_get (iter)))
+            {
+              TpContact *tp_contact = tpf_persona_get_contact (
+                  gee_iterator_get (iter));
+
+              if (tp_contact != NULL)
+                g_signal_handlers_disconnect_by_func (tp_contact,
+                    contact_capabilities_changed_cb, self);
+            }
+        }
+    }
 
   if (g_hash_table_contains (self->priv->filtered_individuals,
           individual))
