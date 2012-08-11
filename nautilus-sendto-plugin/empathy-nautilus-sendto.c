@@ -41,7 +41,6 @@
 #include <libroster/empathy-roster-view.h>
 #include <libroster/empathy-roster-contact.h>
 
-
 #include "nautilus-sendto-plugin.h"
 
 static EmpathyFTFactory *factory = NULL;
