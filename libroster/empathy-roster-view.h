@@ -3,7 +3,7 @@
 #define __EMPATHY_ROSTER_VIEW_H__
 
 #include <libempathy-gtk/egg-list-box/egg-list-box.h>
-#include <libempathy-gtk/empathy-live-search.h>
+#include <libroster/empathy-live-search.h>
 
 #include <libroster/empathy-roster-model.h>
 

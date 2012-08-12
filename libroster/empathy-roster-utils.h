@@ -24,6 +24,7 @@
 #include <folks/folks.h>
 #include <folks/folks-telepathy.h>
 
+#define EMPATHY_GET_PRIV(obj,type) ((type##Priv *) ((type *) obj)->priv)
 #define EMP_STR_EMPTY(x) ((x) == NULL || (x)[0] == '\0')
 
 gboolean empathy_folks_persona_is_interesting (FolksPersona *persona);

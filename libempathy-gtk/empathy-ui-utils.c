@@ -43,10 +43,10 @@
 #include <folks/folks.h>
 
 #include <libroster/empathy-roster-ui-utils.h>
+#include <libroster/empathy-live-search.h>
 
 #include "empathy-ui-utils.h"
 #include "empathy-images.h"
-#include "empathy-live-search.h"
 #include "empathy-smiley-manager.h"
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER

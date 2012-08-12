@@ -42,7 +42,7 @@
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-status-presets.h>
 
-#include <libempathy-gtk/empathy-live-search.h>
+#include <libroster/empathy-live-search.h>
 #include <libempathy-gtk/empathy-contact-blocking-dialog.h>
 #include <libempathy-gtk/empathy-contact-search-dialog.h>
 #include <libempathy-gtk/empathy-geometry.h>

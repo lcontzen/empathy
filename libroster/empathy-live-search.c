@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <libempathy/empathy-utils.h>
+#include <libroster/empathy-roster-utils.h>
 
 #include "empathy-live-search.h"
 

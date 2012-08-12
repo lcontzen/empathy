@@ -40,8 +40,6 @@
 
 #include "empathy-contact.h"
 
-#define EMPATHY_GET_PRIV(obj,type) ((type##Priv *) ((type *) obj)->priv)
-
 G_BEGIN_DECLS
 
 void empathy_init (void);
