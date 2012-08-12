@@ -23,6 +23,7 @@ AM_CPPFLAGS =                                           \
 	$(DISABLE_DEPRECATED)
 
 libroster_handwritten_source = \
+	empathy-roster-utils.c \
 	empathy-roster-ui-utils.c \
 	empathy-roster-contact.c \
 	empathy-roster-group.c \
@@ -32,6 +33,7 @@ libroster_handwritten_source = \
 	$(NULL)
 
 libroster_headers = \
+	empathy-roster-utils.h \
 	empathy-roster-ui-utils.h \
 	empathy-roster-contact.h \
 	empathy-roster-group.h \
