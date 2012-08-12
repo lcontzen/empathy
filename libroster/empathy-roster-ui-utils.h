@@ -21,6 +21,10 @@
 #ifndef _EMPATHY_ROSTER_UI_UTILS_H_
 #define _EMPATHY_ROSTER_UI_UTILS_H_
 
+gboolean empathy_individual_match_string (
+    FolksIndividual *individual,
+    const gchar *text,
+    GPtrArray *words);
 
 
 #endif /*  _EMPATHY_ROSTER_UI_UTILS_H_ */

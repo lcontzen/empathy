@@ -23,3 +23,21 @@
  */
 
 #include "empathy-roster-utils.h"
+
+gboolean
+empathy_folks_persona_is_interesting (FolksPersona *persona)
+{
+  /* We're not interested in non-Telepathy personas */
+  if (!TPF_IS_PERSONA (persona))
+    return FALSE;
+
+  /* We're not interested in user personas which haven't been added to the
+   * contact list (see bgo#637151). */
+  if (folks_persona_get_is_user (persona) &&
+      !tpf_persona_get_is_in_contact_list (TPF_PERSONA (persona)))
+    {
+      return FALSE;
+    }
+
+  return TRUE;
+}

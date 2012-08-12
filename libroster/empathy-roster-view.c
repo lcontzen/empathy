@@ -6,7 +6,7 @@
 
 #include <libroster/empathy-roster-contact.h>
 #include <libroster/empathy-roster-group.h>
-#include <libempathy-gtk/empathy-ui-utils.h>
+#include <libroster/empathy-roster-ui-utils.h>
 
 #include <libempathy/empathy-utils.h>
 

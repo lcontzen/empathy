@@ -35,11 +35,12 @@
 #include <folks/folks.h>
 #include <folks/folks-telepathy.h>
 #include <telepathy-glib/account-manager.h>
+#include <libroster/empathy-roster-utils.h>
+#include <libroster/empathy-roster-ui-utils.h>
 
 #include "empathy-contact.h"
 
 #define EMPATHY_GET_PRIV(obj,type) ((type##Priv *) ((type *) obj)->priv)
-#define EMP_STR_EMPTY(x) ((x) == NULL || (x)[0] == '\0')
 
 G_BEGIN_DECLS
 
@@ -97,7 +98,6 @@ gboolean empathy_connection_can_alias_personas (TpConnection *connection,
 						FolksIndividual *individual);
 gboolean empathy_connection_can_group_personas (TpConnection *connection,
 						FolksIndividual *individual);
-gboolean empathy_folks_persona_is_interesting (FolksPersona *persona);
 
 gchar * empathy_get_x509_certificate_hostname (gnutls_x509_crt_t cert);
 

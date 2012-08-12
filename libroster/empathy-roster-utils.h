@@ -21,6 +21,11 @@
 #ifndef _EMPATHY_ROSTER_UTILS_H_
 #define _EMPATHY_ROSTER_UTILS_H_
 
+#include <folks/folks.h>
+#include <folks/folks-telepathy.h>
 
+#define EMP_STR_EMPTY(x) ((x) == NULL || (x)[0] == '\0')
+
+gboolean empathy_folks_persona_is_interesting (FolksPersona *persona);
 
 #endif /* _EMPATHY_ROSTER_UTILS_H_ */
