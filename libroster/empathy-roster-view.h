@@ -3,7 +3,7 @@
 #define __EMPATHY_ROSTER_VIEW_H__
 
 #include <libempathy-gtk/egg-list-box/egg-list-box.h>
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 
 #include <libroster/empathy-roster-model.h>
 
@@ -58,8 +58,8 @@ void empathy_roster_view_show_offline (EmpathyRosterView *self,
 void empathy_roster_view_show_groups (EmpathyRosterView *self,
     gboolean show);
 
-void empathy_roster_view_set_live_search (EmpathyRosterView *self,
-    EmpathyLiveSearch *search);
+void empathy_roster_view_set_roster_live_search (EmpathyRosterView *self,
+    EmpathyRosterLiveSearch *search);
 
 gboolean empathy_roster_view_is_empty (EmpathyRosterView *self);
 

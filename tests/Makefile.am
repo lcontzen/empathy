@@ -33,7 +33,7 @@ tests_list =  \
      empathy-chatroom-test                       \
      empathy-chatroom-manager-test               \
      empathy-parser-test                         \
-     empathy-live-search-test                    \
+     empathy-roster-live-search-test                    \
      empathy-tls-test
 
 noinst_PROGRAMS = $(tests_list)
@@ -64,7 +64,7 @@ empathy_chatroom_manager_test_SOURCES = empathy-chatroom-manager-test.c \
 empathy_parser_test_SOURCES = empathy-parser-test.c \
      test-helper.c test-helper.h
 
-empathy_live_search_test_SOURCES = empathy-live-search-test.c \
+empathy_roster_live_search_test_SOURCES = empathy-roster-live-search-test.c \
      test-helper.c test-helper.h
 
 TESTS_ENVIRONMENT = EMPATHY_SRCDIR=@abs_top_srcdir@ \

@@ -1341,7 +1341,7 @@ individual_view_start_search_cb (EmpathyIndividualView *view,
 }
 
 static void
-individual_view_search_text_notify_cb (EmpathyLiveSearch *search,
+individual_view_search_text_notify_cb (EmpathyRosterLiveSearch *search,
     GParamSpec *pspec,
     EmpathyIndividualView *view)
 {
@@ -1434,7 +1434,7 @@ individual_view_search_key_navigation_cb (GtkWidget *search,
 }
 
 static void
-individual_view_search_hide_cb (EmpathyLiveSearch *search,
+individual_view_search_hide_cb (EmpathyRosterLiveSearch *search,
     EmpathyIndividualView *view)
 {
   EmpathyIndividualViewPriv *priv = GET_PRIV (view);
@@ -1503,7 +1503,7 @@ individual_view_search_hide_cb (EmpathyLiveSearch *search,
 }
 
 static void
-individual_view_search_show_cb (EmpathyLiveSearch *search,
+individual_view_search_show_cb (EmpathyRosterLiveSearch *search,
     EmpathyIndividualView *view)
 {
   /* block expand or collapse handlers during expand all, they would
@@ -1653,7 +1653,7 @@ individual_view_is_visible_individual (EmpathyIndividualView *self,
     guint event_count)
 {
   EmpathyIndividualViewPriv *priv = GET_PRIV (self);
-  EmpathyLiveSearch *live = EMPATHY_LIVE_SEARCH (priv->search_widget);
+  EmpathyRosterLiveSearch *live = EMPATHY_ROSTER_LIVE_SEARCH (priv->search_widget);
   GeeSet *personas;
   GeeIterator *iter;
   gboolean is_favorite;
@@ -1705,8 +1705,8 @@ individual_view_is_visible_individual (EmpathyIndividualView *self,
   }
 
   return empathy_individual_match_string (individual,
-      empathy_live_search_get_text (live),
-      empathy_live_search_get_words (live));
+      empathy_roster_live_search_get_text (live),
+      empathy_roster_live_search_get_words (live));
 }
 
 static gchar *
@@ -2044,7 +2044,7 @@ individual_view_dispose (GObject *object)
   tp_clear_object (&priv->filter);
   tp_clear_object (&priv->tooltip_widget);
 
-  empathy_individual_view_set_live_search (view, NULL);
+  empathy_individual_view_set_roster_live_search (view, NULL);
 
   G_OBJECT_CLASS (empathy_individual_view_parent_class)->dispose (object);
 }
@@ -2496,8 +2496,8 @@ out:
 }
 
 void
-empathy_individual_view_set_live_search (EmpathyIndividualView *view,
-    EmpathyLiveSearch *search)
+empathy_individual_view_set_roster_live_search (EmpathyIndividualView *view,
+    EmpathyRosterLiveSearch *search)
 {
   EmpathyIndividualViewPriv *priv = GET_PRIV (view);
 

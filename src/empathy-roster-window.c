@@ -42,7 +42,7 @@
 #include <libempathy/empathy-gsettings.h>
 #include <libempathy/empathy-status-presets.h>
 
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 #include <libempathy-gtk/empathy-contact-blocking-dialog.h>
 #include <libempathy-gtk/empathy-contact-search-dialog.h>
 #include <libempathy-gtk/empathy-geometry.h>
@@ -2270,10 +2270,10 @@ empathy_roster_window_init (EmpathyRosterWindow *self)
   gtk_widget_set_has_tooltip (GTK_WIDGET (self->priv->view), TRUE);
 
   /* Set up search bar */
-  self->priv->search_bar = empathy_live_search_new (
+  self->priv->search_bar = empathy_roster_live_search_new (
       GTK_WIDGET (self->priv->view));
-  empathy_roster_view_set_live_search (self->priv->view,
-      EMPATHY_LIVE_SEARCH (self->priv->search_bar));
+  empathy_roster_view_set_roster_live_search (self->priv->view,
+      EMPATHY_ROSTER_LIVE_SEARCH (self->priv->search_bar));
   gtk_box_pack_start (GTK_BOX (search_vbox), self->priv->search_bar,
       FALSE, TRUE, 0);
 

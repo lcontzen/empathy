@@ -9,19 +9,19 @@
 #define DEBUG_FLAG EMPATHY_DEBUG_TESTS
 #include <libempathy/empathy-debug.h>
 
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 
 typedef struct
 {
   const gchar *string;
   const gchar *prefix;
   gboolean should_match;
-} LiveSearchTest;
+} RosterLiveSearchTest;
 
 static void
-test_live_search (void)
+test_roster_live_search (void)
 {
-  LiveSearchTest tests[] =
+  RosterLiveSearchTest tests[] =
     {
       /* Test word separators and case */
       { "Hello World", "he", TRUE },
@@ -58,7 +58,8 @@ test_live_search (void)
       gboolean match;
       gboolean ok;
 
-      match = empathy_live_search_match_string (tests[i].string, tests[i].prefix);
+      match = empathy_roster_live_search_match_string (tests[i].string,
+          tests[i].prefix);
       ok = (match == tests[i].should_match);
 
       DEBUG ("'%s' - '%s' %s: %s", tests[i].string, tests[i].prefix,
@@ -77,7 +78,7 @@ main (int argc,
 
   test_init (argc, argv);
 
-  g_test_add_func ("/live-search", test_live_search);
+  g_test_add_func ("/live-search", test_roster_live_search);
 
   result = g_test_run ();
   test_deinit ();

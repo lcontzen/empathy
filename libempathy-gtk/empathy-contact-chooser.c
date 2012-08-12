@@ -317,7 +317,7 @@ search_text_changed (GtkEntry *entry,
 
   id = gtk_entry_get_text (entry);
 
-  self->priv->search_words = empathy_live_search_strip_utf8_string (id);
+  self->priv->search_words = empathy_roster_live_search_strip_utf8_string (id);
   self->priv->search_str = g_strdup (id);
 
   add_temporary_individuals (self, id);

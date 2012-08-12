@@ -32,7 +32,7 @@
 #include <folks/folks.h>
 
 #include <libempathy/empathy-enum-types.h>
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 
 #include "empathy-individual-menu.h"
 #include "empathy-individual-store.h"
@@ -102,8 +102,8 @@ GtkWidget *empathy_individual_view_get_individual_menu (
 
 GtkWidget *empathy_individual_view_get_group_menu (EmpathyIndividualView *view);
 
-void empathy_individual_view_set_live_search (EmpathyIndividualView *view,
-    EmpathyLiveSearch *search);
+void empathy_individual_view_set_roster_live_search (
+    EmpathyIndividualView *view, EmpathyRosterLiveSearch *search);
 
 gboolean empathy_individual_view_get_show_offline (
     EmpathyIndividualView *view);

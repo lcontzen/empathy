@@ -129,9 +129,9 @@ main (int argc,
 
   g_object_unref (mgr);
 
-  search = empathy_live_search_new (view);
-  empathy_roster_view_set_live_search (EMPATHY_ROSTER_VIEW (view),
-      EMPATHY_LIVE_SEARCH (search));
+  search = empathy_roster_live_search_new (view);
+  empathy_roster_view_set_roster_live_search (EMPATHY_ROSTER_VIEW (view),
+      EMPATHY_ROSTER_LIVE_SEARCH (search));
 
   scrolled = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),

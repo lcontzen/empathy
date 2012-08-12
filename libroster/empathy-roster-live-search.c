@@ -29,11 +29,12 @@
 
 #include <libroster/empathy-roster-utils.h>
 
-#include "empathy-live-search.h"
+#include "empathy-roster-live-search.h"
 
-G_DEFINE_TYPE (EmpathyLiveSearch, empathy_live_search, GTK_TYPE_HBOX)
+G_DEFINE_TYPE (EmpathyRosterLiveSearch, empathy_roster_live_search,
+    GTK_TYPE_HBOX)
 
-#define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyLiveSearch)
+#define GET_PRIV(obj) EMPATHY_GET_PRIV (obj, EmpathyRosterLiveSearch)
 
 typedef struct
 {
@@ -41,7 +42,7 @@ typedef struct
   GtkWidget *hook_widget;
 
   GPtrArray *stripped_words;
-} EmpathyLiveSearchPriv;
+} EmpathyRosterLiveSearchPriv;
 
 enum
 {
@@ -59,7 +60,7 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-static void live_search_hook_widget_destroy_cb (GtkWidget *object,
+static void roster_live_search_hook_widget_destroy_cb (GtkWidget *object,
     gpointer user_data);
 
 /**
@@ -132,7 +133,7 @@ append_word (GPtrArray **word_array,
 }
 
 GPtrArray *
-empathy_live_search_strip_utf8_string (const gchar *string)
+empathy_roster_live_search_strip_utf8_string (const gchar *string)
 {
   GPtrArray *word_array = NULL;
   GString *word = NULL;
@@ -170,7 +171,7 @@ empathy_live_search_strip_utf8_string (const gchar *string)
 }
 
 static gboolean
-live_search_match_prefix (const gchar *string,
+roster_live_search_match_prefix (const gchar *string,
     const gchar *prefix)
 {
   const gchar *p;
@@ -223,7 +224,7 @@ live_search_match_prefix (const gchar *string,
 }
 
 gboolean
-empathy_live_search_match_words (const gchar *string,
+empathy_roster_live_search_match_words (const gchar *string,
     GPtrArray *words)
 {
   guint i;
@@ -232,14 +233,14 @@ empathy_live_search_match_words (const gchar *string,
     return TRUE;
 
   for (i = 0; i < words->len; i++)
-    if (!live_search_match_prefix (string, g_ptr_array_index (words, i)))
+    if (!roster_live_search_match_prefix (string, g_ptr_array_index (words, i)))
       return FALSE;
 
   return TRUE;
 }
 
 static gboolean
-fire_key_navigation_sig (EmpathyLiveSearch *self,
+fire_key_navigation_sig (EmpathyRosterLiveSearch *self,
     GdkEventKey *event)
 {
   gboolean ret;
@@ -249,11 +250,11 @@ fire_key_navigation_sig (EmpathyLiveSearch *self,
 }
 
 static gboolean
-live_search_entry_key_pressed_cb (GtkEntry *entry,
+roster_live_search_entry_key_pressed_cb (GtkEntry *entry,
     GdkEventKey *event,
     gpointer user_data)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (user_data);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (user_data);
 
   /* if esc key pressed, hide the search */
   if (event->keyval == GDK_KEY_Escape)
@@ -285,11 +286,11 @@ live_search_entry_key_pressed_cb (GtkEntry *entry,
 }
 
 static void
-live_search_text_changed (GtkEntry *entry,
+roster_live_search_text_changed (GtkEntry *entry,
     gpointer user_data)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (user_data);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (user_data);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
   const gchar *text;
 
   text = gtk_entry_get_text (entry);
@@ -302,29 +303,29 @@ live_search_text_changed (GtkEntry *entry,
   if (priv->stripped_words != NULL)
     g_ptr_array_unref (priv->stripped_words);
 
-  priv->stripped_words = empathy_live_search_strip_utf8_string (text);
+  priv->stripped_words = empathy_roster_live_search_strip_utf8_string (text);
 
   g_object_notify (G_OBJECT (self), "text");
 }
 
 static void
-live_search_close_pressed (GtkEntry *entry,
+roster_live_search_close_pressed (GtkEntry *entry,
     GtkEntryIconPosition icon_pos,
     GdkEvent *event,
     gpointer user_data)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (user_data);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (user_data);
 
   gtk_widget_hide (GTK_WIDGET (self));
 }
 
 static gboolean
-live_search_key_press_event_cb (GtkWidget *widget,
+roster_live_search_key_press_event_cb (GtkWidget *widget,
     GdkEventKey *event,
     gpointer user_data)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (user_data);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (user_data);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
   GdkEvent *new_event;
   gboolean ret;
 
@@ -384,79 +385,80 @@ live_search_key_press_event_cb (GtkWidget *widget,
 }
 
 static void
-live_search_entry_activate_cb (GtkEntry *entry,
-    EmpathyLiveSearch *self)
+roster_live_search_entry_activate_cb (GtkEntry *entry,
+    EmpathyRosterLiveSearch *self)
 {
   g_signal_emit (self, signals[ACTIVATE], 0);
 }
 
 static void
-live_search_release_hook_widget (EmpathyLiveSearch *self)
+roster_live_search_release_hook_widget (EmpathyRosterLiveSearch *self)
 {
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
   /* remove old handlers if old source was not null */
   if (priv->hook_widget != NULL)
     {
       g_signal_handlers_disconnect_by_func (priv->hook_widget,
-          live_search_key_press_event_cb, self);
+          roster_live_search_key_press_event_cb, self);
       g_signal_handlers_disconnect_by_func (priv->hook_widget,
-          live_search_hook_widget_destroy_cb, self);
+          roster_live_search_hook_widget_destroy_cb, self);
       g_object_unref (priv->hook_widget);
       priv->hook_widget = NULL;
     }
 }
 
 static void
-live_search_hook_widget_destroy_cb (GtkWidget *object,
+roster_live_search_hook_widget_destroy_cb (GtkWidget *object,
     gpointer user_data)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (user_data);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (user_data);
 
   /* unref the hook widget and hide search */
   gtk_widget_hide (GTK_WIDGET (self));
-  live_search_release_hook_widget (self);
+  roster_live_search_release_hook_widget (self);
 }
 
 static void
-live_search_dispose (GObject *obj)
+roster_live_search_dispose (GObject *obj)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (obj);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (obj);
 
-  live_search_release_hook_widget (self);
+  roster_live_search_release_hook_widget (self);
 
-  if (G_OBJECT_CLASS (empathy_live_search_parent_class)->dispose != NULL)
-    G_OBJECT_CLASS (empathy_live_search_parent_class)->dispose (obj);
+  if (G_OBJECT_CLASS (empathy_roster_live_search_parent_class)->dispose != NULL)
+    G_OBJECT_CLASS (empathy_roster_live_search_parent_class)->dispose (obj);
 }
 
 static void
-live_search_finalize (GObject *obj)
+roster_live_search_finalize (GObject *obj)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (obj);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (obj);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
   if (priv->stripped_words != NULL)
     g_ptr_array_unref (priv->stripped_words);
 
-  if (G_OBJECT_CLASS (empathy_live_search_parent_class)->finalize != NULL)
-    G_OBJECT_CLASS (empathy_live_search_parent_class)->finalize (obj);
+  if (G_OBJECT_CLASS (empathy_roster_live_search_parent_class)->finalize != NULL)
+    G_OBJECT_CLASS (empathy_roster_live_search_parent_class)->finalize (obj);
 }
 
 static void
-live_search_get_property (GObject *object,
+roster_live_search_get_property (GObject *object,
     guint param_id,
     GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (object);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (object);
 
   switch (param_id)
     {
     case PROP_HOOK_WIDGET:
-      g_value_set_object (value, empathy_live_search_get_hook_widget (self));
+      g_value_set_object (value, empathy_roster_live_search_get_hook_widget (
+              self));
       break;
     case PROP_TEXT:
-      g_value_set_string (value, empathy_live_search_get_text (self));
+      g_value_set_string (value, empathy_roster_live_search_get_text (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -465,19 +467,20 @@ live_search_get_property (GObject *object,
 }
 
 static void
-live_search_set_property (GObject *object,
+roster_live_search_set_property (GObject *object,
     guint param_id,
     const GValue *value,
     GParamSpec *pspec)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (object);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (object);
 
   switch (param_id) {
   case PROP_HOOK_WIDGET:
-    empathy_live_search_set_hook_widget (self, g_value_get_object (value));
+    empathy_roster_live_search_set_hook_widget (self,
+        g_value_get_object (value));
     break;
   case PROP_TEXT:
-    empathy_live_search_set_text (self, g_value_get_string (value));
+    empathy_roster_live_search_set_text (self, g_value_get_string (value));
     break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -486,12 +489,12 @@ live_search_set_property (GObject *object,
 }
 
 static void
-live_search_unmap (GtkWidget *widget)
+roster_live_search_unmap (GtkWidget *widget)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (widget);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (widget);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
-  GTK_WIDGET_CLASS (empathy_live_search_parent_class)->unmap (widget);
+  GTK_WIDGET_CLASS (empathy_roster_live_search_parent_class)->unmap (widget);
 
   /* unmap can happen if a parent gets hidden, in that case we want to hide
    * the live search as well, so when it gets mapped again, the live search
@@ -503,22 +506,22 @@ live_search_unmap (GtkWidget *widget)
 }
 
 static void
-live_search_show (GtkWidget *widget)
+roster_live_search_show (GtkWidget *widget)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (widget);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (widget);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
   if (!gtk_widget_has_focus (priv->search_entry))
     gtk_widget_grab_focus (priv->search_entry);
 
-  GTK_WIDGET_CLASS (empathy_live_search_parent_class)->show (widget);
+  GTK_WIDGET_CLASS (empathy_roster_live_search_parent_class)->show (widget);
 }
 
 static void
-live_search_grab_focus (GtkWidget *widget)
+roster_live_search_grab_focus (GtkWidget *widget)
 {
-  EmpathyLiveSearch *self = EMPATHY_LIVE_SEARCH (widget);
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearch *self = EMPATHY_ROSTER_LIVE_SEARCH (widget);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
   if (!gtk_widget_has_focus (priv->search_entry))
     {
@@ -528,20 +531,20 @@ live_search_grab_focus (GtkWidget *widget)
 }
 
 static void
-empathy_live_search_class_init (EmpathyLiveSearchClass *klass)
+empathy_roster_live_search_class_init (EmpathyRosterLiveSearchClass *klass)
 {
   GObjectClass *object_class = (GObjectClass *) klass;
   GtkWidgetClass *widget_class = (GtkWidgetClass *) klass;
   GParamSpec *param_spec;
 
-  object_class->finalize = live_search_finalize;
-  object_class->dispose = live_search_dispose;
-  object_class->get_property = live_search_get_property;
-  object_class->set_property = live_search_set_property;
+  object_class->finalize = roster_live_search_finalize;
+  object_class->dispose = roster_live_search_dispose;
+  object_class->get_property = roster_live_search_get_property;
+  object_class->set_property = roster_live_search_set_property;
 
-  widget_class->unmap = live_search_unmap;
-  widget_class->show = live_search_show;
-  widget_class->grab_focus = live_search_grab_focus;
+  widget_class->unmap = roster_live_search_unmap;
+  widget_class->show = roster_live_search_show;
+  widget_class->grab_focus = roster_live_search_grab_focus;
 
   signals[ACTIVATE] = g_signal_new ("activate",
       G_TYPE_FROM_CLASS (object_class),
@@ -570,15 +573,15 @@ empathy_live_search_class_init (EmpathyLiveSearchClass *klass)
       "", G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_property (object_class, PROP_TEXT, param_spec);
 
-  g_type_class_add_private (klass, sizeof (EmpathyLiveSearchPriv));
+  g_type_class_add_private (klass, sizeof (EmpathyRosterLiveSearchPriv));
 }
 
 static void
-empathy_live_search_init (EmpathyLiveSearch *self)
+empathy_roster_live_search_init (EmpathyRosterLiveSearch *self)
 {
-  EmpathyLiveSearchPriv *priv =
-    G_TYPE_INSTANCE_GET_PRIVATE ((self), EMPATHY_TYPE_LIVE_SEARCH,
-        EmpathyLiveSearchPriv);
+  EmpathyRosterLiveSearchPriv *priv =
+    G_TYPE_INSTANCE_GET_PRIVATE ((self), EMPATHY_TYPE_ROSTER_LIVE_SEARCH,
+        EmpathyRosterLiveSearchPriv);
 
   gtk_widget_set_no_show_all (GTK_WIDGET (self), TRUE);
 
@@ -594,13 +597,13 @@ empathy_live_search_init (EmpathyLiveSearch *self)
   gtk_box_pack_start (GTK_BOX (self), priv->search_entry, TRUE, TRUE, 0);
 
   g_signal_connect (priv->search_entry, "icon_release",
-      G_CALLBACK (live_search_close_pressed), self);
+      G_CALLBACK (roster_live_search_close_pressed), self);
   g_signal_connect (priv->search_entry, "changed",
-      G_CALLBACK (live_search_text_changed), self);
+      G_CALLBACK (roster_live_search_text_changed), self);
   g_signal_connect (priv->search_entry, "key-press-event",
-      G_CALLBACK (live_search_entry_key_pressed_cb), self);
+      G_CALLBACK (roster_live_search_entry_key_pressed_cb), self);
   g_signal_connect (priv->search_entry, "activate",
-      G_CALLBACK (live_search_entry_activate_cb), self);
+      G_CALLBACK (roster_live_search_entry_activate_cb), self);
 
   priv->hook_widget = NULL;
 
@@ -608,11 +611,11 @@ empathy_live_search_init (EmpathyLiveSearch *self)
 }
 
 GtkWidget *
-empathy_live_search_new (GtkWidget *hook)
+empathy_roster_live_search_new (GtkWidget *hook)
 {
   g_return_val_if_fail (hook == NULL || GTK_IS_WIDGET (hook), NULL);
 
-  return g_object_new (EMPATHY_TYPE_LIVE_SEARCH,
+  return g_object_new (EMPATHY_TYPE_ROSTER_LIVE_SEARCH,
       "hook-widget", hook,
       NULL);
 }
@@ -620,67 +623,67 @@ empathy_live_search_new (GtkWidget *hook)
 /* public methods */
 
 GtkWidget *
-empathy_live_search_get_hook_widget (EmpathyLiveSearch *self)
+empathy_roster_live_search_get_hook_widget (EmpathyRosterLiveSearch *self)
 {
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
-  g_return_val_if_fail (EMPATHY_IS_LIVE_SEARCH (self), NULL);
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_LIVE_SEARCH (self), NULL);
 
   return priv->hook_widget;
 }
 
 void
-empathy_live_search_set_hook_widget (EmpathyLiveSearch *self,
+empathy_roster_live_search_set_hook_widget (EmpathyRosterLiveSearch *self,
     GtkWidget *hook)
 {
-  EmpathyLiveSearchPriv *priv;
+  EmpathyRosterLiveSearchPriv *priv;
 
-  g_return_if_fail (EMPATHY_IS_LIVE_SEARCH (self));
+  g_return_if_fail (EMPATHY_IS_ROSTER_LIVE_SEARCH (self));
   g_return_if_fail (hook == NULL || GTK_IS_WIDGET (hook));
 
   priv = GET_PRIV (self);
 
   /* release the actual widget */
-  live_search_release_hook_widget (self);
+  roster_live_search_release_hook_widget (self);
 
   /* connect handlers if new source is not null */
   if (hook != NULL)
     {
       priv->hook_widget = g_object_ref (hook);
       g_signal_connect (priv->hook_widget, "key-press-event",
-          G_CALLBACK (live_search_key_press_event_cb),
+          G_CALLBACK (roster_live_search_key_press_event_cb),
           self);
       g_signal_connect (priv->hook_widget, "destroy",
-          G_CALLBACK (live_search_hook_widget_destroy_cb),
+          G_CALLBACK (roster_live_search_hook_widget_destroy_cb),
           self);
     }
 }
 
 const gchar *
-empathy_live_search_get_text (EmpathyLiveSearch *self)
+empathy_roster_live_search_get_text (EmpathyRosterLiveSearch *self)
 {
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
-  g_return_val_if_fail (EMPATHY_IS_LIVE_SEARCH (self), NULL);
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_LIVE_SEARCH (self), NULL);
 
   return gtk_entry_get_text (GTK_ENTRY (priv->search_entry));
 }
 
 void
-empathy_live_search_set_text (EmpathyLiveSearch *self,
+empathy_roster_live_search_set_text (EmpathyRosterLiveSearch *self,
     const gchar *text)
 {
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
-  g_return_if_fail (EMPATHY_IS_LIVE_SEARCH (self));
+  g_return_if_fail (EMPATHY_IS_ROSTER_LIVE_SEARCH (self));
   g_return_if_fail (text != NULL);
 
   gtk_entry_set_text (GTK_ENTRY (priv->search_entry), text);
 }
 
 /**
- * empathy_live_search_match:
- * @self: a #EmpathyLiveSearch
+ * empathy_roster_live_search_match:
+ * @self: a #EmpathyRosterLiveSearch
  * @string: a string where to search, must be valid UTF-8.
  *
  * Search if one of the words in @string string starts with the current text
@@ -695,27 +698,27 @@ empathy_live_search_set_text (EmpathyLiveSearch *self,
  *
  **/
 gboolean
-empathy_live_search_match (EmpathyLiveSearch *self,
+empathy_roster_live_search_match (EmpathyRosterLiveSearch *self,
     const gchar *string)
 {
-  EmpathyLiveSearchPriv *priv;
+  EmpathyRosterLiveSearchPriv *priv;
 
-  g_return_val_if_fail (EMPATHY_IS_LIVE_SEARCH (self), FALSE);
+  g_return_val_if_fail (EMPATHY_IS_ROSTER_LIVE_SEARCH (self), FALSE);
 
   priv = GET_PRIV (self);
 
-  return empathy_live_search_match_words (string, priv->stripped_words);
+  return empathy_roster_live_search_match_words (string, priv->stripped_words);
 }
 
 gboolean
-empathy_live_search_match_string (const gchar *string,
+empathy_roster_live_search_match_string (const gchar *string,
     const gchar *prefix)
 {
   GPtrArray *words;
   gboolean match;
 
-  words = empathy_live_search_strip_utf8_string (prefix);
-  match = empathy_live_search_match_words (string, words);
+  words = empathy_roster_live_search_strip_utf8_string (prefix);
+  match = empathy_roster_live_search_match_words (string, words);
   if (words != NULL)
     g_ptr_array_unref (words);
 
@@ -723,9 +726,9 @@ empathy_live_search_match_string (const gchar *string,
 }
 
 GPtrArray *
-empathy_live_search_get_words (EmpathyLiveSearch *self)
+empathy_roster_live_search_get_words (EmpathyRosterLiveSearch *self)
 {
-  EmpathyLiveSearchPriv *priv = GET_PRIV (self);
+  EmpathyRosterLiveSearchPriv *priv = GET_PRIV (self);
 
   return priv->stripped_words;
 }

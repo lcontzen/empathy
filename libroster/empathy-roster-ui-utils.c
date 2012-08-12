@@ -85,7 +85,7 @@ stripped_char (gunichar ch)
 }
 
 static gboolean
-live_search_match_prefix (const gchar *string,
+roster_live_search_match_prefix (const gchar *string,
     const gchar *prefix)
 {
   const gchar *p;
@@ -138,7 +138,7 @@ live_search_match_prefix (const gchar *string,
 }
 
 static gboolean
-live_search_match_words (const gchar *string,
+roster_live_search_match_words (const gchar *string,
     GPtrArray *words)
 {
   guint i;
@@ -147,13 +147,13 @@ live_search_match_words (const gchar *string,
     return TRUE;
 
   for (i = 0; i < words->len; i++)
-    if (!live_search_match_prefix (string, g_ptr_array_index (words, i)))
+    if (!roster_live_search_match_prefix (string, g_ptr_array_index (words, i)))
       return FALSE;
 
   return TRUE;
 }
 
-/* @words = empathy_live_search_strip_utf8_string (@text);
+/* @words = empathy_roster_live_search_strip_utf8_string (@text);
  *
  * User has to pass both so we don't have to compute @words ourself each time
  * this function is called. */
@@ -170,7 +170,7 @@ empathy_individual_match_string (FolksIndividual *individual,
   /* check alias name */
   str = folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (individual));
 
-  if (live_search_match_words (str, words))
+  if (roster_live_search_match_words (str, words))
     return TRUE;
 
   personas = folks_individual_get_personas (individual);
@@ -201,7 +201,7 @@ empathy_individual_match_string (FolksIndividual *individual,
               if (p != NULL)
                 str = dup_str = g_strndup (str, p - str);
 
-              visible = live_search_match_words (str, words);
+              visible = roster_live_search_match_words (str, words);
               g_free (dup_str);
               if (visible)
                 retval = TRUE;

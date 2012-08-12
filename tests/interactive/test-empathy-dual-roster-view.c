@@ -94,9 +94,9 @@ create_view_box (EmpathyRosterModel *model,
   empathy_roster_view_show_offline (EMPATHY_ROSTER_VIEW (view), show_offline);
   empathy_roster_view_show_groups (EMPATHY_ROSTER_VIEW (view), show_groups);
 
-  search = empathy_live_search_new (view);
-  empathy_roster_view_set_live_search (EMPATHY_ROSTER_VIEW (view),
-      EMPATHY_LIVE_SEARCH (search));
+  search = empathy_roster_live_search_new (view);
+  empathy_roster_view_set_roster_live_search (EMPATHY_ROSTER_VIEW (view),
+      EMPATHY_ROSTER_LIVE_SEARCH (search));
 
   scrolled = gtk_scrolled_window_new (NULL, NULL);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),

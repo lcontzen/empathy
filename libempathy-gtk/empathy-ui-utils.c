@@ -43,7 +43,7 @@
 #include <folks/folks.h>
 
 #include <libroster/empathy-roster-ui-utils.h>
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 
 #include "empathy-ui-utils.h"
 #include "empathy-images.h"

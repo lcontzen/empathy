@@ -30,7 +30,7 @@
 
 #include <libempathy/empathy-utils.h>
 #include <libempathy/empathy-irc-network-manager.h>
-#include <libroster/empathy-live-search.h>
+#include <libroster/empathy-roster-live-search.h>
 
 #include "empathy-irc-network-dialog.h"
 #include "empathy-ui-utils.h"
@@ -448,7 +448,8 @@ filter_visible_func (GtkTreeModel *model,
 
   gtk_tree_model_get (model, iter, COL_NETWORK_OBJ, &network, -1);
 
-  visible = empathy_live_search_match (EMPATHY_LIVE_SEARCH (priv->search),
+  visible = empathy_roster_live_search_match (
+      EMPATHY_ROSTER_LIVE_SEARCH (priv->search),
       empathy_irc_network_get_name (network));
 
   g_object_unref (network);
@@ -464,7 +465,7 @@ search_activate_cb (GtkWidget *search,
 }
 
 static void
-search_text_notify_cb (EmpathyLiveSearch *search,
+search_text_notify_cb (EmpathyRosterLiveSearch *search,
     GParamSpec *pspec,
     EmpathyIrcNetworkChooserDialog *self)
 {
@@ -480,7 +481,8 @@ search_text_notify_cb (EmpathyLiveSearch *search,
     {
       const gchar *text;
 
-      text = empathy_live_search_get_text (EMPATHY_LIVE_SEARCH (priv->search));
+      text = empathy_roster_live_search_get_text (
+          EMPATHY_ROSTER_LIVE_SEARCH (priv->search));
       if (!EMP_STR_EMPTY (text))
         {
           /* We are doing a search, select the first matching network */
@@ -561,7 +563,7 @@ empathy_irc_network_chooser_dialog_constructed (GObject *object)
   gtk_box_pack_start (GTK_BOX (vbox), scroll, TRUE, TRUE, 6);
 
   /* Live search */
-  priv->search = empathy_live_search_new (priv->treeview);
+  priv->search = empathy_roster_live_search_new (priv->treeview);
 
   gtk_box_pack_start (GTK_BOX (vbox), priv->search, FALSE, TRUE, 0);
 
