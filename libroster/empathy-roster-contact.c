@@ -4,7 +4,7 @@
 
 #include <telepathy-glib/util.h>
 
-#include <libempathy/empathy-utils.h>
+#include <libroster/empathy-roster-utils.h>
 
 #include <libempathy-gtk/empathy-images.h>
 #include <libempathy-gtk/empathy-ui-utils.h>

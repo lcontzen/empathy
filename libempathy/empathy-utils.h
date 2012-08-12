@@ -121,9 +121,6 @@ FolksIndividual * empathy_create_individual_from_tp_contact (
 FolksIndividual * empathy_ensure_individual_from_tp_contact (
     TpContact *contact);
 
-const gchar * const * empathy_individual_get_client_types (
-    FolksIndividual *individual);
-
 GVariant * empathy_asv_to_vardict (const GHashTable *asv);
 
 GVariant * empathy_boxed_to_variant (GType gtype,

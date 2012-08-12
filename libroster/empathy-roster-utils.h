@@ -28,4 +28,7 @@
 
 gboolean empathy_folks_persona_is_interesting (FolksPersona *persona);
 
+const gchar * const * empathy_individual_get_client_types (
+    FolksIndividual *individual);
+
 #endif /* _EMPATHY_ROSTER_UTILS_H_ */
