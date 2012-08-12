@@ -6,8 +6,8 @@
 
 #include <libroster/empathy-roster-utils.h>
 
-#include <libempathy-gtk/empathy-images.h>
-#include <libempathy-gtk/empathy-ui-utils.h>
+#include <libroster/empathy-roster-images.h>
+#include <libroster/empathy-roster-ui-utils.h>
 
 G_DEFINE_TYPE (EmpathyRosterContact, empathy_roster_contact, GTK_TYPE_ALIGNMENT)
 

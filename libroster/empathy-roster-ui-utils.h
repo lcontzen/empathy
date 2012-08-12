@@ -21,10 +21,33 @@
 #ifndef _EMPATHY_ROSTER_UI_UTILS_H_
 #define _EMPATHY_ROSTER_UI_UTILS_H_
 
+#include <gtk/gtk.h>
+#include <telepathy-glib/telepathy-glib.h>
+
 gboolean empathy_individual_match_string (
     FolksIndividual *individual,
     const gchar *text,
     GPtrArray *words);
 
+const gchar * empathy_icon_name_for_presence (
+    TpConnectionPresenceType presence);
+
+const gchar * empathy_icon_name_for_individual (FolksIndividual *individual);
+
+void empathy_pixbuf_avatar_from_individual_scaled_async (
+    FolksIndividual *individual,
+    gint width,
+    gint height,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data);
+
+GdkPixbuf * empathy_pixbuf_avatar_from_individual_scaled_finish (
+    FolksIndividual *individual,
+    GAsyncResult *result,
+    GError **error);
+
+GdkPixbuf * empathy_pixbuf_from_icon_name_sized (const gchar *icon_name,
+    gint size);
 
 #endif /*  _EMPATHY_ROSTER_UI_UTILS_H_ */

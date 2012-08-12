@@ -31,4 +31,7 @@ gboolean empathy_folks_persona_is_interesting (FolksPersona *persona);
 const gchar * const * empathy_individual_get_client_types (
     FolksIndividual *individual);
 
+TpConnectionPresenceType empathy_folks_presence_type_to_tp (
+    FolksPresenceType type);
+
 #endif /* _EMPATHY_ROSTER_UTILS_H_ */

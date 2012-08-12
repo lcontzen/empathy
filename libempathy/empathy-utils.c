@@ -635,13 +635,6 @@ empathy_connect_new_account (TpAccount *account,
     }
 }
 
-/* Translate Folks' general presence type to the Tp presence type */
-TpConnectionPresenceType
-empathy_folks_presence_type_to_tp (FolksPresenceType type)
-{
-  return (TpConnectionPresenceType) type;
-}
-
 /* Returns TRUE if the given Individual contains a TpContact */
 gboolean
 empathy_folks_individual_contains_contact (FolksIndividual *individual)

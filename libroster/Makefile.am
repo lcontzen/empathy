@@ -33,6 +33,7 @@ libroster_handwritten_source = \
 	$(NULL)
 
 libroster_headers = \
+	empathy-roster-images.h \
 	empathy-roster-utils.h \
 	empathy-roster-ui-utils.h \
 	empathy-roster-contact.h \

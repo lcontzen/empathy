@@ -65,27 +65,13 @@ GtkWidget * empathy_builder_unref_and_keep_widget (GtkBuilder *gui,
     GtkWidget *root);
 
 /* Pixbufs */
-const gchar * empathy_icon_name_for_presence (
-    TpConnectionPresenceType presence);
 const gchar * empathy_icon_name_for_contact (EmpathyContact *contact);
-const gchar * empathy_icon_name_for_individual (FolksIndividual *individual);
 const gchar * empathy_protocol_name_for_contact (EmpathyContact *contact);
 GdkPixbuf * empathy_pixbuf_from_data (gchar *data,
     gsize data_size);
 GdkPixbuf * empathy_pixbuf_from_data_and_mime (gchar *data,
     gsize data_size,
     gchar **mime_type);
-void empathy_pixbuf_avatar_from_individual_scaled_async (
-    FolksIndividual *individual,
-    gint width,
-    gint height,
-    GCancellable *cancellable,
-    GAsyncReadyCallback callback,
-    gpointer user_data);
-GdkPixbuf * empathy_pixbuf_avatar_from_individual_scaled_finish (
-    FolksIndividual *individual,
-    GAsyncResult *result,
-    GError **error);
 GdkPixbuf * empathy_pixbuf_avatar_from_contact_scaled (EmpathyContact *contact,
     gint width,
     gint height);
@@ -99,8 +85,6 @@ GdkPixbuf * empathy_pixbuf_scale_down_if_necessary (GdkPixbuf *pixbuf,
     gint max_size);
 GdkPixbuf * empathy_pixbuf_from_icon_name (const gchar *icon_name,
     GtkIconSize icon_size);
-GdkPixbuf * empathy_pixbuf_from_icon_name_sized (const gchar *icon_name,
-    gint size);
 gchar * empathy_filename_from_icon_name (const gchar *icon_name,
     GtkIconSize icon_size);
 

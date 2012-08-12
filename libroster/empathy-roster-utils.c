@@ -83,3 +83,10 @@ empathy_individual_get_client_types (FolksIndividual *individual)
 
   return types;
 }
+
+/* Translate Folks' general presence type to the Tp presence type */
+TpConnectionPresenceType
+empathy_folks_presence_type_to_tp (FolksPresenceType type)
+{
+  return (TpConnectionPresenceType) type;
+}
