@@ -8,7 +8,8 @@
 #include <libroster/empathy-roster-group.h>
 #include <libroster/empathy-roster-ui-utils.h>
 
-#include <libempathy/empathy-utils.h>
+#include <telepathy-glib/telepathy-glib.h>
+
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
