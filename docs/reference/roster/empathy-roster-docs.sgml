@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY empathyrosterversion SYSTEM "version.xml">
+]>
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <bookinfo>
+    <title>telepathy-glib API Reference Manual</title>
+    <releaseinfo>
+      This manual documents libroster version &empathyrosterversion;
+      The latest development version of this documentation can be found here:
+      <ulink role="online-location" url="http://telepathy.freedesktop.org/doc/telepathy-glib/">online copy of the libroster API Reference Manual</ulink>.
+    </releaseinfo>
+  </bookinfo>
+
+  <chapter id="empathy-roster">
+    <title>Roster API</title>
+    <xi:include href="xml/empathy-roster-contact.xml"/>
+  </chapter>
+
+  <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
+</book>

@@ -117,8 +117,6 @@ AC_PATH_XTRA
 
 PKG_PROG_PKG_CONFIG([0.21])
 
-GTK_DOC_CHECK([1.17],[--flavour no-tmpl])
-
 # Initialize libtool
 LT_PREREQ([2.2])
 LT_INIT
@@ -136,6 +134,7 @@ AM_PATH_PYTHON([2.3])
 
 EMPATHY_ARG_VALGRIND
 
+GTK_DOC_CHECK([1.17],[--flavour no-tmpl])
 
 # -----------------------------------------------------------
 # Error flags
@@ -598,6 +597,8 @@ AM_CONDITIONAL([OUT_OF_TREE_BUILD], [test "z$ac_srcdir" != z.])
 AC_CONFIG_FILES([
    docs/Makefile
    docs/reference/Makefile
+   docs/reference/roster/Makefile
+   docs/reference/roster/version.xml
    Makefile
    data/Makefile
    data/empathy.desktop.in

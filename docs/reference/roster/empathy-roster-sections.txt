@@ -1,0 +1,10 @@
+<SECTION>
+<INCLUDE>libroster/roster.h</INCLUDE>
+<FILE>empathy-roster-contact</FILE>
+<TITLE>EmpathyRosterContact</TITLE>
+EmpathyRosterContact
+EmpathyRosterContactClass
+<SUBSECTION Standard>
+EmpathyRosterContactPrivate
+</SECTION>
+
