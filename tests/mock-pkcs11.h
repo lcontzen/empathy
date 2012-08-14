@@ -22,7 +22,7 @@
 
 #include <gcr/gcr.h>
 
-#include <gck/pkcs11.h>
+#include <p11-kit/pkcs11.h>
 #include <gck/pkcs11x.h>
 
 #ifndef MOCK_MODULE_H
