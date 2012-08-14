@@ -1,4 +1,4 @@
-MY_SUBDIRS = tools extensions po data libempathy libroster libempathy-gtk src help tests
+MY_SUBDIRS = tools extensions po data libempathy libroster libempathy-gtk src help tests docs
 NST_SUBDIRS = nautilus-sendto-plugin
 GOA_SUBDIRS = goa-mc-plugin
 UOA_SUBDIRS = ubuntu-online-accounts
@@ -23,7 +23,8 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
 DISTCHECK_CONFIGURE_FLAGS =		\
 	--disable-scrollkeeper		\
-	--disable-schemas-install
+	--disable-schemas-install \
+	--enable-gtk-doc
 
 EXTRA_DIST = 			\
         CONTRIBUTORS \
@@ -34,6 +35,7 @@ EXTRA_DIST = 			\
         ChangeLog.old \
         README \
         autogen.sh \
+		gtk-doc.make \
         $(NULL)
 
 DISTCLEANFILES = 		\

@@ -115,6 +115,10 @@ AM_PROG_MKDIR_P
 AM_PATH_GLIB_2_0
 AC_PATH_XTRA
 
+PKG_PROG_PKG_CONFIG([0.21])
+
+GTK_DOC_CHECK([1.17],[--flavour no-tmpl])
+
 # Initialize libtool
 LT_PREREQ([2.2])
 LT_INIT
@@ -587,7 +591,13 @@ AC_ARG_ENABLE(coding-style-checks,
 AC_SUBST([ENABLE_CODING_STYLE_CHECKS])
 # -----------------------------------------------------------
 
+dnl docs/Makefile.am needs to know whether it's an out of tree build
+dnl (srcdir != builddir)
+AM_CONDITIONAL([OUT_OF_TREE_BUILD], [test "z$ac_srcdir" != z.])
+
 AC_CONFIG_FILES([
+   docs/Makefile
+   docs/reference/Makefile
    Makefile
    data/Makefile
    data/empathy.desktop.in
