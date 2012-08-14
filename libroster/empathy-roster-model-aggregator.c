@@ -30,11 +30,17 @@
 #include "empathy-roster-model-aggregator.h"
 
 /**
- * SECTION: empathy-roster-model-aggregator
+ * SECTION: model-aggregator
  * @title: EmpathyRosterModelAggregator
- * @short_description: TODO
+ * @short_description: RosterModel implementation using a
+ * #FolksIndividualAggregator
  *
- * TODO
+ * The #FolksIndividualAggregator is used to fetch the contacts and their
+ * respective groups.
+ *
+ * A new #EmpathyRosterModelAggregator object can be created with
+ * empathy_roster_model_aggregator_new() or with
+ * empathy_roster_model_aggregator_new_with_aggregator().
  */
 
 /**
