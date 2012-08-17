@@ -66,7 +66,7 @@ static void roster_live_search_hook_widget_destroy_cb (GtkWidget *object,
 /**
  * stripped_char:
  *
- * Returns a stripped version of @ch, removing any case, accentuation
+ * Returns: a stripped version of @ch, removing any case, accentuation
  * mark, or any special mark on it.
  **/
 static gunichar

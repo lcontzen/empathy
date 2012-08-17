@@ -771,6 +771,8 @@ remove_from_displayed (EmpathyRosterView *self,
 }
 
 /**
+ * contact_should_be_displayed:
+ *
  * check if @contact should be displayed according to @self's current status
  * and without consideration for the state of @contact's groups.
  */
