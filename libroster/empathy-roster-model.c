@@ -21,6 +21,12 @@
 
 #include "empathy-roster-model.h"
 
+/**
+ * SECTION: empathy-roster-model
+ * @title: EmpathyRosterModel
+ * @short_description: RosterModel interface
+ */
+
 G_DEFINE_INTERFACE (EmpathyRosterModel, empathy_roster_model, G_TYPE_OBJECT)
 
 enum
@@ -36,6 +42,15 @@ static guint signals[LAST_SIGNAL];
 static void
 empathy_roster_model_default_init (EmpathyRosterModelInterface *iface)
 {
+  /**
+   * EmpathyRosterModel::individual-added:
+   * @self: a #EmpathyRosterModel
+   * @individual: a #FolksIndividual
+   *
+   * Emitted when an individual is added.
+   *
+   * Since: UNRELEASED
+   */
   signals[SIG_INDIVIDUAL_ADDED] =
     g_signal_new ("individual-added",
         EMPATHY_TYPE_ROSTER_MODEL,
@@ -44,6 +59,13 @@ empathy_roster_model_default_init (EmpathyRosterModelInterface *iface)
         G_TYPE_NONE, 1,
         FOLKS_TYPE_INDIVIDUAL);
 
+  /**
+   * EmpathyRosterModel::individual-removed:
+   * @self: a #EmpathyRosterModel
+   * @individual: a #FolksIndividual
+   *
+   * Emitted when an individual is removed.
+   */
   signals[SIG_INDIVIDUAL_REMOVED] =
     g_signal_new ("individual-removed",
         EMPATHY_TYPE_ROSTER_MODEL,
@@ -52,6 +74,15 @@ empathy_roster_model_default_init (EmpathyRosterModelInterface *iface)
         G_TYPE_NONE, 1,
         FOLKS_TYPE_INDIVIDUAL);
 
+  /**
+   * EmpathyRosterModel::groups-changed:
+   * @self: a #EmpathyRosterModel
+   * @individual: a #FolksIndividual
+   * @group: the name of the concerned group
+   * @is_member: %TRUE if @individual is member of @group, %FALSE if not
+   *
+   * Emitted when the belonging of @individual to @group is changed
+   */
   signals[SIG_GROUPS_CHANGED] =
     g_signal_new ("groups-changed",
         EMPATHY_TYPE_ROSTER_MODEL,

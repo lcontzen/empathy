@@ -30,7 +30,7 @@
 #include "empathy-roster-model-aggregator.h"
 
 /**
- * SECTION: model-aggregator
+ * SECTION: empathy-roster-model-aggregator
  * @title: EmpathyRosterModelAggregator
  * @short_description: RosterModel implementation using a
  * #FolksIndividualAggregator
@@ -439,6 +439,13 @@ empathy_roster_model_aggregator_init (EmpathyRosterModelAggregator *self)
       g_object_unref);
 }
 
+/**
+ * empathy_roster_model_aggregator_new:
+ * @filter_func: a #EmpathyRosterModelAggregatorFilterFunc
+ * @user_data: optional data to pass to filter-func
+ *
+ * Creates a new #EmpathyRosterModelAggregator.
+ */
 EmpathyRosterModelAggregator *
 empathy_roster_model_aggregator_new (
     EmpathyRosterModelAggregatorFilterFunc filter_func,
@@ -450,6 +457,15 @@ empathy_roster_model_aggregator_new (
       NULL);
 }
 
+/**
+ * empathy_roster_model_aggregator_new_with_aggregator:
+ * @aggregator: a #FolksIndividualAggregator
+ * @filter_func: a #EmpathyRosterModelAggregatorFilterFunc
+ * @user_data: optional data to pass to filter-func
+ *
+ * Creates a new #EmpathyRosterModelAggregator using the given
+ * @aggregator.
+ */
 EmpathyRosterModelAggregator *
 empathy_roster_model_aggregator_new_with_aggregator (
     FolksIndividualAggregator *aggregator,

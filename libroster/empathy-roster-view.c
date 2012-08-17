@@ -10,6 +10,32 @@
 
 #include <telepathy-glib/telepathy-glib.h>
 
+/**
+ * SECTION: empathy-roster-view
+ * @title: EmpathyRosterView
+ * @short_description: Libroster's displaying unit.
+ *
+ * EmpathyRosterView is used to display contacts and groups.
+ *
+ * A new #EmpathyRosterView can be created with
+ * empathy_roster_view_new().
+ */
+
+/**
+ * EmpathyRosterView:
+ *
+ * Data structure representing a #EmpathyRosterView.
+ *
+ * Since: UNRELEASED
+ */
+
+/**
+ * EmpathyRosterViewClass:
+ *
+ * The class of a #EmpathyRosterView.
+ *
+ * Since: UNRELEASED
+ */
 
 G_DEFINE_TYPE (EmpathyRosterView, empathy_roster_view, EGG_TYPE_LIST_BOX)
 
@@ -1080,7 +1106,12 @@ empathy_roster_view_key_press_event (GtkWidget *widget,
 }
 
 /**
+ * empathy_roster_view_get_individual_at_y:
+ * @self: a #EmpathyRosterView
+ * @y: a coordonate
  * @out_child: (out) (allow-none)
+ *
+ * Returns: the #FolksIndividual at @y
  */
 FolksIndividual *
 empathy_roster_view_get_individual_at_y (EmpathyRosterView *self,
@@ -1101,7 +1132,11 @@ empathy_roster_view_get_individual_at_y (EmpathyRosterView *self,
 }
 
 /**
- * @out_child: (out) (allow-none)
+ * empathy_roster_view_get_group_at_y:
+ * @self: a #EmpathyRosterView
+ * @y: a coordonate
+ *
+ * Returns: the name of the group at @y
  */
 const gchar *
 empathy_roster_view_get_group_at_y (EmpathyRosterView *self,
@@ -1259,6 +1294,12 @@ empathy_roster_view_init (EmpathyRosterView *self)
   self->priv->empty = TRUE;
 }
 
+/**
+ * empathy_roster_view_new:
+ * @model: a #EmpathyRosterModel
+ *
+ * Creates a new #EmpathyRosterView
+ */
 GtkWidget *
 empathy_roster_view_new (EmpathyRosterModel *model)
 {
@@ -1269,6 +1310,13 @@ empathy_roster_view_new (EmpathyRosterModel *model)
       NULL);
 }
 
+/**
+ * empathy_roster_view_show_offline:
+ * @self: a #EmpathyRosterView
+ * @show: %TRUE if offline contacts should be displayed, %FALSE if not
+ *
+ * Sets the show_offline property.
+ */
 void
 empathy_roster_view_show_offline (EmpathyRosterView *self,
     gboolean show)
@@ -1293,6 +1341,13 @@ clear_view (EmpathyRosterView *self)
   g_hash_table_remove_all (self->priv->displayed_contacts);
 }
 
+/**
+ * empathy_roster_view_show_groups:
+ * @self: a #EmpathyRosterView
+ * @show: %TRUE if groups should be displayed, %FALSE if not
+ *
+ * Sets the show_groups property.
+ */
 void
 empathy_roster_view_show_groups (EmpathyRosterView *self,
     gboolean show)
@@ -1356,6 +1411,13 @@ search_activate_cb (GtkWidget *search,
   empathy_roster_view_child_activated (box, child);
 }
 
+/**
+ * empathy_roster_view_set_roster_live_search:
+ * @self: a #EmpathyRosterView
+ * @search: a #EmpathyRosterLiveSearch
+ *
+ * Sets search property.
+ */
 void
 empathy_roster_view_set_roster_live_search (EmpathyRosterView *self,
     EmpathyRosterLiveSearch *search)
@@ -1381,12 +1443,28 @@ empathy_roster_view_set_roster_live_search (EmpathyRosterView *self,
       G_CALLBACK (search_activate_cb), self);
 }
 
+/**
+ * empathy_roster_view_is_empty:
+ * @self: a #EmpathyRosterView
+ *
+ * Is the view currently empty?
+ *
+ * Returns: %TRUE if view is empty, %FALSE if not
+ */
 gboolean
 empathy_roster_view_is_empty (EmpathyRosterView *self)
 {
   return self->priv->empty;
 }
 
+/**
+ * empathy_roster_view_is_searching:
+ * @self: a #EmpathyRosterView
+ *
+ * Is the view currently searching?
+ *
+ * Returns: %TRUE if view is searching, %FALSE if not
+ */
 gboolean
 empathy_roster_view_is_searching (EmpathyRosterView *self)
 {
@@ -1394,6 +1472,17 @@ empathy_roster_view_is_searching (EmpathyRosterView *self)
       gtk_widget_get_visible (GTK_WIDGET (self->priv->search)));
 }
 
+/**
+ * empathy_roster_view_add_event:
+ * @self: a #EmpathyRosterView
+ * @individual: a #FolksIndividual
+ * @icon: an icon name
+ * @user_data: data to pass to the callback
+ *
+ * Add an event to the events queue.
+ *
+ * Returns: The event id.
+ */
 /* Don't use EmpathyEvent as I prefer to keep this object not too specific to
  * Empathy's internals. */
 guint
@@ -1418,6 +1507,13 @@ empathy_roster_view_add_event (EmpathyRosterView *self,
   return self->priv->last_event_id;
 }
 
+/**
+ * empathy_roster_view_remove_event:
+ * @self: a #EmpathyRosterView
+ * @event_id: the id of the event to remove
+ *
+ * Remove an event from the events queue.
+ */
 void
 empathy_roster_view_remove_event (EmpathyRosterView *self,
     guint event_id)
@@ -1437,6 +1533,16 @@ empathy_roster_view_remove_event (EmpathyRosterView *self,
     }
 }
 
+/**
+ * empathy_roster_view_get_selected_individual:
+ * @self: a #empathyRosterView
+ *
+ * Returns the #FolksIndividual corresponding to the selected
+ * #EmpathyRosterContact
+ *
+ * Returns: The #FolksIndividual corresponding to the selected
+ * #EmpathyRosterContact
+ */
 FolksIndividual *
 empathy_roster_view_get_selected_individual (EmpathyRosterView *self)
 {

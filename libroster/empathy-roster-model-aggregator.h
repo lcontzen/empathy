@@ -49,6 +49,14 @@ struct _EmpathyRosterModelAggregator
   EmpathyRosterModelAggregatorPriv *priv;
 };
 
+/**
+ * EmpathyRosterModelAggregatorFilterFunc:
+ * @model: a #EmpathyRosterModel
+ * @individual: a #FolksIndividual
+ * @user_data: data to pass to the callback.
+ *
+ * Filtering function for #EmpathyRosterModelAggregator
+ */
 typedef gboolean (* EmpathyRosterModelAggregatorFilterFunc) (
     EmpathyRosterModel *model,
     FolksIndividual *individual,

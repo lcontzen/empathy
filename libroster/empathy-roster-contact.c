@@ -9,6 +9,31 @@
 #include <libroster/empathy-roster-images.h>
 #include <libroster/empathy-roster-ui-utils.h>
 
+/**
+ * SECTION: empathy-roster-contact
+ * @title: EmpathyRosterContact
+ * @short_description: A contact to display with #EmpathyRosterView
+ *
+ * A new #EmpathyRosterContact can be created with
+ * empathy_roster_contact_new().
+ */
+
+/**
+ * EmpathyRosterContact:
+ *
+ * Data structure representing a #EmpathyRosterContact.
+ *
+ * Since: UNRELEASED
+ */
+
+/**
+ * EmpathyRosterContactClass:
+ *
+ * The class of a #EmpathyRosterContact.
+ *
+ * Since: UNRELEASED
+ */
+
 G_DEFINE_TYPE (EmpathyRosterContact, empathy_roster_contact, GTK_TYPE_ALIGNMENT)
 
 #define AVATAR_SIZE 48
@@ -453,6 +478,13 @@ empathy_roster_contact_init (EmpathyRosterContact *self)
   gtk_widget_show (main_box);
 }
 
+/**
+ * empathy_roster_contact_new:
+ * @individual: a #FolksIndividual
+ * @group: the contact's group
+ *
+ * Creates a new #EmpathyRosterContact
+ */
 GtkWidget *
 empathy_roster_contact_new (FolksIndividual *individual,
     const gchar *group)
@@ -469,24 +501,49 @@ empathy_roster_contact_new (FolksIndividual *individual,
       NULL);
 }
 
+/**
+ * empathy_roster_contact_get_individual:
+ * @self: a #EmpathyRosterContact
+ *
+ * Returns: The #FolksIndividual of @self
+ */
 FolksIndividual *
 empathy_roster_contact_get_individual (EmpathyRosterContact *self)
 {
   return self->priv->individual;
 }
 
+/**
+ * empathy_roster_contact_is_online:
+ * @self: a #EmpathyRosterContact
+ *
+ * Returns: %TRUE if @self is online, %FALSE if not
+ */
 gboolean
 empathy_roster_contact_is_online (EmpathyRosterContact *self)
 {
   return self->priv->online;
 }
 
+/**
+ * empathy_roster_contact_get_group:
+ * @self: a #EmpathyRosterContact
+ *
+ * Returns: @self's group name
+ */
 const gchar *
 empathy_roster_contact_get_group (EmpathyRosterContact *self)
 {
   return self->priv->group;
 }
 
+/**
+ * empathy_roster_contact_set_event_icon:
+ * @self: a #EmpathyRosterContact
+ * @icon: an icon name
+ *
+ * Sets @self's event_icon to @icon
+ */
 void
 empathy_roster_contact_set_event_icon (EmpathyRosterContact *self,
     const gchar *icon)
@@ -500,6 +557,12 @@ empathy_roster_contact_set_event_icon (EmpathyRosterContact *self,
   update_presence_icon (self);
 }
 
+/**
+ * empathy_roster_contact_get_avatar_pixbuf:
+ * @self: a #EmpathyRosterContact
+ *
+ * Returns: The #GdkPixbuf of @self's avatar
+ */
 GdkPixbuf *
 empathy_roster_contact_get_avatar_pixbuf (EmpathyRosterContact *self)
 {

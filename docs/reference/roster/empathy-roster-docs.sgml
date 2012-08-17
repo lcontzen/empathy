@@ -5,17 +5,21 @@
 ]>
 <book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
   <bookinfo>
-    <title>telepathy-glib API Reference Manual</title>
+    <title>libroster API Reference Manual</title>
     <releaseinfo>
       This manual documents libroster version &empathyrosterversion;
       The latest development version of this documentation can be found here:
-      <ulink role="online-location" url="http://telepathy.freedesktop.org/doc/telepathy-glib/">online copy of the libroster API Reference Manual</ulink>.
+      <ulink role="online-location" url="http://tobedefined.org/">online copy of the libroster API Reference Manual</ulink>.
     </releaseinfo>
   </bookinfo>
 
-  <chapter id="empathy-roster">
-    <title>Roster API</title>
+  <chapter id="empathy-roster-model">
+    <title>RosterModel API</title>
+    <xi:include href="xml/empathy-roster-model.xml"/>
+    <xi:include href="xml/empathy-roster-model-aggregator.xml"/>
+    <xi:include href="xml/empathy-roster-view.xml"/>
     <xi:include href="xml/empathy-roster-contact.xml"/>
+    <xi:include href="xml/empathy-roster-group.xml"/>
   </chapter>
 
   <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>

@@ -4,6 +4,31 @@
 
 #include <telepathy-glib/telepathy-glib.h>
 
+/**
+ * SECTION: empathy-roster-group
+ * @title: EmpathyRosterGroup
+ * @short_description: A group to display with #EmpathyRosterView
+ *
+ * A new #EmpathyRosterGroup can be created with
+ * empathy_roster_group_new().
+ */
+
+/**
+ * EmpathyRosterGroup:
+ *
+ * Data structure representing a #EmpathyRosterGroup.
+ *
+ * Since: UNRELEASED
+ */
+
+/**
+ * EmpathyRosterGroupClass:
+ *
+ * The class of a #EmpathyRosterGroup.
+ *
+ * Since: UNRELEASED
+ */
+
 G_DEFINE_TYPE (EmpathyRosterGroup, empathy_roster_group, GTK_TYPE_EXPANDER)
 
 enum
@@ -184,6 +209,13 @@ empathy_roster_group_init (EmpathyRosterGroup *self)
   self->priv->widgets = g_hash_table_new (NULL, NULL);
 }
 
+/**
+ * empathy_roster_group_new:
+ * @name: The group's name
+ * @icon: The name of the group's icon
+ *
+ * Creates a new #EmpathyRosterGroup
+ */
 GtkWidget *
 empathy_roster_group_new (const gchar *name,
     const gchar *icon)
@@ -196,12 +228,27 @@ empathy_roster_group_new (const gchar *name,
       NULL);
 }
 
+/**
+ * empathy_roster_group_get_name:
+ * @self: a #EmpathyRosterGroup
+ *
+ * Returns: @self's name.
+ */
 const gchar *
 empathy_roster_group_get_name (EmpathyRosterGroup *self)
 {
   return self->priv->name;
 }
 
+/**
+ * empathy_roster_group_add_widget:
+ * @self: a #EmpathyRosterGroup
+ * @widget: a #GtkWidget
+ *
+ * Adds @widget to @self's widgets.
+ *
+ * Returns: The count of @self's widgets
+ */
 guint
 empathy_roster_group_add_widget (EmpathyRosterGroup *self,
     GtkWidget *widget)
@@ -213,6 +260,15 @@ empathy_roster_group_add_widget (EmpathyRosterGroup *self,
   return empathy_roster_group_get_widgets_count (self);
 }
 
+/**
+ * empathy_roster_group_remove_widget:
+ * @self: a #EmpathyRosterGroup
+ * @widget: a #GtkWidget
+ *
+ * Removes @widget from @self's widgets.
+ *
+ * Returns: The count of @self's widgets
+ */
 guint
 empathy_roster_group_remove_widget (EmpathyRosterGroup *self,
     GtkWidget *widget)
@@ -224,12 +280,24 @@ empathy_roster_group_remove_widget (EmpathyRosterGroup *self,
   return empathy_roster_group_get_widgets_count (self);
 }
 
+/**
+ * empathy_roster_group_get_widgets_count:
+ * @self: a #EmpathyRosterGroup
+ *
+ * Returns: The count of @self's widgets
+ */
 guint
 empathy_roster_group_get_widgets_count (EmpathyRosterGroup *self)
 {
   return g_hash_table_size (self->priv->widgets);
 }
 
+/**
+ * empathy_roster_group_get_widgets:
+ * @self: a #EmpathyRosterGroup
+ *
+ * Returns: @self's widgets
+ */
 GList *
 empathy_roster_group_get_widgets (EmpathyRosterGroup *self)
 {
