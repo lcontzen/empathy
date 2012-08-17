@@ -24,9 +24,11 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 DISTCHECK_CONFIGURE_FLAGS =		\
 	--disable-scrollkeeper		\
 	--disable-schemas-install \
-	--enable-gtk-doc
+	--enable-gtk-doc \
+	--enable-introspection
 
 EXTRA_DIST = 			\
+        m4/introspection.m4 \
         CONTRIBUTORS \
         COPYING-DOCS \
         COPYING.LGPL \

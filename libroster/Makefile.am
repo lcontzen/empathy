@@ -124,3 +124,27 @@ empathy-gtk-enum-types.c: Makefile $(libempathy_gtk_headers)
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	stamp-empathy-gtk-enum-types.h
+
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS = EmpathyRoster-0.1.gir
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+
+if HAVE_INTROSPECTION
+introspection_sources = $(libroster_la_SOURCES)
+
+EmpathyRoster-0.1.gir: libroster.la
+EmpathyRoster_0_1_gir_INCLUDES = GLib-2.0 Gee-1.0 TelepathyGLib-0.12 Gtk-3.0
+EmpathyRoster_0_1_gir_CFLAGS = $(INCLUDES) $(EGGLISTBOX_CFLAGS)
+EmpathyRoster_0_1_gir_LIBS = libroster.la
+EmpathyRoster_0_1_gir_FILES = $(introspection_sources)
+INTROSPECTION_GIRS += EmpathyRoster-0.1.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
+endif

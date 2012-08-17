@@ -578,6 +578,17 @@ fi
 # Help documentation
 YELP_HELP_INIT
 
+
+# -----------------------------------------------------------
+# Gobject Introspection
+# ----------------------------------------------------------
+#-- add the correct m4 directory location.
+AC_CONFIG_MACRO_DIR([m4])
+
+#-- any typos here, and you will end up with a message about HAVE_INTROSPECTION not being defined
+GOBJECT_INTROSPECTION_CHECK([1.30.0])
+
+
 # -----------------------------------------------------------
 # Coding style checks
 # -----------------------------------------------------------
