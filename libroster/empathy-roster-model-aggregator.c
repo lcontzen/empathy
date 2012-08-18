@@ -447,8 +447,8 @@ empathy_roster_model_aggregator_init (EmpathyRosterModelAggregator *self)
 
 /**
  * empathy_roster_model_aggregator_new:
- * @filter_func: a #EmpathyRosterModelAggregatorFilterFunc
- * @user_data: optional data to pass to filter-func
+ * @filter_func: (scope notified) (allow-none): a #EmpathyRosterModelAggregatorFilterFunc
+ * @user_data: (allow-none): optional data to pass to filter-func
  *
  * Creates a new #EmpathyRosterModelAggregator.
  */
@@ -466,8 +466,8 @@ empathy_roster_model_aggregator_new (
 /**
  * empathy_roster_model_aggregator_new_with_aggregator:
  * @aggregator: a #FolksIndividualAggregator
- * @filter_func: a #EmpathyRosterModelAggregatorFilterFunc
- * @user_data: optional data to pass to filter-func
+ * @filter_func: (scope notified) (allow-none): a #EmpathyRosterModelAggregatorFilterFunc
+ * @user_data: (allow-none): optional data to pass to filter-func
  *
  * Creates a new #EmpathyRosterModelAggregator using the given
  * @aggregator.
