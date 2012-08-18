@@ -17,6 +17,11 @@ class TestEmpathyRosterGIR(Gtk.Window):
         self.view = EmpathyRoster.View.new (self.model)
         self.view.connect("individual-activated", self.individual_activated_cb,
                           None)
+        self.view.connect("popup-individual-menu",
+                          self.popup_individual_menu_cb, None)
+        self.view.connect("notify::empty", self.empty_cb, None)
+        self.view.connect("individual-tooltip", self.individual_tooltip_cb,
+                          None)
         self.view.show_offline (False)
         self.view.show_groups (True)
 
@@ -33,8 +38,28 @@ class TestEmpathyRosterGIR(Gtk.Window):
 
         self.set_default_size (300, 600)
 
-    def individual_activated_cb(view, individual, user_data):
-        print individual + "activated"
+    def individual_activated_cb(self, view, individual, user_data):
+        print individual.__info__
+        print "activated"
+
+    def popup_individual_menu_cb (self, view, individual, button, time, user_data):
+        menu = Gtk.Menu()
+        menu.connect("deactivate", Gtk.Widget.destroy)
+        item = Gtk.MenuItem.new_with_label ("test")
+        item.show()
+        Gtk.MenuShell.append (menu, item)
+        menu.attach_to_widget (view, None)
+        menu.popup(None, None, None, None, button, time)
+
+    def empty_cb(self, view, spec, user_data):
+        if (view.is_empty()):
+            print "view is now empty"
+        else:
+            print "view is no longer empty"
+
+    def individual_tooltip_cb(self, view, individual, keyboard_mode, tooltip,
+                              user_data):
+        tooltip.set_text ("test")
 
 def main():
     win = TestEmpathyRosterGIR()
