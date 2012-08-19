@@ -50,6 +50,8 @@ GType empathy_roster_contact_get_type (void);
 GtkWidget * empathy_roster_contact_new (FolksIndividual *individual,
     const gchar *group);
 
+const gchar * empathy_roster_contact_get_alias (EmpathyRosterContact *self);
+
 FolksIndividual * empathy_roster_contact_get_individual (EmpathyRosterContact *self);
 
 const gchar * empathy_roster_contact_get_group (EmpathyRosterContact *self);

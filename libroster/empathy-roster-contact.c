@@ -74,8 +74,14 @@ struct _EmpathyRosterContactPriv
   gboolean online;
 };
 
-static const gchar *
-get_alias (EmpathyRosterContact *self)
+/**
+ * empathy_roster_contact_get_alias:
+ * @self: a #EmpathyRosterContact
+ *
+ * Returns: @self's alias.
+ */
+const gchar *
+empathy_roster_contact_get_alias (EmpathyRosterContact *self)
 {
   return folks_alias_details_get_alias (FOLKS_ALIAS_DETAILS (
         self->priv->individual));
@@ -101,7 +107,7 @@ empathy_roster_contact_get_property (GObject *object,
         g_value_set_boolean (value, self->priv->online);
         break;
       case PROP_ALIAS:
-        g_value_set_string (value, get_alias (self));
+        g_value_set_string (value, empathy_roster_contact_get_alias (self));
         break;
       default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -183,7 +189,8 @@ avatar_changed_cb (FolksIndividual *individual,
 static void
 update_alias (EmpathyRosterContact *self)
 {
-  gtk_label_set_text (GTK_LABEL (self->priv->alias), get_alias (self));
+  gtk_label_set_text (GTK_LABEL (self->priv->alias),
+      empathy_roster_contact_get_alias (self));
 
   g_object_notify (G_OBJECT (self), "alias");
 }

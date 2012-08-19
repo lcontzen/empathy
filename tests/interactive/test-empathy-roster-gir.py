@@ -39,8 +39,8 @@ class TestEmpathyRosterGIR(Gtk.Window):
         self.set_default_size (300, 600)
 
     def individual_activated_cb(self, view, individual, user_data):
-        print individual.__info__
-        print "activated"
+        contact = EmpathyRoster.Contact.new (individual, "group")
+        print contact.get_alias() + " activated"
 
     def popup_individual_menu_cb (self, view, individual, button, time, user_data):
         menu = Gtk.Menu()
