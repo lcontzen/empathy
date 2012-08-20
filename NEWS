@@ -3,9 +3,9 @@ NEW in 3.5.90 (20/08/2012)
 
 Bugs fixed:
  - Fixed #656097, Empathy should show an informative text inside the contact list when no contacts are online (Xavier Claessens)
- - Fixed #658858, Hide offline contacts by default
+ - Fixed #658858, Hide offline contacts by default (Xavier Claessens)
  - Fixed #662986, Messaging and VoIP Accounts in Applications list (Guillaume Desmottes)
- - Fixed #680302, Move model logic out of EmpathyRosterView
+ - Fixed #680302, Move model logic out of EmpathyRosterView (Laurent Contzen)
  - Fixed #680774, Migrate existing accounts into libaccounts (Xavier Claessens)
  - Fixed #680775, Be able to edit params of non SSO accounts (Guillaume Desmottes)
  - Fixed #680778, Stop using empathy-accounts (Guillaume Desmottes)
