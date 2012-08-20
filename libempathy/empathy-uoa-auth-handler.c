@@ -79,25 +79,6 @@ empathy_uoa_auth_handler_new (void)
   return g_object_new (EMPATHY_TYPE_UOA_AUTH_HANDLER, NULL);
 }
 
-static void
-auth_cb (GObject *source,
-    GAsyncResult *result,
-    gpointer user_data)
-{
-  TpChannel *channel = (TpChannel *) source;
-  GError *error = NULL;
-
-  if (!empathy_sasl_auth_finish (channel, result, &error))
-    {
-      DEBUG ("SASL Mechanism error: %s", error->message);
-      g_clear_error (&error);
-    }
-
-  DEBUG ("Auth on %s suceeded", tp_proxy_get_object_path (channel));
-
-  tp_channel_close_async (channel, NULL, NULL);
-}
-
 typedef struct
 {
   TpChannel *channel;
@@ -137,6 +118,47 @@ query_info_data_free (QueryInfoData *data)
 }
 
 static void
+auth_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpChannel *channel = (TpChannel *) source;
+  QueryInfoData *data = user_data;
+  GError *error = NULL;
+
+  if (!empathy_sasl_auth_finish (channel, result, &error))
+    {
+      GHashTable *extra_params;
+
+      DEBUG ("SASL Mechanism error: %s", error->message);
+      g_clear_error (&error);
+
+      /* Inform SSO that the access token didn't work and it should ask user
+       * to re-grant access. */
+      extra_params = tp_asv_new (
+          SIGNON_SESSION_DATA_UI_POLICY, G_TYPE_INT,
+              SIGNON_POLICY_REQUEST_PASSWORD,
+          NULL);
+
+      ag_auth_data_insert_parameters (data->auth_data, extra_params);
+
+      signon_auth_session_process (data->session,
+          ag_auth_data_get_parameters (data->auth_data),
+          ag_auth_data_get_mechanism (data->auth_data),
+          NULL, NULL);
+
+      g_hash_table_unref (extra_params);
+    }
+  else
+    {
+      DEBUG ("Auth on %s suceeded", tp_proxy_get_object_path (channel));
+    }
+
+  tp_channel_close_async (channel, NULL, NULL);
+  query_info_data_free (data);
+}
+
+static void
 session_process_cb (SignonAuthSession *session,
     GHashTable *session_data,
     const GError *error,
@@ -163,26 +185,24 @@ session_process_cb (SignonAuthSession *session,
       case EMPATHY_SASL_MECHANISM_FACEBOOK:
         empathy_sasl_auth_facebook_async (data->channel,
             client_id, access_token,
-            auth_cb, NULL);
+            auth_cb, data);
         break;
 
       case EMPATHY_SASL_MECHANISM_WLM:
         empathy_sasl_auth_wlm_async (data->channel,
             access_token,
-            auth_cb, NULL);
+            auth_cb, data);
         break;
 
       case EMPATHY_SASL_MECHANISM_GOOGLE:
         empathy_sasl_auth_google_async (data->channel,
             data->username, access_token,
-            auth_cb, NULL);
+            auth_cb, data);
         break;
 
       default:
         g_assert_not_reached ();
     }
-
-  query_info_data_free (data);
 }
 
 static void

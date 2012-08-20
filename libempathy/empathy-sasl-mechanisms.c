@@ -87,6 +87,7 @@ sasl_status_changed_cb (TpChannel *channel,
           DEBUG ("SASL failed: %s", error->message);
 
           g_simple_async_result_take_error (result, error);
+          g_simple_async_result_complete (result);
         }
         break;
 
