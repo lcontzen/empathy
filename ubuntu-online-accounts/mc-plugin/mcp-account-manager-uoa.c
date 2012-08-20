@@ -430,6 +430,17 @@ account_manager_uoa_list (const McpAccountStorage *storage,
   return accounts;
 }
 
+static const gchar *
+provider_to_tp_service_name (const gchar *provider_name)
+{
+  /* Well known services are defined in Telepathy spec:
+   * http://telepathy.freedesktop.org/spec/Account.html#Property:Service */
+  if (!tp_strdiff (provider_name, "google"))
+    return "google-talk";
+
+  return provider_name;
+}
+
 static gboolean
 account_manager_uoa_get (const McpAccountStorage *storage,
     const McpAccountManager *am,
@@ -487,7 +498,7 @@ account_manager_uoa_get (const McpAccountStorage *storage,
   if (key == NULL || !tp_strdiff (key, "Service"))
     {
       mcp_account_manager_set_value (am, account_name, "Service",
-          ag_account_get_provider_name (account));
+          provider_to_tp_service_name (ag_account_get_provider_name (account)));
       handled = TRUE;
     }
 
