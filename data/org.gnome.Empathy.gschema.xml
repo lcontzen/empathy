@@ -44,7 +44,7 @@
   </schema>
   <schema id="org.gnome.Empathy.ui" path="/org/gnome/empathy/ui/">
     <key name="show-offline" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Show offline contacts</summary>
       <description>Whether to show contacts that are offline in the contact list.</description>
     </key>
