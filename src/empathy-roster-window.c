@@ -1588,6 +1588,19 @@ set_notebook_page (EmpathyRosterWindow *self)
       goto out;
     }
 
+  if (empathy_roster_view_is_empty (self->priv->view))
+    {
+      if (empathy_roster_view_is_searching (self->priv->view))
+        {
+          display_page_message (self, _("No match found"), FALSE, FALSE);
+        }
+      else
+        {
+          display_page_message (self, _("No online contacts"), FALSE, FALSE);
+        }
+      goto out;
+    }
+
   display_page_contact_list (self);
 
 out:
@@ -1895,16 +1908,10 @@ view_empty_cb (EmpathyRosterView *view,
     GParamSpec *spec,
     EmpathyRosterWindow *self)
 {
-  if (empathy_roster_view_is_empty (view))
+  set_notebook_page (self);
+
+  if (!empathy_roster_view_is_empty (view))
     {
-      if (empathy_roster_view_is_searching (self->priv->view))
-        {
-          display_page_message (self, _("No match found"), FALSE, FALSE);
-        }
-    }
-  else
-    {
-      display_page_contact_list (self);
       gtk_widget_grab_focus (GTK_WIDGET (self->priv->view));
 
       /* The store is being filled, it will be done after an idle cb.
