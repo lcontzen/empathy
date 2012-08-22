@@ -139,6 +139,10 @@ def generate_service_file(p):
       <setting name="manager">%s</setting>
       <setting name="protocol">%s</setting>
     </group>
+    <group name="auth">
+      <setting name="method">password</setting>
+      <setting name="mechanism">password</setting>
+    </group>
   </template>
 
 </service>

@@ -13,6 +13,10 @@
       <setting name="manager">idle</setting>
       <setting name="protocol">irc</setting>
     </group>
+    <group name="auth">
+      <setting name="method">password</setting>
+      <setting name="mechanism">password</setting>
+    </group>
   </template>
 
 </service>

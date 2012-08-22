@@ -13,6 +13,10 @@
       <setting name="manager">haze</setting>
       <setting name="protocol">gadugadu</setting>
     </group>
+    <group name="auth">
+      <setting name="method">password</setting>
+      <setting name="mechanism">password</setting>
+    </group>
   </template>
 
 </service>
