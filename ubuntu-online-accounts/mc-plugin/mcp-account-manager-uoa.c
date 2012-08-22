@@ -542,6 +542,9 @@ account_manager_uoa_set (const McpAccountStorage *storage,
 
   if (!tp_strdiff (key, "Enabled"))
     {
+      /* Enabled is a global setting on the account, not per-services,
+       * unfortunately */
+      ag_account_select_service (account, NULL);
       ag_account_set_enabled (account, !tp_strdiff (val, "true"));
     }
   else if (!tp_strdiff (key, "DisplayName"))
