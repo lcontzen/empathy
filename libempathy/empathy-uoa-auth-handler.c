@@ -86,34 +86,34 @@ typedef struct
   SignonIdentity *identity;
 
   gchar *username;
-} QueryInfoData;
+} AuthContext;
 
-static QueryInfoData *
-query_info_data_new (TpChannel *channel,
+static AuthContext *
+auth_context_new (TpChannel *channel,
     AgAuthData *auth_data,
     SignonAuthSession *session,
     SignonIdentity *identity)
 {
-  QueryInfoData *data;
+  AuthContext *ctx;
 
-  data = g_slice_new0 (QueryInfoData);
-  data->channel = g_object_ref (channel);
-  data->auth_data = ag_auth_data_ref (auth_data);
-  data->session = g_object_ref (session);
-  data->identity = g_object_ref (identity);
+  ctx = g_slice_new0 (AuthContext);
+  ctx->channel = g_object_ref (channel);
+  ctx->auth_data = ag_auth_data_ref (auth_data);
+  ctx->session = g_object_ref (session);
+  ctx->identity = g_object_ref (identity);
 
-  return data;
+  return ctx;
 }
 
 static void
-query_info_data_free (QueryInfoData *data)
+auth_context_free (AuthContext *ctx)
 {
-  g_object_unref (data->channel);
-  ag_auth_data_unref (data->auth_data);
-  g_object_unref (data->session);
-  g_object_unref (data->identity);
-  g_free (data->username);
-  g_slice_free (QueryInfoData, data);
+  g_object_unref (ctx->channel);
+  ag_auth_data_unref (ctx->auth_data);
+  g_object_unref (ctx->session);
+  g_object_unref (ctx->identity);
+  g_free (ctx->username);
+  g_slice_free (AuthContext, ctx);
 }
 
 static void
@@ -122,7 +122,7 @@ auth_cb (GObject *source,
     gpointer user_data)
 {
   TpChannel *channel = (TpChannel *) source;
-  QueryInfoData *data = user_data;
+  AuthContext *ctx = user_data;
   GError *error = NULL;
 
   if (!empathy_sasl_auth_finish (channel, result, &error))
@@ -139,11 +139,11 @@ auth_cb (GObject *source,
               SIGNON_POLICY_REQUEST_PASSWORD,
           NULL);
 
-      ag_auth_data_insert_parameters (data->auth_data, extra_params);
+      ag_auth_data_insert_parameters (ctx->auth_data, extra_params);
 
-      signon_auth_session_process (data->session,
-          ag_auth_data_get_parameters (data->auth_data),
-          ag_auth_data_get_mechanism (data->auth_data),
+      signon_auth_session_process (ctx->session,
+          ag_auth_data_get_parameters (ctx->auth_data),
+          ag_auth_data_get_mechanism (ctx->auth_data),
           NULL, NULL);
 
       g_hash_table_unref (extra_params);
@@ -154,7 +154,7 @@ auth_cb (GObject *source,
     }
 
   tp_channel_close_async (channel, NULL, NULL);
-  query_info_data_free (data);
+  auth_context_free (ctx);
 }
 
 static void
@@ -163,40 +163,40 @@ session_process_cb (SignonAuthSession *session,
     const GError *error,
     gpointer user_data)
 {
-  QueryInfoData *data = user_data;
+  AuthContext *ctx = user_data;
   const gchar *access_token;
   const gchar *client_id;
 
   if (error != NULL)
     {
       DEBUG ("Error processing the session: %s", error->message);
-      tp_channel_close_async (data->channel, NULL, NULL);
-      query_info_data_free (data);
+      tp_channel_close_async (ctx->channel, NULL, NULL);
+      auth_context_free (ctx);
       return;
     }
 
   access_token = tp_asv_get_string (session_data, "AccessToken");
-  client_id = tp_asv_get_string (ag_auth_data_get_parameters (data->auth_data),
+  client_id = tp_asv_get_string (ag_auth_data_get_parameters (ctx->auth_data),
       "ClientId");
 
-  switch (empathy_sasl_channel_select_mechanism (data->channel))
+  switch (empathy_sasl_channel_select_mechanism (ctx->channel))
     {
       case EMPATHY_SASL_MECHANISM_FACEBOOK:
-        empathy_sasl_auth_facebook_async (data->channel,
+        empathy_sasl_auth_facebook_async (ctx->channel,
             client_id, access_token,
-            auth_cb, data);
+            auth_cb, ctx);
         break;
 
       case EMPATHY_SASL_MECHANISM_WLM:
-        empathy_sasl_auth_wlm_async (data->channel,
+        empathy_sasl_auth_wlm_async (ctx->channel,
             access_token,
-            auth_cb, data);
+            auth_cb, ctx);
         break;
 
       case EMPATHY_SASL_MECHANISM_GOOGLE:
-        empathy_sasl_auth_google_async (data->channel,
-            data->username, access_token,
-            auth_cb, data);
+        empathy_sasl_auth_google_async (ctx->channel,
+            ctx->username, access_token,
+            auth_cb, ctx);
         break;
 
       default:
@@ -210,23 +210,23 @@ identity_query_info_cb (SignonIdentity *identity,
     const GError *error,
     gpointer user_data)
 {
-  QueryInfoData *data = user_data;
+  AuthContext *ctx = user_data;
 
   if (error != NULL)
     {
       DEBUG ("Error querying info from identity: %s", error->message);
-      tp_channel_close_async (data->channel, NULL, NULL);
-      query_info_data_free (data);
+      tp_channel_close_async (ctx->channel, NULL, NULL);
+      auth_context_free (ctx);
       return;
     }
 
-  data->username = g_strdup (signon_identity_info_get_username (info));
+  ctx->username = g_strdup (signon_identity_info_get_username (info));
 
-  signon_auth_session_process (data->session,
-      ag_auth_data_get_parameters (data->auth_data),
-      ag_auth_data_get_mechanism (data->auth_data),
+  signon_auth_session_process (ctx->session,
+      ag_auth_data_get_parameters (ctx->auth_data),
+      ag_auth_data_get_mechanism (ctx->auth_data),
       session_process_cb,
-      data);
+      ctx);
 }
 
 void
@@ -288,7 +288,7 @@ empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
   /* Query UOA for more info */
   signon_identity_query_info (identity,
       identity_query_info_cb,
-      query_info_data_new (channel, auth_data, session, identity));
+      auth_context_new (channel, auth_data, session, identity));
 
 cleanup:
   ag_auth_data_unref (auth_data);
