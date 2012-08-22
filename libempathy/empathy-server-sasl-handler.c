@@ -30,6 +30,7 @@
 #define DEBUG_FLAG EMPATHY_DEBUG_SASL
 #include "empathy-debug.h"
 #include "empathy-keyring.h"
+#include "empathy-sasl-mechanisms.h"
 
 enum {
   PROP_CHANNEL = 1,
@@ -64,16 +65,6 @@ G_DEFINE_TYPE_WITH_CODE (EmpathyServerSASLHandler, empathy_server_sasl_handler,
     G_TYPE_OBJECT,
     G_IMPLEMENT_INTERFACE (G_TYPE_ASYNC_INITABLE, async_initable_iface_init));
 
-static const gchar *sasl_statuses[] = {
-  "not started",
-  "in progress",
-  "server succeeded",
-  "client accepted",
-  "succeeded",
-  "server failed",
-  "client failed",
-};
-
 static void
 empathy_server_sasl_handler_set_password_cb (GObject *source,
     GAsyncResult *result,
@@ -91,52 +82,6 @@ empathy_server_sasl_handler_set_password_cb (GObject *source,
     {
       DEBUG ("Password set successfully.");
     }
-}
-
-static void
-sasl_status_changed_cb (TpChannel *channel,
-    TpSASLStatus status,
-    const gchar *error,
-    GHashTable *details,
-    gpointer user_data,
-    GObject *weak_object)
-{
-  EmpathyServerSASLHandler *self = EMPATHY_SERVER_SASL_HANDLER (weak_object);
-  EmpathyServerSASLHandlerPriv *priv = EMPATHY_SERVER_SASL_HANDLER (weak_object)->priv;
-
-  /* buh boh */
-  if (status >= G_N_ELEMENTS (sasl_statuses))
-    {
-      DEBUG ("SASL status changed to unknown status");
-      return;
-    }
-
-  DEBUG ("SASL status changed to '%s'", sasl_statuses[status]);
-
-  if (status == TP_SASL_STATUS_SERVER_SUCCEEDED)
-    {
-      empathy_keyring_set_account_password_async (priv->account,
-          priv->password, priv->save_password,
-          empathy_server_sasl_handler_set_password_cb,
-          NULL);
-
-      DEBUG ("Calling AcceptSASL");
-      tp_cli_channel_interface_sasl_authentication_call_accept_sasl (
-          priv->channel, -1, NULL, NULL, NULL, NULL);
-    }
-  else if (status == TP_SASL_STATUS_SUCCEEDED)
-    {
-      DEBUG ("SASL succeeded, calling Close");
-      tp_cli_channel_call_close (priv->channel, -1,
-          NULL, NULL, NULL, NULL);
-    }
-  else if (status == TP_SASL_STATUS_SERVER_FAILED)
-   {
-     if (!tp_strdiff (error, TP_ERROR_STR_AUTHENTICATION_FAILED))
-       {
-         g_signal_emit (self, signals[AUTH_PASSWORD_FAILED], 0, priv->password);
-       }
-   }
 }
 
 static gboolean
@@ -231,9 +176,6 @@ empathy_server_sasl_handler_constructed (GObject *object)
 {
   EmpathyServerSASLHandlerPriv *priv = EMPATHY_SERVER_SASL_HANDLER (object)->priv;
   GError *error = NULL;
-
-  tp_cli_channel_interface_sasl_authentication_connect_to_sasl_status_changed (
-      priv->channel, sasl_status_changed_cb, NULL, NULL, object, &error);
 
   if (error != NULL)
     {
@@ -398,18 +340,33 @@ empathy_server_sasl_handler_new_async (TpAccount *account,
 }
 
 static void
-start_mechanism_with_data_cb (TpChannel *proxy,
-    const GError *error,
-    gpointer user_data,
-    GObject *weak_object)
+auth_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
 {
-  if (error != NULL)
+  EmpathyServerSASLHandler *self = user_data;
+  EmpathyServerSASLHandlerPriv *priv = self->priv;
+  GError *error = NULL;
+
+  if (!empathy_sasl_auth_finish (priv->channel, result, &error))
     {
-      DEBUG ("Failed to start mechanism: %s", error->message);
-      return;
+      if (g_error_matches (error, TP_ERROR, TP_ERROR_AUTHENTICATION_FAILED))
+        {
+          g_signal_emit (self, signals[AUTH_PASSWORD_FAILED], 0, priv->password);
+        }
+      g_clear_error (&error);
+    }
+  else
+    {
+      DEBUG ("Saving password in keyring");
+      empathy_keyring_set_account_password_async (priv->account,
+          priv->password, priv->save_password,
+          empathy_server_sasl_handler_set_password_cb,
+          NULL);
     }
 
-  DEBUG ("Started mechanism successfully");
+  tp_channel_close_async (priv->channel, NULL, NULL);
+  g_object_unref (self);
 }
 
 void
@@ -419,25 +376,14 @@ empathy_server_sasl_handler_provide_password (
     gboolean remember)
 {
   EmpathyServerSASLHandlerPriv *priv;
-  GArray *array;
   gboolean may_save_response, may_save_response_valid;
 
   g_return_if_fail (EMPATHY_IS_SERVER_SASL_HANDLER (handler));
 
   priv = handler->priv;
 
-  array = g_array_sized_new (TRUE, FALSE,
-      sizeof (gchar), strlen (password));
-
-  g_array_append_vals (array, password, strlen (password));
-
-  DEBUG ("Calling StartMechanismWithData with our password");
-
-  tp_cli_channel_interface_sasl_authentication_call_start_mechanism_with_data (
-      priv->channel, -1, "X-TELEPATHY-PASSWORD", array,
-      start_mechanism_with_data_cb, NULL, NULL, G_OBJECT (handler));
-
-  g_array_unref (array);
+  empathy_sasl_auth_password_async (priv->channel, password,
+      auth_cb, g_object_ref (handler));
 
   DEBUG ("%sremembering the password", remember ? "" : "not ");
 

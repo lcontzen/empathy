@@ -31,6 +31,7 @@
 #define MECH_FACEBOOK "X-FACEBOOK-PLATFORM"
 #define MECH_WLM "X-MESSENGER-OAUTH2"
 #define MECH_GOOGLE "X-OAUTH2"
+#define MECH_PASSWORD "X-TELEPATHY-PASSWORD"
 
 typedef struct
 {
@@ -42,6 +43,10 @@ static SupportedMech supported_mechanisms[] = {
   { EMPATHY_SASL_MECHANISM_FACEBOOK, MECH_FACEBOOK },
   { EMPATHY_SASL_MECHANISM_WLM, MECH_WLM },
   { EMPATHY_SASL_MECHANISM_GOOGLE, MECH_GOOGLE },
+
+  /* Must be the last one, otherwise empathy_sasl_channel_select_mechanism()
+   * will prefer password over web auth for servers supporting both. */
+  { EMPATHY_SASL_MECHANISM_PASSWORD, MECH_PASSWORD }
 };
 
 static void
@@ -294,6 +299,36 @@ empathy_sasl_auth_google_async (TpChannel *channel,
       generic_cb, g_object_ref (result), g_object_unref, NULL);
 
   g_array_unref (credential);
+  g_object_unref (result);
+}
+
+void
+empathy_sasl_auth_password_async (TpChannel *channel,
+    const gchar *password,
+    GAsyncReadyCallback callback,
+    gpointer user_data)
+{
+  GSimpleAsyncResult *result;
+  GArray *password_array;
+
+  result = empathy_sasl_auth_common_async (channel, callback, user_data);
+
+  g_return_if_fail (result != NULL);
+  g_return_if_fail (empathy_sasl_channel_supports_mechanism (channel,
+      MECH_PASSWORD));
+  g_return_if_fail (!tp_str_empty (password));
+
+  DEBUG ("Start %s mechanism", MECH_PASSWORD);
+
+  password_array = g_array_sized_new (FALSE, FALSE, sizeof (gchar),
+      strlen (password));
+  g_array_append_vals (password_array, password, strlen (password));
+
+  tp_cli_channel_interface_sasl_authentication_call_start_mechanism_with_data (
+      channel, -1, MECH_PASSWORD, password_array,
+      generic_cb, g_object_ref (result), g_object_unref, NULL);
+
+  g_array_unref (password_array);
   g_object_unref (result);
 }
 
