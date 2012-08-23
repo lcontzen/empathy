@@ -171,8 +171,8 @@ auth_cb (GObject *source,
       DEBUG ("SASL Mechanism error: %s", error->message);
       g_clear_error (&error);
 
-      /* Inform SSO that the access token didn't work and it should ask user
-       * to re-grant access. */
+      /* Inform SSO that the access token (or password) didn't work and it should
+       * ask user to re-grant access (or retype password). */
       extra_params = tp_asv_new (
           SIGNON_SESSION_DATA_UI_POLICY, G_TYPE_INT,
               SIGNON_POLICY_REQUEST_PASSWORD,
@@ -232,6 +232,12 @@ session_process_cb (SignonAuthSession *session,
       case EMPATHY_SASL_MECHANISM_GOOGLE:
         empathy_sasl_auth_google_async (ctx->channel,
             ctx->username, access_token,
+            auth_cb, ctx);
+        break;
+
+      case EMPATHY_SASL_MECHANISM_PASSWORD:
+        empathy_sasl_auth_password_async (ctx->channel,
+            tp_asv_get_string (session_data, "Secret"),
             auth_cb, ctx);
         break;
 
@@ -338,5 +344,6 @@ empathy_uoa_auth_handler_supports (EmpathyUoaAuthHandler *self,
   mech = empathy_sasl_channel_select_mechanism (channel);
   return mech == EMPATHY_SASL_MECHANISM_FACEBOOK ||
       mech == EMPATHY_SASL_MECHANISM_WLM ||
-      mech == EMPATHY_SASL_MECHANISM_GOOGLE;
+      mech == EMPATHY_SASL_MECHANISM_GOOGLE ||
+      mech == EMPATHY_SASL_MECHANISM_PASSWORD;
 }
