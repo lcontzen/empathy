@@ -117,6 +117,13 @@ auth_context_free (AuthContext *ctx)
 }
 
 static void
+auth_context_done (AuthContext *ctx)
+{
+  tp_channel_close_async (ctx->channel, NULL, NULL);
+  auth_context_free (ctx);
+}
+
+static void
 auth_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
@@ -153,8 +160,7 @@ auth_cb (GObject *source,
       DEBUG ("Auth on %s suceeded", tp_proxy_get_object_path (channel));
     }
 
-  tp_channel_close_async (channel, NULL, NULL);
-  auth_context_free (ctx);
+  auth_context_done (ctx);
 }
 
 static void
@@ -170,8 +176,7 @@ session_process_cb (SignonAuthSession *session,
   if (error != NULL)
     {
       DEBUG ("Error processing the session: %s", error->message);
-      tp_channel_close_async (ctx->channel, NULL, NULL);
-      auth_context_free (ctx);
+      auth_context_done (ctx);
       return;
     }
 
@@ -215,8 +220,7 @@ identity_query_info_cb (SignonIdentity *identity,
   if (error != NULL)
     {
       DEBUG ("Error querying info from identity: %s", error->message);
-      tp_channel_close_async (ctx->channel, NULL, NULL);
-      auth_context_free (ctx);
+      auth_context_done (ctx);
       return;
     }
 
