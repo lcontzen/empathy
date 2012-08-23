@@ -82,37 +82,52 @@ typedef struct
 {
   TpChannel *channel;
   AgAuthData *auth_data;
-  SignonAuthSession *session;
   SignonIdentity *identity;
+  SignonAuthSession *session;
 
   gchar *username;
 } AuthContext;
 
 static AuthContext *
 auth_context_new (TpChannel *channel,
-    AgAuthData *auth_data,
-    SignonAuthSession *session,
-    SignonIdentity *identity)
+    AgAccountService *service)
 {
   AuthContext *ctx;
+  guint cred_id;
 
   ctx = g_slice_new0 (AuthContext);
   ctx->channel = g_object_ref (channel);
-  ctx->auth_data = ag_auth_data_ref (auth_data);
-  ctx->session = g_object_ref (session);
-  ctx->identity = g_object_ref (identity);
 
+  ctx->auth_data = ag_account_service_get_auth_data (service);
+  if (ctx->auth_data == NULL)
+    goto out;
+
+  cred_id = ag_auth_data_get_credentials_id (ctx->auth_data);
+  if (cred_id == 0)
+    goto out;
+
+  ctx->identity = signon_identity_new_from_db (cred_id);
+  if (ctx->identity == NULL)
+    goto out;
+
+  ctx->session = signon_identity_create_session (ctx->identity,
+      ag_auth_data_get_method (ctx->auth_data), NULL);
+  if (ctx->session == NULL)
+    goto out;
+
+out:
   return ctx;
 }
 
 static void
 auth_context_free (AuthContext *ctx)
 {
-  g_object_unref (ctx->channel);
-  ag_auth_data_unref (ctx->auth_data);
-  g_object_unref (ctx->session);
-  g_object_unref (ctx->identity);
+  g_clear_object (&ctx->channel);
+  tp_clear_pointer (&ctx->auth_data, ag_auth_data_unref);
+  g_clear_object (&ctx->session);
+  g_clear_object (&ctx->identity);
   g_free (ctx->username);
+
   g_slice_free (AuthContext, ctx);
 }
 
@@ -243,11 +258,7 @@ empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
   AgAccount *account;
   GList *l = NULL;
   AgAccountService *service;
-  AgAuthData *auth_data;
-  guint cred_id;
-  SignonIdentity *identity;
-  SignonAuthSession *session;
-  GError *error = NULL;
+  AuthContext *ctx;
 
   g_return_if_fail (TP_IS_CHANNEL (channel));
   g_return_if_fail (TP_IS_ACCOUNT (tp_account));
@@ -276,29 +287,20 @@ empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
   ag_service_list_free (l);
   g_object_unref (account);
 
-  auth_data = ag_account_service_get_auth_data (service);
-  cred_id = ag_auth_data_get_credentials_id (auth_data);
-  identity = signon_identity_new_from_db (cred_id);
-  session = signon_identity_create_session (identity,
-      ag_auth_data_get_method (auth_data),
-      &error);
-  if (session == NULL)
+  ctx = auth_context_new (channel, service);
+  if (ctx->session == NULL)
     {
-      DEBUG ("Error creating a SignonAuthSession: %s", error->message);
-      tp_channel_close_async (channel, NULL, NULL);
-      goto cleanup;
+      DEBUG ("Couldn't create a signon session");
+      auth_context_done (ctx);
+    }
+  else
+    {
+      /* All is fine! Query UOA for more info */
+      signon_identity_query_info (ctx->identity,
+          identity_query_info_cb, ctx);
     }
 
-  /* Query UOA for more info */
-  signon_identity_query_info (identity,
-      identity_query_info_cb,
-      auth_context_new (channel, auth_data, session, identity));
-
-cleanup:
-  ag_auth_data_unref (auth_data);
   g_object_unref (service);
-  g_object_unref (identity);
-  g_object_unref (session);
 }
 
 gboolean
