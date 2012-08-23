@@ -139,6 +139,23 @@ auth_context_done (AuthContext *ctx)
 }
 
 static void
+request_password_session_process_cb (SignonAuthSession *session,
+    GHashTable *session_data,
+    const GError *error,
+    gpointer user_data)
+{
+  AuthContext *ctx = user_data;
+
+  if (error != NULL)
+    {
+      DEBUG ("Error processing the session to request user's attention: %s",
+          error->message);
+    }
+
+  auth_context_done (ctx);
+}
+
+static void
 auth_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
@@ -166,16 +183,15 @@ auth_cb (GObject *source,
       signon_auth_session_process (ctx->session,
           ag_auth_data_get_parameters (ctx->auth_data),
           ag_auth_data_get_mechanism (ctx->auth_data),
-          NULL, NULL);
+          request_password_session_process_cb, ctx);
 
       g_hash_table_unref (extra_params);
     }
   else
     {
       DEBUG ("Auth on %s suceeded", tp_proxy_get_object_path (channel));
+      auth_context_done (ctx);
     }
-
-  auth_context_done (ctx);
 }
 
 static void
