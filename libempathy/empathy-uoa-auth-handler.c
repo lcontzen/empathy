@@ -33,9 +33,8 @@
 #include "empathy-debug.h"
 #include "empathy-utils.h"
 #include "empathy-uoa-auth-handler.h"
+#include "empathy-uoa-utils.h"
 #include "empathy-sasl-mechanisms.h"
-
-#define SERVICE_TYPE "IM"
 
 struct _EmpathyUoaAuthHandlerPriv
 {
@@ -50,7 +49,7 @@ empathy_uoa_auth_handler_init (EmpathyUoaAuthHandler *self)
   self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self,
       EMPATHY_TYPE_UOA_AUTH_HANDLER, EmpathyUoaAuthHandlerPriv);
 
-  self->priv->manager = ag_manager_new_for_service_type (SERVICE_TYPE);
+  self->priv->manager = empathy_uoa_manager_dup ();
 }
 
 static void
@@ -259,7 +258,7 @@ empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
 
   account = ag_manager_get_account (self->priv->manager, id);
   if (account != NULL)
-    l = ag_account_list_services_by_type (account, SERVICE_TYPE);
+    l = ag_account_list_services_by_type (account, EMPATHY_UOA_SERVICE_TYPE);
   if (l == NULL)
     {
       DEBUG ("Couldn't find IM service for AgAccountId %u", id);

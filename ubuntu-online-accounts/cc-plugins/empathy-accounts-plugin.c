@@ -23,6 +23,7 @@
 #include "empathy-accounts-plugin.h"
 
 #include <libempathy/empathy-client-factory.h>
+#include <libempathy/empathy-uoa-utils.h>
 
 #include "empathy-accounts-plugin-widget.h"
 
@@ -38,9 +39,13 @@ widget_done_cb (EmpathyAccountsPluginWidget *widget,
 static GtkWidget *
 empathy_accounts_plugin_build_widget (ApPlugin *plugin)
 {
+  AgAccount *account;
   GtkWidget *widget;
 
-  widget = empathy_accounts_plugin_widget_new (ap_plugin_get_account (plugin));
+  account = ap_plugin_get_account (plugin);
+  empathy_uoa_manager_set_default (ag_account_get_manager (account));
+
+  widget = empathy_accounts_plugin_widget_new (account);
 
   g_signal_connect (widget, "done",
       G_CALLBACK (widget_done_cb), plugin);
