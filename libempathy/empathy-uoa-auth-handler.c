@@ -31,6 +31,7 @@
 
 #define DEBUG_FLAG EMPATHY_DEBUG_SASL
 #include "empathy-debug.h"
+#include "empathy-keyring.h"
 #include "empathy-utils.h"
 #include "empathy-uoa-auth-handler.h"
 #include "empathy-uoa-utils.h"
@@ -81,6 +82,7 @@ empathy_uoa_auth_handler_new (void)
 typedef struct
 {
   TpChannel *channel;
+  AgAccountService *service;
   AgAuthData *auth_data;
   SignonIdentity *identity;
   SignonAuthSession *session;
@@ -97,6 +99,7 @@ auth_context_new (TpChannel *channel,
 
   ctx = g_slice_new0 (AuthContext);
   ctx->channel = g_object_ref (channel);
+  ctx->service = g_object_ref (service);
 
   ctx->auth_data = ag_account_service_get_auth_data (service);
   if (ctx->auth_data == NULL)
@@ -123,6 +126,7 @@ static void
 auth_context_free (AuthContext *ctx)
 {
   g_clear_object (&ctx->channel);
+  g_clear_object (&ctx->service);
   tp_clear_pointer (&ctx->auth_data, ag_auth_data_unref);
   g_clear_object (&ctx->session);
   g_clear_object (&ctx->identity);
@@ -156,6 +160,30 @@ request_password_session_process_cb (SignonAuthSession *session,
 }
 
 static void
+request_password (AuthContext *ctx)
+{
+  GHashTable *extra_params;
+
+  DEBUG ("Invalid credentials, request user action");
+
+  /* Inform SSO that the access token (or password) didn't work and it should
+   * ask user to re-grant access (or retype password). */
+  extra_params = tp_asv_new (
+      SIGNON_SESSION_DATA_UI_POLICY, G_TYPE_INT,
+          SIGNON_POLICY_REQUEST_PASSWORD,
+      NULL);
+
+  ag_auth_data_insert_parameters (ctx->auth_data, extra_params);
+
+  signon_auth_session_process (ctx->session,
+      ag_auth_data_get_parameters (ctx->auth_data),
+      ag_auth_data_get_mechanism (ctx->auth_data),
+      request_password_session_process_cb, ctx);
+
+  g_hash_table_unref (extra_params);
+}
+
+static void
 auth_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
@@ -166,26 +194,10 @@ auth_cb (GObject *source,
 
   if (!empathy_sasl_auth_finish (channel, result, &error))
     {
-      GHashTable *extra_params;
-
       DEBUG ("SASL Mechanism error: %s", error->message);
       g_clear_error (&error);
 
-      /* Inform SSO that the access token (or password) didn't work and it should
-       * ask user to re-grant access (or retype password). */
-      extra_params = tp_asv_new (
-          SIGNON_SESSION_DATA_UI_POLICY, G_TYPE_INT,
-              SIGNON_POLICY_REQUEST_PASSWORD,
-          NULL);
-
-      ag_auth_data_insert_parameters (ctx->auth_data, extra_params);
-
-      signon_auth_session_process (ctx->session,
-          ag_auth_data_get_parameters (ctx->auth_data),
-          ag_auth_data_get_mechanism (ctx->auth_data),
-          request_password_session_process_cb, ctx);
-
-      g_hash_table_unref (extra_params);
+      request_password (ctx);
     }
   else
     {
@@ -270,6 +282,37 @@ identity_query_info_cb (SignonIdentity *identity,
       ctx);
 }
 
+static void
+set_account_password_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccount *tp_account = (TpAccount *) source;
+  AuthContext *ctx = user_data;
+  AuthContext *new_ctx;
+  GError *error = NULL;
+
+  if (!empathy_keyring_set_account_password_finish (tp_account, result, &error))
+    {
+      DEBUG ("Failed to set empty password on UOA account: %s", error->message);
+      auth_context_done (ctx);
+      return;
+    }
+
+  new_ctx = auth_context_new (ctx->channel, ctx->service);
+  auth_context_free (ctx);
+
+  if (new_ctx->session != NULL)
+    {
+      /* The trick worked! */
+      request_password (new_ctx);
+      return;
+    }
+
+  DEBUG ("Still can't get a signon session, even after setting empty pwd");
+  auth_context_done (new_ctx);
+}
+
 void
 empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
     TpChannel *channel,
@@ -312,8 +355,12 @@ empathy_uoa_auth_handler_start (EmpathyUoaAuthHandler *self,
   ctx = auth_context_new (channel, service);
   if (ctx->session == NULL)
     {
+      /* This (usually?) means we never stored credentials for this account.
+       * To ask user to type his password SSO needs a SignonIdentity bound to
+       * our account. Let's store an empty password. */
       DEBUG ("Couldn't create a signon session");
-      auth_context_done (ctx);
+      empathy_keyring_set_account_password_async (tp_account, "", FALSE,
+          set_account_password_cb, ctx);
     }
   else
     {
