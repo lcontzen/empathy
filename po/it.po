@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Empathy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-20 13:22+0200\n"
-"PO-Revision-Date: 2012-08-20 13:32+0200\n"
+"POT-Creation-Date: 2012-08-24 16:16+0200\n"
+"PO-Revision-Date: 2012-08-24 16:13+0200\n"
 "Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -4292,7 +4292,7 @@ msgstr "Mostrare i gruppi"
 msgid "Show account balances"
 msgstr "Mostrare i bilanci dell'account"
 
-#: ../src/empathy-preferences.ui.h:4 ../src/empathy-roster-window.c:2134
+#: ../src/empathy-preferences.ui.h:4 ../src/empathy-roster-window.c:2141
 msgid "Contact List"
 msgstr "Elenco contatti"
 
@@ -4530,9 +4530,13 @@ msgstr ""
 msgid "You need to enable %s to see contacts here."
 msgstr "È necessario abilitare «%s» per poter visualizzare i contatti."
 
-#: ../src/empathy-roster-window.c:1902
+#: ../src/empathy-roster-window.c:1595
 msgid "No match found"
 msgstr "Nessun risultato"
+
+#: ../src/empathy-roster-window.c:1599
+msgid "No online contacts"
+msgstr "Nessun contatto collegato"
 
 #: ../src/empathy-roster-window-menubar.ui.h:1
 msgid "_New Conversation..."
