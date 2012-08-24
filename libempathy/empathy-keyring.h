@@ -41,7 +41,7 @@ const gchar * empathy_keyring_get_room_password_finish (TpAccount *account,
     GAsyncResult *result, GError **error);
 
 void empathy_keyring_set_account_password_async (TpAccount *account,
-    const gchar *password, GAsyncReadyCallback callback,
+    const gchar *password, gboolean remember, GAsyncReadyCallback callback,
     gpointer user_data);
 
 gboolean empathy_keyring_set_account_password_finish (TpAccount *account,

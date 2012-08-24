@@ -1864,16 +1864,8 @@ static void
 remember_password_toggled_cb (GtkToggleButton *button,
     EmpathyAccountWidget *self)
 {
-  if (gtk_toggle_button_get_active (button))
-    {
-      gtk_widget_set_sensitive (self->priv->param_password_widget, TRUE);
-    }
-  else
-    {
-      gtk_widget_set_sensitive (self->priv->param_password_widget, FALSE);
-      gtk_entry_set_text (GTK_ENTRY (self->priv->param_password_widget), "");
-      empathy_account_settings_unset (self->priv->settings, "password");
-    }
+  empathy_account_settings_set_remember_password (self->priv->settings,
+      gtk_toggle_button_get_active (button));
 }
 
 static void
@@ -2015,6 +2007,8 @@ do_constructed (GObject *obj)
       && !empathy_account_settings_supports_sasl (self->priv->settings))
     {
       gtk_widget_set_visible (self->priv->remember_password_widget, FALSE);
+      empathy_account_settings_set_remember_password (self->priv->settings,
+          TRUE);
     }
 
   /* dup and init the account-manager */

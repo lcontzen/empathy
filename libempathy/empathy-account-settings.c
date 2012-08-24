@@ -82,6 +82,7 @@ struct _EmpathyAccountSettingsPriv
 
   gboolean supports_sasl;
   gboolean password_changed;
+  gboolean remember_password;
 
   gchar *password;
   gchar *password_original;
@@ -1344,7 +1345,8 @@ empathy_account_settings_account_updated (GObject *source,
           /* FIXME: we shouldn't save the password if we
            * can't (MaySaveResponse=False) but we don't have API to check that
            * at this point (fdo #35382). */
-          empathy_keyring_set_account_password_async (priv->account, priv->password,
+          empathy_keyring_set_account_password_async (priv->account,
+              priv->password, priv->remember_password,
               empathy_account_settings_set_password_cb, settings);
         }
       else
@@ -1399,7 +1401,8 @@ empathy_account_settings_created_cb (GObject *source,
            * can't (MaySaveResponse=False) but we don't have API to check that
            * at this point (fdo #35382). */
           empathy_keyring_set_account_password_async (priv->account,
-              priv->password, empathy_account_settings_set_password_cb,
+              priv->password, priv->remember_password,
+              empathy_account_settings_set_password_cb,
               settings);
           return;
         }
@@ -1725,4 +1728,13 @@ empathy_account_settings_set_storage_provider (EmpathyAccountSettings *self,
 
   g_free (priv->storage_provider);
   priv->storage_provider = g_strdup (storage);
+}
+
+void
+empathy_account_settings_set_remember_password (EmpathyAccountSettings *self,
+    gboolean remember)
+{
+  EmpathyAccountSettingsPriv *priv = GET_PRIV (self);
+
+  priv->remember_password = remember;
 }

@@ -181,6 +181,7 @@ store_password_cb (GObject *source,
 void
 empathy_keyring_set_account_password_async (TpAccount *account,
     const gchar *password,
+    gboolean remember,
     GAsyncReadyCallback callback,
     gpointer user_data)
 {
@@ -202,7 +203,9 @@ empathy_keyring_set_account_password_async (TpAccount *account,
   name = g_strdup_printf (_("IM account password for %s (%s)"),
       tp_account_get_display_name (account), account_id);
 
-  secret_password_store (&account_keyring_schema, NULL, name, password,
+  secret_password_store (&account_keyring_schema,
+      remember ? NULL : SECRET_COLLECTION_SESSION,
+      name, password,
       NULL, store_password_cb, simple,
       "account-id", account_id,
       "param-name", "password",

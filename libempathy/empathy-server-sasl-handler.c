@@ -115,14 +115,10 @@ sasl_status_changed_cb (TpChannel *channel,
 
   if (status == TP_SASL_STATUS_SERVER_SUCCEEDED)
     {
-      if (priv->save_password)
-        {
-          DEBUG ("Saving password in keyring");
-
-          empathy_keyring_set_account_password_async (priv->account,
-              priv->password, empathy_server_sasl_handler_set_password_cb,
-              NULL);
-        }
+      empathy_keyring_set_account_password_async (priv->account,
+          priv->password, priv->save_password,
+          empathy_server_sasl_handler_set_password_cb,
+          NULL);
 
       DEBUG ("Calling AcceptSASL");
       tp_cli_channel_interface_sasl_authentication_call_accept_sasl (
