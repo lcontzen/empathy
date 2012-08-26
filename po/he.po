@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: empathy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-10 15:39+0300\n"
-"PO-Revision-Date: 2012-08-10 15:39+0200\n"
+"POT-Creation-Date: 2012-08-26 10:20+0300\n"
+"PO-Revision-Date: 2012-08-26 10:20+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -1219,36 +1219,36 @@ msgstr "מהו המזהה בחשבון ה־Yahoo! שלך?"
 msgid "What is your Yahoo! password?"
 msgstr "מהי ססמת חשבון ה־Yahoo! שלך?"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:542
-#: ../libempathy-gtk/empathy-avatar-chooser.c:627
+#: ../libempathy-gtk/empathy-avatar-chooser.c:545
+#: ../libempathy-gtk/empathy-avatar-chooser.c:630
 msgid "Couldn't convert image"
 msgstr "לא ניתן להמיר תמונה"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:543
+#: ../libempathy-gtk/empathy-avatar-chooser.c:546
 msgid "None of the accepted image formats are supported on your system"
 msgstr "אף אחד מסוגי התמונות המקובלים אינם נתמכים על ידי המערכת שלך"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:903
+#: ../libempathy-gtk/empathy-avatar-chooser.c:906
 msgid "Couldn't save picture to file"
 msgstr "לא ניתן לשמור את התמונה לקובץ"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1027
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1030
 msgid "Select Your Avatar Image"
 msgstr "נא לבחור את התמונה האישית שלך"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1035
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1038
 msgid "Take a picture..."
 msgstr "צילום תמונה..."
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1048
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1051
 msgid "No Image"
 msgstr "ללא תמונה"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1105
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1108
 msgid "Images"
 msgstr "תמונות"
 
-#: ../libempathy-gtk/empathy-avatar-chooser.c:1109
+#: ../libempathy-gtk/empathy-avatar-chooser.c:1112
 msgid "All Files"
 msgstr "כל הקבצים"
 
@@ -1482,7 +1482,7 @@ msgstr "הכנס סמיילי"
 
 #. send button
 #: ../libempathy-gtk/empathy-chat.c:2412
-#: ../libempathy-gtk/empathy-ui-utils.c:1179
+#: ../libempathy-gtk/empathy-ui-utils.c:1180
 msgid "_Send"
 msgstr "_שלח"
 
@@ -2647,24 +2647,24 @@ msgstr "יש לזכור בחירה זו עבור חיבורים עתידיים"
 msgid "Certificate Details"
 msgstr "פרטי התעודה"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1049
+#: ../libempathy-gtk/empathy-ui-utils.c:1050
 msgid "Unable to open URI"
 msgstr "לא ניתן לפתוח את הכתובת"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1173
+#: ../libempathy-gtk/empathy-ui-utils.c:1174
 msgid "Select a file"
 msgstr "בחירת קובץ"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1247
+#: ../libempathy-gtk/empathy-ui-utils.c:1248
 msgid "Insufficient free space to save file"
 msgstr "אין די מקום פנוי לשמירת הקובץ"
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1255
+#: ../libempathy-gtk/empathy-ui-utils.c:1256
 #, c-format
 msgid "%s of free space are required to save this file, but only %s is available. Please choose another location."
 msgstr "נדרשים %s של מקום פנוי כדי לשמור קובץ זה, אך ישנם רק %s פנויים. נא לבחור במיקום אחר."
 
-#: ../libempathy-gtk/empathy-ui-utils.c:1301
+#: ../libempathy-gtk/empathy-ui-utils.c:1302
 #, c-format
 msgid "Incoming file from %s"
 msgstr "קובץ נכנס מ־%s"
@@ -2959,20 +2959,20 @@ msgstr "מנותק — החשבון מנוטרל"
 msgid "Edit Connection Parameters"
 msgstr "עריכת הגדרות החיבור"
 
-#: ../src/empathy-accounts-dialog.c:796
+#: ../src/empathy-accounts-dialog.c:733
 msgid "_Edit Connection Parameters..."
 msgstr "ע_ריכת הגדרות החיבור..."
 
-#: ../src/empathy-accounts-dialog.c:1298
+#: ../src/empathy-accounts-dialog.c:1235
 #, c-format
 msgid "Do you want to remove %s from your computer?"
 msgstr "האם ברצונך להסיר את החשבון '%s' ממחשבך?"
 
-#: ../src/empathy-accounts-dialog.c:1302
+#: ../src/empathy-accounts-dialog.c:1239
 msgid "This will not remove your account on the server."
 msgstr "פעולה זו לא תסיר את חשבונך מהשרת."
 
-#: ../src/empathy-accounts-dialog.c:1507
+#: ../src/empathy-accounts-dialog.c:1444
 msgid ""
 "You are about to select another account, which will discard\n"
 "your changes. Are you sure you want to proceed?"
@@ -2981,24 +2981,24 @@ msgstr ""
 "את השינויים שלך. האת אתה בטוח שברצונך להמשיך?"
 
 #. Menu item: to enabled/disable the account
-#: ../src/empathy-accounts-dialog.c:1698
+#: ../src/empathy-accounts-dialog.c:1635
 msgid "_Enabled"
 msgstr "מו_פעל"
 
 #. Menu item: Rename
-#: ../src/empathy-accounts-dialog.c:1721
+#: ../src/empathy-accounts-dialog.c:1658
 msgid "Rename"
 msgstr "שנה שם"
 
-#: ../src/empathy-accounts-dialog.c:2137
+#: ../src/empathy-accounts-dialog.c:2074
 msgid "_Skip"
 msgstr "_דילוג"
 
-#: ../src/empathy-accounts-dialog.c:2141
+#: ../src/empathy-accounts-dialog.c:2078
 msgid "_Connect"
 msgstr "הת_חברות"
 
-#: ../src/empathy-accounts-dialog.c:2320
+#: ../src/empathy-accounts-dialog.c:2257
 msgid ""
 "You are about to close the window, which will discard\n"
 "your changes. Are you sure you want to proceed?"
@@ -3007,7 +3007,7 @@ msgstr ""
 "את השינויים שלך. האת אתה בטוח שברצונך להמשיך?"
 
 #. Tweak the dialog
-#: ../src/empathy-accounts-dialog.c:2463
+#: ../src/empathy-accounts-dialog.c:2400
 msgid "Messaging and VoIP Accounts"
 msgstr "חשבונות התכתבות ו־VoIP"
 
@@ -3986,7 +3986,7 @@ msgid "Show account balances"
 msgstr "הצגת מאזני החשבונות"
 
 #: ../src/empathy-preferences.ui.h:4
-#: ../src/empathy-roster-window.c:2134
+#: ../src/empathy-roster-window.c:2141
 msgid "Contact List"
 msgstr "רשימת אנשי קשר"
 
@@ -4183,9 +4183,13 @@ msgstr "עליך להפעיל את אחד החשבונות שלך כדי שיו�
 msgid "You need to enable %s to see contacts here."
 msgstr "עליך להפעיל את %s כדי שיופיעו כאן אנשי קשר."
 
-#: ../src/empathy-roster-window.c:1902
+#: ../src/empathy-roster-window.c:1595
 msgid "No match found"
 msgstr "לא נמצאה התאמה"
+
+#: ../src/empathy-roster-window.c:1599
+msgid "No online contacts"
+msgstr "אין אנשי קשר מחוברים"
 
 #: ../src/empathy-roster-window-menubar.ui.h:1
 msgid "_New Conversation..."
