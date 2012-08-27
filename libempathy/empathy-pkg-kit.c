@@ -112,7 +112,7 @@ pkg_kit_proxy_new_cb (GObject *source,
 
   g_dbus_proxy_call (proxy, "InstallPackageNames",
       g_variant_new ("(u^a&ss)", ctx->xid, ctx->packages, ctx->options),
-      G_DBUS_CALL_FLAGS_NONE, -1, NULL, install_package_names_cb, ctx);
+      G_DBUS_CALL_FLAGS_NONE, G_MAXINT, NULL, install_package_names_cb, ctx);
 
   g_object_unref (proxy);
 }
