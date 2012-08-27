@@ -274,6 +274,14 @@ auth_factory_auth_passsword_failed (EmpathyAuthFactory *factory,
   gtk_widget_show (dialog);
 }
 
+static void
+sanity_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  start_timer ();
+}
+
 int
 main (int argc,
     char **argv)
@@ -355,8 +363,8 @@ main (int argc,
       use_timer = FALSE;
     }
 
-  start_timer ();
-  empathy_sanity_checking_run_async (NULL, NULL);
+  /* Wait for the migration code to be done before starting the timer */
+  empathy_sanity_checking_run_async (sanity_cb, NULL);
 
   gtk_main ();
 
