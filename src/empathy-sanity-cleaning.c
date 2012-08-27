@@ -34,6 +34,7 @@
 
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
 #include <libempathy/empathy-debug.h>
+#include <libempathy/empathy-keyring.h>
 
 /*
  * This number has to be increased each time a new task is added or modified.
@@ -200,33 +201,113 @@ finally:
 }
 
 #ifdef HAVE_UOA
+typedef struct
+{
+  TpAccount *new_account;
+  TpAccount *old_account;
+  gboolean enabled;
+} UoaMigrationData;
+
+static UoaMigrationData *
+uoa_migration_data_new (TpAccount *account)
+{
+  UoaMigrationData *data;
+
+  data = g_slice_new0 (UoaMigrationData);
+  data->old_account = g_object_ref (account);
+  data->enabled = tp_account_is_enabled (account);
+
+  return data;
+}
+
+static void
+uoa_migration_data_free (UoaMigrationData *data)
+{
+  g_clear_object (&data->new_account);
+  g_clear_object (&data->old_account);
+  g_slice_free (UoaMigrationData, data);
+}
+
+static void
+uoa_migration_done (UoaMigrationData *data)
+{
+  tp_account_remove_async (data->old_account, NULL, NULL);
+  tp_account_set_enabled_async (data->new_account, data->enabled, NULL, NULL);
+}
+
+static void
+uoa_set_account_password_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  UoaMigrationData *data = user_data;
+  GError *error = NULL;
+
+  if (!empathy_keyring_set_account_password_finish (data->new_account, result,
+          &error))
+    {
+      DEBUG ("Error setting old account's password on the new one: %s\n",
+          error->message);
+      g_clear_error (&error);
+    }
+
+  uoa_migration_done (data);
+}
+
+static void
+uoa_get_account_password_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  UoaMigrationData *data = user_data;
+  const gchar *password;
+  GError *error = NULL;
+
+  password = empathy_keyring_get_account_password_finish (data->old_account,
+      result, &error);
+  if (password == NULL)
+    {
+      DEBUG ("Error getting old account's password: %s\n", error->message);
+      g_clear_error (&error);
+
+      uoa_migration_done (data);
+    }
+  else
+    {
+      empathy_keyring_set_account_password_async (data->new_account, password,
+          TRUE, uoa_set_account_password_cb, data);
+    }
+}
+
 static void
 uoa_account_created_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
 {
   TpAccountRequest *ar = (TpAccountRequest *) source;
-  TpAccount *old_account = user_data;
-  TpAccount *new_account;
+  UoaMigrationData *data = user_data;
   GError *error = NULL;
 
-  new_account = tp_account_request_create_account_finish (ar, result, &error);
-  if (new_account == NULL)
+  data->new_account = tp_account_request_create_account_finish (ar, result,
+      &error);
+  if (data->new_account == NULL)
     {
       DEBUG ("Failed to migrate account '%s' to UOA: %s",
-          tp_account_get_path_suffix (old_account), error->message);
+          tp_account_get_path_suffix (data->old_account), error->message);
       g_clear_error (&error);
+
+      uoa_migration_data_free (data);
     }
   else
     {
       DEBUG ("New account %s created to superseed %s",
-          tp_account_get_path_suffix (new_account),
-          tp_account_get_path_suffix (old_account));
-      tp_account_remove_async (old_account, NULL, NULL);
-    }
+          tp_account_get_path_suffix (data->new_account),
+          tp_account_get_path_suffix (data->old_account));
 
-  g_object_unref (old_account);
-  g_object_unref (new_account);
+      /* Migrate password as well */
+      empathy_keyring_get_account_password_async (data->old_account,
+          uoa_get_account_password_cb, data);
+    }
 }
 
 static void
@@ -245,6 +326,7 @@ migrate_accounts_to_uoa (TpAccountManager *am)
       GVariant *param;
       GVariantIter iter;
       const gchar * const *supersedes;
+      UoaMigrationData *data;
 
       /* If account is already in a specific storage (like UOA or GOA),
        * don't migrate it.
@@ -261,14 +343,15 @@ migrate_accounts_to_uoa (TpAccountManager *am)
           tp_account_get_protocol_name (account),
           tp_account_get_display_name (account));
       tp_account_request_set_storage_provider (ar, EMPATHY_UOA_PROVIDER);
-      tp_account_request_set_enabled (ar,
-          tp_account_is_enabled (account));
       tp_account_request_set_icon_name (ar,
           tp_account_get_icon_name (account));
       tp_account_request_set_nickname (ar,
           tp_account_get_nickname (account));
       tp_account_request_set_service (ar,
           tp_account_get_service (account));
+
+      /* Do not enable the new account until we imported the password as well */
+      tp_account_request_set_enabled (ar, FALSE);
 
       supersedes = tp_account_get_supersedes (account);
       while (*supersedes != NULL)
@@ -294,9 +377,10 @@ migrate_accounts_to_uoa (TpAccountManager *am)
           g_variant_unref (v);
         }
 
+      data = uoa_migration_data_new (account);
       tp_account_set_enabled_async (account, FALSE, NULL, NULL);
       tp_account_request_create_account_async (ar, uoa_account_created_cb,
-          g_object_ref (account));
+          data);
 
       g_variant_unref (params);
       g_object_unref (ar);
