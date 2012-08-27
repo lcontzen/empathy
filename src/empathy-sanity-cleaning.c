@@ -311,6 +311,68 @@ uoa_account_created_cb (GObject *source,
 }
 
 static void
+migrate_account_to_uoa (TpAccountManager *am,
+    TpAccount *account)
+{
+  TpAccountRequest *ar;
+  GVariant *params;
+  GVariant *param;
+  GVariantIter iter;
+  const gchar * const *supersedes;
+  UoaMigrationData *data;
+
+  DEBUG ("Migrating account %s to UOA storage\n",
+      tp_account_get_path_suffix (account));
+
+  ar = tp_account_request_new (am,
+      tp_account_get_cm_name (account),
+      tp_account_get_protocol_name (account),
+      tp_account_get_display_name (account));
+  tp_account_request_set_storage_provider (ar, EMPATHY_UOA_PROVIDER);
+  tp_account_request_set_icon_name (ar,
+      tp_account_get_icon_name (account));
+  tp_account_request_set_nickname (ar,
+      tp_account_get_nickname (account));
+  tp_account_request_set_service (ar,
+      tp_account_get_service (account));
+
+  /* Do not enable the new account until we imported the password as well */
+  tp_account_request_set_enabled (ar, FALSE);
+
+  supersedes = tp_account_get_supersedes (account);
+  while (*supersedes != NULL)
+    tp_account_request_add_supersedes (ar, *supersedes);
+  tp_account_request_add_supersedes (ar,
+      tp_proxy_get_object_path (account));
+
+  params = tp_account_dup_parameters_vardict (account);
+  g_variant_iter_init (&iter, params);
+  while ((param = g_variant_iter_next_value (&iter)))
+    {
+      GVariant *k, *v;
+      const gchar *key;
+
+      k = g_variant_get_child_value (param, 0);
+      key = g_variant_get_string (k, NULL);
+      v = g_variant_get_child_value (param, 1);
+
+      tp_account_request_set_parameter (ar, key,
+          g_variant_get_variant (v));
+
+      g_variant_unref (k);
+      g_variant_unref (v);
+    }
+
+  data = uoa_migration_data_new (account);
+  tp_account_set_enabled_async (account, FALSE, NULL, NULL);
+  tp_account_request_create_account_async (ar, uoa_account_created_cb,
+      data);
+
+  g_variant_unref (params);
+  g_object_unref (ar);
+}
+
+static void
 migrate_accounts_to_uoa (TpAccountManager *am)
 {
   GList *accounts, *l;
@@ -321,12 +383,6 @@ migrate_accounts_to_uoa (TpAccountManager *am)
   for (l = accounts; l != NULL; l = g_list_next (l))
     {
       TpAccount *account = l->data;
-      TpAccountRequest *ar;
-      GVariant *params;
-      GVariant *param;
-      GVariantIter iter;
-      const gchar * const *supersedes;
-      UoaMigrationData *data;
 
       /* If account is already in a specific storage (like UOA or GOA),
        * don't migrate it.
@@ -335,55 +391,7 @@ migrate_accounts_to_uoa (TpAccountManager *am)
       if (!tp_str_empty (tp_account_get_storage_provider (account)))
         continue;
 
-      DEBUG ("Migrating account %s to UOA storage\n",
-          tp_account_get_path_suffix (account));
-
-      ar = tp_account_request_new (am,
-          tp_account_get_cm_name (account),
-          tp_account_get_protocol_name (account),
-          tp_account_get_display_name (account));
-      tp_account_request_set_storage_provider (ar, EMPATHY_UOA_PROVIDER);
-      tp_account_request_set_icon_name (ar,
-          tp_account_get_icon_name (account));
-      tp_account_request_set_nickname (ar,
-          tp_account_get_nickname (account));
-      tp_account_request_set_service (ar,
-          tp_account_get_service (account));
-
-      /* Do not enable the new account until we imported the password as well */
-      tp_account_request_set_enabled (ar, FALSE);
-
-      supersedes = tp_account_get_supersedes (account);
-      while (*supersedes != NULL)
-        tp_account_request_add_supersedes (ar, *supersedes);
-      tp_account_request_add_supersedes (ar,
-          tp_proxy_get_object_path (account));
-
-      params = tp_account_dup_parameters_vardict (account);
-      g_variant_iter_init (&iter, params);
-      while ((param = g_variant_iter_next_value (&iter)))
-        {
-          GVariant *k, *v;
-          const gchar *key;
-
-          k = g_variant_get_child_value (param, 0);
-          key = g_variant_get_string (k, NULL);
-          v = g_variant_get_child_value (param, 1);
-
-          tp_account_request_set_parameter (ar, key,
-              g_variant_get_variant (v));
-
-          g_variant_unref (k);
-          g_variant_unref (v);
-        }
-
-      data = uoa_migration_data_new (account);
-      tp_account_set_enabled_async (account, FALSE, NULL, NULL);
-      tp_account_request_create_account_async (ar, uoa_account_created_cb,
-          data);
-
-      g_variant_unref (params);
-      g_object_unref (ar);
+      migrate_account_to_uoa (am, account);
     }
 }
 #endif
