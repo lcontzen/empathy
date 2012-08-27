@@ -32,6 +32,15 @@
 
 #include <libempathy-gtk/empathy-theme-manager.h>
 
+#ifdef HAVE_UOA
+#include <libempathy/empathy-pkg-kit.h>
+#include <libempathy/empathy-uoa-utils.h>
+
+#include <libaccounts-glib/ag-account-service.h>
+#include <libaccounts-glib/ag-manager.h>
+#include <libaccounts-glib/ag-service.h>
+#endif
+
 #define DEBUG_FLAG EMPATHY_DEBUG_OTHER
 #include <libempathy/empathy-debug.h>
 #include <libempathy/empathy-keyring.h>
@@ -373,11 +382,88 @@ migrate_account_to_uoa (TpAccountManager *am,
 }
 
 static void
+uoa_plugin_install_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccount *account = user_data;
+  GError *error = NULL;
+  TpAccountManager *am;
+
+  if (!empathy_pkg_kit_install_packages_finish (result, &error))
+    {
+      DEBUG ("Failed to install plugin: %s", error->message);
+      g_error_free (error);
+      goto out;
+    }
+
+  DEBUG ("Plugin for account '%s' has been installed; migrate account",
+      tp_account_get_path_suffix (account));
+
+  am = tp_account_manager_dup ();
+  migrate_account_to_uoa (am, account);
+  g_object_unref (am);
+
+out:
+  g_object_unref (account);
+}
+
+static gchar *
+dup_plugin_name_for_protocol (const gchar *protocol)
+{
+  if (!tp_strdiff (protocol, "local-xmpp"))
+    return g_strdup ("account-plugin-salut");
+
+  return g_strdup_printf ("account-plugin-%s", protocol);
+}
+
+static gboolean
+uoa_plugin_installed (AgManager *manager,
+    TpAccount *account)
+{
+  AgAccount *ag_account;
+  const gchar *protocol;
+  GList *l;
+
+  protocol = tp_account_get_protocol_name (account);
+  ag_account = ag_manager_create_account (manager, protocol);
+
+  l = ag_account_list_services_by_type (ag_account, EMPATHY_UOA_SERVICE_TYPE);
+  if (l == NULL)
+    {
+      const gchar *packages[2];
+      gchar *pkg;
+
+      pkg = dup_plugin_name_for_protocol (protocol);
+
+      DEBUG ("%s is not installed; try to install it", pkg);
+
+      packages[0] = pkg;
+      packages[1] = NULL;
+
+      empathy_pkg_kit_install_packages_async (0, packages, NULL,
+          NULL, uoa_plugin_install_cb, g_object_ref (account));
+
+      g_free (pkg);
+      g_object_unref (ag_account);
+      return FALSE;
+    }
+
+  ag_service_list_free (l);
+
+  g_object_unref (ag_account);
+  return TRUE;
+}
+
+static void
 migrate_accounts_to_uoa (TpAccountManager *am)
 {
   GList *accounts, *l;
+  AgManager *manager;
 
   DEBUG ("Start migrating accounts to UOA");
+
+  manager = empathy_uoa_manager_dup ();
 
   accounts = tp_account_manager_get_valid_accounts (am);
   for (l = accounts; l != NULL; l = g_list_next (l))
@@ -391,8 +477,13 @@ migrate_accounts_to_uoa (TpAccountManager *am)
       if (!tp_str_empty (tp_account_get_storage_provider (account)))
         continue;
 
+      if (!uoa_plugin_installed (manager, account))
+        continue;
+
       migrate_account_to_uoa (am, account);
     }
+
+  g_object_unref (manager);
 }
 #endif
 
