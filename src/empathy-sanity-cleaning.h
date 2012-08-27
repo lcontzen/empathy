@@ -22,6 +22,12 @@
 #ifndef __EMPATHY_SANITY_CLEANING_H__
 #define __EMPATHY_SANITY_CLEANING_H__
 
-void empathy_sanity_checking_run_if_needed (void);
+#include <gio/gio.h>
+
+void empathy_sanity_checking_run_async (GAsyncReadyCallback callback,
+    gpointer user_data);
+
+gboolean empathy_sanity_checking_run_finish (GAsyncResult *result,
+    GError **error);
 
 #endif

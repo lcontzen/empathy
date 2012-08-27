@@ -53,6 +53,51 @@
  */
 #define SANITY_CLEANING_NUMBER 4
 
+typedef struct
+{
+  TpAccountManager *am;
+  GSimpleAsyncResult *result;
+
+  gint ref_count;
+} SanityCtx;
+
+static SanityCtx *
+sanity_ctx_new (TpAccountManager *am,
+    GSimpleAsyncResult *result)
+{
+  SanityCtx *ctx = g_slice_new0 (SanityCtx);
+
+  ctx->am = g_object_ref (am);
+  ctx->result = g_object_ref (result);
+
+  ctx->ref_count = 1;
+  return ctx;
+}
+
+static SanityCtx *
+sanity_ctx_ref (SanityCtx *ctx)
+{
+  ctx->ref_count++;
+
+  return ctx;
+}
+
+static void
+sanity_ctx_unref (SanityCtx *ctx)
+{
+  ctx->ref_count--;
+
+  if (ctx->ref_count != 0)
+    return;
+
+  g_simple_async_result_complete_in_idle (ctx->result);
+
+  g_object_unref (ctx->am);
+  g_object_unref (ctx->result);
+
+  g_slice_free (SanityCtx, ctx);
+}
+
 static void
 account_update_parameters_cb (GObject *source,
     GAsyncResult *result,
@@ -319,6 +364,8 @@ uoa_account_created_cb (GObject *source,
     }
 }
 
+#define DATA_SANITY_CTX "data-sanity-ctx"
+
 static void
 migrate_account_to_uoa (TpAccountManager *am,
     TpAccount *account)
@@ -377,6 +424,8 @@ migrate_account_to_uoa (TpAccountManager *am,
   tp_account_request_create_account_async (ar, uoa_account_created_cb,
       data);
 
+  g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
+
   g_variant_unref (params);
   g_object_unref (ar);
 }
@@ -394,6 +443,8 @@ uoa_plugin_install_cb (GObject *source,
     {
       DEBUG ("Failed to install plugin: %s", error->message);
       g_error_free (error);
+
+      g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
       goto out;
     }
 
@@ -456,7 +507,7 @@ uoa_plugin_installed (AgManager *manager,
 }
 
 static void
-migrate_accounts_to_uoa (TpAccountManager *am)
+migrate_accounts_to_uoa (SanityCtx *ctx)
 {
   GList *accounts, *l;
   AgManager *manager;
@@ -465,7 +516,7 @@ migrate_accounts_to_uoa (TpAccountManager *am)
 
   manager = empathy_uoa_manager_dup ();
 
-  accounts = tp_account_manager_get_valid_accounts (am);
+  accounts = tp_account_manager_get_valid_accounts (ctx->am);
   for (l = accounts; l != NULL; l = g_list_next (l))
     {
       TpAccount *account = l->data;
@@ -477,10 +528,14 @@ migrate_accounts_to_uoa (TpAccountManager *am)
       if (!tp_str_empty (tp_account_get_storage_provider (account)))
         continue;
 
+      g_object_set_data_full (G_OBJECT (account), DATA_SANITY_CTX,
+          sanity_ctx_ref (ctx), (GDestroyNotify) sanity_ctx_unref);
+
+      /* Try to install the plugin if it's missing */
       if (!uoa_plugin_installed (manager, account))
         continue;
 
-      migrate_account_to_uoa (am, account);
+      migrate_account_to_uoa (ctx->am, account);
     }
 
   g_object_unref (manager);
@@ -488,15 +543,15 @@ migrate_accounts_to_uoa (TpAccountManager *am)
 #endif
 
 static void
-run_sanity_cleaning_tasks (TpAccountManager *am)
+run_sanity_cleaning_tasks (SanityCtx *ctx)
 {
   DEBUG ("Starting sanity cleaning tasks");
 
-  fix_xmpp_account_priority (am);
-  set_facebook_account_fallback_server (am);
+  fix_xmpp_account_priority (ctx->am);
+  set_facebook_account_fallback_server (ctx->am);
   upgrade_chat_theme_settings ();
 #ifdef HAVE_UOA
-  migrate_accounts_to_uoa (am);
+  migrate_accounts_to_uoa (ctx);
 #endif
 }
 
@@ -507,37 +562,68 @@ am_prepare_cb (GObject *source,
 {
   GError *error = NULL;
   TpAccountManager *am = TP_ACCOUNT_MANAGER (source);
+  SanityCtx *ctx = user_data;
 
   if (!tp_proxy_prepare_finish (am, result, &error))
     {
       DEBUG ("Failed to prepare account manager: %s", error->message);
-      g_error_free (error);
-      return;
+      g_simple_async_result_take_error (ctx->result, error);
+      goto out;
     }
 
-  run_sanity_cleaning_tasks (am);
+  run_sanity_cleaning_tasks (ctx);
+
+out:
+  sanity_ctx_unref (ctx);
 }
 
-void empathy_sanity_checking_run_if_needed (void)
+void
+empathy_sanity_checking_run_async (GAsyncReadyCallback callback,
+    gpointer user_data)
 {
   GSettings *settings;
   guint number;
   TpAccountManager *am;
+  GSimpleAsyncResult *result;
+  SanityCtx *ctx;
+
+  result = g_simple_async_result_new (NULL, callback, user_data,
+      empathy_sanity_checking_run_async);
 
   settings = g_settings_new (EMPATHY_PREFS_SCHEMA);
   number = g_settings_get_uint (settings, EMPATHY_PREFS_SANITY_CLEANING_NUMBER);
 
   if (number == SANITY_CLEANING_NUMBER)
-    goto out;
+    {
+      g_simple_async_result_complete_in_idle (result);
+      goto out;
+    }
 
   am = tp_account_manager_dup ();
 
-  tp_proxy_prepare_async (am, NULL, am_prepare_cb, NULL);
+  ctx = sanity_ctx_new (am, result);
+  tp_proxy_prepare_async (am, NULL, am_prepare_cb, ctx);
 
   g_settings_set_uint (settings, EMPATHY_PREFS_SANITY_CLEANING_NUMBER,
       SANITY_CLEANING_NUMBER);
 
   g_object_unref (am);
+
 out:
   g_object_unref (settings);
+  g_object_unref (result);
+}
+
+gboolean
+empathy_sanity_checking_run_finish (GAsyncResult *result,
+    GError **error)
+{
+  g_return_val_if_fail (g_simple_async_result_is_valid (result, NULL,
+        empathy_sanity_checking_run_async), FALSE);
+
+  if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (result),
+        error))
+    return FALSE;
+
+  return TRUE;
 }

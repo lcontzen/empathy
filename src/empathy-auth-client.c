@@ -356,7 +356,7 @@ main (int argc,
     }
 
   start_timer ();
-  empathy_sanity_checking_run_if_needed ();
+  empathy_sanity_checking_run_async (NULL, NULL);
 
   gtk_main ();
 
