@@ -282,10 +282,30 @@ uoa_migration_data_free (UoaMigrationData *data)
   g_slice_free (UoaMigrationData, data);
 }
 
+#define DATA_SANITY_CTX "data-sanity-ctx"
+
+static void
+uoa_account_remove_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccount *account = TP_ACCOUNT (source);
+  GError *error = NULL;
+
+  if (!tp_account_remove_finish (account, result, &error))
+    {
+      DEBUG ("Failed to remove account '%s': %s",
+          tp_account_get_path_suffix (account), error->message);
+      g_error_free (error);
+    }
+
+  g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
+}
+
 static void
 uoa_migration_done (UoaMigrationData *data)
 {
-  tp_account_remove_async (data->old_account, NULL, NULL);
+  tp_account_remove_async (data->old_account, uoa_account_remove_cb, NULL);
 
   if (data->new_account != NULL)
     tp_account_set_enabled_async (data->new_account, data->enabled, NULL, NULL);
@@ -368,8 +388,6 @@ uoa_account_created_cb (GObject *source,
     }
 }
 
-#define DATA_SANITY_CTX "data-sanity-ctx"
-
 static void
 migrate_account_to_uoa (TpAccountManager *am,
     TpAccount *account)
@@ -428,28 +446,8 @@ migrate_account_to_uoa (TpAccountManager *am,
   tp_account_request_create_account_async (ar, uoa_account_created_cb,
       data);
 
-  g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
-
   g_variant_unref (params);
   g_object_unref (ar);
-}
-
-static void
-uoa_account_remove_cb (GObject *source,
-    GAsyncResult *result,
-    gpointer user_data)
-{
-  TpAccount *account = TP_ACCOUNT (source);
-  GError *error = NULL;
-
-  if (!tp_account_remove_finish (account, result, &error))
-    {
-      DEBUG ("Failed to remove account '%s': %s",
-          tp_account_get_path_suffix (account), error->message);
-      g_error_free (error);
-    }
-
-  g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
 }
 
 static void
