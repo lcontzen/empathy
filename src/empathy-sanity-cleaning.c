@@ -287,6 +287,8 @@ uoa_migration_done (UoaMigrationData *data)
 {
   tp_account_remove_async (data->old_account, NULL, NULL);
   tp_account_set_enabled_async (data->new_account, data->enabled, NULL, NULL);
+
+  uoa_migration_data_free (data);
 }
 
 static void
