@@ -431,6 +431,24 @@ migrate_account_to_uoa (TpAccountManager *am,
 }
 
 static void
+uoa_account_remove_cb (GObject *source,
+    GAsyncResult *result,
+    gpointer user_data)
+{
+  TpAccount *account = TP_ACCOUNT (source);
+  GError *error = NULL;
+
+  if (!tp_account_remove_finish (account, result, &error))
+    {
+      DEBUG ("Failed to remove account '%s': %s",
+          tp_account_get_path_suffix (account), error->message);
+      g_error_free (error);
+    }
+
+  g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
+}
+
+static void
 uoa_plugin_install_cb (GObject *source,
     GAsyncResult *result,
     gpointer user_data)
@@ -441,10 +459,12 @@ uoa_plugin_install_cb (GObject *source,
 
   if (!empathy_pkg_kit_install_packages_finish (result, &error))
     {
-      DEBUG ("Failed to install plugin: %s", error->message);
+      DEBUG ("Failed to install plugin for account '%s' (%s); remove it",
+          tp_account_get_path_suffix (account), error->message);
+
       g_error_free (error);
 
-      g_object_set_data (G_OBJECT (account), DATA_SANITY_CTX, NULL);
+      tp_account_remove_async (account, uoa_account_remove_cb, NULL);
       goto out;
     }
 
