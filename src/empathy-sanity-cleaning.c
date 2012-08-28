@@ -74,6 +74,7 @@ sanity_ctx_new (TpAccountManager *am,
   return ctx;
 }
 
+#ifdef HAVE_UOA
 static SanityCtx *
 sanity_ctx_ref (SanityCtx *ctx)
 {
@@ -81,6 +82,7 @@ sanity_ctx_ref (SanityCtx *ctx)
 
   return ctx;
 }
+#endif
 
 static void
 sanity_ctx_unref (SanityCtx *ctx)
